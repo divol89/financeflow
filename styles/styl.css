@@ -1,0 +1,70 @@
+.fade-on-scroll {
+  transition: opacity 2s ease-in-out;
+  opacity: 0;
+}
+
+.fade-on-scroll.invisible {
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+}
+
+.custom-table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.custom-table td,
+.custom-table th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+  padding: 8px;
+}
+
+.custom-table td span,
+.custom-table th span {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .custom-table td span,
+  .custom-table th span {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-table td span,
+  .custom-table th span {
+    font-size: 0.4rem;
+  }
+}
+
+
+
+
+/* ////LIFI */
+
+.container {
+  width: 100%;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+}
+
+.transform {
+  transform: scale(0.75);
+}
+
+@media (min-width: 640px) {
+  .transform {
+    transform: scale(1);
+  }
+}

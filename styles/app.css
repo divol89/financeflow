@@ -1,0 +1,149 @@
+/* App.css */
+
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 10;
+    transform: translateY(-10px); /* Mueve la imagen 10px hacia arriba */
+  }
+  
+  .container .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+  }
+  
+  .container .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    z-index: 30;
+  }
+  
+  .container .content h1 {
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+  }
+  
+  .container .content strong {
+    display: flex;
+    align-items: start;
+  }
+  
+  .container .content strong .highlight {
+    color: yellow;
+  }
+  
+
+
+
+
+
+
+
+  /* App.css */
+
+/* Añade tus propias reglas CSS aquí para personalizar la apariencia de tu Navbar */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 2em;
+    margin-bottom: 2em;
+  }
+  
+  .navbar .logo {
+    display: flex;
+    justify-content: flex-start;
+    margin-right: 16px;
+    padding-right: 2px;
+    padding-bottom: 4px;
+    cursor: pointer;
+  }
+  
+  .navbar .menu {
+    color: white;
+    display: flex;
+    list-style: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar .menu-toggle {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 14px;
+    margin-right: 4px;
+    cursor: pointer;
+  }
+  
+  .navbar .menu-toggle.hide-on-desktop {
+    display: none;
+  }
+  
+  .navbar .menu-popup {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 0.5em;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    text-align: right;
+    background: rgba(255, 255, 255, 0.1); /* Reemplaza esto con tu propia coloración de "glassmorphism" */
+    backdrop-filter: blur(5px); /* Este es un efecto común de "glassmorphism" */
+    border-radius: 10px; /* Este es un valor común para el "glassmorphism", ajusta a tu gusto */
+    color: white;
+    z-index: 10;
+    animation: slide-out 0.5s forwards;
+  }
+  
+  .navbar .menu-popup.hide-on-desktop {
+    display: none;
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .navbar .menu {
+      display: none;
+    }
+  
+    .navbar .menu-toggle {
+      display: flex;
+    }
+  
+    .navbar .menu-popup.hide-on-desktop {
+      display: flex;
+    }
+  }
+  
+  /* Aquí puedes definir tu animación "slide-out", si no está definida en otro lugar */
+  @keyframes slide-out {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
