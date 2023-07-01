@@ -21,7 +21,6 @@ import  '../styles/tailwind.css';
 import { TokenContextProvider } from '../contexts/TokenContext'; // Importa el proveedor de contexto
 import React from "react";
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
-import PresaleInstructions from "../components/PresaleInstructions";
 const activeChainId = ChainId.AvalancheFujiTestnet;
 
 function MyApp({ Component, pageProps }: AppProps) {
