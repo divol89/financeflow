@@ -1,20 +1,5 @@
 
 
-// const withTM = require('next-transpile-modules')(['@lifi/widget']); // pasa el nombre del módulo en un array
-
-// module.exports = withTM({
-//   reactStrictMode: true,
-//   swcMinify: true,
-//   webpack(config) {
-//     config.module.rules.push({
-//       test: /\.svg$/,
-//       use: ["@svgr/webpack"],
-//     });
-
-//     return config;
-//   },
-// });
-
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const withTM = require('next-transpile-modules')(['@lifi/widget']); // pasa el nombre del módulo en un array
 

@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "export": "next export"
-    
+    "lint": "next lint"
   },
   "dependencies": {
     "@lifi/sdk": "^2.0.0-beta.11",
@@ -53,6 +51,7 @@
     "react-tabs": "^6.0.1",
     "recharts": "^2.6.2",
     "slick-carousel": "^1.8.1",
+    "truffle": "^5.10.2",
     "web3": "^4.0.1"
   },
   "devDependencies": {

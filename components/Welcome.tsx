@@ -144,10 +144,7 @@ const Welcome = () => {
         <strong className="text-sm md:text-2xl">Learn More</strong>
       </button>
     </Link>
-        <div>
-        </div>
       </div>
-      {/* Resto del contenido */}
     </div>
   );
 };

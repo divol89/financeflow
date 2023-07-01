@@ -29,7 +29,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     <TokenContextProvider>  {/* Envuelve la aplicación con el proveedor de contexto */}
         <Component {...pageProps} />
-        <PresaleInstructions />
       </TokenContextProvider>
     </ThirdwebProvider>
 

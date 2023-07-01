@@ -347,7 +347,7 @@ const Navbar: FC = () => {
     { title: "Tokenomics", link: "#tokenomics" },
     { title: "Use Case", link: "#use case" },
     { title: "RoadMap", link: "#roadmap" },
-    { title: "Shimmer Integration", link: "#shimmer integration" },
+    { title: "Shimmer Integration", link: "#shimmer-integration" },
     { title: "Conclusion", link: "#conclusion" },
 
 
