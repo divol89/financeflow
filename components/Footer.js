@@ -21,7 +21,7 @@ const Footer = () => {
           <FaTelegram size={20} />
         </a>
         <a
-          href="mailto:flowfinance@gmail.com"
+          href="mailto:financeflowelprofit@gmail.com"
           className="text-white mx-2"
         >
           @mail
