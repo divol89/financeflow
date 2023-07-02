@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "financeflow-66d79"
+  },
+  "targets": {
+    "financeflow-66d79": {
+      "functions": {
+        "source": "functions"
+      }
+    }
+  }
+}
+

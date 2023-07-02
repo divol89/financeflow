@@ -15,7 +15,7 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/LoadingIndicator.jsx", "components/Navbar.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/LoadingIndicator.jsx", "components/Navbar.jsx", "functions/src/index.js"],
   "exclude": ["node_modules"]
 }
 

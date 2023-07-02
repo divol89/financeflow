@@ -26,12 +26,11 @@ const activeChainId = ChainId.AvalancheFujiTestnet;
 function MyApp({ Component, pageProps }: AppProps) {
   return(
     <ThirdwebProvider activeChain={activeChainId}>
-
     <TokenContextProvider>  {/* Envuelve la aplicación con el proveedor de contexto */}
         <Component {...pageProps} />
       </TokenContextProvider>
+      
     </ThirdwebProvider>
-
   );
 }
 
