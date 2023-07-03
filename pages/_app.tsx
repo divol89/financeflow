@@ -21,6 +21,10 @@ import  '../styles/tailwind.css';
 import { TokenContextProvider } from '../contexts/TokenContext'; // Importa el proveedor de contexto
 import React from "react";
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
+import { Analytics } from '@vercel/analytics/react';
+
+
+
 const activeChainId = ChainId.AvalancheFujiTestnet;
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -28,6 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThirdwebProvider activeChain={activeChainId}>
     <TokenContextProvider>  {/* Envuelve la aplicación con el proveedor de contexto */}
         <Component {...pageProps} />
+        <Analytics />
       </TokenContextProvider>
       
     </ThirdwebProvider>
