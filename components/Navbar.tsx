@@ -36,7 +36,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="flex  justify-between items-center w-full lg:px-10 h-full z-5 lg:pt-16 ">
+    <nav className="flex  justify-between items-center w-full lg:px-10 h-full z-5 lg:pt-16 lg: ">
       <Modal showModal={showModal} closeModal={() => setShowModal(false)}>
         <TokenContextProvider>
           <AdminLogin />
@@ -71,11 +71,11 @@ const Navbar: FC = () => {
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => handleMenuItemClick("/whitepaper")}
         />
-        {/* <NavBarItem
+        <NavBarItem
           title="Presale"
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => handleMenuItemClick("/tokenflow")}
-        /> */}
+        />
       </ul>
 
       <div className="flex h-full w-full justify-end mt-12 mr-4 md:pt-10">
@@ -116,11 +116,11 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/whitepaper")}
             />
-            {/* <NavBarItem
+            <NavBarItem
               title="Presale"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/tokenflow")}
-            /> */}
+            />
             <NavBarItem
               title="Listing"
               classprops="my-5 text-lg hover:text-yellow-400"

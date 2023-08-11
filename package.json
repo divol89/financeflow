@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.11.0",
     "@lifi/sdk": "^2.0.0-beta.11",
     "@lifi/widget": "^2.1.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -33,6 +34,7 @@
     "firebase-admin": "^11.9.0",
     "firebase-functions": "^4.4.1",
     "http-proxy-middleware": "^2.0.6",
+    "jquery": "^3.7.0",
     "latest": "^0.2.0",
     "moralis": "^2.21.0",
     "next": "13.0.2",
@@ -40,6 +42,7 @@
     "postcss-flexbugs-fixes": "5.0.2",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "8.4.1",
+    "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
@@ -54,6 +57,7 @@
     "react-tabs": "^6.0.1",
     "recharts": "^2.6.2",
     "slick-carousel": "^1.8.1",
+    "svgo": "latest",
     "truffle": "^5.10.2",
     "web3": "^4.0.1"
   },

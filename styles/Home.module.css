@@ -260,3 +260,8 @@
     margin-bottom: 8px;
   }
 }
+
+.imageBorder {
+  border: 2px solid black; /* Change color as needed */
+  border-radius: 6%; /* This will make the image round */
+}
