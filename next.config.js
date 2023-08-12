@@ -6,7 +6,7 @@ const withTM = require('next-transpile-modules')(['@lifi/widget']); // pasa el n
 module.exports = withTM({
   reactStrictMode: true,
   images: {
-    domains: ["ipfs-3.thirdwebcdn.com","gateway.ipfscdn.io",'ipfs-2.thirdwebcdn.com','s2.coinmarketcap.com','dextool.io']
+    domains: ['ipfs-3.thirdwebcdn.com','gateway.ipfscdn.io','ipfs-2.thirdwebcdn.com','s2.coinmarketcap.com','dextool.io','bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com']
     
   },
   swcMinify: true,
