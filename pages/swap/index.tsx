@@ -102,10 +102,126 @@
 // export default Home;
 
 
+// import { NextPage } from 'next';
+// import dynamic from 'next/dynamic';
+// import { LoadingIndicator } from './widgetcomponents/LoadingIndicator';
+// import WidgetNavbar from './widgetcomponents/WidgetNavbar';
+// import ErrorBoundary from './widgetcomponents/ErrorBoundary';  // Asegúrate de usar la ruta correcta
+
+// import React, { useRef, useState } from 'react';
+// import Head from 'next/head';
+
+// const LiFiWidgetNext = dynamic(
+//   () => import('./widgetcomponents/Widget').then((module) => module.Widget) as any,
+//   {
+//     ssr: false,
+//     loading: () => <LoadingIndicator />,
+//   },
+// );
+
+// const Home: NextPage = () => {
+//   const sectionRef = useRef<HTMLDivElement>(null);
+//   const [isVisible] = useState(true); // Establecer isVisible en true para que el widget sea visible por defecto
+
+//   return (
+//     <section ref={sectionRef} className="w-full bg-gradient-to-t from-black to-gray-400 min-h-screen bg-cover bg-center absolute top-0 left-0 z-0">
+//       <div className="max-w-screen-lg w-full mx-auto">
+//         <div className="transform scale-80 sm:scale-100">
+//           <Head>
+//             <title>FlowSwap</title>
+//             <meta name="FlowSwap Dex" content="LI.FI powered widget Dex" />
+//             <link rel="icon" href="/favicon.ico" />
+//           </Head>
+//         <header>
+//             <WidgetNavbar/>
+//                 </header>
+//         </div>
+//         <div className="mb-0">
+//           <div className="transform scale-75 sm:scale-95" >
+//           {isVisible && (
+//               <ErrorBoundary>
+//                 <LiFiWidgetNext />
+//               </ErrorBoundary>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//     );
+// };
+
+
+
+// export default Home;
+
+
+// import { NextPage } from 'next';
+// import dynamic from 'next/dynamic';
+// import { LoadingIndicator } from './widgetcomponents/LoadingIndicator';
+// import WidgetNavbar from './widgetcomponents/WidgetNavbar';
+// import React, { useRef, useState, useEffect } from 'react';
+// import Head from 'next/head';
+
+// const LiFiWidgetNext = dynamic(
+//   () => import('./widgetcomponents/Widget').then((module) => module.Widget) as any,
+//   {
+//     ssr: false,
+//     loading: () => <LoadingIndicator />,
+//   },
+// );
+
+// const Home: NextPage = () => {
+//   const sectionRef = useRef<HTMLDivElement>(null);
+//   const [isVisible] = useState(true);
+
+//   useEffect(() => {
+//     const originalErrorHandler = window.onerror;
+
+//     window.onerror = function (message, source, lineno, colno, error) {
+//   if (typeof message === 'string' && message.includes('Connection request reset. Please try again.')) {
+//     alert("Por favor, conecta tu wallet.");
+//     return true; // Evita mostrar el mensaje de error original
+//   }
+// };
+
+
+//     return () => {
+//       window.onerror = originalErrorHandler; // Restaura el manejador de errores original al desmontar
+//     };
+//   }, []);
+
+//   return (
+//     <section ref={sectionRef} className="w-full bg-gradient-to-t from-black to-gray-400 min-h-screen bg-cover bg-center absolute top-0 left-0 z-0">
+//       <div className="max-w-screen-lg w-full mx-auto">
+//         <div className="transform scale-80 sm:scale-100">
+//           <Head>
+//             <title>FlowSwap</title>
+//             <meta name="FlowSwap Dex" content="LI.FI powered widget Dex" />
+//             <link rel="icon" href="/favicon.ico" />
+//           </Head>
+//           <header>
+//             <WidgetNavbar />
+//           </header>
+//         </div>
+//         <div className="mb-0">
+//           <div className="transform scale-75 sm:scale-95">
+//             {isVisible && <LiFiWidgetNext />}
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
+
+
+
+// export default Home;
+
+
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
-import { LoadingIndicator } from '../../components/LoadingIndicator';
-import WidgetNavbar from '../../components/WidgetNavbar';
+import { LoadingIndicator } from '../../components/widgetcomponents/LoadingIndicator';
+import WidgetNavbar from '../../components/widgetcomponents/WidgetNavbar';
 
 import React, { useRef, useState } from 'react';
 import Head from 'next/head';
@@ -115,7 +231,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient();
 
 const LiFiWidgetNext = dynamic(
-  () => import('../../components/Widget').then((module) => module.Widget) as any,
+  () => import('../../components/widgetcomponents/Widget').then((module) => module.Widget) as any,
   {
     ssr: false,
     loading: () => <LoadingIndicator />,

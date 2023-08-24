@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.0",
     "@emailjs/browser": "^3.11.0",
-    "@lifi/sdk": "^2.0.0-beta.11",
-    "@lifi/widget": "^2.1.1",
+    "@lifi/sdk": "^2.3.0",
+    "@lifi/widget": "^2.2.8",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
-    "@thirdweb-dev/react": "^3.14.0",
-    "@thirdweb-dev/sdk": "^3.10.22",
+    "@thirdweb-dev/contracts": "^3.8.3",
+    "@thirdweb-dev/react": "^3.14.35",
+    "@thirdweb-dev/sdk": "^3.10.54",
+    "@types/react-transition-group": "^4.4.6",
     "@vercel/analytics": "^1.0.1",
     "@walletconnect/web3-provider": "^1.8.0",
     "@web3-react/core": "^8.2.0",
@@ -33,6 +36,7 @@
     "firebase": "^9.23.0",
     "firebase-admin": "^11.9.0",
     "firebase-functions": "^4.4.1",
+    "hardhat": "^2.17.1",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.7.0",
     "latest": "^0.2.0",
@@ -62,7 +66,8 @@
     "web3": "^4.0.1"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.0.1",
+    "@matterlabs/hardhat-zksync-solc": "^0.4.1",
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "18.16.3",
     "@types/react": "18.2.5",
     "@types/react-dom": "18.2.3",

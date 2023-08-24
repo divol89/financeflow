@@ -18,6 +18,8 @@ module.exports = {
         'fondo-fondo': "url('/img/fondomoney.png')",
         'fondo-parilla': "url('/img/parilla.png')",
         'whitepaperfondo': "url('/img/whitepaperfondo.png')",
+        'farmbanner': "url('/img/farmbanner.png')",
+
 
         
       },
