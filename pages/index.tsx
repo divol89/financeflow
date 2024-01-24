@@ -14,7 +14,8 @@ export default function Home() {
    // Usar selectedPoolAddress en alguna parte de tu componente
   console.log(selectedPoolAddress);
   return (
-    <div className="w-full  bg-gradient-to-t from-black to-gray-400 min-h-screen bg-cover bg-center absolute top-0 left-0 z-0">
+
+<div className=" flex-shrink bg-gradient-to-t from-black to-gray-400">
       <Head>
         <title>FinanceFlow</title>
         <meta name="web3 Portal" content="Web3 utility Dapp" />
@@ -23,7 +24,9 @@ export default function Home() {
       <Navbar />
       {/* Otros componentes de tu aplicación */}
       <TokenGrid setSelectedPoolAddress={setSelectedPoolAddress} />
+      <div className='bg-fondo-waves bg-cover bg-no-repeat bg-center'>
       <Welcome  />
+      </div>
       <Discover />
       <ContactUs />
       <Footer />

@@ -1,14 +1,22 @@
 
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const withTM = require('next-transpile-modules')(['@lifi/widget']); // pasa el nombre del módulo en un array
+const withTM = require('next-transpile-modules')(['rc-picker', '@lifi/widget', '@ant-design/icons', 'rc-util', 'rc-pagination']); // pasa el nombre del módulo en un array
 
+
+// el resto de tu configuración...
 module.exports = withTM({
   reactStrictMode: true,
   images: {
-    domains: ['ipfs-3.thirdwebcdn.com','gateway.ipfscdn.io','ipfs-2.thirdwebcdn.com','s2.coinmarketcap.com','dextool.io','bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com']
-    
+    remotePatterns: [
+      { hostname: 'ipfs-3.thirdwebcdn.com' },
+      { hostname: 'gateway.ipfscdn.io' },
+      { hostname: 'ipfs-2.thirdwebcdn.com' },
+      { hostname: 's2.coinmarketcap.com' },
+      { hostname: 'dextool.io' },
+      { hostname: 'bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com' }
+    ]
   },
+  
   swcMinify: true,
   webpack(config) {
     config.module.rules.push({

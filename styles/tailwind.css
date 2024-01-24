@@ -197,8 +197,8 @@
 }
 
 .logo-image {
-  width: 50%;
-  height: 50% ;
+  width: auto;
+  height:auto;
   margin-right: 10px; /* Ajusta este valor según tus necesidades */
 
   object-fit: contain;

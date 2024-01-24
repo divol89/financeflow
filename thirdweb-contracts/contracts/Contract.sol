@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@thirdweb-dev/contracts/base/Staking20Base.sol";
 
-contract MCowfarm is Staking20Base {
+contract ImprovedMCowfarm is Staking20Base {
 
     uint256 public feePercentage = 1;  // Por defecto es 1%, pero puedes cambiarlo
     address public treasuryAddress;    // La dirección donde se enviarán las tarifas
@@ -41,6 +41,9 @@ contract MCowfarm is Staking20Base {
     }
 
     function withdrawWithFee(uint256 amount) external nonReentrant {
+        // Primero, actualizamos las recompensas acumuladas del usuario
+        _updateUnclaimedRewardsForStaker(msg.sender);
+
         require(stakers[msg.sender].amountStaked >= amount, "Not enough staked");
 
         uint256 fee = (amount * feePercentage) / 100;
@@ -66,4 +69,3 @@ contract MCowfarm is Staking20Base {
         IERC20(stakingToken).transfer(treasuryAddress, amount);
     }
 }
-

@@ -10,19 +10,19 @@ export const WidgetEvents = () => {
   const widgetEvents = useWidgetEvents();
 
   useEffect(() => {
-    const onRouteExecutionStarted = (route: Route) => {
+    const onRouteExecutionStarted = (_route: Route) => {
       console.log('onRouteExecutionStarted fired.');
     };
-    const onRouteExecutionUpdated = (update: RouteExecutionUpdate) => {
+    const onRouteExecutionUpdated = (_update: RouteExecutionUpdate) => {
       console.log('onRouteExecutionUpdated fired.');
     };
-    const onRouteExecutionCompleted = (route: Route) => {
+    const onRouteExecutionCompleted = (_route: Route) => {
       console.log('onRouteExecutionCompleted fired.');
     };
-    const onRouteExecutionFailed = (update: RouteExecutionUpdate) => {
+    const onRouteExecutionFailed = (_update: RouteExecutionUpdate) => {
       console.log('onRouteExecutionFailed fired.');
     };
-    const onRouteHighValueLoss = (update: RouteHighValueLossUpdate) => {
+    const onRouteHighValueLoss = (_update: RouteHighValueLossUpdate) => {
       console.log('onRouteHighValueLoss continued.');
     };
     widgetEvents.on(WidgetEvent.RouteExecutionStarted, onRouteExecutionStarted);

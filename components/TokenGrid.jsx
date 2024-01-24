@@ -335,8 +335,8 @@ const TokenGrid = ({ setSelectedPoolAddress }) => {
 
   return (
 
-<div className="flex flex-col items-center bg-transparent p-10 lg:pb-24">
-  <div className="w-full md:w-3/4 mb-4 md:order-1">
+<div className="flex flex-col items-center bg-transparent p-10 lg:pb-24 relative">
+  <div className="w-full md:w-3/4 mb-4 md:order-1 relative">
     {selectedToken && (
       <Collapse bordered={false}>
         <Panel header={selectedToken.name} key="1">
@@ -347,17 +347,17 @@ const TokenGrid = ({ setSelectedPoolAddress }) => {
       </Collapse>
     )}
   </div>
-  <div className="w-full  rounded-xl md:w-3/4 order-1 md:order-2">
+  <div className="w-full  rounded-xl md:w-3/4 order-1 md:order-2 relative">
     <Slider {...settings} autoplay={true} autoplaySpeed={2000}>
       {tokenPrices.map((token) => (
         <div
           key={token.address}
-          className="token-button text- flex flex-col items-center justify-center p-4 ml-0 md:ml-2 md:p-4 md:w-1/2"
+          className="token-button text- flex flex-col items-center justify-center p-4 ml-0 md:ml-2 md:p-4 md:w-1/2 relative"
           onClick={() => handleTokenClick(token)}
         >
-          <div className="token-name ">{token.name}</div>
-          <div className="flex items-center justify-center">
-            <Image src={token.logo} alt={token.name} fill className="logo-image" />
+          <div className="token-name  ">{token.name}</div>
+          <div className="flex flex-col items-center w-contain h-contain justify-center relative">
+            <Image src={token.logo} alt={token.name}  width={64} height={64}  />
           </div>
           <div className="token-price">{selectedToken === token ? token.price : null}</div>
         </div>

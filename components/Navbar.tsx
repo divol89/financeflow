@@ -36,14 +36,14 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="flex  justify-between items-center w-full lg:px-10 h-full z-5 lg:pt-16 lg: ">
+    <nav className="flex lg:flex-wrap  justify-center md:flex-row  w-full  h-full z-5   ">
       <Modal showModal={showModal} closeModal={() => setShowModal(false)}>
         <TokenContextProvider>
           <AdminLogin />
         </TokenContextProvider>
       </Modal>
 
-      <Image src="/img/logotipo.png" alt="logo" width={500} height={300} />
+      <Image src="/img/logotipo.png" alt="logo" width={200} height={200} />
       <ul className="text-white cursor-pointer hidden lg:flex list-none justify-end items-center flex-none pl-14 text-1xl space-x-6 text-2xl col-start-2">
         <div className="text-sm pr-10">
           <ShimmerPrice  />
@@ -61,6 +61,11 @@ const Navbar: FC = () => {
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => setShowModal(true)}
         />
+         {/* <NavBarItem
+              title="Parchisi"
+              classprops="my-5 text-lg hover:text-yellow-400"
+              onClick={() => handleMenuItemClick("/play")}
+            /> */}
         <NavBarItem
           title="FlowSwap"
           classprops="font-extrabold hover:text-yellow-400"
@@ -99,8 +104,8 @@ const Navbar: FC = () => {
           />
         )}
         {toggleMenu && (
-          <ul className="font-bold z-10 fixed top-0 right-0 p-0 w-[auto] h-[auto] shadow-2xl lg:hidden list-none flex flex-col justify-start items-end rounded-lg bg-gray-400 text-white">
-            <li className="text-xl w-full my-2">
+          <ul className="font-bold z-10 fixed top-0 right-0 mt-4 w-[auto] h-[auto] shadow-2xl lg:hidden list-none flex flex-wrap wrap  items-end justify-center rounded-2xl bg-gradient-to-r from-yellow-600  to-red-400   bg-cover text-white">
+            <li className="text-xl pl-2 w-full my-2">
               <AiOutlineCloseCircle onClick={() => setToggleMenu(false)} />
             </li>
             {menuItems.map((item, index) => (
@@ -115,6 +120,12 @@ const Navbar: FC = () => {
               title="FlowSwap"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/swap")}
+            />
+            
+            <NavBarItem
+              title="Parchis"
+              classprops="my-5 text-lg hover:text-yellow-400"
+              onClick={() => handleMenuItemClick("/play")}
             />
             <NavBarItem
               title="Docs"

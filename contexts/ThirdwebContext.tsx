@@ -80,10 +80,9 @@ interface ThirdwebSDKProviderProps {
 export const ThirdwebSDKProvider: React.FC<ThirdwebSDKProviderProps> = ({ children }) => {
     return (
         <ThirdwebSDKContext.Provider value={{ sdk, activeChainId }}>
-          <ChakraProvider>
-            {children}
+            <ChakraProvider>
+                {children}
             </ChakraProvider>
-
         </ThirdwebSDKContext.Provider>
     );
 }

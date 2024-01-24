@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/router";
 import { HiMenuAlt3, HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import Image from 'next/image';
 
 interface NavBarItemProps {
   title: string;
@@ -46,8 +47,8 @@ const Navbar: FC = () => {
 
   return (
     <nav className="flex justify-start items-center  pb-0 mb-0 z-5 w-full h-full top-0 left-0">
-    <div className="flex justify-start items-center mr-16 pr-8 lg:pb-14 cursor-pointer relative pt-10 lg:ml-auto lg:pl-0">
-      <img src="img/logotipo.png" alt="logo" className="h-35 w-80  " />
+    <div className="flex justify-start items-center  mr-16 pr-8 lg:pb-14 cursor-pointer relative pt-10 lg:ml-auto lg:pl-0">
+      <Image src="/img/logotipo.png" alt="logo" width={500} height={300} className="h-35 w-contain" />
     </div>
     <div className="flex h-full w-full justify-end mt-10 mr-4  md:pt-10">
       {!toggleMenu && (

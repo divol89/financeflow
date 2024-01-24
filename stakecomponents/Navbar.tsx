@@ -20,7 +20,7 @@ export default function Navbar() {
     const justifyContent = useBreakpointValue({ base: "center", md: "space-between" }) as "center" | "space-between";
 
     return (
-        <Container  maxW={"1200px"} py={4}>
+        <Container maxW={"1200px"} py={4}>
             <Flex  direction={flexDirection} justifyContent={justifyContent} alignItems="center" wrap="wrap">
                 <Heading mb={{ base: 2, md: 0 }}> <span style={{ color: "#FF914D" }}>FlowFarm</span> Staking</Heading>
                 <ConnectWallet />
