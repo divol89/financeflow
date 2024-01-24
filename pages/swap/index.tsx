@@ -230,8 +230,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
+
 const LiFiWidgetNext = dynamic(
-  () => import('../../components/widgetcomponents/Widget').then((module) => module.Widget) as any,
+  () => import('../../components/widgetcomponents/Widget').then((module) => module.Widget) as Promise<React.ComponentType>,
   {
     ssr: false,
     loading: () => <LoadingIndicator />,

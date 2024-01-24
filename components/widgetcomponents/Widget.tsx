@@ -1,5 +1,4 @@
 import { LiFiWidget } from '@lifi/widget';
-import { WidgetEvents } from './WidgetEvents';
 
 
 
@@ -8,7 +7,6 @@ export const Widget = () => {
   return (
     
       <div className='pb-40'>
-        <WidgetEvents />
 
         <LiFiWidget
           config={{
