@@ -2,12 +2,11 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/router";
 import { HiMenuAlt3, HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import ShimmerPrice from './shimmerprice/Shimmerprice';
-import  Modal  from "./Modal";
-import AdminLogin from './AdminLogin';
-import { TokenContextProvider } from '../contexts/TokenContext';
-import Image from 'next/image';
-
+import ShimmerPrice from "./shimmerprice/Shimmerprice";
+import Modal from "./Modal";
+import AdminLogin from "./AdminLogin";
+import { TokenContextProvider } from "../contexts/TokenContext";
+import Image from "next/image";
 
 interface NavBarItemProps {
   title: string;
@@ -26,9 +25,7 @@ const Navbar: FC = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const menuItems = [
-    { title: "Contact", link: "#contact us" },
-  ];
+  const menuItems = [{ title: "Contact", link: "#contact us" }];
 
   const handleMenuItemClick = (link: string) => {
     router.push(link);
@@ -46,7 +43,7 @@ const Navbar: FC = () => {
       <Image src="/img/logotipo.png" alt="logo" width={200} height={200} />
       <ul className="text-white cursor-pointer hidden lg:flex list-none justify-end items-center flex-none pl-14 text-1xl space-x-6 text-2xl col-start-2">
         <div className="text-sm pr-10">
-          <ShimmerPrice  />
+          <ShimmerPrice />
         </div>
         {menuItems.map((item, index) => (
           <NavBarItem
@@ -61,7 +58,7 @@ const Navbar: FC = () => {
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => setShowModal(true)}
         />
-         {/* <NavBarItem
+        {/* <NavBarItem
               title="Parchisi"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/play")}
@@ -82,10 +79,10 @@ const Navbar: FC = () => {
           onClick={() => handleMenuItemClick("/tokenflow")}
         />
         <NavBarItem
-              title="FlowFarm"
-              classprops="font-extrabold hover:text-yellow-400"
-              onClick={() => handleMenuItemClick("/flowfarm")}
-            />
+          title="FlowFarm"
+          classprops="font-extrabold hover:text-yellow-400"
+          onClick={() => handleMenuItemClick("/flowfarm")}
+        />
       </ul>
 
       <div className="flex h-full w-full justify-end mt-12 mr-4 md:pt-10">
@@ -121,12 +118,11 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/swap")}
             />
-            
-            <NavBarItem
+            {/* <NavBarItem
               title="Parchis"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/play")}
-            />
+            /> */}
             <NavBarItem
               title="Docs"
               classprops="my-5 text-lg hover:text-yellow-400"
@@ -137,7 +133,7 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/tokenflow")}
             />
-             <NavBarItem
+            <NavBarItem
               title="FlowFarm"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/flowfarm")}
@@ -147,8 +143,8 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => setShowModal(true)}
             />
-            <div >
-              <ShimmerPrice  />
+            <div>
+              <ShimmerPrice />
             </div>
           </ul>
         )}

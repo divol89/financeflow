@@ -1,10 +1,8 @@
 // import React from "react";
 // import Link from 'next/link';
 
-
 // const Welcome = () => {
-  
-  
+
 //   return (
 //     <div className="relative   flex z-[-1]   justify-center  pt-40 items-center h-auto sm:h-screen  bg-no-repeat bg-cover bg-center">
 //     <div className="text-center w-full h-full pb-44  pl-40  lg:pb-56 lg:justify-center  flex flex-col justify-center items-center  md:pl-60">
@@ -24,13 +22,8 @@
 
 // export default Welcome;
 
-
-
-
-
-
 import React from "react";
-import Link from 'next/link';
+import Link from "next/link";
 
 const Welcome = () => {
   return (
@@ -51,15 +44,3 @@ const Welcome = () => {
 };
 
 export default Welcome;
-
-
-
-
-
-
-
-
-
-
-
-

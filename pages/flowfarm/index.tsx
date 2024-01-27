@@ -237,7 +237,11 @@ const App = () => {
 };
 
 const buttonsData = [
-  { text: "FlowFarm", imageSrc: "/img/flowFarm2.png", soundText: "only milk on the testnet for now!" },
+  {
+    text: "FlowFarm",
+    imageSrc: "/img/flowFarm2.png",
+    soundText: "only milk on the testnet for now!",
+  },
   {
     text: "Chickens",
     imageSrc: "/img/gallofarm.png",

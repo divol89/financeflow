@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BarChart, Bar, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Collapse, Button } from 'antd';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { Collapse, Button } from "antd";
 
 const { Panel } = Collapse;
 
 const PriceLineChart = ({ poolAddresses }) => {
   const [chartData, setChartData] = useState([]);
   const [selectedRange, setSelectedRange] = useState(1);
-  const [chartType, setChartType] = useState('bar');
+  const [chartType, setChartType] = useState("bar");
 
   useEffect(() => {
     fetchData();
@@ -17,16 +28,16 @@ const PriceLineChart = ({ poolAddresses }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://api.geckoterminal.com/api/v2/networks/avax/pools/${poolAddresses}/ohlcv/${getInterval(selectedRange)}?before_timestamp=${getBeforeTimestamp()}&limit=${getLimit()}&currency=usd&token=base`
+        `https://api.geckoterminal.com/api/v2/networks/avax/pools/${poolAddresses}/ohlcv/${getInterval(selectedRange)}?before_timestamp=${getBeforeTimestamp()}&limit=${getLimit()}&currency=usd&token=base`,
       );
       const data = response.data?.data?.attributes?.ohlcv_list || [];
-  
-      console.log('API Response Data:', data); // Print API data to the console
-  
+
+      console.log("API Response Data:", data); // Print API data to the console
+
       const processedData = data.map((dataPoint) => {
         const [timestamp, open, high, low, close, volume] = dataPoint;
         const date = new Date(timestamp * 1000);
-  
+
         return {
           timestamp: date.getTime(),
           open: parseFloat(open),
@@ -35,19 +46,19 @@ const PriceLineChart = ({ poolAddresses }) => {
           close: parseFloat(close),
           volume: parseFloat(volume),
           key: timestamp,
-          fill: close >= open ? '#34D399' : '#EF4444',
+          fill: close >= open ? "#34D399" : "#EF4444",
         };
       });
-  
+
       setChartData(processedData);
     } catch (error) {
-      console.error('Error fetching and saving data:', error);
+      console.error("Error fetching and saving data:", error);
     }
   };
-  
+
   const getBeforeTimestamp = () => {
     const currentTime = new Date().getTime() / 1000;
-    const beforeTimestamp = currentTime - (24 * 60 * 60);
+    const beforeTimestamp = currentTime - 24 * 60 * 60;
     return Math.floor(beforeTimestamp);
   };
 
@@ -57,13 +68,13 @@ const PriceLineChart = ({ poolAddresses }) => {
 
   const getInterval = (range) => {
     if (range === 1) {
-      return 'hour';
+      return "hour";
     } else if (range === 4) {
-      return 'minute?aggregate=15';
+      return "minute?aggregate=15";
     } else if (range === 12) {
-      return 'minute?aggregate=5';
+      return "minute?aggregate=5";
     } else if (range === 24) {
-      return 'minute?aggregate=1';
+      return "minute?aggregate=1";
     }
   };
 
@@ -72,13 +83,15 @@ const PriceLineChart = ({ poolAddresses }) => {
   };
 
   const handleChartTypeChange = () => {
-    setChartType(chartType === 'bar' ? 'line' : 'bar');
+    setChartType(chartType === "bar" ? "line" : "bar");
   };
 
   const renderExpandableContent = () => {
     const last7DaysData = chartData.slice(-7);
-    const totalVolume = last7DaysData.reduce((sum, dataPoint) => sum + dataPoint.volume, 0);
-
+    const totalVolume = last7DaysData.reduce(
+      (sum, dataPoint) => sum + dataPoint.volume,
+      0,
+    );
 
     return (
       <div className="mt-12">
@@ -86,11 +99,14 @@ const PriceLineChart = ({ poolAddresses }) => {
           <strong>Ca$hFlow</strong>
         </div>
         <div>
-          <strong>H:</strong> {last7DaysData[0]?.high?.toFixed(2)}, <strong>L:</strong> {last7DaysData[0]?.low?.toFixed(2)}
+          <strong>H:</strong> {last7DaysData[0]?.high?.toFixed(2)},{" "}
+          <strong>L:</strong> {last7DaysData[0]?.low?.toFixed(2)}
         </div>
         <div>
-          <strong>Vol:</strong>{' '}
-          {totalVolume >= 1000000 ? `${(totalVolume / 1000000).toFixed(2)}M` : `$${totalVolume.toFixed(2)}`}
+          <strong>Vol:</strong>{" "}
+          {totalVolume >= 1000000
+            ? `${(totalVolume / 1000000).toFixed(2)}M`
+            : `$${totalVolume.toFixed(2)}`}
         </div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={last7DaysData}>
@@ -111,7 +127,9 @@ const PriceLineChart = ({ poolAddresses }) => {
           <button
             key={range}
             className={`mr-4 px-4 py-2 rounded-lg focus:outline-none ${
-              selectedRange === range ? 'bg-yellow-500 text-white' : 'bg-yellow-400'
+              selectedRange === range
+                ? "bg-yellow-500 text-white"
+                : "bg-yellow-400"
             }`}
             onClick={() => handleRangeChange(range)}
           >
@@ -119,30 +137,40 @@ const PriceLineChart = ({ poolAddresses }) => {
           </button>
         ))}
       </div>
-      <div className="bg-yellow-600 rounded" style={{ marginBottom: '8px' }}>
+      <div className="bg-yellow-600 rounded" style={{ marginBottom: "8px" }}>
         <Button type="primary" onClick={handleChartTypeChange}>
           Switch View
         </Button>
       </div>
-      <div className="chart-container flex justify-center" style={{ width: '124%', height: '500px' }}>
+      <div
+        className="chart-container flex justify-center"
+        style={{ width: "124%", height: "500px" }}
+      >
         <ResponsiveContainer width="100%" height={400}>
-          {chartType === 'bar' ? (
+          {chartType === "bar" ? (
             <BarChart data={chartData} className="rounded-xl bg-none">
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" vertical={false} />
+              <CartesianGrid
+                stroke="#ccc"
+                strokeDasharray="5 5"
+                vertical={false}
+              />
               <XAxis
-                tick={{ fontWeight: 'bold', fontSize: '12px', fill: 'yellow' }}
+                tick={{ fontWeight: "bold", fontSize: "12px", fill: "yellow" }}
                 dataKey="timestamp"
                 type="number"
-                domain={['auto', 'auto']}
+                domain={["auto", "auto"]}
                 tickFormatter={(timestamp) => {
                   const date = new Date(timestamp);
                   return `${date.getUTCHours()}:00`;
                 }}
               />
               <YAxis
-                tick={{ fontWeight: '', fontSize: '12px', fill: 'yellow' }}
+                tick={{ fontWeight: "", fontSize: "12px", fill: "yellow" }}
                 tickFormatter={(value) => `$${value.toFixed(4)}`}
-                domain={[minClose - (maxClose - minClose) * 0.1, maxClose + (maxClose - minClose) * 0.1]}
+                domain={[
+                  minClose - (maxClose - minClose) * 0.1,
+                  maxClose + (maxClose - minClose) * 0.1,
+                ]}
               />
               <Tooltip
                 formatter={(value) => `$${value.toFixed(4)}`}
@@ -155,22 +183,32 @@ const PriceLineChart = ({ poolAddresses }) => {
               <Bar dataKey="close" fill="#34D399" barSize={30} />
             </BarChart>
           ) : (
-            <LineChart data={chartData} className="shadow-lg rounded-xl bg-transparent">
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" vertical={false} />
+            <LineChart
+              data={chartData}
+              className="shadow-lg rounded-xl bg-transparent"
+            >
+              <CartesianGrid
+                stroke="#ccc"
+                strokeDasharray="5 5"
+                vertical={false}
+              />
               <XAxis
-                tick={{ fontWeight: '', fontSize: '12px', fill: 'yellow' }}
+                tick={{ fontWeight: "", fontSize: "12px", fill: "yellow" }}
                 dataKey="timestamp"
                 type="number"
-                domain={['auto', 'auto']}
+                domain={["auto", "auto"]}
                 tickFormatter={(timestamp) => {
                   const date = new Date(timestamp);
                   return `${date.getUTCDate()} ${date.getUTCHours()}:00`;
                 }}
               />
               <YAxis
-                tick={{ fontWeight: '', fontSize: '12px', fill: 'yellow' }}
+                tick={{ fontWeight: "", fontSize: "12px", fill: "yellow" }}
                 tickFormatter={(value) => `$${value.toFixed(4)}`}
-                domain={[minClose - (maxClose - minClose) * 0.1, maxClose + (maxClose - minClose) * 0.1]}
+                domain={[
+                  minClose - (maxClose - minClose) * 0.1,
+                  maxClose + (maxClose - minClose) * 0.1,
+                ]}
               />
               <Tooltip
                 formatter={(value) => `$${value.toFixed(4)}`}
@@ -185,7 +223,7 @@ const PriceLineChart = ({ poolAddresses }) => {
           )}
         </ResponsiveContainer>
       </div>
-      <div style={{ width: '100%' }}>
+      <div style={{ width: "100%" }}>
         <Collapse bordered={false}>
           <Panel header="Volumen" key="1">
             {renderExpandableContent()}

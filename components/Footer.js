@@ -1,4 +1,4 @@
-import { FaTwitter, FaTelegram } from 'react-icons/fa';
+import { FaTwitter, FaTelegram } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -28,7 +28,9 @@ const Footer = () => {
         </a>
       </div>
       <p className="text-xs italic">
-      Disclaimer: Nothing mentioned on this website constitutes financial advice. Investing in cryptocurrencies carries significant risks, and you should conduct your own research before making any investment decisions.
+        Disclaimer: Nothing mentioned on this website constitutes financial
+        advice. Investing in cryptocurrencies carries significant risks, and you
+        should conduct your own research before making any investment decisions.
       </p>
     </footer>
   );

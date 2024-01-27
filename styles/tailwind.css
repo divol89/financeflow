@@ -2,131 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 * html {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    
-    
-    
-  }
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
-  
-  
-  body {
-    
-    margin: 0;
-    font-family: "Open Sans Bold",Bold,"Open Sans", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+body {
+  margin: 0;
+  font-family: "Open Sans Bold", Bold, "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  }
+.gradient-bg-welcome {
+  background-color: #297cc1;
+  background-image: radial-gradient(
+      at 0% 0%,
+      rgb(29, 116, 198) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 50% 0%, rgb(23, 125, 208) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgb(16, 117, 212) 0, transparent 50%);
+}
 
- 
-  
-   .gradient-bg-welcome {
-    background-color: #297cc1;
-    background-image: 
-      radial-gradient(at 0% 0%, rgb(29, 116, 198) 0, transparent 50%), 
-      radial-gradient(at 50% 0%, rgb(23, 125, 208) 0, transparent 50%), 
-      radial-gradient(at 100% 0%, rgb(16, 117, 212) 0, transparent 50%);
-  }
-  
-  
-  
-  
-  .gradient-bg-services {
-    background-color:#0f0e13;
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-      radial-gradient(at 50% 100%, hsla(225,39%,25%,1) 0, transparent 50%);
-  }
-  
-  .gradient-bg-transactions {
-    background-color: #0f0e13;
-    background-image: 
-      radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 50%), 
-      radial-gradient(at 50% 0%, hsla(225,39%,25%,1) 0, transparent 50%);
-  }
-  
-  .gradient-bg-footer {
-    background-color: #0f0e13;
-    background-image: 
-      radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 53%), 
-      radial-gradient(at 50% 150%, hsla(339,49%,30%,1) 0, transparent 50%);
-  }
-  
-  .blue-glassmorphism {
-    background: rgb(39, 51, 89, 0.4);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 0, 0, 0.3);
-  }
-  
-  /* white glassmorphism */
-  .white-glassmorphism {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  
-  .eth-card {
-    background-color:#a099ff;
-    background-image: 
-      radial-gradient(at 83% 67%, rgb(152, 231, 156) 0, transparent 58%), 
-      radial-gradient(at 67% 20%, hsla(357,94%,71%,1) 0, transparent 59%), 
-      radial-gradient(at 88% 35%, hsla(222,81%,65%,1) 0, transparent 50%), 
-      radial-gradient(at 31% 91%, hsla(9,61%,61%,1) 0, transparent 52%), 
-      radial-gradient(at 27% 71%, hsla(336,91%,65%,1) 0, transparent 49%), 
-      radial-gradient(at 74% 89%, hsla(30,98%,65%,1) 0, transparent 51%), 
-      radial-gradient(at 53% 75%, hsla(174,94%,68%,1) 0, transparent 45%);
-  }
-  .text-social {
-    background-color:#7bbbd9d4;
-    background-image: 
-      radial-gradient(at 83% 67%, rgb(152, 231, 156) 0, transparent 58%), 
-      radial-gradient(at 67% 20%, rgb(112, 230, 251) 0, transparent 59%), 
-      radial-gradient(at 88% 35%, hsla(222,81%,65%,1) 0, transparent 50%), 
-      radial-gradient(at 31% 91%, hsla(9,61%,61%,1) 0, transparent 52%), 
-      radial-gradient(at 27% 71%, hsla(336,91%,65%,1) 0, transparent 49%), 
-      radial-gradient(at 74% 89%, hsla(30,98%,65%,1) 0, transparent 51%), 
-      radial-gradient(at 53% 75%, hsla(174,94%,68%,1) 0, transparent 45%);
-  }
-  .text-telegram {
-    background-color:#71d065;
-    background-image: 
-      radial-gradient(at 83% 67%, rgb(152, 231, 156) 0, transparent 58%), 
-      radial-gradient(at 67% 20%, rgb(112, 251, 151) 0, transparent 59%), 
-      radial-gradient(at 88% 35%, hsla(222,81%,65%,1) 0, transparent 50%), 
-      
-      radial-gradient(at 27% 71%, rgba(247, 85, 150, 0.268) 0, transparent 49%), 
-      radial-gradient(at 74% 89%, hsla(30,98%,65%,1) 0, transparent 51%), 
-    
-  }
-  
-  .text-gradient {
-    background-color: #fff;
-    background-image: radial-gradient(at 4% 36%, hsla(0,0%,100%,1) 0, transparent 53%), radial-gradient(at 100% 60%, rgb(44, 41, 41) 0, transparent 50%);
-    -webkit-background-clip: text;
-    background-clip: none;
-    -webkit-text-fill-color: transparent;
-  }   
-  .text-gold {
-    background-color: rgba(238, 168, 27, 0.816);
-    background-image: radial-gradient(at 4% 36%, rgba(178, 138, 8, 0.733) 0, transparent 0%), radial-gradient(at 100% 60%, rgb(57, 51, 51) 0, transparent 50%);
-    -webkit-background-clip: text;
-    background-clip: none ;
-    -webkit-text-fill-color: transparent;
-  }
+.gradient-bg-services {
+  background-color: #0f0e13;
+  background-image: radial-gradient(
+      at 0% 0%,
+      hsla(253, 16%, 7%, 1) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 50% 100%, hsla(225, 39%, 25%, 1) 0, transparent 50%);
+}
 
-  
-  
- 
-  
-  /* @media (max-width: 425px) {
+.gradient-bg-transactions {
+  background-color: #0f0e13;
+  background-image: radial-gradient(
+      at 0% 100%,
+      hsla(253, 16%, 7%, 1) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 25%, 1) 0, transparent 50%);
+}
+
+.gradient-bg-footer {
+  background-color: #0f0e13;
+  background-image: radial-gradient(
+      at 0% 100%,
+      hsla(253, 16%, 7%, 1) 0,
+      transparent 53%
+    ),
+    radial-gradient(at 50% 150%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+}
+
+.blue-glassmorphism {
+  background: rgb(39, 51, 89, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+/* white glassmorphism */
+.white-glassmorphism {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.eth-card {
+  background-color: #a099ff;
+  background-image: radial-gradient(
+      at 83% 67%,
+      rgb(152, 231, 156) 0,
+      transparent 58%
+    ),
+    radial-gradient(at 67% 20%, hsla(357, 94%, 71%, 1) 0, transparent 59%),
+    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
+    radial-gradient(at 31% 91%, hsla(9, 61%, 61%, 1) 0, transparent 52%),
+    radial-gradient(at 27% 71%, hsla(336, 91%, 65%, 1) 0, transparent 49%),
+    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%),
+    radial-gradient(at 53% 75%, hsla(174, 94%, 68%, 1) 0, transparent 45%);
+}
+.text-social {
+  background-color: #7bbbd9d4;
+  background-image: radial-gradient(
+      at 83% 67%,
+      rgb(152, 231, 156) 0,
+      transparent 58%
+    ),
+    radial-gradient(at 67% 20%, rgb(112, 230, 251) 0, transparent 59%),
+    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
+    radial-gradient(at 31% 91%, hsla(9, 61%, 61%, 1) 0, transparent 52%),
+    radial-gradient(at 27% 71%, hsla(336, 91%, 65%, 1) 0, transparent 49%),
+    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%),
+    radial-gradient(at 53% 75%, hsla(174, 94%, 68%, 1) 0, transparent 45%);
+}
+.text-telegram {
+  background-color: #71d065;
+  background-image: radial-gradient(
+      at 83% 67%,
+      rgb(152, 231, 156) 0,
+      transparent 58%
+    ),
+    radial-gradient(at 67% 20%, rgb(112, 251, 151) 0, transparent 59%),
+    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
+    radial-gradient(at 27% 71%, rgba(247, 85, 150, 0.268) 0, transparent 49%),
+    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%);
+}
+
+.text-gradient {
+  background-color: #fff;
+  background-image: radial-gradient(
+      at 4% 36%,
+      hsla(0, 0%, 100%, 1) 0,
+      transparent 53%
+    ),
+    radial-gradient(at 100% 60%, rgb(44, 41, 41) 0, transparent 50%);
+  -webkit-background-clip: text;
+  background-clip: none;
+  -webkit-text-fill-color: transparent;
+}
+.text-gold {
+  background-color: rgba(238, 168, 27, 0.816);
+  background-image: radial-gradient(
+      at 4% 36%,
+      rgba(178, 138, 8, 0.733) 0,
+      transparent 0%
+    ),
+    radial-gradient(at 100% 60%, rgb(57, 51, 51) 0, transparent 50%);
+  -webkit-background-clip: text;
+  background-clip: none;
+  -webkit-text-fill-color: transparent;
+}
+
+/* @media (max-width: 425px) {
     .slick-slider {
       width: 90%;
       margin: 0 auto;
@@ -138,23 +151,36 @@
 
   /* Agregar efecto de concentración de energía Qi */
   animation: qi-concentration 3s infinite ease-in-out alternate;
-  box-shadow: 0 0 10px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff;
+  box-shadow:
+    0 0 10px #ffffff,
+    0 0 2px #ffffff,
+    0 0 2px #ffffff,
+    0 0 2px #ffffff;
 }
 
 @keyframes qi-concentration {
   0% {
-    box-shadow: 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff;
+    box-shadow:
+      0 0 2px #ffffff,
+      0 0 2px #ffffff,
+      0 0 2px #ffffff,
+      0 0 2px #ffffff;
   }
   50% {
-    box-shadow: 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff;
+    box-shadow:
+      0 0 2px #ffffff,
+      0 0 2px #ffffff,
+      0 0 2px #ffffff,
+      0 0 2px #ffffff;
   }
   100% {
-    box-shadow: 0 0 10px #ffffff, 0 0 8px #ffffff, 0 0 8px #ffffff, 0 0 10px #ffffff;
+    box-shadow:
+      0 0 10px #ffffff,
+      0 0 8px #ffffff,
+      0 0 8px #ffffff,
+      0 0 10px #ffffff;
   }
 }
-
-
-
 
 .token-button {
   display: flex;
@@ -198,26 +224,18 @@
 
 .logo-image {
   width: auto;
-  height:auto;
+  height: auto;
   margin-right: 10px; /* Ajusta este valor según tus necesidades */
 
   object-fit: contain;
 }
 
-
-
-
-
-
 @media (min-width: 1024px) {
   .bg-fondo-waves {
     background-position: center 50%;
     background-size: 65%;
-
-
   }
 }
-
 
 .button-container {
   display: flex;
@@ -257,13 +275,8 @@
   padding: 8px;
 }
 
-
-
 /* "Get in the flow with FinanceFlow - Explore, trade, and analyze on Avalanche's blockchain." */
 
 /* "List your project with us and tap into the vibrant community of token traders on FinanceFlow." */
 
-
 /* VOTE SYSTEM AND NOTIFICATIONS */
-
-

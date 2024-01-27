@@ -46,8 +46,8 @@
 //         </tbody>
 //       </table>
 //       <div className="mt-4 flex items-center">
-//         <button 
-//           onClick={handleDiceRoll} 
+//         <button
+//           onClick={handleDiceRoll}
 //           className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-200"
 //         >
 //           Lanzar los dados
@@ -57,16 +57,12 @@
 //         </div>
 //       </div>
 //     </div>
-//   );  
+//   );
 // }
 
 // export default IndexPage
 
-
 ////////////////////////////////////////////////////////////////
-
-
-
 
 // import React, { useEffect, useState } from 'react';
 // import ParchisBoard from '../../components/juegos/bord'; // Asegúrate de que la ruta sea correcta
@@ -82,7 +78,6 @@
 //   useEffect(() => {
 //     setState(prevState => ({ ...prevState }));
 //   }, []);
-  
 
 //   const handleDiceRoll = () => {
 //     setState({ ...state, spinning: true });
@@ -121,10 +116,9 @@
 
 // export default IndexPage;
 
-
-import { useState } from 'react';
-import Board from '../juegos/bord';
-import Dice from '../juegos/dice';
+import { useState } from "react";
+import Board from "../juegos/bord";
+import Dice from "../juegos/dice";
 
 const IndexPage = () => {
   const [state, setState] = useState({
@@ -150,8 +144,8 @@ const IndexPage = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-200">
       <Board board={state.board} />
       <div className="mt-4 flex items-center">
-        <button 
-          onClick={handleDiceRoll} 
+        <button
+          onClick={handleDiceRoll}
           className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-200"
         >
           Lanzar los dados

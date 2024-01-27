@@ -25,7 +25,7 @@
 //      <img src="/img/shimmer.png" alt="shimmer.network" className="w-8 h-8 " />
 //      <p className='text-sm'>SMR</p>
 //     {price !== null ? (
-//         <p className='font-bold'>${price}</p> 
+//         <p className='font-bold'>${price}</p>
 //       ) : (
 //         <p>Loading price...</p>
 //       )}
@@ -35,11 +35,10 @@
 
 // export default ShimmerPrice;
 
-
 ////////////////////////////////////////////////////////////////
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 const ShimmerPrice = () => {
   const [price, setPrice] = useState(null);
@@ -48,7 +47,7 @@ const ShimmerPrice = () => {
     const fetchPrice = async () => {
       try {
         const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=shimmer&vs_currencies=usd'
+          "https://api.coingecko.com/api/v3/simple/price?ids=shimmer&vs_currencies=usd",
         );
         const data = await response.json();
         const shimmerPrice = data.shimmer.usd;

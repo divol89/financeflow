@@ -16,9 +16,6 @@
 
 // export default Home;
 
-
-
-
 // import { NextPage } from 'next';
 // import dynamic from 'next/dynamic';
 // import { LoadingIndicator } from '../../components/LoadingIndicator';
@@ -85,7 +82,7 @@
 //             <header>
 //             </header>
 //             <main>
-             
+
 //             </main>
 //           </div>
 //           <div className="mt-10">
@@ -100,7 +97,6 @@
 // };
 
 // export default Home;
-
 
 // import { NextPage } from 'next';
 // import dynamic from 'next/dynamic';
@@ -150,10 +146,7 @@
 //     );
 // };
 
-
-
 // export default Home;
-
 
 // import { NextPage } from 'next';
 // import dynamic from 'next/dynamic';
@@ -184,7 +177,6 @@
 //   }
 // };
 
-
 //     return () => {
 //       window.onerror = originalErrorHandler; // Restaura el manejador de errores original al desmontar
 //     };
@@ -213,26 +205,25 @@
 //   );
 // };
 
-
-
 // export default Home;
 
+import { NextPage } from "next";
+import dynamic from "next/dynamic";
+import { LoadingIndicator } from "../../components/widgetcomponents/LoadingIndicator";
+import WidgetNavbar from "../../components/widgetcomponents/WidgetNavbar";
 
-import { NextPage } from 'next';
-import dynamic from 'next/dynamic';
-import { LoadingIndicator } from '../../components/widgetcomponents/LoadingIndicator';
-import WidgetNavbar from '../../components/widgetcomponents/WidgetNavbar';
+import React, { useRef, useState } from "react";
+import Head from "next/head";
 
-import React, { useRef, useState } from 'react';
-import Head from 'next/head';
-
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
 
-
 const LiFiWidgetNext = dynamic(
-  () => import('../../components/widgetcomponents/Widget').then((module) => module.Widget) as Promise<React.ComponentType>,
+  () =>
+    import("../../components/widgetcomponents/Widget").then(
+      (module) => module.Widget,
+    ) as Promise<React.ComponentType>,
   {
     ssr: false,
     loading: () => <LoadingIndicator />,
@@ -245,7 +236,10 @@ const Home: NextPage = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <section ref={sectionRef} className="w-full bg-gradient-to-t from-black to-gray-400 min-h-screen bg-cover bg-center absolute top-0 left-0 z-0">
+      <section
+        ref={sectionRef}
+        className="w-full bg-gradient-to-t from-black to-gray-400 min-h-screen bg-cover bg-center absolute top-0 left-0 z-0"
+      >
         <div className="max-w-screen-lg w-full mx-auto">
           <div className="transform scale-80 sm:scale-100">
             <Head>
@@ -254,16 +248,16 @@ const Home: NextPage = () => {
               <link rel="icon" href="/favicon.ico" />
             </Head>
             <header>
-            <WidgetNavbar/>
-           {/* ... */}
-           </header>
+              <WidgetNavbar />
+              {/* ... */}
+            </header>
             <main>{/* ... */}</main>
           </div>
-          
+
           <div className="mb-0">
-             <div className="transform scale-75 sm:scale-95" >
+            <div className="transform scale-75 sm:scale-95">
               {isVisible && <LiFiWidgetNext />}
-              </div>
+            </div>
           </div>
         </div>
       </section>

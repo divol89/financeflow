@@ -1,6 +1,6 @@
 // pages/index.tsx
-import React from 'react';
-import Parchis from '../../components/juegos/Parchis'; // Asume que tu componente de Parchís se llama 'Parchis' y está en la carpeta 'components'
+import React from "react";
+import Parchis from "../../components/juegos/Parchis"; // Asume que tu componente de Parchís se llama 'Parchis' y está en la carpeta 'components'
 
 const IndexPage: React.FC = () => {
   return (

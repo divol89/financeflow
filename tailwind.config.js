@@ -14,22 +14,19 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        'fondo-waves': "url('/img/WAVES.png')",
-        'fondo-fondo': "url('/img/fondomoney.png')",
-        'fondo-parilla': "url('/img/parilla.png')",
-        'whitepaperfondo': "url('/img/whitepaperfondo.png')",
-        'farmbanner': "url('/img/farmbanner.png')",
-
-
-        
+        "fondo-waves": "url('/img/WAVES.png')",
+        "fondo-fondo": "url('/img/fondomoney.png')",
+        "fondo-parilla": "url('/img/parilla.png')",
+        whitepaperfondo: "url('/img/whitepaperfondo.png')",
+        farmbanner: "url('/img/farmbanner.png')",
       },
       inset: {
-        '1px': '1px',
+        "1px": "1px",
       },
       spacing: {
-        'word-1': '0.25rem',
-        'word-2': '0.5rem',
-        'word-3': '0.75rem',
+        "word-1": "0.25rem",
+        "word-2": "0.5rem",
+        "word-3": "0.75rem",
       },
       screens: {
         mf: "990px",
@@ -59,7 +56,8 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/forms"),require('@tailwindcss/aspect-ratio'),
-],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
 };
-

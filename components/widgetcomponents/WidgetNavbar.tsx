@@ -39,7 +39,8 @@ const Navbar: FC = () => {
           width={80}
           height={35}
           className="h-35 w-80"
-          priority={true}/>
+          priority={true}
+        />
       </div>
 
       <ul className="text-white lg:flex hidden cursor-pointer list-none justify-end items-end flex-none pl-14 text-2xl">
