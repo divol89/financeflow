@@ -28,7 +28,7 @@ const PriceLineChart = ({ poolAddresses }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://api.geckoterminal.com/api/v2/networks/avax/pools/${poolAddresses}/ohlcv/${getInterval(selectedRange)}?before_timestamp=${getBeforeTimestamp()}&limit=${getLimit()}&currency=usd&token=base`,
+        `https://api.geckoterminal.com/api/v2/networks/iota-evm/pools/${poolAddresses}/ohlcv/${getInterval(selectedRange)}?before_timestamp=${getBeforeTimestamp()}&limit=${getLimit()}&currency=usd&token=base`,
       );
       const data = response.data?.data?.attributes?.ohlcv_list || [];
 
@@ -126,11 +126,10 @@ const PriceLineChart = ({ poolAddresses }) => {
         {[1, 4].map((range) => (
           <button
             key={range}
-            className={`mr-4 px-4 py-2 rounded-lg focus:outline-none ${
-              selectedRange === range
-                ? "bg-yellow-500 text-white"
-                : "bg-yellow-400"
-            }`}
+            className={`mr-4 px-4 py-2 rounded-lg focus:outline-none ${selectedRange === range
+              ? "bg-yellow-500 text-white"
+              : "bg-yellow-400"
+              }`}
             onClick={() => handleRangeChange(range)}
           >
             {`${range}h`}

@@ -16,6 +16,9 @@ module.exports = withTM({
       { hostname: "ipfs-2.thirdwebcdn.com" },
       { hostname: "s2.coinmarketcap.com" },
       { hostname: "dextool.io" },
+      { hostname: "v2.akord.com" },
+      { hostname: "arweave.net" },
+
       {
         hostname:
           "bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com",

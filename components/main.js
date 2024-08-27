@@ -8,12 +8,12 @@ const TokenPrice = () => {
   const fetchTokenPrice = async () => {
     try {
       const response = await axios.get(
-        `https://api.geckoterminal.com/api/v2/networks/avax/tokens/${tokenAddress}/pools`,
+        `https://api.geckoterminal.com/api/v2/networks/iota-evm/tokens/${tokenAddress}/pools`,
         {
           headers: {
             Accept: "application/json;version=20230302",
           },
-        },
+        }
       );
 
       const poolData = response.data.data;

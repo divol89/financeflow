@@ -17,7 +17,7 @@ MiniPool
 # misc
 .DS_Store
 .ENV.LOCAL
-firebase.js
+#firebase.js
 # .env.development.local
 # .env.test.local
 # .env.production.local

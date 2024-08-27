@@ -25,15 +25,13 @@ const Navbar: FC = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const menuItems = [{ title: "Contact", link: "#contact us" }];
-
   const handleMenuItemClick = (link: string) => {
     router.push(link);
     setToggleMenu(false);
   };
 
   return (
-    <nav className="flex lg:flex-wrap  justify-center md:flex-row  w-full  h-full z-5   ">
+    <nav className="flex lg:flex-wrap  justify-center md:flex-row  w-full  h-full z-5 ">
       <Modal showModal={showModal} closeModal={() => setShowModal(false)}>
         <TokenContextProvider>
           <AdminLogin />
@@ -45,19 +43,12 @@ const Navbar: FC = () => {
         <div className="text-sm pr-10">
           <ShimmerPrice />
         </div>
-        {menuItems.map((item, index) => (
-          <NavBarItem
-            key={index}
-            title={item.title}
-            classprops="font-extrabold hover:text-yellow-400"
-            onClick={() => handleMenuItemClick(item.link)}
-          />
-        ))}
-        <NavBarItem
+
+        {/* <NavBarItem
           title="Listing"
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => setShowModal(true)}
-        />
+        /> */}
         {/* <NavBarItem
               title="Parchisi"
               classprops="my-5 text-lg hover:text-yellow-400"
@@ -105,14 +96,7 @@ const Navbar: FC = () => {
             <li className="text-xl pl-2 w-full my-2">
               <AiOutlineCloseCircle onClick={() => setToggleMenu(false)} />
             </li>
-            {menuItems.map((item, index) => (
-              <NavBarItem
-                key={index}
-                title={item.title}
-                classprops="my-5 text-lg hover:text-yellow-400"
-                onClick={() => handleMenuItemClick(item.link)}
-              />
-            ))}
+
             <NavBarItem
               title="FlowSwap"
               classprops="my-5 text-lg hover:text-yellow-400"
@@ -138,11 +122,11 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/flowfarm")}
             />
-            <NavBarItem
+            {/* <NavBarItem
               title="Listing"
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => setShowModal(true)}
-            />
+            /> */}
             <div>
               <ShimmerPrice />
             </div>

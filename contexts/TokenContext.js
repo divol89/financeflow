@@ -46,12 +46,12 @@ export const TokenContextProvider = ({ children }) => {
 
         for (const token of tokens) {
           const response = await axios.get(
-            `https://api.geckoterminal.com/api/v2/networks/avax/tokens/${token.address}/pools`,
+            `https://api.geckoterminal.com/api/v2/networks/iota-evm/tokens/${token.address}/pools`,
             {
               headers: {
                 Accept: "application/json;version=20230302",
               },
-            },
+            }
           );
 
           const poolData = response.data.data;
