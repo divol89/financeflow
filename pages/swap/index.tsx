@@ -222,12 +222,12 @@ const queryClient = new QueryClient();
 const LiFiWidgetNext = dynamic(
   () =>
     import("../../components/widgetcomponents/Widget").then(
-      (module) => module.Widget,
+      (module) => module.Widget
     ) as Promise<React.ComponentType>,
   {
     ssr: false,
     loading: () => <LoadingIndicator />,
-  },
+  }
 );
 
 const Home: NextPage = () => {
