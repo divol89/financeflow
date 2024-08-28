@@ -275,6 +275,21 @@ body {
   padding: 8px;
 }
 
+/* Estilo por defecto (móvil) */
+img.site-logo {
+  width: 100px;
+  height: auto;
+}
+
+/* Estilo para pantallas más grandes (escritorio) */
+@media (min-width: 992px) {
+  img.site-logo {
+    width: 200px;
+    height: auto;
+  }
+}
+
+
 /* "Get in the flow with FinanceFlow - Explore, trade, and analyze on Avalanche's blockchain." */
 
 /* "List your project with us and tap into the vibrant community of token traders on FinanceFlow." */

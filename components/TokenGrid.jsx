@@ -219,10 +219,10 @@ const TokenGrid = ({ setSelectedPoolAddress }) => {
 
   return (
     <div className="flex flex-col items-center bg-transparent p-10 lg:pb-24 relative">
-      <div className="w-full md:w-3/4 mb-4 relative">
+      <div className="w-full md:w-3/4 mb-4 relative text-white">
         {selectedToken && (
           <Collapse bordered={false}>
-            <Panel header={selectedToken.name} key="1">
+            <Panel header={<span className="text-white">{selectedToken.name}</span>} key="1">
               <div className="chart">
                 <PriceLineChart poolAddresses={selectedToken.poolAddress} />
               </div>
