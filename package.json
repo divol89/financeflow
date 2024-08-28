@@ -84,9 +84,7 @@
     "twitter": "^1.7.1",
     "twitter-api-v2": "^1.15.2",
     "twitter-lite": "^1.1.0",
-    "web3": "^4.3.0",
-    "ethereumjs-abi": "git+https://github.com/ethereumjs/ethereumjs-abi.git#7ff1bcca36a28e2e8575cdb3708e29771bb148cc"
-
+    "web3": "^4.3.0"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-solc": "^1.0.6",
