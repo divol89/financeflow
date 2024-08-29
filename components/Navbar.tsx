@@ -49,16 +49,7 @@ const Navbar: FC = () => {
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => setShowModal(true)}
         /> */}
-        {/* <NavBarItem
-              title="Parchisi"
-              classprops="my-5 text-lg hover:text-yellow-400"
-              onClick={() => handleMenuItemClick("/play")}
-            /> */}
-        <NavBarItem
-          title="FlowSwap"
-          classprops="font-extrabold hover:text-yellow-400"
-          onClick={() => handleMenuItemClick("/swap")}
-        />
+
         <NavBarItem
           title="Docs"
           classprops="font-extrabold hover:text-yellow-400"
@@ -69,11 +60,11 @@ const Navbar: FC = () => {
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => handleMenuItemClick("/tokenflow")}
         />
-        <NavBarItem
+        {/* <NavBarItem
           title="FlowFarm"
           classprops="font-extrabold hover:text-yellow-400"
           onClick={() => handleMenuItemClick("/flowfarm")}
-        />
+        /> */}
       </ul>
 
       <div className="flex h-full w-full justify-end mt-12 mr-4 md:pt-10">
@@ -102,11 +93,7 @@ const Navbar: FC = () => {
               classprops="my-5 text-lg hover:text-yellow-400"
               onClick={() => handleMenuItemClick("/swap")}
             />
-            {/* <NavBarItem
-              title="Parchis"
-              classprops="my-5 text-lg hover:text-yellow-400"
-              onClick={() => handleMenuItemClick("/play")}
-            /> */}
+
             <NavBarItem
               title="Docs"
               classprops="my-5 text-lg hover:text-yellow-400"

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.4.0",
     "@babel/core": "^7.0.0-0",
     "@chakra-ui/react": "^2.8.2",
     "@emailjs/browser": "^3.11.0",
@@ -20,7 +21,7 @@
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/properties": "^5.7.0",
     "@lifi/sdk": "^2.5.0",
-    "@lifi/widget": "^2.10.0",
+    "@lifi/widget": "^3.4.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tanstack/react-query": "^5.52.2",
@@ -41,6 +42,7 @@
     "classnames": "^2.5.1",
     "date-fns": "^3.1.0",
     "emailjs-com": "^3.2.0",
+    "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.7.2",
     "express-session": "^1.17.3",
     "fastify": "^4.0.0",
@@ -63,6 +65,9 @@
     "postcss-import": "^16.0.0",
     "postcss-preset-env": "9.3.0",
     "prop-types": "^15.8.1",
+    "rc-pagination": "^4.2.0",
+    "rc-picker": "^4.6.14",
+    "rc-util": "^5.43.0",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
@@ -84,9 +89,9 @@
     "twitter": "^1.7.1",
     "twitter-api-v2": "^1.15.2",
     "twitter-lite": "^1.1.0",
-    "web3": "^4.3.0" 
-   },
-   
+    "vercel": "^37.2.1",
+    "web3": "^4.3.0"
+  },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-solc": "^1.0.6",
     "@svgr/webpack": "^8.1.0",
