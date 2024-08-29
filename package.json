@@ -86,6 +86,7 @@
     "twitter-lite": "^1.1.0",
     "web3": "^4.3.0" 
    },
+   
   "devDependencies": {
     "@matterlabs/hardhat-zksync-solc": "^1.0.6",
     "@svgr/webpack": "^8.1.0",
