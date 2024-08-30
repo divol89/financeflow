@@ -1,0 +1,70 @@
+// // pages/tokenflow/index.js
+// import React from "react";
+// import Head from "next/head";
+
+// const TokenFlowPage = () => {
+//   return (
+//     <>
+//       <Head>
+//         <title>TokenFlow Page</title>
+//         {/* You can add any additional head elements here if needed */}
+//       </Head>
+//       <div style={{ width: "100%", height: "100vh", overflow: "hidden" }}>
+//         <iframe
+//           src="/tokenflow.html"
+//           style={{ width: "100%", height: "100%", border: "none" }}
+//           title="TokenFlow"
+//         />
+//       </div>
+//     </>
+//   );
+// };
+
+// export default TokenFlowPage;
+
+// pages/tokenflow/index.js
+import React from "react";
+import Head from "next/head";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const TokenFlowPage = () => {
+  // Ejemplo de cómo disparar un mensaje de error
+  const showError = () => {
+    toast.error("Error! Please connect your wallet.", {
+      position: "top-right",
+      autoClose: 5000, // Tiempo antes de cerrar automáticamente
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: { backgroundColor: "#f44336", color: "#fff" }, // Estilo inline personalizado
+    });
+  };
+
+  // Simulación de un error que podría desencadenar la notificación
+  React.useEffect(() => {
+    // Aquí podrías poner la lógica que determine cuándo mostrar el error
+    showError();
+  }, []);
+
+  return (
+    <>
+      <Head>
+        <title>TokenFlow Page</title>
+        {/* You can add any additional head elements here if needed */}
+      </Head>
+      <div style={{ width: "101%", height: "100vh", overflow: "hidden" }}>
+        <iframe
+          src="/tokenflow2.html"
+          style={{ width: "100%", height: "100%", border: "none" }}
+          title="TokenFlow"
+        />
+      </div>
+      <ToastContainer />
+    </>
+  );
+};
+
+export default TokenFlowPage;
