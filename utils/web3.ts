@@ -1,0 +1,21 @@
+import { InjectedConnector } from "@web3-react/injected-connector";
+
+export const IOTA_CHAIN_ID = 8822;
+
+export const injected = new InjectedConnector({
+  supportedChainIds: [IOTA_CHAIN_ID],
+});
+
+export const IOTA_EVM_RPC = "https://evm.wasp.sc.iota.org";
+
+export const networkParams = {
+  chainId: `0x${IOTA_CHAIN_ID.toString(16)}`,
+  chainName: "IOTA EVM",
+  nativeCurrency: {
+    name: "IOTA",
+    symbol: "IOTA",
+    decimals: 18,
+  },
+  rpcUrls: [IOTA_EVM_RPC],
+  blockExplorerUrls: ["https://explorer.iota.org/mainnet"],
+};

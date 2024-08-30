@@ -20,6 +20,7 @@
     "@ethersproject/abstract-signer": "^5.7.0",
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/properties": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
     "@lifi/sdk": "^2.5.0",
     "@lifi/widget": "^3.4.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
