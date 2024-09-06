@@ -20,17 +20,20 @@ export default function Home() {
   };
 
   return (
-    <div className="flex-shrink bg-gradient-to-t from-black to-gray-700">
+    <div className="min-h-screen bg-flow-gradient  text-white">
       <Head>
         <title>FinanceFlow</title>
-        <meta name="web3 Portal" content="Web3 utility Dapp" />
+        <meta name="web3 Portal" content="FinanceFlow - DeFi Platform" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <TokenGrid setSelectedPoolAddress={handlePoolAddressSelect} />
-      <div className="bg-fondo-waves bg-cover bg-no-repeat bg-center">
-        <Welcome />
-      </div>
+      <main>
+        <TokenGrid setSelectedPoolAddress={handlePoolAddressSelect} />
+        <div className="bg-cover bg-no-repeat bg-center">
+          <Welcome />
+        </div>
+      </main>
+
       <Discover />
       {/* <ContactUs /> */}
       <Footer />

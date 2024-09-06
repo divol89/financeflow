@@ -1,6 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html, body, #__next {
+    @apply h-full;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-flow-gradient;
+  }
+}
+
+@layer components {
+  .bg-flow-gradient {
+    @apply bg-gradient-to-b from-flow-from to-flow-to text-white;
+  }
+
+  .bg-flow-gradient-with-waves {
+    @apply bg-flow-gradient bg-cover bg-no-repeat bg-center bg-fixed;
+  }
+
+  .text-flow-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500;
+  }
+
+  .text-description-gradient {
+    background-color: #fff;
+    background-image: radial-gradient(
+        at 4% 36%,
+        hsla(0, 0%, 100%, 0.8) 0,
+        transparent 53%
+      ),
+      radial-gradient(at 100% 60%, rgba(44, 41, 41, 0.8) 0, transparent 50%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* @media (max-width: 1023px) {
+  .bg-fondo-waves {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bg-fondo-waves {
+    background-position: center;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+  }
+} */
+
 * html {
   padding: 0;
   margin: 0;
@@ -232,10 +287,16 @@ body {
 
 @media (min-width: 1024px) {
   .bg-fondo-waves {
-    background-position: center 50%;
-    background-size: 65%;
+    background-size: 40% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-right: 42rem;
   }
+
 }
+
+
+
 
 .button-container {
   display: flex;
@@ -295,3 +356,96 @@ img.site-logo {
 /* "List your project with us and tap into the vibrant community of token traders on FinanceFlow." */
 
 /* VOTE SYSTEM AND NOTIFICATIONS */
+
+
+
+ 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff;
+  }
+  100% {
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff;
+  }
+}
+
+.glow {
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.glow-border {
+  animation: glow 1.5s ease-in-out infinite alternate;
+}

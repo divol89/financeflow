@@ -19,6 +19,7 @@ module.exports = {
         "fondo-parilla": "url('/img/parilla.png')",
         whitepaperfondo: "url('/img/whitepaperfondo.png')",
         farmbanner: "url('/img/farmbanner.png')",
+        "flow-gradient": "linear-gradient(to bottom, var(--tw-gradient-stops))",
       },
       inset: {
         "1px": "1px",
@@ -50,6 +51,17 @@ module.exports = {
       animation: {
         "fade-in-scroll": "fade-in-scroll 0.3s ease-out",
         "slide-in": "slide-in 0.5s ease-out",
+      },
+      borderColor: {
+        border: "var(--border)",
+      },
+      colors: {
+        foreground: "var(--foreground)",
+        background: "var(--background)",
+        border: "var(--border)",
+        // ... otros colores personalizados que puedas necesitar
+        "flow-from": "#111827", // gray-900
+        "flow-to": "#1f2937", // gray-800
       },
     },
   },

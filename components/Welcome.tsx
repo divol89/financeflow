@@ -1,19 +1,31 @@
 import React from "react";
-import Link from "next/link";
+import Image from "next/image"; // Añadimos esta importación
 
 const Welcome = () => {
   return (
-    <div className="relative flex justify-center pt-40 items-center h-auto sm:h-screen bg-no-repeat bg-cover bg-center">
-      <div className="text-center w-full h-full pb-44 pl-40 lg:pb-56 lg:justify-center flex flex-col justify-center items-center md:pl-60">
-        <h1 className="text-white text-3xl pb-8 lg:pb-36 md:text-5xl lg:text-7xl lg:pl-48 font-extrabold">
-          Finance <br />
-          Flow<strong className="text-yellow-500">.</strong>
+    <div className="text-white flex flex-col items-center md:flex-row md:items-center md:justify-center p-4">
+      <div className="mb-4 md:mb-0 md:mr-8 lg:mr-12">
+        <Image
+          src="/img/WAVES.png" // Asegúrate de que esta ruta sea correcta
+          alt="WAVES"
+          width={380} // Ajusta el tamaño según necesites
+          height={380}
+          className="mx-auto"
+        />
+      </div>
+      <div className="text-center md:text-left">
+        <h1 className="text-3xl md:text-5xl text-white lg:ml-10 lg:text-5xl font-extrabold inline-block">
+          Flow Finance
         </h1>
-        <Link href="/whitepaper" passHref>
-          <button className="mt-4.5 mb-5 bg-yellow-500 text-white py-0.7 px-4 rounded-lg md:py-0.6 md:px-3 lg:ml-48 hover:bg-blue-700 transition-all">
-            <strong className="text-sm md:text-2xl">Learn More</strong>
-          </button>
-        </Link>
+        <h6 className=" ml-1 lg:ml-12 mb-10 lg:text-1xl font-weight-200 text-white mt-2 block sparkle">
+          <strong>E</strong>mpower your investments,
+          <strong>v</strong>ote for success,
+          <br />
+          <strong>r</strong>eap the rewards.
+        </h6>
+        <p className="lg:ml-12 text-cyan-200 mt-4 italic">
+          EVR system empowering the users.
+        </p>
       </div>
     </div>
   );

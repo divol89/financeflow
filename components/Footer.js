@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-gray-800 py-4 text-white text-center">
       <div className="flex justify-center mb-2">
         <a
-          href="https://twitter.com/financeflowx"
+          href="https://x.com/1000xAnon"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white mx-2"
@@ -20,12 +20,12 @@ const Footer = () => {
         >
           <FaTelegram size={20} />
         </a>
-        <a
+        {/* <a
           href="mailto:financeflowelprofit@gmail.com"
           className="text-white mx-2"
         >
           @mail
-        </a>
+        </a> */}
       </div>
       <p className="text-xs italic">
         Disclaimer: Nothing mentioned on this website constitutes financial
