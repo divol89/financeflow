@@ -19,13 +19,19 @@ import { Button } from "../../components/ui/button";
 import { Input } from "antd";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
-import { collection, getDocs, query } from "firebase/firestore";
-
+import { collection, query, getDocs } from "firebase/firestore";
 const ERC20_ABI = [
   {
     constant: true,
     inputs: [],
     name: "name",
+    outputs: [{ name: "", type: "string" }],
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: "symbol",
     outputs: [{ name: "", type: "string" }],
     type: "function",
   },
@@ -41,13 +47,13 @@ interface ContractInfo {
 interface TokenPool {
   address: string;
   name: string;
+  symbol: string;
   votes: number;
   active: boolean;
-  logo: string | null;
-  liquidity: number;
-  starred: boolean;
-  symbol: string;
-  launcherAddress: string;
+  logo?: string | null;
+  liquidity?: number;
+  starred?: boolean;
+  launcherAddress?: string;
 }
 
 interface RewardInfo {
@@ -97,8 +103,6 @@ const PumpMeSirPage = () => {
   const [unclaimedRewards, setUnclaimedRewards] = useState<RewardInfo[]>([]);
   const [firestoreTokens, setFirestoreTokens] = useState<FirestoreToken[]>([]);
 
-  const [isClient, setIsClient] = useState(false);
-  const [networkId, setNetworkId] = useState<number | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -121,6 +125,23 @@ const PumpMeSirPage = () => {
     return contract;
   };
 
+  const fetchFirestoreTokens = async () => {
+    try {
+      console.log("Fetching Firestore tokens...");
+      const tokensRef = collection(db, "launchedTokens");
+      const q = query(tokensRef);
+      const querySnapshot = await getDocs(q);
+      const tokens: FirestoreToken[] = [];
+      querySnapshot.forEach((doc) => {
+        tokens.push({ id: doc.id, ...doc.data() } as FirestoreToken);
+      });
+      console.log("Fetched Firestore tokens:", tokens);
+      setFirestoreTokens(tokens);
+    } catch (error) {
+      console.error("Error fetching Firestore tokens:", error);
+    }
+  };
+
   const fetchContractInfo = async (contract: ethers.Contract) => {
     setIsLoading(true);
     try {
@@ -139,75 +160,70 @@ const PumpMeSirPage = () => {
         contractBalance: parseFloat(ethers.utils.formatEther(contractBalance)),
       });
 
-      const newTokenPools: TokenPool[] = [];
-      const processedAddresses = new Set<string>();
+      const contractTokens: TokenPool[] = [];
 
-      // Procesar tokens de Firestore
-      for (const token of firestoreTokens) {
-        const votes = await contract.votesReceived(token.address);
-        newTokenPools.push({
-          address: token.address,
-          name: token.name,
-          votes: parseFloat(ethers.utils.formatEther(votes)),
-          active: votingActive,
-          logo: token.logo || null,
-          liquidity: token.liquidity,
-          starred: token.starred,
-          symbol: token.symbol,
-          launcherAddress: token.launcherAddress,
-        });
-        processedAddresses.add(token.address.toLowerCase());
-      }
-
-      // Procesar tokens del contrato
       let i = 0;
-      while (true) {
+      while (i < 100) {
         try {
           const tokenAddress = await contract.tokensVotedFor(i);
-          if (!processedAddresses.has(tokenAddress.toLowerCase())) {
-            const votes = await contract.votesReceived(tokenAddress);
-            const tokenContract = new ethers.Contract(
-              tokenAddress,
-              ERC20_ABI,
-              contract.provider
-            );
+          const votes = await contract.votesReceived(tokenAddress);
 
-            let tokenName, tokenSymbol;
-            try {
+          const tokenContract = new ethers.Contract(
+            tokenAddress,
+            ERC20_ABI,
+            contract.provider
+          );
+          let tokenName = `Unknown Token ${i + 1}`;
+          let tokenSymbol = "???";
+
+          try {
+            if (typeof tokenContract.name === "function") {
               tokenName = await tokenContract.name();
-              tokenSymbol = await tokenContract.name();
-            } catch (error) {
-              console.error(
-                `Error fetching token info for ${tokenAddress}:`,
-                error
-              );
-              tokenName = `Unknown Token ${i + 1}`;
-              tokenSymbol = "???";
             }
-
-            newTokenPools.push({
-              address: tokenAddress,
-              name: tokenName,
-              votes: parseFloat(ethers.utils.formatEther(votes)),
-              active: votingActive,
-              logo: null,
-              liquidity: 0,
-              starred: false,
-              symbol: tokenSymbol,
-              launcherAddress: "",
-            });
+          } catch (error) {
+            console.error(
+              `Error fetching token name for ${tokenAddress}:`,
+              error
+            );
           }
+
+          try {
+            if (typeof tokenContract.symbol === "function") {
+              tokenSymbol = await tokenContract.symbol();
+            }
+          } catch (error) {
+            console.error(
+              `Error fetching token symbol for ${tokenAddress}:`,
+              error
+            );
+          }
+
+          contractTokens.push({
+            address: tokenAddress,
+            name: tokenName,
+            symbol: tokenSymbol,
+            votes: parseFloat(ethers.utils.formatEther(votes)),
+            active: votingActive,
+            logo: null,
+            liquidity: 0,
+            starred: false,
+            launcherAddress: "",
+          });
+
           i++;
         } catch (error) {
-          // Hemos llegado al final de la lista de tokens
+          console.log(
+            "Reached end of token list or encountered an error:",
+            error
+          );
           break;
         }
       }
 
-      // Ordenar los tokens por votos
-      newTokenPools.sort((a, b) => b.votes - a.votes);
-      console.log("Token pools updated:", newTokenPools);
-      setTokenPools(newTokenPools);
+      // Sort tokens by votes
+      contractTokens.sort((a, b) => b.votes - a.votes);
+      console.log("Final contract tokens:", contractTokens);
+      setTokenPools(contractTokens);
     } catch (error) {
       console.error("Error fetching contract info:", error);
       toast.error(
@@ -215,23 +231,6 @@ const PumpMeSirPage = () => {
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchFirestoreTokens = async () => {
-    try {
-      console.log("Fetching Firestore tokens...");
-      const tokensRef = collection(db, "launchedTokens");
-      const q = query(tokensRef);
-      const querySnapshot = await getDocs(q);
-      const tokens: FirestoreToken[] = [];
-      querySnapshot.forEach((doc) => {
-        tokens.push({ id: doc.id, ...doc.data() } as FirestoreToken);
-      });
-      console.log("Fetched Firestore tokens:", tokens);
-      setFirestoreTokens(tokens);
-    } catch (error) {
-      console.error("Error fetching Firestore tokens:", error);
     }
   };
 
@@ -248,7 +247,6 @@ const PumpMeSirPage = () => {
         setAccount(address);
 
         const network = await provider.getNetwork();
-        setNetworkId(network.chainId);
 
         if (network.chainId !== IOTA_CHAIN_ID) {
           try {
@@ -352,7 +350,6 @@ const PumpMeSirPage = () => {
     setShowDisconnectDialog(false);
     setAccount("");
     setPumpMeSirContract(null);
-    setNetworkId(null);
     toast.success("Wallet disconnected successfully");
   };
 
@@ -485,19 +482,25 @@ const PumpMeSirPage = () => {
   };
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
     const fetchData = async () => {
-      await fetchFirestoreTokens();
-      const contract = createReadOnlyContract();
-      await fetchContractInfo(contract);
+      try {
+        await fetchFirestoreTokens();
+        if (readOnlyContract) {
+          await fetchContractInfo(readOnlyContract);
+        } else {
+          console.log("ReadOnlyContract is null, creating a new one");
+          const newContract = createReadOnlyContract();
+          await fetchContractInfo(newContract);
+        }
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+        setIsLoading(false);
+      }
     };
 
     fetchData();
 
-    const interval = setInterval(fetchData, 120000); // Update every 30 seconds
+    const interval = setInterval(fetchData, 120000); // Update every 2 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -510,6 +513,23 @@ const PumpMeSirPage = () => {
       return () => clearInterval(interval);
     }
   }, [pumpMeSirContract, account]);
+
+  const mergeTokenData = (
+    contractToken: TokenPool,
+    firestoreTokens: FirestoreToken[]
+  ) => {
+    const firestoreToken = firestoreTokens.find(
+      (ft) => ft.address.toLowerCase() === contractToken.address.toLowerCase()
+    );
+    return {
+      ...contractToken,
+      liquidity: firestoreToken?.liquidity ?? contractToken.liquidity ?? 0,
+      starred: firestoreToken?.starred ?? contractToken.starred ?? false,
+      logo: firestoreToken?.logo ?? contractToken.logo ?? null,
+      launcherAddress:
+        firestoreToken?.launcherAddress ?? contractToken.launcherAddress ?? "",
+    };
+  };
 
   const progress =
     (contractInfo.contractBalance / contractInfo.buyThreshold) * 100;
@@ -603,77 +623,80 @@ const PumpMeSirPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-              {tokenPools.map((pool) => (
-                <Card
-                  key={pool.address}
-                  className={`bg-gray-800 border-2 ${
-                    pool.active
-                      ? "border-green-500 glow-border"
-                      : "border-red-500"
-                  }`}
-                >
-                  <CardHeader>
-                    <h3 className="flex justify-between items-center text-lg">
-                      <span className="flex items-center">
-                        {pool.name}
-                        {pool.starred && (
-                          <Star className="ml-2 h-4 w-4 text-yellow-400 fill-current" />
-                        )}
-                      </span>
-                      {pool.active ? (
-                        <span className="text-xs bg-green-500 text-black px-2 py-1 rounded-full animate-pulse">
-                          ACTIVE
-                        </span>
-                      ) : (
-                        <span className="text-xs bg-red-500 text-black px-2 py-1 rounded-full">
-                          INACTIVE
-                        </span>
-                      )}
-                    </h3>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center mb-4 text-cyan-300">
-                      <span className="flex items-center">
-                        <Vote className="mr-2 h-4 w-4" />
-                        {pool.votes.toFixed(2)} power
-                      </span>
-                      <span className="flex items-center">
-                        <Wallet className="mr-2 h-4 w-4" />
-                        {(
-                          (pool.votes / contractInfo.contractBalance) *
-                          100
-                        ).toFixed(2)}
-                        % of total
-                      </span>
-                    </div>
-                    {pool.starred && pool.liquidity !== undefined && (
-                      <div className="mb-4 text-cyan-300">
+              {tokenPools.map((pool) => {
+                const mergedPool = mergeTokenData(pool, firestoreTokens);
+                return (
+                  <Card
+                    key={mergedPool.address}
+                    className={`bg-gray-800 border-2 ${
+                      mergedPool.active
+                        ? "border-green-500 glow-border"
+                        : "border-red-500"
+                    }`}
+                  >
+                    <CardHeader>
+                      <h3 className="flex justify-between items-center text-lg">
                         <span className="flex items-center">
-                          <span className="mr-2">💧</span>
-                          Liquidity: {pool.liquidity.toFixed(2)} IOTA
+                          {mergedPool.name} ({mergedPool.symbol})
+                          {mergedPool.starred && (
+                            <Star className="ml-2 h-4 w-4 text-yellow-400 fill-current" />
+                          )}
+                        </span>
+                        {mergedPool.active ? (
+                          <span className="text-xs bg-green-500 text-black px-2 py-1 rounded-full animate-pulse">
+                            ACTIVE
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-red-500 text-black px-2 py-1 rounded-full">
+                            INACTIVE
+                          </span>
+                        )}
+                      </h3>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between items-center mb-4 text-cyan-300">
+                        <span className="flex items-center">
+                          <Vote className="mr-2 h-4 w-4" />
+                          {mergedPool.votes.toFixed(2)} power
+                        </span>
+                        <span className="flex items-center">
+                          <Wallet className="mr-2 h-4 w-4" />
+                          {(
+                            (mergedPool.votes / contractInfo.contractBalance) *
+                            100
+                          ).toFixed(2)}
+                          % of total
                         </span>
                       </div>
-                    )}
-                    <Button
-                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
-                      onClick={() => {
-                        setTokenToVote(pool.address);
-                        setAmountToVote("");
-                      }}
-                      disabled={!pool.active}
-                    >
-                      {pool.active ? (
-                        <>
-                          <Zap className="mr-2 h-4 w-4" />
-                          Boost & Charge
-                        </>
-                      ) : (
-                        "Pool Offline"
+                      {mergedPool.liquidity > 0 && (
+                        <div className="mb-4 text-cyan-300">
+                          <span className="flex items-center">
+                            <span className="mr-2">💧</span>
+                            Liquidity: {mergedPool.liquidity.toFixed(2)} IOTA
+                          </span>
+                        </div>
                       )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                      <Button
+                        className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                        onClick={() => {
+                          setTokenToVote(mergedPool.address);
+                          setAmountToVote("");
+                        }}
+                        disabled={!mergedPool.active}
+                      >
+                        {mergedPool.active ? (
+                          <>
+                            <Zap className="mr-2 h-4 w-4" />
+                            Boost & Charge
+                          </>
+                        ) : (
+                          "Pool Offline"
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

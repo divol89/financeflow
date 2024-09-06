@@ -12,6 +12,7 @@ import {
 import { IOTA_CHAIN_ID, ROUTER_ADDRESS } from "../../utils/web3";
 import qs from "qs";
 import { db } from "../../firebase/firebase";
+import { Info } from "lucide-react";
 
 const BLOCKSCOUT_VERIFY_URL =
   "https://explorer.evm.iota.org/api?module=contract&action=verify";
@@ -30,6 +31,24 @@ const TokenLauncher = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [verificationLink, setVerificationLink] = useState("");
   const [iotaAmount, setIotaAmount] = useState("");
+
+  const LaunchInfoCard = () => (
+    <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-4 mb-6 shadow-lg">
+      <div className="flex items-start">
+        <Info className="h-6 w-6 text-white mr-3 flex-shrink-0 mt-1" />
+        <div>
+          <h3 className="text-lg font-bold text-white mb-2">
+            Automatic Listing on MagicPump!
+          </h3>
+          <p className="text-white text-sm">
+            Launch your token with 200 IOTA liquidity and get automatically
+            listed on MagicPump. Boost your project&#39;s visibility from day
+            one!
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
@@ -290,11 +309,10 @@ const TokenLauncher = () => {
   };
 
   return (
-    <div className="min-h-screen  bg-gray-900 text-cyan-50 p-8">
+    <div className="min-h-screen bg-gray-900 text-cyan-50 p-8">
+      <LaunchInfoCard />
       <Card
-        className={`max-w-md ${
-          !isConnected ? "mt-[18rem]" : "mt-[4rem] lg:mt-[8rem]"
-        } mx-auto`}
+        className={`max-w-md ${!isConnected ? "mt-4" : "mt-4 lg:mt-8"} mx-auto`}
         style={{ background: "#1f2937", borderColor: "#06b5563" }}
       >
         <Typography.Title
@@ -396,17 +414,20 @@ const TokenLauncher = () => {
             </Button>
           </>
         ) : (
-          <Button
-            onClick={connectWallet}
-            className="w-full"
-            style={{
-              background: "#0891b2",
-              borderColor: "#0891b2",
-              color: "white",
-            }}
-          >
-            Connect Wallet
-          </Button>
+          <>
+            <Button
+              onClick={connectWallet}
+              className="w-full mb-4"
+              style={{
+                background: "#0891b2",
+                borderColor: "#0891b2",
+                color: "white",
+              }}
+            >
+              Connect Wallet
+            </Button>
+            <LaunchInfoCard />
+          </>
         )}
       </Card>
       {isVerified && (
