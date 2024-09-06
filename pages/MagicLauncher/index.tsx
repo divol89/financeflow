@@ -271,10 +271,10 @@ const TokenLauncher = () => {
       const addLiquidityReceipt = await addLiquidityTx.wait();
       console.log("Add liquidity transaction receipt:", addLiquidityReceipt);
 
-      if (iotaAmountBN.gte(ethers.utils.parseEther("0.01"))) {
+      if (iotaAmountBN.gte(ethers.utils.parseEther("200"))) {
         // Guardar el token en Firestore
         await db
-          .collection("votedTokens")
+          .collection("launchedTokens")
           .doc(tokenContract.address)
           .set({
             name: tokenName,
@@ -310,7 +310,6 @@ const TokenLauncher = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-cyan-50 p-8">
-      <LaunchInfoCard />
       <Card
         className={`max-w-md ${!isConnected ? "mt-4" : "mt-4 lg:mt-8"} mx-auto`}
         style={{ background: "#1f2937", borderColor: "#06b5563" }}

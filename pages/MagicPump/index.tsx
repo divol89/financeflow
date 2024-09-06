@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import { ethers } from "ethers";
 import { ToastContainer, toast } from "react-toastify";
@@ -47,13 +47,13 @@ interface ContractInfo {
 interface TokenPool {
   address: string;
   name: string;
-  symbol: string;
   votes: number;
   active: boolean;
-  logo?: string | null;
-  liquidity?: number;
-  starred?: boolean;
-  launcherAddress?: string;
+  logo: string | null;
+  liquidity: number;
+  starred: boolean;
+  symbol: string;
+  launcherAddress: string;
 }
 
 interface RewardInfo {
@@ -102,6 +102,7 @@ const PumpMeSirPage = () => {
   const [tokenPools, setTokenPools] = useState<TokenPool[]>([]);
   const [unclaimedRewards, setUnclaimedRewards] = useState<RewardInfo[]>([]);
   const [firestoreTokens, setFirestoreTokens] = useState<FirestoreToken[]>([]);
+  const [contractTokens, setContractTokens] = useState<TokenPool[]>([]);
 
   const [isConnected, setIsConnected] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
@@ -110,6 +111,52 @@ const PumpMeSirPage = () => {
     useState<ethers.Contract | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRewardsLoading, setIsRewardsLoading] = useState(false);
+
+  const mergeTokenData = useCallback(() => {
+    const contractTokenMap = new Map(
+      contractTokens.map((token) => [token.address.toLowerCase(), token])
+    );
+
+    const mergedTokens = firestoreTokens.map((firestoreToken) => {
+      const contractToken = contractTokenMap.get(
+        firestoreToken.address.toLowerCase()
+      );
+      return {
+        address: firestoreToken.address,
+        name: contractToken?.name || firestoreToken.name,
+        symbol: contractToken?.symbol || firestoreToken.symbol,
+        votes: contractToken?.votes || 0,
+        active: true, // Always active for Firestore tokens
+        logo: firestoreToken.logo || null,
+        liquidity: firestoreToken.liquidity || 0,
+        starred: firestoreToken.starred || false,
+        launcherAddress: firestoreToken.launcherAddress || "",
+      };
+    });
+
+    // Add any remaining contract tokens that weren't in Firestore
+    contractTokens.forEach((contractToken) => {
+      if (
+        !mergedTokens.some(
+          (token) =>
+            token.address.toLowerCase() === contractToken.address.toLowerCase()
+        )
+      ) {
+        mergedTokens.push({
+          ...contractToken,
+          logo: null,
+          liquidity: 0,
+          starred: false,
+          launcherAddress: "",
+        });
+      }
+    });
+
+    // Sort tokens by votes
+    mergedTokens.sort((a, b) => b.votes - a.votes);
+
+    setTokenPools(mergedTokens);
+  }, [firestoreTokens, contractTokens]);
 
   const createReadOnlyContract = () => {
     const provider = new providers.StaticJsonRpcProvider(RPC_URL, {
@@ -160,10 +207,11 @@ const PumpMeSirPage = () => {
         contractBalance: parseFloat(ethers.utils.formatEther(contractBalance)),
       });
 
-      const contractTokens: TokenPool[] = [];
+      const fetchedContractTokens: TokenPool[] = [];
 
       let i = 0;
       while (i < 100) {
+        // Limit to 100 to avoid infinite loops
         try {
           const tokenAddress = await contract.tokensVotedFor(i);
           const votes = await contract.votesReceived(tokenAddress);
@@ -198,7 +246,7 @@ const PumpMeSirPage = () => {
             );
           }
 
-          contractTokens.push({
+          fetchedContractTokens.push({
             address: tokenAddress,
             name: tokenName,
             symbol: tokenSymbol,
@@ -220,10 +268,7 @@ const PumpMeSirPage = () => {
         }
       }
 
-      // Sort tokens by votes
-      contractTokens.sort((a, b) => b.votes - a.votes);
-      console.log("Final contract tokens:", contractTokens);
-      setTokenPools(contractTokens);
+      setContractTokens(fetchedContractTokens);
     } catch (error) {
       console.error("Error fetching contract info:", error);
       toast.error(
@@ -500,10 +545,13 @@ const PumpMeSirPage = () => {
 
     fetchData();
 
-    const interval = setInterval(fetchData, 120000); // Update every 2 minutes
+    const interval = setInterval(fetchData, 120000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    mergeTokenData();
+  }, [firestoreTokens, contractTokens, mergeTokenData]);
   useEffect(() => {
     if (pumpMeSirContract && account) {
       fetchUnclaimedRewards();
@@ -513,23 +561,6 @@ const PumpMeSirPage = () => {
       return () => clearInterval(interval);
     }
   }, [pumpMeSirContract, account]);
-
-  const mergeTokenData = (
-    contractToken: TokenPool,
-    firestoreTokens: FirestoreToken[]
-  ) => {
-    const firestoreToken = firestoreTokens.find(
-      (ft) => ft.address.toLowerCase() === contractToken.address.toLowerCase()
-    );
-    return {
-      ...contractToken,
-      liquidity: firestoreToken?.liquidity ?? contractToken.liquidity ?? 0,
-      starred: firestoreToken?.starred ?? contractToken.starred ?? false,
-      logo: firestoreToken?.logo ?? contractToken.logo ?? null,
-      launcherAddress:
-        firestoreToken?.launcherAddress ?? contractToken.launcherAddress ?? "",
-    };
-  };
 
   const progress =
     (contractInfo.contractBalance / contractInfo.buyThreshold) * 100;
@@ -623,80 +654,77 @@ const PumpMeSirPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-              {tokenPools.map((pool) => {
-                const mergedPool = mergeTokenData(pool, firestoreTokens);
-                return (
-                  <Card
-                    key={mergedPool.address}
-                    className={`bg-gray-800 border-2 ${
-                      mergedPool.active
-                        ? "border-green-500 glow-border"
-                        : "border-red-500"
-                    }`}
-                  >
-                    <CardHeader>
-                      <h3 className="flex justify-between items-center text-lg">
-                        <span className="flex items-center">
-                          {mergedPool.name} ({mergedPool.symbol})
-                          {mergedPool.starred && (
-                            <Star className="ml-2 h-4 w-4 text-yellow-400 fill-current" />
-                          )}
-                        </span>
-                        {mergedPool.active ? (
-                          <span className="text-xs bg-green-500 text-black px-2 py-1 rounded-full animate-pulse">
-                            ACTIVE
-                          </span>
-                        ) : (
-                          <span className="text-xs bg-red-500 text-black px-2 py-1 rounded-full">
-                            INACTIVE
-                          </span>
+              {tokenPools.map((pool) => (
+                <Card
+                  key={pool.address}
+                  className={`bg-gray-800 border-2 ${
+                    pool.active
+                      ? "border-green-500 glow-border"
+                      : "border-red-500"
+                  }`}
+                >
+                  <CardHeader>
+                    <h3 className="flex justify-between items-center text-lg">
+                      <span className="flex items-center">
+                        {pool.name} ({pool.symbol})
+                        {pool.starred && (
+                          <Star className="ml-2 h-4 w-4 text-yellow-400 fill-current" />
                         )}
-                      </h3>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex justify-between items-center mb-4 text-cyan-300">
-                        <span className="flex items-center">
-                          <Vote className="mr-2 h-4 w-4" />
-                          {mergedPool.votes.toFixed(2)} power
+                      </span>
+                      {pool.active ? (
+                        <span className="text-xs bg-green-500 text-black px-2 py-1 rounded-full animate-pulse">
+                          ACTIVE
                         </span>
+                      ) : (
+                        <span className="text-xs bg-red-500 text-black px-2 py-1 rounded-full">
+                          INACTIVE
+                        </span>
+                      )}
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center mb-4 text-cyan-300">
+                      <span className="flex items-center">
+                        <Vote className="mr-2 h-4 w-4" />
+                        {pool.votes.toFixed(2)} power
+                      </span>
+                      <span className="flex items-center">
+                        <Wallet className="mr-2 h-4 w-4" />
+                        {(
+                          (pool.votes / contractInfo.contractBalance) *
+                          100
+                        ).toFixed(2)}
+                        % of total
+                      </span>
+                    </div>
+                    {pool.liquidity > 0 && (
+                      <div className="mb-4 text-cyan-300">
                         <span className="flex items-center">
-                          <Wallet className="mr-2 h-4 w-4" />
-                          {(
-                            (mergedPool.votes / contractInfo.contractBalance) *
-                            100
-                          ).toFixed(2)}
-                          % of total
+                          <span className="mr-2">💧</span>
+                          Liquidity: {pool.liquidity.toFixed(2)} IOTA
                         </span>
                       </div>
-                      {mergedPool.liquidity > 0 && (
-                        <div className="mb-4 text-cyan-300">
-                          <span className="flex items-center">
-                            <span className="mr-2">💧</span>
-                            Liquidity: {mergedPool.liquidity.toFixed(2)} IOTA
-                          </span>
-                        </div>
+                    )}
+                    <Button
+                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                      onClick={() => {
+                        setTokenToVote(pool.address);
+                        setAmountToVote("");
+                      }}
+                      disabled={!pool.active}
+                    >
+                      {pool.active ? (
+                        <>
+                          <Zap className="mr-2 h-4 w-4" />
+                          Boost & Charge
+                        </>
+                      ) : (
+                        "Pool Offline"
                       )}
-                      <Button
-                        className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
-                        onClick={() => {
-                          setTokenToVote(mergedPool.address);
-                          setAmountToVote("");
-                        }}
-                        disabled={!mergedPool.active}
-                      >
-                        {mergedPool.active ? (
-                          <>
-                            <Zap className="mr-2 h-4 w-4" />
-                            Boost & Charge
-                          </>
-                        ) : (
-                          "Pool Offline"
-                        )}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </div>

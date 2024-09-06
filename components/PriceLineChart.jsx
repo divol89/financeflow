@@ -26,7 +26,7 @@ const PriceLineChart = ({ poolAddresses }) => {
         );
 
         const formattedData = response.data.data.attributes.ohlcv_list.map(
-          ([timestamp, open, high, low, close, volume]) => {
+          ([timestamp, close,]) => {
             const date = new Date(Number(timestamp) * 1000);
             return {
               date: date.toISOString().split('T')[0],
