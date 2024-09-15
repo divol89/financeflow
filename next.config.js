@@ -1,13 +1,5 @@
-const withTM = require("next-transpile-modules")([
-  "rc-picker",
-  "@lifi/widget",
-  "@ant-design/icons",
-  "rc-util",
-  "rc-pagination",
-]); // pasa el nombre del módulo en un array
-
-// el resto de tu configuración...
-module.exports = withTM({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -18,29 +10,39 @@ module.exports = withTM({
       { hostname: "dextool.io" },
       { hostname: "v2.akord.com" },
       { hostname: "arweave.net" },
-
       {
         hostname:
           "bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com",
       },
     ],
   },
-
   swcMinify: true,
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"],
-    });
-
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      ethers5: "ethers",
+    };
+    config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/proxy/:path*",
-        destination: "https://api.geckoterminal.com/:path*",
-      },
-    ];
-  },
-});
+  transpilePackages: [
+    "rc-picker",
+    "@ant-design", // Add this line
+    "rc-util",
+    "rc-pagination",
+    "@web3modal",
+    "shadcn-ui",
+    "@walletconnect",
+  ],
+};
+
+module.exports = nextConfig;

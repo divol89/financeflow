@@ -10,7 +10,7 @@ export default function ContactUs() {
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
         e.target,
-        process.env.NEXT_PUBLIC_EMAILJS_USER_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_USER_ID
       )
 
       .then(
@@ -19,7 +19,7 @@ export default function ContactUs() {
         },
         (error) => {
           console.log(error.text);
-        },
+        }
       );
     e.target.reset();
   }

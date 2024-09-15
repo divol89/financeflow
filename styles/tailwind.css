@@ -4,13 +4,47 @@
 
 @layer base {
   html, body, #__next {
-    @apply h-full;
+    @apply h-full min-h-screen;
+    @apply bg-cover bg-no-repeat bg-center bg-gradient-to-b from-gray-900 via-purple-900 to-black;
+    position: relative;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+
+  html {
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
+  }
+
+  /* Añadimos el efecto láser dentro del mismo selector */
+  .laser-gun {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px; /* Línea muy fina de 1px */
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 255, 0.2),
+      rgba(0, 255, 255, 0.8),
+      rgba(0, 255, 255, 0.2),
+      transparent
+    );
+    z-index: 1;
+    pointer-events: none;
+    animation: laser-glow 3s infinite;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply text-flow-gradient;
   }
 }
+
 
 @layer components {
   .bg-flow-gradient {
@@ -38,23 +72,35 @@
     -webkit-text-fill-color: transparent;
     text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
   }
-}
 
-/* @media (max-width: 1023px) {
-  .bg-fondo-waves {
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+  .laser-border-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .laser-border-container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+    border-radius: 10px; /* Ajusta según la forma de tu imagen */
+    z-index: -1;
+    animation: laser-border-animation 3s linear infinite;
+  }
+
+  @keyframes laser-border-animation {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
   }
 }
 
-@media (min-width: 1024px) {
-  .bg-fondo-waves {
-    background-position: center;
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-  }
-} */
 
 * html {
   padding: 0;
@@ -110,96 +156,6 @@ body {
     radial-gradient(at 50% 150%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
 }
 
-.blue-glassmorphism {
-  background: rgb(39, 51, 89, 0.4);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-/* white glassmorphism */
-.white-glassmorphism {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.eth-card {
-  background-color: #a099ff;
-  background-image: radial-gradient(
-      at 83% 67%,
-      rgb(152, 231, 156) 0,
-      transparent 58%
-    ),
-    radial-gradient(at 67% 20%, hsla(357, 94%, 71%, 1) 0, transparent 59%),
-    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
-    radial-gradient(at 31% 91%, hsla(9, 61%, 61%, 1) 0, transparent 52%),
-    radial-gradient(at 27% 71%, hsla(336, 91%, 65%, 1) 0, transparent 49%),
-    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%),
-    radial-gradient(at 53% 75%, hsla(174, 94%, 68%, 1) 0, transparent 45%);
-}
-.text-social {
-  background-color: #7bbbd9d4;
-  background-image: radial-gradient(
-      at 83% 67%,
-      rgb(152, 231, 156) 0,
-      transparent 58%
-    ),
-    radial-gradient(at 67% 20%, rgb(112, 230, 251) 0, transparent 59%),
-    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
-    radial-gradient(at 31% 91%, hsla(9, 61%, 61%, 1) 0, transparent 52%),
-    radial-gradient(at 27% 71%, hsla(336, 91%, 65%, 1) 0, transparent 49%),
-    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%),
-    radial-gradient(at 53% 75%, hsla(174, 94%, 68%, 1) 0, transparent 45%);
-}
-.text-telegram {
-  background-color: #71d065;
-  background-image: radial-gradient(
-      at 83% 67%,
-      rgb(152, 231, 156) 0,
-      transparent 58%
-    ),
-    radial-gradient(at 67% 20%, rgb(112, 251, 151) 0, transparent 59%),
-    radial-gradient(at 88% 35%, hsla(222, 81%, 65%, 1) 0, transparent 50%),
-    radial-gradient(at 27% 71%, rgba(247, 85, 150, 0.268) 0, transparent 49%),
-    radial-gradient(at 74% 89%, hsla(30, 98%, 65%, 1) 0, transparent 51%);
-}
-
-.text-gradient {
-  background-color: #fff;
-  background-image: radial-gradient(
-      at 4% 36%,
-      hsla(0, 0%, 100%, 1) 0,
-      transparent 53%
-    ),
-    radial-gradient(at 100% 60%, rgb(44, 41, 41) 0, transparent 50%);
-  -webkit-background-clip: text;
-  background-clip: none;
-  -webkit-text-fill-color: transparent;
-}
-.text-gold {
-  background-color: rgba(238, 168, 27, 0.816);
-  background-image: radial-gradient(
-      at 4% 36%,
-      rgba(178, 138, 8, 0.733) 0,
-      transparent 0%
-    ),
-    radial-gradient(at 100% 60%, rgb(57, 51, 51) 0, transparent 50%);
-  -webkit-background-clip: text;
-  background-clip: none;
-  -webkit-text-fill-color: transparent;
-}
-
-/* @media (max-width: 425px) {
-    .slick-slider {
-      width: 90%;
-      margin: 0 auto;
-    }
-  } */
 
 .token-button {
   /* Estilos existentes */
@@ -449,3 +405,74 @@ img.site-logo {
 .glow-border {
   animation: glow 1.5s ease-in-out infinite alternate;
 }
+
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Prevents interaction with the stars */
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0, 0, 0, 0)),
+    linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-repeat: repeat;
+  background-size: 
+    200px 200px,
+    200px 200px,
+    200px 200px,
+    200px 200px,
+    200px 200px,
+    200px 200px,
+    40px 40px,
+    40px 40px;
+  animation: zoom 50s infinite; /* Animation for zoom effect */
+  opacity: 0.3; /* Adjust opacity for star visibility */
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); } /* Ajusta la distancia del movimiento */
+  100% { transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite; /* Ajusta la duración según sea necesario */
+}
+
+/* Añade esto al final de tu archivo CSS */
+
+@keyframes laser-glow {
+  0% {
+    opacity: 0.3;
+    box-shadow: 0 0 2px rgba(0, 255, 255, 0.5);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.8), 0 0 8px rgba(0, 255, 255, 0.6), 0 0 10px rgba(0, 255, 255, 0.4);
+  }
+  100% {
+    opacity: 0.3;
+    box-shadow: 0 0 2px rgba(0, 255, 255, 0.5);
+  }
+}
+
+
+
+
+

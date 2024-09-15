@@ -130,7 +130,7 @@
     filter: invert(1);
   }
 } */
-.noGapBottom {
+/* .noGapBottom {
   margin-bottom: 0px;
 }
 
@@ -248,7 +248,7 @@
 }
 
 /* On mobile: */
-@media only screen and (max-width: 850px) {
+/* @media only screen and (max-width: 850px) {
   .claimGrid {
     flex-direction: column;
     width: 99vw;
@@ -263,5 +263,3 @@
 
 .imageBorder {
   border: 2px solid black; /* Change color as needed */
-  border-radius: 6%; /* This will make the image round */
-}

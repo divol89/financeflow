@@ -2,41 +2,48 @@ import React, { useState } from "react";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import Welcome from "../components/Welcome";
-import TokenGrid from "../components/TokenGrid";
-import Discover from "../components/Discover";
+import ModalApp from "../components/ModalApp";
 import Footer from "../components/Footer";
+import ParticipationFunnel from "../components/Participation-funnel";
+import MagicPumpInvitation from "../components/Magic-pump-invitation";
 
-export default function Home() {
-  const [selectedPoolAddress, setSelectedPoolAddress] = useState<string | null>(
-    null
-  );
+const Home = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log(selectedPoolAddress);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
-  const handlePoolAddressSelect = (address: string) => {
-    setSelectedPoolAddress(address);
-    console.log("Selected pool address:", address);
-    // You can add more logic here to use the selected pool address
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-flow-gradient  text-white">
+    <div className="flex flex-col min-h-screen">
       <Head>
         <title>FinanceFlow</title>
         <meta name="web3 Portal" content="FinanceFlow - DeFi Platform" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar />
-      <main>
-        <TokenGrid setSelectedPoolAddress={handlePoolAddressSelect} />
-        <div className="bg-cover bg-no-repeat bg-center">
-          <Welcome />
+      <Navbar openModal={handleOpenModal} />
+      <main className="flex-1 flex flex-col">
+        <div className="stars absolute inset-0"></div>
+        <div className="flex-1 flex items-center justify-center px-4 py-8 md:py-16">
+          <Welcome openModal={handleOpenModal} />
         </div>
+        <section>
+          <MagicPumpInvitation />
+        </section>
+        <section>
+          <ParticipationFunnel />
+        </section>
+        <section>
+          <Footer />
+        </section>
       </main>
-
-      <Discover />
-      {/* <ContactUs /> */}
-      <Footer />
+      <ModalApp isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
-}
+};
+
+export default Home;

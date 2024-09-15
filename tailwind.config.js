@@ -31,6 +31,13 @@ module.exports = {
       },
       screens: {
         mf: "990px",
+        largo: "375px",
+        extralargo: "425px",
+        tabblet: "768px",
+        medium: { min: "640px", max: "768px" },
+        mediumlarge: { min: "768px", max: "990px" },
+        mediumbig: { min: "990px", max: "1023px" },
+        peque: { min: "320px", max: "334px" },
       },
       keyframes: {
         "fade-in-scroll": {

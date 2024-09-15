@@ -5,7 +5,7 @@ import PriceLineChart from "./PriceLineChart";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useTokens } from "../contexts/TokenContext";
+import { useTokens } from "../context/TokenContext";
 import Image from "next/image";
 
 const { Panel } = Collapse;
@@ -87,7 +87,7 @@ const TokenGrid = ({ setSelectedPoolAddress }) => {
   }), [tokens.length]);
 
   return (
-    <div className="flex flex-col items-center bg-transparent p-10 lg:pb-24 relative">
+    <div className="flex flex-col  items-center bg-transparent p-10 lg:pb-24 relative">
       <div className="w-full md:w-3/4 mb-4 relative text-white">
         {selectedToken && (
           <Collapse bordered={false}>

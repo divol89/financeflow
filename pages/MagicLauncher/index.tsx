@@ -1,7 +1,7 @@
 import ROUTER_ABI from "../../utils/routerABI.json";
 import axios from "axios";
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, Input, Typography } from "antd";
 import {
@@ -9,31 +9,49 @@ import {
   TOKEN_BYTECODE,
   getTokenSourceCode,
 } from "../../constant/tokenContract";
-import { IOTA_CHAIN_ID, ROUTER_ADDRESS } from "../../utils/web3";
+import { ROUTER_ADDRESS } from "../../utils/web3";
 import qs from "qs";
 import { db } from "../../firebase/firebase";
 import { Info } from "lucide-react";
+import {
+  useWeb3ModalAccount,
+  useWeb3Modal,
+  useDisconnect,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
 
 const BLOCKSCOUT_VERIFY_URL =
   "https://explorer.evm.iota.org/api?module=contract&action=verify";
-const IOTA_RPC_URL = "https://iota-mainnet-evm.public.blastapi.io";
 
 const TokenLauncher = () => {
-  const [account, setAccount] = useState("");
-  const [provider, setProvider] =
-    useState<ethers.providers.Web3Provider | null>(null);
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { open } = useWeb3Modal();
+  const { disconnect } = useDisconnect();
+  const { walletProvider } = useWeb3ModalProvider();
+
   const [tokenName, setTokenName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [totalSupply, setTotalSupply] = useState("");
   const [liquidityAmount, setLiquidityAmount] = useState("");
   const [isLaunching, setIsLaunching] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [verificationLink, setVerificationLink] = useState("");
   const [iotaAmount, setIotaAmount] = useState("");
 
+  const [provider, setProvider] =
+    useState<ethers.providers.Web3Provider | null>(null);
+
+  useEffect(() => {
+    if (isConnected && walletProvider) {
+      const web3Provider = new ethers.providers.Web3Provider(walletProvider);
+      setProvider(web3Provider);
+    } else {
+      setProvider(null);
+    }
+  }, [isConnected, walletProvider]);
+
   const LaunchInfoCard = () => (
-    <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-4 mb-6 shadow-lg">
+    <div className="bg-gradient-to-r lg:mt-[2rem] from-purple-600 to-pink-600 rounded-lg p-4 mb-6 shadow-lg">
       <div className="flex items-start">
         <Info className="h-6 w-6 text-white mr-3 flex-shrink-0 mt-1" />
         <div>
@@ -50,78 +68,17 @@ const TokenLauncher = () => {
     </div>
   );
 
-  const connectWallet = async () => {
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
-        );
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAccount(address);
-        setProvider(provider);
-
-        const network = await provider.getNetwork();
-        if (network.chainId !== IOTA_CHAIN_ID) {
-          try {
-            await window.ethereum.request({
-              method: "wallet_switchEthereumChain",
-              params: [{ chainId: ethers.utils.hexValue(IOTA_CHAIN_ID) }],
-            });
-          } catch (switchError: unknown) {
-            if (
-              switchError instanceof Error &&
-              "code" in switchError &&
-              switchError.code === 4902
-            ) {
-              try {
-                await window.ethereum.request({
-                  method: "wallet_addEthereumChain",
-                  params: [
-                    {
-                      chainId: ethers.utils.hexValue(IOTA_CHAIN_ID),
-                      chainName: "IOTA EVM",
-                      nativeCurrency: {
-                        name: "IOTA",
-                        symbol: "IOTA",
-                        decimals: 18,
-                      },
-                      rpcUrls: [IOTA_RPC_URL],
-                      blockExplorerUrls: ["https://explorer.evm.iota.org"],
-                    },
-                  ],
-                });
-              } catch (addError) {
-                toast.error("Failed to add the IOTA network to your wallet");
-                return;
-              }
-            } else {
-              toast.error("Failed to switch to the IOTA network");
-              return;
-            }
-          }
-        }
-
-        setIsConnected(true);
-        toast.success("Wallet connected successfully");
-      } catch (error) {
-        console.error("Failed to connect to Web3:", error);
-        toast.error(
-          "Failed to connect. Please make sure you have MetaMask installed and connected."
-        );
-      }
+  const handleWalletConnection = async () => {
+    if (isConnected) {
+      disconnect();
     } else {
-      toast.error("Please install MetaMask to use this dApp");
+      try {
+        await open();
+      } catch (error) {
+        console.error("Failed to open wallet modal:", error);
+        toast.error("Failed to connect wallet. Please try again.");
+      }
     }
-  };
-
-  const disconnectWallet = () => {
-    setIsConnected(false);
-    setAccount("");
-    setProvider(null);
-    toast.success("Wallet disconnected successfully");
   };
 
   const verifyContract = async (contractAddress: string) => {
@@ -195,7 +152,7 @@ const TokenLauncher = () => {
   };
 
   const launchTokenAndProvideLiquidity = async () => {
-    if (!account || !provider) {
+    if (!isConnected || !provider) {
       toast.error("Please connect your wallet first");
       return;
     }
@@ -203,7 +160,7 @@ const TokenLauncher = () => {
     setIsLaunching(true);
 
     try {
-      const signer = provider.getSigner(account);
+      const signer = provider.getSigner();
       const factory = new ethers.ContractFactory(
         TOKEN_ABI,
         TOKEN_BYTECODE,
@@ -260,7 +217,7 @@ const TokenLauncher = () => {
         liquidityAmountBN,
         0, // slippage is unavoidable
         0, // slippage is unavoidable
-        account,
+        address,
         deadline,
         {
           value: iotaAmountBN,
@@ -309,144 +266,146 @@ const TokenLauncher = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-cyan-50 p-8">
-      <Card
-        className={`max-w-md ${!isConnected ? "mt-4" : "mt-4 lg:mt-8"} mx-auto`}
-        style={{ background: "#1f2937", borderColor: "#06b5563" }}
-      >
-        <Typography.Title
-          level={2}
-          style={{ color: "#22d3ee", marginBottom: "20px" }}
+    <div className="min-h-screen lg:mt-[14rem] mt-[6rem] text-cyan-50 py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="stars"></div>
+        <Card
+          className="mt-4 lg:mt-8"
+          style={{
+            background: "rgba(31, 41, 55, 0.8)",
+            borderColor: "#06b556",
+          }}
         >
-          Launch your own token and provide liquidity
-        </Typography.Title>
-        {isConnected ? (
-          <>
-            <Input
-              value={tokenName}
-              onChange={(e) => setTokenName(e.target.value)}
-              placeholder="Token Name"
-              className="mb-4"
-              style={{
-                background: "#374151",
-                color: "white",
-                borderColor: "#4b5563",
-              }}
-            />
-            <Input
-              value={tokenSymbol}
-              onChange={(e) => setTokenSymbol(e.target.value)}
-              placeholder="Token Symbol"
-              className="mb-4"
-              style={{
-                background: "#374151",
-                color: "white",
-                borderColor: "#4b5563",
-              }}
-            />
-            <Input
-              type="number"
-              value={totalSupply}
-              onChange={(e) => setTotalSupply(e.target.value)}
-              placeholder="Suministro Total de Tokens"
-              className="mb-4"
-              style={{
-                background: "#374151",
-                color: "white",
-                borderColor: "#4b5563",
-              }}
-            />
-            <Input
-              type="number"
-              value={liquidityAmount}
-              onChange={(e) => setLiquidityAmount(e.target.value)}
-              placeholder="Tokens para Liquidez Inicial"
-              className="mb-4"
-              style={{
-                background: "#374151",
-                color: "white",
-                borderColor: "#4b5563",
-              }}
-            />
-            <Input
-              type="number"
-              value={iotaAmount}
-              onChange={handleIotaAmountChange}
-              placeholder="IOTA para Liquidez Inicial"
-              className="mb-6"
-              style={{
-                background: "#374151",
-                color: "white",
-                borderColor: "#4b5563",
-              }}
-            />
-            <Button
-              onClick={launchTokenAndProvideLiquidity}
-              disabled={isLaunching}
-              className="w-full mb-4"
-              style={{
-                background: "#0891b2",
-                borderColor: "#0891b2",
-                color: "white",
-              }}
-            >
-              {isLaunching ? (
-                <Typography.Text style={{ fontSize: "0.9em" }}>
-                  Launching and providing liquidity...
-                </Typography.Text>
-              ) : isLaunching ? (
-                "Launching..."
-              ) : (
-                "Launch Token"
-              )}
-            </Button>
-            <Button
-              onClick={disconnectWallet}
-              className="w-full"
-              style={{
-                background: "#dc2626",
-                borderColor: "#dc2626",
-                color: "white",
-              }}
-            >
-              Disconnect Wallet
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              onClick={connectWallet}
-              className="w-full mb-4"
-              style={{
-                background: "#0891b2",
-                borderColor: "#0891b2",
-                color: "white",
-              }}
-            >
-              Connect Wallet
-            </Button>
-            <LaunchInfoCard />
-          </>
-        )}
-      </Card>
-      {isVerified && (
-        <div
-          className="flex flex-col items-center justify-center mt-4 p-4 rounded-lg"
-          style={{ background: "#0891b2" }}
-        >
-          <p className="text-white text-center mb-2">
-            Contract verified successfully!
-          </p>
-          <a
-            href={verificationLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white hover:text-gray-200 underline text-center"
+          <Typography.Title
+            level={2}
+            style={{
+              color: "#22d3ee",
+              marginBottom: "20px",
+              textAlign: "center",
+            }}
           >
-            View verified contract on IOTA Explorer
-          </a>
-        </div>
-      )}
+            Launch your own token and provide liquidity
+          </Typography.Title>
+          {isConnected ? (
+            <>
+              <Input
+                value={tokenName}
+                onChange={(e) => setTokenName(e.target.value)}
+                placeholder="Token Name"
+                className="mb-4"
+                style={{
+                  background: "#374151",
+                  color: "white",
+                  borderColor: "#4b5563",
+                }}
+              />
+              <Input
+                value={tokenSymbol}
+                onChange={(e) => setTokenSymbol(e.target.value)}
+                placeholder="Token Symbol"
+                className="mb-4"
+                style={{
+                  background: "#374151",
+                  color: "white",
+                  borderColor: "#4b5563",
+                }}
+              />
+              <Input
+                type="number"
+                value={totalSupply}
+                onChange={(e) => setTotalSupply(e.target.value)}
+                placeholder="Suministro Total de Tokens"
+                className="mb-4"
+                style={{
+                  background: "#374151",
+                  color: "white",
+                  borderColor: "#4b5563",
+                }}
+              />
+              <Input
+                type="number"
+                value={liquidityAmount}
+                onChange={(e) => setLiquidityAmount(e.target.value)}
+                placeholder="Tokens para Liquidez Inicial"
+                className="mb-4"
+                style={{
+                  background: "#374151",
+                  color: "white",
+                  borderColor: "#4b5563",
+                }}
+              />
+              <Input
+                type="number"
+                value={iotaAmount}
+                onChange={handleIotaAmountChange}
+                placeholder="IOTA para Liquidez Inicial"
+                className="mb-6"
+                style={{
+                  background: "#374151",
+                  color: "white",
+                  borderColor: "#4b5563",
+                }}
+              />
+              <Button
+                onClick={launchTokenAndProvideLiquidity}
+                disabled={isLaunching}
+                className="w-full mb-4"
+                style={{
+                  background: "#0891b2",
+                  borderColor: "#0891b2",
+                  color: "white",
+                }}
+              >
+                {isLaunching ? "Launching..." : "Launch Token"}
+              </Button>
+              <Button
+                onClick={handleWalletConnection}
+                className="w-full"
+                style={{
+                  background: "#dc2626",
+                  borderColor: "#dc2626",
+                  color: "white",
+                }}
+              >
+                Disconnect Wallet
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={handleWalletConnection}
+                className="w-full mb-4"
+                style={{
+                  background: "#0891b2",
+                  borderColor: "#0891b2",
+                  color: "white",
+                }}
+              >
+                Connect Wallet
+              </Button>
+              <LaunchInfoCard />
+            </>
+          )}
+        </Card>
+        {isVerified && (
+          <div
+            className="flex flex-col items-center justify-center mt-4 p-4 rounded-lg"
+            style={{ background: "rgba(8, 145, 178, 0.8)" }}
+          >
+            <p className="text-white text-center mb-2">
+              Contract verified successfully!
+            </p>
+            <a
+              href={verificationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-gray-200 underline text-center"
+            >
+              View verified contract on IOTA Explorer
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

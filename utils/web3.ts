@@ -1,11 +1,5 @@
-import { InjectedConnector } from "@web3-react/injected-connector";
-
 export const IOTA_CHAIN_ID = 8822;
 export const ROUTER_ADDRESS = "0x531777F8c35fDe8DA9baB6cC7093A7D14a99D73E"; // Address of the DEX router
-
-export const injected = new InjectedConnector({
-  supportedChainIds: [IOTA_CHAIN_ID],
-});
 
 export const IOTA_EVM_RPC = "https://evm.wasp.sc.iota.org";
 
