@@ -175,19 +175,40 @@ const PumpMeSirPage = () => {
     setTokenPools(mergedTokens);
   }, [firestoreTokens, contractTokens]);
 
-  const createReadOnlyContract = () => {
-    const provider = new providers.StaticJsonRpcProvider(RPC_URL, {
-      chainId: IOTA_CHAIN_ID,
-      name: "IOTA EVM",
-    });
-    const contract = new ethers.Contract(
-      ethers.utils.getAddress("0x02cA8959A2380a063b933f207757B43F15B35998"),
-      contractABI,
-      provider
-    );
-    setReadOnlyContract(contract);
-    return contract;
+  const setupReadOnlyContract = async () => {
+    const RPC_URLS = [
+      "https://json-rpc.evm.iotaledger.net",
+      "https://iota-mainnet-evm.public.blastapi.io",
+    ];
+
+    for (const url of RPC_URLS) {
+      try {
+        const provider = new providers.StaticJsonRpcProvider(url, {
+          chainId: IOTA_CHAIN_ID,
+          name: "IOTA EVM",
+        });
+        await provider.getNetwork(); // Verify connection
+
+        const contract = new ethers.Contract(
+          ethers.utils.getAddress("0x02cA8959A2380a063b933f207757B43F15B35998"),
+          contractABI,
+          provider
+        );
+
+        setReadOnlyContract(contract);
+        await fetchContractInfo(contract);
+        return contract;
+      } catch (error) {
+        console.warn(`Failed to connect to ${url}`, error);
+      }
+    }
+    console.error("All RPC connections failed");
+    return null;
   };
+
+  useEffect(() => {
+    setupReadOnlyContract();
+  }, []);
 
   const fetchFirestoreTokens = async () => {
     try {
@@ -530,29 +551,6 @@ const PumpMeSirPage = () => {
     const interval = setInterval(fetchData, 120000);
     return () => clearInterval(interval);
   }, [readOnlyContract, pumpMeSirContract, address]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchFirestoreTokens();
-        if (readOnlyContract) {
-          await fetchContractInfo(readOnlyContract);
-        } else {
-          console.log("ReadOnlyContract is null, creating a new one");
-          const newContract = createReadOnlyContract();
-          await fetchContractInfo(newContract);
-        }
-      } catch (error) {
-        console.error("Error in fetchData:", error);
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
-    const interval = setInterval(fetchData, 120000);
-    return () => clearInterval(interval);
-  }, [readOnlyContract]);
 
   useEffect(() => {
     mergeTokenData();

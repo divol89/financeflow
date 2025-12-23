@@ -9,8 +9,8 @@ import {
   useWeb3Modal,
   useDisconnect,
 } from "@web3modal/ethers5/react";
-import { FaBook, FaRocket } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { FaBook, FaRocket, FaShieldAlt } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface NavbarProps {
   openModal: () => void;
@@ -24,22 +24,28 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
   const { disconnect } = useDisconnect();
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [menuOpen]);
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY > 0;
+      const scrolled = window.scrollY > 10;
       if (scrolled !== isScrolled) {
         setIsScrolled(scrolled);
-        console.log(
-          "Scroll position:",
-          window.scrollY,
-          "isScrolled:",
-          scrolled
-        );
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Verifica el estado inicial
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -73,117 +79,183 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-black bg-opacity-70" : "bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto px-4 py-1">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center lg:w-1/3">
-            <Image
-              src="/img/logotipo.png"
-              alt="logo"
-              width={80}
-              height={24}
-              className="mr-2"
-            />
-            <h1 className="text-2xl medium:ml-[2rem] medium:text-5xl mediumlarge:ml-[5rem] extralargo:ml-6 mediumbig:ml-[11rem] mt-10 lg:mt-0 md:ml-[1rem] md:items-center md:text-center md:text-3xl lg:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-gradient">
-              Flow Finance
-            </h1>
-          </div>
-          <div className="hidden text-white lg:ml-[4rem] lg:scale-75 lg:flex items-center justify-center lg:w-1/2">
-            <ShimmerPrice />
-          </div>
-          <div className="hidden lg:flex items-center justify-end lg:w-1/3">
-            <ul className="flex items-center space-x-4">
-              <li
-                className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold py-2 px-4 rounded-full hover:from-blue-500 hover:to-purple-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                onClick={() => handleMenuItemClick("/whitepaper")}
-              >
-                <FaBook className="mr-1" />
-                Docs
-              </li>
-              <li
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                onClick={handleLaunchApp}
-              >
-                <FaRocket className="mr-1" />
-                App
-              </li>
-              <li
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                onClick={handleWalletConnection}
-              >
-                <AiOutlineWallet className="mr-1" />
-                <span className="whitespace-nowrap">
-                  {isConnected
-                    ? truncateAddress(address || "")
-                    : "Connect Wallet"}
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="lg:hidden">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-white focus:outline-none"
-            >
-              <HiMenuAlt3 className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </div>
-      <motion.div
-        className="lg:hidden fixed inset-y-0 right-0 z-50 w-full max-w-full bg-gray-900 bg-opacity-70 shadow-lg"
-        initial={{ x: "100%" }}
-        animate={{ x: menuOpen ? 0 : "100%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    <>
+      {/* Desktop Navbar */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/5 ${
+          isScrolled
+            ? "bg-black/40 backdrop-blur-xl shadow-lg h-20"
+            : "bg-transparent backdrop-blur-sm h-24"
+        }`}
       >
-        <div className="flex flex-col h-full p-10 overflow-y-auto">
-          <div className="flex justify-end mb-8">
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="text-white focus:outline-none"
-            >
-              <HiX className="h-6 w-6" />
-            </button>
-          </div>
-          <ul className="space-y-6 flex flex-col items-center">
-            <div className="mb-[6rem] text-white py-10 space-y-4">
+        <div className="container mx-auto px-4 h-full flex items-center">
+          <div className="flex items-center justify-between w-full h-full">
+            <div className="flex items-center lg:w-1/3">
+              <div className="relative w-[80px] h-[24px] mr-2 transition-transform hover:scale-105">
+                <Image
+                  src="/img/logotipo.png"
+                  alt="logo"
+                  layout="fill"
+                  objectFit="contain"
+                  className="drop-shadow-glow"
+                />
+              </div>
+              <h1 className="ml-4 text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-gradient tracking-tight">
+                Flow Finance
+              </h1>
+            </div>
+            <div className="hidden text-white lg:ml-[4rem] lg:scale-75 lg:flex items-center justify-center lg:w-1/2">
               <ShimmerPrice />
             </div>
-            <li
-              className="bg-gradient-to-r from-purple-500 to-purple-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-500 hover:to-purple-600 transition-all duration-300 cursor-pointer flex items-center"
-              onClick={() => handleMenuItemClick("/whitepaper")}
-            >
-              <FaBook className="mr-2" />
-              Docs
-            </li>
-            <li
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center justify-center"
-              onClick={handleLaunchApp}
-            >
-              <FaRocket className="mr-2" />
-              Launch App
-            </li>
-          </ul>
+            <div className="hidden lg:flex items-center justify-end lg:w-1/3">
+              <ul className="flex items-center space-x-4">
+                <li
+                  className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold py-2 px-4 rounded-full hover:from-blue-500 hover:to-purple-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
+                  onClick={() => handleMenuItemClick("/whitepaper")}
+                >
+                  <FaBook className="mr-1" />
+                  Docs
+                </li>
+                <li
+                  className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 px-4 rounded-full hover:from-green-500 hover:to-blue-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
+                  onClick={() => handleMenuItemClick("/validation")}
+                >
+                  <FaShieldAlt className="mr-1" />
+                  Validate
+                </li>
+                <li
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
+                  onClick={handleLaunchApp}
+                >
+                  <FaRocket className="mr-1" />
+                  App
+                </li>
+                <li
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
+                  onClick={handleWalletConnection}
+                >
+                  <AiOutlineWallet className="mr-1" />
+                  <span className="whitespace-nowrap">
+                    {isConnected
+                      ? truncateAddress(address || "")
+                      : "Connect Wallet"}
+                  </span>
+                </li>
+              </ul>
+            </div>
 
-          <div className="mt-[10rem] ">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold py-1 px-4 rounded-lg shadow-md hover:from-purple-500 hover:to-pink-600 transition-all duration-300"
-              onClick={handleWalletConnection}
-            >
-              <AiOutlineWallet className="inline-block mr-2" />
-              {isConnected ? truncateAddress(address || "") : "Connect Wallet"}
-            </motion.button>
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="text-white focus:outline-none p-2"
+              >
+                <HiMenuAlt3 className="h-7 w-7" />
+              </button>
+            </div>
           </div>
         </div>
-      </motion.div>
-    </nav>
+      </nav>
+
+      {/* Mobile Menu - Full Screen Overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="fixed inset-0 lg:hidden"
+            style={{
+              zIndex: 99999,
+              background:
+                "linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a15 100%)",
+              height: "100vh",
+              width: "100vw",
+            }}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
+            >
+              <HiX className="h-6 w-6 text-white" />
+            </button>
+
+            {/* Content */}
+            <div className="h-full w-full flex flex-col px-8 pt-24 pb-8 overflow-y-auto">
+              {/* Logo */}
+              <div className="flex items-center justify-center mb-10">
+                <div className="relative w-14 h-14 mr-4">
+                  <Image
+                    src="/img/logotipo.png"
+                    alt="logo"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
+                  Flow Finance
+                </span>
+              </div>
+
+              {/* Price Display */}
+              <div className="mb-8 p-5 bg-white/10 rounded-2xl border border-white/20">
+                <ShimmerPrice />
+              </div>
+
+              {/* Navigation Links */}
+              <div className="space-y-4 flex-1">
+                <button
+                  onClick={() => handleMenuItemClick("/whitepaper")}
+                  className="w-full flex items-center p-5 rounded-2xl bg-white/15 border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-14 h-14 rounded-full bg-purple-500/30 flex items-center justify-center mr-4">
+                    <FaBook className="text-purple-300 text-xl" />
+                  </div>
+                  <span className="text-white font-semibold text-xl">
+                    Documentación
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => handleMenuItemClick("/validation")}
+                  className="w-full flex items-center p-5 rounded-2xl bg-white/15 border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-14 h-14 rounded-full bg-blue-500/30 flex items-center justify-center mr-4">
+                    <FaShieldAlt className="text-blue-300 text-xl" />
+                  </div>
+                  <span className="text-white font-semibold text-xl">
+                    Validar Token
+                  </span>
+                </button>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-4 mt-8">
+                <button
+                  onClick={handleLaunchApp}
+                  className="w-full py-6 px-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xl flex items-center justify-center gap-3 shadow-xl shadow-purple-500/40 hover:shadow-purple-500/60 transition-all active:scale-[0.98]"
+                >
+                  <FaRocket className="text-xl" />
+                  Abrir Aplicación
+                </button>
+
+                <button
+                  onClick={handleWalletConnection}
+                  className="w-full py-6 px-6 rounded-2xl bg-white/20 border-2 border-white/30 text-white font-semibold text-xl flex items-center justify-center gap-3 hover:bg-white/30 transition-all active:scale-[0.98]"
+                >
+                  <AiOutlineWallet className="text-2xl" />
+                  {isConnected
+                    ? truncateAddress(address || "")
+                    : "Conectar Wallet"}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

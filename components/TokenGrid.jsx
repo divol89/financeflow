@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import React, { useState, useMemo } from "react";
+
 import { Collapse } from "antd";
 import PriceLineChart from "./PriceLineChart";
 import Slider from "react-slick";
@@ -11,47 +11,11 @@ import Image from "next/image";
 const { Panel } = Collapse;
 
 const TokenGrid = ({ setSelectedPoolAddress }) => {
-  const [tokenPrices, setTokenPrices] = useState([]);
+  // const [tokenPrices, setTokenPrices] = useState([]);
   const [selectedToken, setSelectedToken] = useState(null);
   const { tokens } = useTokens();
 
-  const formatPrice = (price) => {
-    if (price === 0) return "$0";
-    if (price < 0.000001) {
-      return `$${price.toFixed(10).replace(/\.?0+$/, "")}`;
-    }
-    return `$${price.toFixed(6).replace(/\.?0+$/, "")}`;
-  };
 
-  useEffect(() => {
-    const fetchTokenPrices = async () => {
-      const prices = await Promise.all(tokens.map(async (token) => {
-        try {
-          const response = await axios.get(
-            `https://api.geckoterminal.com/api/v2/networks/iota-evm/tokens/${token.address}/pools`,
-            {
-              headers: { Accept: "application/json;version=20230302" },
-            }
-          );
-
-          const poolData = response.data.data;
-          if (poolData && poolData.length > 0) {
-            const tokenPrice = parseFloat(poolData[0].attributes.token_price_usd);
-            const displayPrice = formatPrice(tokenPrice);
-            return { ...token, price: displayPrice };
-          }
-          return { ...token, price: "Price not available" };
-        } catch (error) {
-          console.error(`Error fetching price for ${token.name}:`, error);
-          return { ...token, price: "Error fetching price" };
-        }
-      }));
-
-      setTokenPrices(prices);
-    };
-
-    fetchTokenPrices();
-  }, [tokens]);
 
   const handleTokenClick = (token) => {
     setSelectedToken(token);
@@ -101,7 +65,7 @@ const TokenGrid = ({ setSelectedPoolAddress }) => {
       </div>
       <div className="w-full rounded-xl md:w-3/4 relative">
         <Slider {...sliderSettings}>
-          {tokenPrices.map((token) => (
+          {tokens.map((token) => (
             <div
               key={token.address}
               className="token-button flex flex-col items-center justify-center p-4 m-2 bg-yellow-500 rounded-lg cursor-pointer"

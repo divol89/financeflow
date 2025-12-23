@@ -24,24 +24,24 @@ const CryptoPrice = () => {
   }, []);
 
   const PriceDisplay = ({ symbol, price, imageSrc }) => (
-    <div className="flex items-center mr-4">
+    <div className="flex items-center">
       <Image
         src={imageSrc}
         alt={`${symbol.toLowerCase()}.network`}
         width={32}
         height={32}
       />
-      <p className="text-sm ml-2">{symbol}</p>
+      <p className="text-sm ml-2 text-white">{symbol}</p>
       {price !== null ? (
-        <p className="font-bold ml-2">${price}</p>
+        <p className="font-bold ml-2 text-white">${price}</p>
       ) : (
-        <p className="ml-2">Loading...</p>
+        <p className="ml-2 text-gray-400">Loading...</p>
       )}
     </div>
   );
 
   return (
-    <div className="flex lg:ml-[0rem] mb-2 flex-inline scale-75 lg:scale-110 lg:flex-row items-center w-full lg:space-x-1 space-x-8">
+    <div className="flex flex-wrap lg:flex-nowrap items-center justify-between lg:justify-start w-full gap-4 lg:gap-8">
       <PriceDisplay
         symbol="SMR"
         price={prices.shimmer}

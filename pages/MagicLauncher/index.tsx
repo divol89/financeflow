@@ -12,6 +12,7 @@ import {
 import { ROUTER_ADDRESS } from "../../utils/web3";
 import qs from "qs";
 import { db } from "../../firebase/firebase";
+import { doc, setDoc } from "firebase/firestore";
 import { Info } from "lucide-react";
 import {
   useWeb3ModalAccount,
@@ -230,17 +231,14 @@ const TokenLauncher = () => {
 
       if (iotaAmountBN.gte(ethers.utils.parseEther("200"))) {
         // Guardar el token en Firestore
-        await db
-          .collection("launchedTokens")
-          .doc(tokenContract.address)
-          .set({
-            name: tokenName,
-            symbol: tokenSymbol,
-            address: tokenContract.address,
-            liquidity: parseFloat(iotaAmount),
-            launchDate: new Date(),
-            starred: true, // Indicador de que fue creado con MagicLauncher
-          });
+        await setDoc(doc(db, "launchedTokens", tokenContract.address), {
+          name: tokenName,
+          symbol: tokenSymbol,
+          address: tokenContract.address,
+          liquidity: parseFloat(iotaAmount),
+          launchDate: new Date(),
+          starred: true, // Indicador de que fue creado con MagicLauncher
+        });
       }
 
       toast.success("Token launched and liquidity provided successfully!");

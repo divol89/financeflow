@@ -1,5 +1,7 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
+// Firebase v9+ modular SDK
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2pbVut7CJF1Q_QKJp_5lulGYAGOgBSW0",
@@ -11,10 +13,9 @@ const firebaseConfig = {
   measurementId: "G-SQB5GFF6L1",
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-} else {
-  firebase.app(); // Si ya se inicializó, úsalo
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-export const db = firebase.firestore();
+// Initialize Firebase services
+export const db = getFirestore(app);
+export const storage = getStorage(app);

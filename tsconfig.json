@@ -25,7 +25,7 @@
     "**/*.tsx",
     "components/LoadingIndicator.jsx",
     "components/Navbar.jsx",
-    "config/indext.js",
+    "config/index.js",
     "pages/api/prices.js"
   ],
   "exclude": ["node_modules"]

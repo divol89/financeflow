@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
-        <title>FinanceFlow</title>
+        <title>Flow Finance - Web3 Portal</title>
         <meta name="web3 Portal" content="FinanceFlow - DeFi Platform" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

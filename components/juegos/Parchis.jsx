@@ -117,7 +117,7 @@
 // export default IndexPage;
 
 import { useState } from "react";
-import Board from "../juegos/bord";
+import Board from "../juegos/board";
 import Dice from "../juegos/dice";
 
 const IndexPage = () => {

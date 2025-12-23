@@ -21,6 +21,7 @@ import {
   FaInfoCircle,
   FaLayerGroup,
 } from "react-icons/fa";
+import FinanceFlowWhitepaper from "./FinanceFlowWhitepaper";
 
 // At the top of the file, add this type definition
 type NodeType = {
@@ -280,27 +281,36 @@ export default function Whitepaper() {
           Flow Finance: Revolutionizing DeFi Voting and Token Acquisition
         </motion.h1>
 
-        <Tabs defaultValue="introduction" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 mb-[6rem] lg:grid-cols-3 rounded-xl p-1">
+        <Tabs defaultValue="whitepaper" className="w-full">
+          <TabsList className="grid w-full grid-cols-1 mb-[6rem] lg:grid-cols-4 rounded-xl p-1">
+            <TabsTrigger
+              value="whitepaper"
+              className="text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
+            >
+              Whitepaper
+            </TabsTrigger>
             <TabsTrigger
               value="introduction"
-              className="text-lg  hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 bg font-semibold"
+              className="text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
             >
               Introduction
             </TabsTrigger>
             <TabsTrigger
               value="how-it-works"
-              className="text-lg  hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
+              className="text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
             >
               How It Works
             </TabsTrigger>
             <TabsTrigger
               value="features"
-              className="text-lg  hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
+              className="text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-gray-600/50 duration-300 font-semibold"
             >
               Features
             </TabsTrigger>
           </TabsList>
+          <TabsContent value="whitepaper">
+            <FinanceFlowWhitepaper />
+          </TabsContent>
           <TabsContent value="introduction">
             <Card className="mt-6 bg-gray-800/50  hover:shadow-lg hover:shadow-cyan-600/50 transition-all duration-300 bg  border-gray-700">
               <CardHeader>
