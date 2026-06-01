@@ -92,7 +92,6 @@ import { providers } from "ethers";
 import { db } from "../../firebase/firebase";
 
 const IOTA_CHAIN_ID = 8822;
-const RPC_URL = "https://iota-mainnet-evm.public.blastapi.io";
 
 const PumpMeSirPage = () => {
   const [pumpMeSirContract, setPumpMeSirContract] =
@@ -850,4 +849,4 @@ const PumpMeSirPage = () => {
   );
 };
 
-export default PumpMeSirPage;
+export default dynamic(() => Promise.resolve(PumpMeSirPage), { ssr: false });

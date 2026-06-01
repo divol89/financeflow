@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solana Wallet Matrix Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="matrixRain" aria-hidden="true"></canvas>
+
+    <div class="app-shell">
+      <header class="command-bar">
+        <div class="brand-block">
+          <div class="brand-mark">IO</div>
+          <div>
+            <h1>Wallet Matrix Tracker</h1>
+            <p>Solana / wallet intelligence</p>
+          </div>
+        </div>
+
+        <form id="scanForm" class="scan-form">
+          <label class="field">
+            <span>Token mint</span>
+            <input
+              id="tokenInput"
+              autocomplete="off"
+              spellcheck="false"
+              value="BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K"
+            />
+          </label>
+          <label class="field network-field">
+            <span>Red</span>
+            <select id="networkSelect">
+              <option>Solana Mainnet</option>
+            </select>
+          </label>
+          <button id="scanButton" class="scan-button" type="submit">Scan</button>
+        </form>
+
+        <div class="system-status" id="systemStatus">
+          <span class="pulse"></span>
+          <span>LIVE SYNC</span>
+        </div>
+      </header>
+
+      <section class="token-strip panel">
+        <div>
+          <span class="eyebrow">Token</span>
+          <strong id="tokenTitle">IO / io.net</strong>
+        </div>
+        <div>
+          <span class="eyebrow">Mint</span>
+          <code id="tokenMint">BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K</code>
+        </div>
+        <div>
+          <span class="eyebrow">Pool foco</span>
+          <strong id="focusPool">Raydium CLMM IO/USDC</strong>
+        </div>
+        <div>
+          <span class="eyebrow">Ventana</span>
+          <strong id="windowLabel">last 24h / whale >=30 SOL</strong>
+        </div>
+      </section>
+
+      <section class="filter-policy" aria-label="Filtro operativo activo">
+        <span>Fresh 24h only</span>
+        <span>Whale >=30 SOL</span>
+        <span>Buys/Sells parsed swaps</span>
+        <span>No stale fallback</span>
+      </section>
+
+      <section id="kpiGrid" class="kpi-grid" aria-label="Resumen"></section>
+
+      <section class="control-grid" aria-label="Control visual del bot">
+        <section class="panel bot-control-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Bot</span>
+              <h2>Control visual</h2>
+            </div>
+            <span id="botModeBadge" class="status-chip warning">DRY RUN</span>
+          </div>
+          <div class="control-body">
+            <div class="mode-switch" role="group" aria-label="Modo del bot">
+              <button class="mode-button" data-bot-mode="OFF" type="button">Off</button>
+              <button class="mode-button active" data-bot-mode="DRY_RUN" type="button">Dry</button>
+              <button class="mode-button" data-bot-mode="ARMED" type="button">Armed</button>
+              <button class="mode-button locked" data-bot-mode="LIVE_LOCKED" type="button">Live</button>
+            </div>
+            <div id="botRuntime" class="runtime-grid"></div>
+            <div class="control-actions">
+              <button class="control-button" data-bot-action="dry-run" type="button">Strategy step</button>
+              <button class="control-button" data-bot-action="quote" type="button">Manual quote</button>
+              <button class="control-button" data-bot-action="approve" type="button">Approve next</button>
+              <button class="control-button danger" data-bot-action="emergency-stop" type="button">Emergency stop</button>
+            </div>
+            <div id="botActionLog" class="action-log"></div>
+          </div>
+        </section>
+
+        <section class="panel risk-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Risk</span>
+              <h2>Gates</h2>
+            </div>
+            <span class="status-chip positive">ENFORCED</span>
+          </div>
+          <div id="riskGateList" class="risk-grid"></div>
+        </section>
+
+        <section class="panel hermes-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Hermes</span>
+              <h2>Agent bridge</h2>
+            </div>
+            <span id="hermesStatus" class="status-chip warning">STANDBY</span>
+          </div>
+          <div id="hermesBridge" class="hermes-grid"></div>
+        </section>
+      </section>
+
+      <main class="dashboard-grid">
+        <section class="panel table-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Wallets</span>
+              <h2>Ballenas foco</h2>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Filtro de wallets">
+              <button class="segment active" data-filter="whale" type="button">Whale 30+</button>
+              <button class="segment" data-filter="candidate" type="button">Watch 10+</button>
+              <button class="segment" data-filter="distribution" type="button">Sell</button>
+              <button class="segment" data-filter="all" type="button">All</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Wallet</th>
+                  <th>Buys</th>
+                  <th>Buy SOL eq</th>
+                  <th>Sells</th>
+                  <th>Sell SOL eq</th>
+                  <th>Vol/Hold USD</th>
+                  <th>Net IO</th>
+                  <th>Nivel</th>
+                  <th>Horas</th>
+                  <th>Patron</th>
+                  <th>Score</th>
+                  <th>Scan</th>
+                </tr>
+              </thead>
+              <tbody id="walletTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel heatmap-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">24h</span>
+              <h2>Horas compra/venta</h2>
+            </div>
+            <div class="legend">
+              <span><i class="buy-dot"></i>Buy</span>
+              <span><i class="sell-dot"></i>Sell</span>
+            </div>
+          </div>
+          <div id="hourHeatmap" class="hour-heatmap"></div>
+        </section>
+
+        <section class="panel wallet-detail-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Wallet inspector</span>
+              <h2 id="walletDetailTitle">Seleccion activa</h2>
+            </div>
+            <span id="walletVerdict" class="status-chip warning">SYNCING</span>
+          </div>
+          <div id="walletDetail" class="wallet-detail-body"></div>
+        </section>
+
+        <section class="panel pattern-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Intel</span>
+              <h2>Patrones</h2>
+            </div>
+          </div>
+          <div id="patternList" class="pattern-list"></div>
+        </section>
+
+        <section class="panel signal-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Feed</span>
+              <h2>Senales</h2>
+            </div>
+            <span id="signalClock" class="clock">--:--:--</span>
+          </div>
+          <div id="signalFeed" class="signal-feed"></div>
+        </section>
+
+        <section class="panel stream-panel">
+          <div class="panel-header">
+            <div>
+              <span class="eyebrow">Tape</span>
+              <h2>Compras y ventas recientes</h2>
+            </div>
+          </div>
+          <div id="eventStream" class="event-stream"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./live.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

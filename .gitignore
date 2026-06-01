@@ -44,3 +44,5 @@ yarn-error.log*
 # !.yarn/cache
 .pnp.*
 .vercel
+.codegraph/
+/project-brain/

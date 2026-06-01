@@ -1,16 +1,11 @@
 import React, { FC, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
-import { AiOutlineWallet } from "react-icons/ai";
 import ShimmerPrice from "./shimmerprice/Shimmerprice";
 import Image from "next/image";
-import {
-  useWeb3ModalAccount,
-  useWeb3Modal,
-  useDisconnect,
-} from "@web3modal/ethers5/react";
-import { FaBook, FaRocket, FaShieldAlt } from "react-icons/fa";
+import { FaBook, FaRocket, FaShieldAlt, FaTerminal } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import NavbarWalletButton from "./NavbarWalletButton";
 
 interface NavbarProps {
   openModal: () => void;
@@ -19,9 +14,6 @@ interface NavbarProps {
 const Navbar: FC<NavbarProps> = ({ openModal }) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { address, isConnected } = useWeb3ModalAccount();
-  const { open } = useWeb3Modal();
-  const { disconnect } = useDisconnect();
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Prevent body scroll when menu is open
@@ -55,22 +47,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
   const handleMenuItemClick = (link: string) => {
     router.push(link);
     setMenuOpen(false);
-  };
-
-  const handleWalletConnection = async () => {
-    if (isConnected) {
-      disconnect();
-    } else {
-      try {
-        await open();
-      } catch (error) {
-        console.error("Failed to open wallet modal:", error);
-      }
-    }
-  };
-
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
   const handleLaunchApp = () => {
@@ -124,23 +100,23 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                   Validate
                 </li>
                 <li
+                  className="bg-[#00e47a] text-black font-bold py-2 px-4 rounded-full hover:bg-[#63ff9b] transition-all duration-300 cursor-pointer flex items-center text-sm shadow-[0_0_18px_rgba(0,228,122,0.35)]"
+                  onClick={() => handleMenuItemClick("/matrix")}
+                >
+                  <FaTerminal className="mr-1" />
+                  Matrix
+                </li>
+                <li
                   className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
                   onClick={handleLaunchApp}
                 >
                   <FaRocket className="mr-1" />
                   App
                 </li>
-                <li
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                  onClick={handleWalletConnection}
-                >
-                  <AiOutlineWallet className="mr-1" />
-                  <span className="whitespace-nowrap">
-                    {isConnected
-                      ? truncateAddress(address || "")
-                      : "Connect Wallet"}
-                  </span>
-                </li>
+                <NavbarWalletButton
+                  variant="desktop"
+                  onClick={handleLaunchApp}
+                />
               </ul>
             </div>
 
@@ -229,6 +205,18 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                     Validar Token
                   </span>
                 </button>
+
+                <button
+                  onClick={() => handleMenuItemClick("/matrix")}
+                  className="w-full flex items-center p-5 rounded-2xl bg-[#00e47a]/20 border border-[#00e47a]/50 hover:bg-[#00e47a]/30 transition-all active:scale-[0.98] shadow-[0_0_22px_rgba(0,228,122,0.18)]"
+                >
+                  <div className="w-14 h-14 rounded-full bg-[#00e47a]/30 flex items-center justify-center mr-4">
+                    <FaTerminal className="text-[#63ff9b] text-xl" />
+                  </div>
+                  <span className="text-white font-semibold text-xl">
+                    Matrix Tracker
+                  </span>
+                </button>
               </div>
 
               {/* Action Buttons */}
@@ -241,15 +229,10 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                   Abrir Aplicación
                 </button>
 
-                <button
-                  onClick={handleWalletConnection}
-                  className="w-full py-6 px-6 rounded-2xl bg-white/20 border-2 border-white/30 text-white font-semibold text-xl flex items-center justify-center gap-3 hover:bg-white/30 transition-all active:scale-[0.98]"
-                >
-                  <AiOutlineWallet className="text-2xl" />
-                  {isConnected
-                    ? truncateAddress(address || "")
-                    : "Conectar Wallet"}
-                </button>
+                <NavbarWalletButton
+                  variant="mobile"
+                  onClick={handleLaunchApp}
+                />
               </div>
             </div>
           </motion.div>

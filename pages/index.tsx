@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import Navbar from "../components/Navbar";
+import dynamic from "next/dynamic";
 import Welcome from "../components/Welcome";
 import ModalApp from "../components/ModalApp";
 import Footer from "../components/Footer";
 import ParticipationFunnel from "../components/Participation-funnel";
 import MagicPumpInvitation from "../components/Magic-pump-invitation";
+
+const Navbar = dynamic(() => import("../components/Navbar"), { ssr: false });
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

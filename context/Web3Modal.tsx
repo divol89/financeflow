@@ -42,20 +42,22 @@ const ethersConfig = defaultConfig({
   defaultChainId: 1, // used for the Coinbase SDK
 });
 
-// 5. Create a Web3Modal instance
-createWeb3Modal({
-  ethersConfig,
-  chains: [mainnet],
-  projectId: projectId as string,
-  enableAnalytics: false, // Optional - defaults to your Cloud configuration
-  enableOnramp: false, // Optional - false as default
+// 5. Create a Web3Modal instance in the browser only.
+if (typeof window !== "undefined") {
+  createWeb3Modal({
+    ethersConfig,
+    chains: [mainnet],
+    projectId: projectId as string,
+    enableAnalytics: false, // Optional - defaults to your Cloud configuration
+    enableOnramp: false, // Optional - false as default
 
-  themeVariables: {
-    "--w3m-font-family": "Roboto, sans-serif",
-    "--w3m-color-mix": "#F5841F",
-  },
-  featuredWalletIds: [],
-});
+    themeVariables: {
+      "--w3m-font-family": "Roboto, sans-serif",
+      "--w3m-color-mix": "#F5841F",
+    },
+    featuredWalletIds: [],
+  });
+}
 
 export function Web3ModalProvider({ children }: { children: React.ReactNode }) {
   return children;

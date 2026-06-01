@@ -1,0 +1,6 @@
+.codegraph/
+project-brain/
+PROJECT_BRAIN.md
+.env
+.env.*
+*.log

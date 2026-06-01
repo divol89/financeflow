@@ -1,6 +1,7 @@
 import ROUTER_ABI from "../../utils/routerABI.json";
 import axios from "axios";
 import { ethers } from "ethers";
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, Input, Typography } from "antd";
@@ -408,4 +409,4 @@ const TokenLauncher = () => {
   );
 };
 
-export default TokenLauncher;
+export default dynamic(() => Promise.resolve(TokenLauncher), { ssr: false });

@@ -1,12 +1,49 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import type { IconType } from "react-icons";
+import { FaBook, FaTerminal } from "react-icons/fa";
+
+interface LauncherItem {
+  name: string;
+  path: string;
+  img?: string;
+  icon?: IconType;
+}
+
+const launcherItems: LauncherItem[] = [
+  {
+    name: "Docs",
+    path: "/whitepaper",
+    icon: FaBook,
+  },
+  {
+    name: "MagicSale",
+    img: "/img/magicsale.jpg",
+    path: "/MagicSale",
+  },
+  {
+    name: "MagicLauncher",
+    img: "/img/magiclauncher.jpg",
+    path: "/MagicLauncher",
+  },
+  {
+    name: "MagicPump",
+    img: "/img/magicpump.jpg",
+    path: "/MagicPump",
+  },
+];
 
 const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,
   onClose,
 }) => {
   const router = useRouter();
+
+  const handleNavigate = (path: string) => {
+    onClose();
+    router.push(path);
+  };
 
   return (
     <AnimatePresence>
@@ -24,7 +61,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="rounded-lg p-6 w-11/12 max-w-6xl  relative z-60"
+            className="relative z-[60] w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-cyan-300/20 bg-[#121c38]/95 p-5 shadow-[0_0_30px_rgba(34,211,238,0.18)] lg:max-w-5xl lg:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -32,7 +69,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                 e.stopPropagation();
                 onClose();
               }}
-              className="absolute -top-2 lg:mt-0 mt-24 right-2 p-2  hover:text-gray-800 z-50 text-white"
+              className="absolute right-3 top-3 z-50 rounded-full p-2 text-white hover:bg-white/10"
               aria-label="Close modal"
             >
               <svg
@@ -50,42 +87,49 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                 />
               </svg>
             </button>
-            <div className="flex flex-col scale-75 lg:scale-100 md:flex-row justify-center items-center gap-6">
-              {[
-                {
-                  name: "MagicSale",
-                  img: "/img/magicsale.jpg",
-                  path: "/MagicSale",
-                },
-                {
-                  name: "MagicLauncher",
-                  img: "/img/magiclauncher.jpg",
-                  path: "/MagicLauncher",
-                },
-                {
-                  name: "MagicPump",
-                  img: "/img/magicpump.jpg",
-                  path: "/MagicPump",
-                },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className="flex flex-col w-full items-center"
-                >
-                  <button
-                    onClick={() => router.push(item.path)}
-                    className="w-full md:w-64 aspect-[4/3] relative overflow-hidden rounded-lg hover:shadow-xl transition-shadow shadow-lg shadow-cyan-300 duration-300"
-                  >
-                    <Image
-                      src={item.img}
-                      alt={item.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="transition-transform duration-300 hover:scale-110"
-                    />
-                  </button>
-                </div>
-              ))}
+
+            <div className="pt-8 lg:pt-4">
+              <button
+                onClick={() => handleNavigate("/matrix")}
+                className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-[#00e47a]/70 bg-[#00e47a] px-4 py-4 font-mono text-base font-black uppercase tracking-wide text-black shadow-[0_0_28px_rgba(0,228,122,0.38)] transition-all hover:bg-[#63ff9b] active:scale-[0.98]"
+              >
+                <FaTerminal className="text-xl" />
+                Matrix Tracker
+              </button>
+
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
+                {launcherItems.map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => handleNavigate(item.path)}
+                      className="group relative flex h-24 w-full items-center justify-center overflow-hidden rounded-xl border border-cyan-300/20 bg-white/10 text-center text-lg font-semibold text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.12)] transition-all hover:border-cyan-300/60 hover:bg-white/15 active:scale-[0.98] lg:h-36"
+                      aria-label={item.name}
+                    >
+                      {item.img ? (
+                        <Image
+                          src={item.img}
+                          alt={item.name}
+                          layout="fill"
+                          objectFit="cover"
+                          className="opacity-35 transition-transform duration-300 group-hover:scale-110"
+                        />
+                      ) : Icon ? (
+                        <Icon className="absolute top-3 text-xl text-cyan-300/50" />
+                      ) : null}
+                      <span className="relative z-10 px-2 drop-shadow-[0_0_8px_rgba(34,211,238,0.65)]">
+                        {item.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <p className="mt-4 text-center font-mono text-xs uppercase tracking-[0.18em] text-[#63ff9b]/80">
+                Matrix ops ready
+              </p>
             </div>
           </motion.div>
         </motion.div>

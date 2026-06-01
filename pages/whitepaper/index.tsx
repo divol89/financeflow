@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import React from "react";
 import Head from "next/head";
 import Whitepaper from "../../components/Whitepaper";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
