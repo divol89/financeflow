@@ -809,8 +809,20 @@
           ? `armado · high ${formatPrice(strategy.trailingHighWaterStablePerTargetUi)} · pullback ${Number(strategy.trailingPullbackPct || 0).toFixed(2)}%`
           : `activo · arma en +${Number(strategy.takeProfitBps || 0) / 100}% y luego vende en pullback ${Number(strategy.trailingPullbackPct || 0).toFixed(2)}%`)
       : "OFF · venta fija al target";
+    const livePrice = Number(state.watcherState?.price || 0);
+    const avgEntry = Number(strategy.averageEntryStablePerTargetUi || 0);
+    const trackedIo = Number(strategy.positionUi || balances.io?.uiAmount || 0);
+    const liveTrailingProfit = livePrice > 0 && avgEntry > 0 && trackedIo > 0 ? (livePrice - avgEntry) * trackedIo : 0;
+    const trailingBufferPrice = sellTrigger?.price && livePrice ? livePrice - Number(sellTrigger.price) : 0;
+    const trailingBufferUsdc = trailingBufferPrice && trackedIo ? trailingBufferPrice * trackedIo : 0;
+    const trailingBufferPct = sellTrigger?.price ? (Math.abs(trailingBufferPrice) / Number(sellTrigger.price)) * 100 : 0;
+    const liveProfitMeta = livePrice && avgEntry
+      ? `IO ${formatPrice(livePrice)} vs avg ${formatPrice(avgEntry)} · ${trailingBufferPrice >= 0 ? "+" : ""}${trailingBufferPct.toFixed(2)}% del stop`
+      : "esperando precio live y coste medio";
     const cards = [
       { label: triggerLabel, symbol: "PRICE", value: sellTrigger?.price || 0, tone: nextSellTone, meta: nextSellMeta, priority: true },
+      { label: "Profit trailing live", symbol: "USDC", value: liveTrailingProfit, tone: liveTrailingProfit > 0 ? "positive" : liveTrailingProfit < 0 ? "negative" : "warning", meta: liveProfitMeta },
+      { label: "Buffer antes de vender", symbol: "USDC", value: trailingBufferUsdc, tone: trailingBufferPrice > 0 ? "positive" : trailingBufferPrice < 0 ? "negative" : "warning", meta: sellTrigger?.price ? `${trailingBufferPrice >= 0 ? "encima" : "debajo"} del stop por ${formatPrice(Math.abs(trailingBufferPrice))}` : "sin trailing stop activo" },
       { label: "Beneficio vendido", symbol: "USDC", value: strategy.realizedProfitStableUi, tone: Number(strategy.realizedProfitStableUi || 0) > 0 ? "positive" : "warning", meta: `${Number(strategy.sellStepsCompleted || 0)} sells · USDC ganado realizado` },
       { label: "Última venta", symbol: "USDC", value: strategy.lastExitStableUi, tone: Number(strategy.lastExitStableUi || 0) > 0 ? "positive" : "warning", meta: `${formatTokenAmount(strategy.lastExitTargetUi, "IO")} vendido` },
       { label: "Trailing sell", symbol: "TEXT", value: strategy.trailingTakeProfitEnabled ? (strategy.trailingArmed ? "ARMED" : "ON") : "OFF", tone: strategy.trailingTakeProfitEnabled ? "positive" : "negative", meta: trailingMeta },
@@ -1381,5 +1393,5 @@
   startMatrixRain();
   setStatus("LOCAL WATCHER LIVE", "live");
   refreshBotBackendStatus();
-  setInterval(() => refreshBotBackendStatus(), 10_000);
+  setInterval(() => refreshBotBackendStatus(), 3_000);
 })();
