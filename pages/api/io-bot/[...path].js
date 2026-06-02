@@ -43,13 +43,17 @@ export default async function handler(req, res) {
   const timeout = setTimeout(() => controller.abort(), 25_000);
 
   try {
+    const upstreamHeaders = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+    const dashboardKey = process.env.IO_BOT_DASHBOARD_API_KEY || process.env.DASHBOARD_API_KEY;
+    if (dashboardKey) upstreamHeaders["x-dashboard-key"] = dashboardKey;
+
     const upstream = await fetch(`${baseUrl}${path}`, {
       method,
       signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers: upstreamHeaders,
       body: method === "POST" ? JSON.stringify(req.body || {}) : undefined,
     });
     const text = await upstream.text();

@@ -164,8 +164,12 @@
   function botApiBaseUrl() {
     if (window.TRACKER_CONFIG?.botApiUrl) return window.TRACKER_CONFIG.botApiUrl.replace(/\/$/, "");
     if (window.location.protocol === "file:") return BOT_API_FALLBACK_URL;
-    if (window.location.pathname.startsWith("/matrix")) return `${window.location.origin}/api/io-bot`;
-    return window.location.origin;
+    // In Vercel/Next the cockpit is served from /matrix-dashboard inside an iframe.
+    // Browsers cannot reach the Mac's 127.0.0.1 from production, so all bot reads
+    // must go through the Next.js read-only proxy at /api/io-bot.
+    if (window.location.pathname.startsWith("/matrix-dashboard")) return `${window.location.origin}/api/io-bot`;
+    if (["127.0.0.1", "localhost"].includes(window.location.hostname) && window.location.port !== "8787") return BOT_API_FALLBACK_URL;
+    return `${window.location.origin}/api/io-bot`;
   }
 
   function clamp(value, min, max) {
@@ -812,6 +816,9 @@
     const livePrice = Number(state.watcherState?.price || 0);
     const avgEntry = Number(strategy.averageEntryStablePerTargetUi || 0);
     const trackedIo = Number(strategy.positionUi || balances.io?.uiAmount || 0);
+    const solUi = Number(balances.sol?.uiAmount || 0);
+    const minSolReserve = Number(balances.sol?.minLamports || strategy.minSolFeeReserveLamports || 0) / 1e9;
+    const solFeeExcess = solUi - minSolReserve;
     const liveTrailingProfit = livePrice > 0 && avgEntry > 0 && trackedIo > 0 ? (livePrice - avgEntry) * trackedIo : 0;
     const trailingBufferPrice = sellTrigger?.price && livePrice ? livePrice - Number(sellTrigger.price) : 0;
     const trailingBufferUsdc = trailingBufferPrice && trackedIo ? trailingBufferPrice * trackedIo : 0;
@@ -826,7 +833,7 @@
       { label: "Beneficio vendido", symbol: "USDC", value: strategy.realizedProfitStableUi, tone: Number(strategy.realizedProfitStableUi || 0) > 0 ? "positive" : "warning", meta: `${Number(strategy.sellStepsCompleted || 0)} sells · USDC ganado realizado` },
       { label: "Última venta", symbol: "USDC", value: strategy.lastExitStableUi, tone: Number(strategy.lastExitStableUi || 0) > 0 ? "positive" : "warning", meta: `${formatTokenAmount(strategy.lastExitTargetUi, "IO")} vendido` },
       { label: "Trailing sell", symbol: "TEXT", value: strategy.trailingTakeProfitEnabled ? (strategy.trailingArmed ? "ARMED" : "ON") : "OFF", tone: strategy.trailingTakeProfitEnabled ? "positive" : "negative", meta: trailingMeta },
-      { label: "SOL fees", symbol: "SOL", value: balances.sol?.uiAmount, tone: balances.sol?.feeReserveOk ? "positive" : "negative", meta: balances.sol?.feeReserveOk ? "fee reserve OK" : "fee reserve bajo" },
+      { label: "SOL fees restantes", symbol: "SOL", value: solUi, tone: balances.sol?.feeReserveOk ? "positive" : "negative", meta: `${balances.sol?.feeReserveOk ? "OK" : "BAJO"} · reserva min ${formatTokenAmount(minSolReserve, "SOL")} · libre ${formatTokenAmount(solFeeExcess, "SOL")}` },
       { label: "USDC caja", symbol: "USDC", value: balances.usdc?.uiAmount, tone: Number(balances.usdc?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `${balances.usdc?.accountCount || 0} token acct` },
       { label: "IO inventario", symbol: "IO", value: balances.io?.uiAmount, tone: Number(balances.io?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `tracked ${formatTokenAmount(strategy.positionUi ?? ((strategy.positionAmount || 0) / 10 ** 8), "IO")}` },
     ];
