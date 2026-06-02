@@ -164,9 +164,8 @@
   function botApiBaseUrl() {
     if (window.TRACKER_CONFIG?.botApiUrl) return window.TRACKER_CONFIG.botApiUrl.replace(/\/$/, "");
     if (window.location.protocol === "file:") return BOT_API_FALLBACK_URL;
-    const isBotBackend = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
-    if (isBotBackend && window.location.port === "8787") return window.location.origin;
-    return `${window.location.origin}/api/io-bot`;
+    if (window.location.pathname.startsWith("/matrix")) return `${window.location.origin}/api/io-bot`;
+    return window.location.origin;
   }
 
   function clamp(value, min, max) {
@@ -794,22 +793,36 @@
       return;
     }
     const balances = cockpit.balances;
+    const strategy = cockpit.strategy || {};
     const sellTrigger = state.watcherState?.nearestTrigger?.side === "sell" ? state.watcherState.nearestTrigger : null;
     const nextSellTone = sellTrigger?.reached ? "positive" : sellTrigger?.price ? "warning" : "negative";
+    const triggerLabel = sellTrigger?.name?.includes("trailing_pullback")
+      ? "Trailing sell pullback"
+      : sellTrigger?.name?.includes("arm_trailing")
+        ? "Arm trailing sell"
+        : "Next sell level";
     const nextSellMeta = sellTrigger?.price
       ? `${sellTrigger.reached ? "TARGET ALCANZADO" : `${Number(sellTrigger.distancePct ?? 0).toFixed(2)}% ${sellTrigger.direction || "from target"}`} · IO ahora ${formatPrice(state.watcherState?.price)}`
       : "watcher sin target sell activo";
+    const trailingMeta = strategy.trailingTakeProfitEnabled
+      ? (strategy.trailingArmed
+          ? `armado · high ${formatPrice(strategy.trailingHighWaterStablePerTargetUi)} · pullback ${Number(strategy.trailingPullbackPct || 0).toFixed(2)}%`
+          : `activo · arma en +${Number(strategy.takeProfitBps || 0) / 100}% y luego vende en pullback ${Number(strategy.trailingPullbackPct || 0).toFixed(2)}%`)
+      : "OFF · venta fija al target";
     const cards = [
-      { label: "Next sell level", symbol: "PRICE", value: sellTrigger?.price || 0, tone: nextSellTone, meta: nextSellMeta, priority: true },
+      { label: triggerLabel, symbol: "PRICE", value: sellTrigger?.price || 0, tone: nextSellTone, meta: nextSellMeta, priority: true },
+      { label: "Beneficio vendido", symbol: "USDC", value: strategy.realizedProfitStableUi, tone: Number(strategy.realizedProfitStableUi || 0) > 0 ? "positive" : "warning", meta: `${Number(strategy.sellStepsCompleted || 0)} sells · USDC ganado realizado` },
+      { label: "Última venta", symbol: "USDC", value: strategy.lastExitStableUi, tone: Number(strategy.lastExitStableUi || 0) > 0 ? "positive" : "warning", meta: `${formatTokenAmount(strategy.lastExitTargetUi, "IO")} vendido` },
+      { label: "Trailing sell", symbol: "TEXT", value: strategy.trailingTakeProfitEnabled ? (strategy.trailingArmed ? "ARMED" : "ON") : "OFF", tone: strategy.trailingTakeProfitEnabled ? "positive" : "negative", meta: trailingMeta },
       { label: "SOL fees", symbol: "SOL", value: balances.sol?.uiAmount, tone: balances.sol?.feeReserveOk ? "positive" : "negative", meta: balances.sol?.feeReserveOk ? "fee reserve OK" : "fee reserve bajo" },
       { label: "USDC caja", symbol: "USDC", value: balances.usdc?.uiAmount, tone: Number(balances.usdc?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `${balances.usdc?.accountCount || 0} token acct` },
-      { label: "IO inventario", symbol: "IO", value: balances.io?.uiAmount, tone: Number(balances.io?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `tracked ${formatTokenAmount((cockpit.strategy?.positionAmount || 0) / 10 ** 8, "IO")}` },
+      { label: "IO inventario", symbol: "IO", value: balances.io?.uiAmount, tone: Number(balances.io?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `tracked ${formatTokenAmount(strategy.positionUi ?? ((strategy.positionAmount || 0) / 10 ** 8), "IO")}` },
     ];
     els.botWalletCockpit.innerHTML = cards
       .map((card) => `
         <article class="balance-card ${card.tone} ${card.priority ? "sell-target-card" : ""}">
           <span>${card.label}</span>
-          <strong>${card.symbol === "PRICE" ? formatPrice(card.value) : formatTokenAmount(card.value, card.symbol)}</strong>
+          <strong>${card.symbol === "PRICE" ? formatPrice(card.value) : card.symbol === "TEXT" ? card.value : formatTokenAmount(card.value, card.symbol)}</strong>
           <em>${card.meta}</em>
         </article>
       `)
@@ -834,12 +847,17 @@
       const decimals = trade.side === "sell" ? 8 : 6;
       const symbol = trade.side === "sell" ? "IO" : "USDC";
       const amount = trade.amount ? Number(trade.amount) / 10 ** decimals : 0;
+      const outAmount = trade.outAmount ? Number(trade.outAmount) / (trade.side === "sell" ? 1e6 : 1e8) : 0;
+      const profitUsdc = trade.realizedProfitStableAmount ? Number(trade.realizedProfitStableAmount) / 1e6 : null;
       const route = trade.side === "sell" ? "IO → USDC" : trade.side === "buy" ? "USDC → IO" : "strategy";
+      const detail = trade.side === "sell"
+        ? `${amount ? formatCompact(amount) : ""} IO → ${outAmount ? formatTokenAmount(outAmount, "USDC") : "USDC"}${profitUsdc !== null ? ` · +${profitUsdc.toFixed(4)} USDC profit` : ""}`
+        : `${amount ? formatTokenAmount(amount, "USDC") : ""}${outAmount ? ` → ${formatTokenAmount(outAmount, "IO")}` : ""}`;
       return `
         <div class="trade-row ${sideTone}" title="${trade.reason || trade.type}">
           <span>${new Date(trade.ts).toLocaleTimeString("en-GB", { hour12: false })}</span>
           <strong>${route}</strong>
-          <em>${amount ? formatCompact(amount) : ""} ${symbol} · ${trade.action || trade.type}</em>
+          <em>${detail} · ${trade.action || trade.type}</em>
         </div>
       `;
     }).join("");
