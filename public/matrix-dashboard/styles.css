@@ -157,6 +157,31 @@ h2 {
   font-size: 12px;
 }
 
+.tracked-token {
+  display: grid;
+  gap: 5px;
+  min-width: 280px;
+  padding: 10px 12px;
+  border: 1px solid rgba(26, 122, 80, 0.5);
+  border-radius: 5px;
+  background: rgba(1, 8, 5, 0.55);
+}
+
+.tracked-token span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.tracked-token code {
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .scan-form {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) 156px 104px;
@@ -279,27 +304,6 @@ select:focus {
   white-space: nowrap;
 }
 
-.filter-policy {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: -4px 0 14px;
-}
-
-.filter-policy span {
-  min-height: 28px;
-  border: 1px solid rgba(0, 255, 138, 0.36);
-  border-radius: 4px;
-  padding: 6px 10px;
-  background: rgba(0, 255, 138, 0.1);
-  color: var(--green);
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  box-shadow: 0 0 16px rgba(0, 255, 138, 0.08);
-}
-
 code {
   color: var(--green);
   font-family: var(--mono);
@@ -314,9 +318,18 @@ code {
 
 .control-grid {
   display: grid;
-  grid-template-columns: minmax(420px, 1.1fr) minmax(280px, 0.72fr) minmax(360px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   margin-bottom: 14px;
+}
+
+.risk-panel,
+.hermes-panel,
+.money-flow-panel,
+.dashboard-grid,
+.token-strip,
+.kpi-grid {
+  display: none !important;
 }
 
 .kpi-card {
@@ -1352,6 +1365,232 @@ tbody tr.selected-row {
   border-color: var(--red) !important;
 }
 
+.money-flow-panel {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border-color: rgba(0, 183, 255, 0.32);
+  background:
+    linear-gradient(135deg, rgba(0, 183, 255, 0.09), transparent 34%),
+    linear-gradient(180deg, rgba(0, 255, 138, 0.07), rgba(7, 17, 13, 0.91));
+}
+
+.money-flow-header,
+.flow-feed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.money-flow-header {
+  padding: 14px 14px 0;
+}
+
+.money-flow-header h2 {
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.money-flow-grid {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.15fr) minmax(300px, 0.85fr) minmax(260px, 0.75fr) minmax(260px, 0.75fr);
+  gap: 12px;
+  padding: 14px;
+}
+
+.flow-main-card,
+.flow-feed-card,
+.flow-stat,
+.top-money-wallet,
+.backend-whale-item {
+  min-width: 0;
+  border: 1px solid rgba(18, 61, 43, 0.82);
+  border-radius: 5px;
+  background: rgba(1, 8, 5, 0.66);
+}
+
+.flow-main-card {
+  padding: 14px;
+}
+
+.flow-main-card > strong {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: clamp(30px, 3.2vw, 52px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.flow-main-card > strong.positive,
+.flow-stat.positive strong,
+.top-money-wallet.positive strong,
+.backend-whale-item.buy strong {
+  color: var(--green);
+}
+
+.flow-main-card > strong.negative,
+.flow-stat.negative strong,
+.top-money-wallet.negative strong,
+.backend-whale-item.sell strong {
+  color: var(--red);
+}
+
+.flow-main-card > strong.warning,
+.flow-stat.warning strong {
+  color: var(--amber);
+}
+
+.flow-main-card p {
+  min-height: 42px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.flow-meter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 18px;
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(122, 168, 143, 0.24);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.flow-meter i {
+  display: block;
+  min-width: 4%;
+  transition: width 360ms ease;
+}
+
+.flow-meter .sell {
+  justify-self: end;
+  background: linear-gradient(90deg, rgba(255, 77, 109, 0.1), rgba(255, 77, 109, 0.92));
+}
+
+.flow-meter .buy {
+  justify-self: start;
+  background: linear-gradient(90deg, rgba(0, 255, 138, 0.92), rgba(0, 255, 138, 0.1));
+}
+
+.flow-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.flow-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.flow-stat {
+  padding: 10px;
+}
+
+.flow-stat span,
+.flow-stat strong,
+.top-money-wallet span,
+.top-money-wallet strong,
+.top-money-wallet em,
+.backend-whale-item span,
+.backend-whale-item strong,
+.backend-whale-item em,
+.flow-feed-head span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+}
+
+.flow-empty {
+  display: block;
+  white-space: normal;
+  overflow: visible;
+  font-family: var(--mono);
+  line-height: 1.45;
+}
+
+.flow-stat span,
+.top-money-wallet span,
+.backend-whale-item span,
+.flow-feed-head span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.flow-stat strong {
+  margin-top: 9px;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.flow-feed-card {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 10px;
+}
+
+.backend-whale-feed,
+.top-money-wallets {
+  display: grid;
+  gap: 8px;
+}
+
+.top-money-wallet,
+.backend-whale-item {
+  display: grid;
+  gap: 5px;
+  padding: 9px;
+  cursor: pointer;
+}
+
+.backend-whale-item {
+  cursor: default;
+}
+
+.top-money-wallet:hover {
+  border-color: rgba(0, 255, 138, 0.55);
+  transform: translateY(-1px);
+}
+
+.top-money-wallet strong,
+.backend-whale-item strong {
+  font-size: 13px;
+}
+
+.top-money-wallet em,
+.backend-whale-item em,
+.flow-empty {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.mini-refresh {
+  height: 26px;
+  border: 1px solid rgba(0, 255, 138, 0.42);
+  border-radius: 4px;
+  background: rgba(0, 255, 138, 0.07);
+  color: var(--green);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
 @keyframes pulse {
   0%,
   100% {
@@ -1369,7 +1608,8 @@ tbody tr.selected-row {
   .token-strip,
   .control-grid,
   .dashboard-grid,
-  .wallet-detail-identity {
+  .wallet-detail-identity,
+  .money-flow-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1406,7 +1646,8 @@ tbody tr.selected-row {
   .wallet-section-grid,
   .wallet-ledger-grid,
   .wallet-extreme-grid,
-  .wallet-trade {
+  .wallet-trade,
+  .flow-stat-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1446,6 +1687,173 @@ tbody tr.selected-row {
   }
 
   .hermes-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bot-cockpit-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.25fr) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.balance-card {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 10px;
+  background: rgba(1, 8, 5, 0.72);
+}
+
+.balance-card span,
+.trade-row span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.balance-card strong {
+  overflow: hidden;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.balance-card em,
+.trade-row em {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.balance-card.positive { border-color: rgba(0, 255, 138, 0.42); box-shadow: inset 0 0 18px rgba(0, 255, 138, 0.05); }
+.balance-card.warning { border-color: rgba(244, 211, 94, 0.42); }
+.balance-card.negative { border-color: rgba(255, 77, 109, 0.5); }
+.sell-target-card {
+  border-color: rgba(244, 211, 94, 0.72);
+  background: linear-gradient(180deg, rgba(244, 211, 94, 0.11), rgba(1, 8, 5, 0.78));
+}
+.sell-target-card strong {
+  color: var(--amber);
+  font-size: 24px;
+}
+.sell-target-card.positive {
+  border-color: rgba(0, 255, 138, 0.72);
+}
+.sell-target-card.positive strong {
+  color: var(--green);
+}
+
+.trade-tape {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  border: 1px solid rgba(26, 122, 80, 0.64);
+  border-radius: 5px;
+  padding: 10px;
+  background: rgba(1, 8, 5, 0.55);
+  max-height: 250px;
+  overflow: auto;
+}
+
+.holders-panel {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  border: 1px solid rgba(26, 122, 80, 0.64);
+  border-radius: 5px;
+  padding: 10px;
+  background: rgba(1, 8, 5, 0.55);
+}
+
+.holder-list {
+  display: grid;
+  gap: 6px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.holder-row {
+  display: grid;
+  grid-template-columns: 44px minmax(120px, 1fr) minmax(110px, auto) 70px;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(18, 61, 43, 0.88);
+  border-radius: 4px;
+  padding: 7px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.holder-row span,
+.holder-row em,
+.holder-empty {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.holder-row a {
+  color: var(--green);
+  font-family: var(--mono);
+  text-decoration: none;
+}
+
+.holder-row strong {
+  color: var(--text);
+  font-family: var(--mono);
+}
+
+.trade-tape-head,
+.trade-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) minmax(110px, auto);
+  gap: 8px;
+  align-items: center;
+}
+
+.trade-tape-head {
+  grid-template-columns: 1fr auto;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(26, 122, 80, 0.42);
+}
+
+.trade-tape-head strong {
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.trade-row {
+  border: 1px solid rgba(18, 61, 43, 0.88);
+  border-radius: 4px;
+  padding: 7px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.trade-row strong {
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trade-row.positive strong { color: var(--green); }
+.trade-row.warning strong { color: var(--amber); }
+.trade-row.negative strong { color: var(--red); }
+
+@media (max-width: 900px) {
+  .bot-cockpit-grid,
+  .trade-tape-head,
+  .trade-row {
     grid-template-columns: 1fr;
   }
 }

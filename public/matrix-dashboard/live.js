@@ -1,26 +1,21 @@
 (function () {
-  const IO_MINT = "BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K";
-  const IO_POOL_OWNER = "DeC8TwoqTD8q5iQ9eG8L5syAvzadA4yMXpSgxywA6uxe";
-  const IO_VAULT = "3Qu1QpLMssnqqx6tkywSHVLcH3JjN6i5ZSoYcsoyGoru";
   const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
   const WSOL_MINT = "So11111111111111111111111111111111111111112";
 
   const DEXSCREENER_TOKEN_URL = "https://api.dexscreener.com/latest/dex/tokens";
   const SOLANA_RPC_FALLBACKS = ["https://solana-rpc.publicnode.com", "https://api.mainnet-beta.solana.com"];
-  const SIGNATURE_PAGE_LIMIT = 70;
-  const SIGNATURE_PAGE_COUNT = 2;
-  const MAX_TRANSACTION_FETCH = 90;
-  const MAX_TRANSACTION_FETCH_PER_TARGET = 45;
-  const MAX_WATCH_PAIRS = 6;
-  const MAX_RECENT_TRADES = 140;
+  const SIGNATURE_PAGE_LIMIT = 24;
+  const SIGNATURE_PAGE_COUNT = 1;
+  const MAX_TRANSACTION_FETCH = 24;
+  const MAX_RECENT_TRADES = 80;
+  const TX_SAMPLE_TIMEOUT_MS = 14_000;
+  const HOLDER_SAMPLE_TIMEOUT_MS = 8_000;
   const MAX_ACTIVE_WALLET_ROWS = 36;
   const MAX_WALLET_ROWS = 48;
   const MAX_TOP_HOLDERS = 24;
   const MAX_CACHE_ITEMS = 360;
-  const LIVE_LOOKBACK_HOURS = 24;
-  const LIVE_LOOKBACK_SECONDS = LIVE_LOOKBACK_HOURS * 60 * 60;
-  const WHALE_SOL_THRESHOLD = 30;
-  const WATCH_SOL_THRESHOLD = 10;
+  const WHALE_SOL_THRESHOLD = 100;
+  const WATCH_SOL_THRESHOLD = 25;
   const HOLDER_WHALE_SOL_THRESHOLD = 100;
   const SOL_PRICE_CACHE_MS = 60_000;
 
@@ -47,16 +42,15 @@
     return new Promise((resolve) => window.setTimeout(resolve, ms));
   }
 
+  function withTimeout(promise, ms, label) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => window.setTimeout(() => reject(new Error(`${label} timeout after ${Math.round(ms / 1000)}s`)), ms)),
+    ]);
+  }
+
   function nowMs() {
     return Date.now();
-  }
-
-  function freshCutoffSeconds() {
-    return Math.floor(Date.now() / 1000) - LIVE_LOOKBACK_SECONDS;
-  }
-
-  function hasFreshBlockTime(item, cutoffSeconds = freshCutoffSeconds()) {
-    return Number(item?.blockTime || 0) >= cutoffSeconds;
   }
 
   function provider(provider) {
@@ -230,33 +224,12 @@
   }
 
   function selectPair(pairs, mint) {
-    const raydiumUsdc = pairs.find(
+    const liquidUsdcPair = pairs.find(
       (pair) =>
-        pair.dexId === "raydium" &&
-        ((pair.baseToken?.address === mint && pair.quoteToken?.address === USDC_MINT) ||
-          (pair.quoteToken?.address === mint && pair.baseToken?.address === USDC_MINT)),
+        (pair.baseToken?.address === mint && pair.quoteToken?.address === USDC_MINT) ||
+        (pair.quoteToken?.address === mint && pair.baseToken?.address === USDC_MINT),
     );
-    if (mint === IO_MINT) return raydiumUsdc ?? pairs[0];
-    return pairs[0];
-  }
-
-  function selectWatchPairs(pairs, mint) {
-    const primary = selectPair(pairs, mint);
-    const selected = [];
-    const seen = new Set();
-
-    function add(pair) {
-      if (!pair?.pairAddress || seen.has(pair.pairAddress)) return;
-      seen.add(pair.pairAddress);
-      selected.push(pair);
-    }
-
-    add(primary);
-    pairs
-      .filter((pair) => Number(pair.volume?.h24 ?? 0) > 0 || Number(pair.liquidity?.usd ?? 0) > 0)
-      .forEach(add);
-
-    return selected.slice(0, MAX_WATCH_PAIRS);
+    return liquidUsdcPair ?? pairs[0];
   }
 
   function pairMeta(pair, mint) {
@@ -321,20 +294,18 @@
     return tx;
   }
 
-  async function fetchRecentTransactions(watchAddress, maxTransactions = MAX_TRANSACTION_FETCH) {
+  async function fetchRecentTransactions(watchAddress) {
     const signatures = [];
     let before = null;
-    const cutoffSeconds = freshCutoffSeconds();
 
     for (let page = 0; page < SIGNATURE_PAGE_COUNT; page += 1) {
       try {
         const params = { limit: SIGNATURE_PAGE_LIMIT };
         if (before) params.before = before;
         const pageSignatures = await rpcCall("getSignaturesForAddress", [watchAddress, params]);
-        signatures.push(...pageSignatures.filter((item) => hasFreshBlockTime(item, cutoffSeconds)));
+        signatures.push(...pageSignatures);
         before = pageSignatures.at(-1)?.signature ?? null;
-        const oldestBlockTime = Number(pageSignatures.at(-1)?.blockTime || 0);
-        if (!before || pageSignatures.length < SIGNATURE_PAGE_LIMIT || oldestBlockTime < cutoffSeconds) break;
+        if (!before || pageSignatures.length < SIGNATURE_PAGE_LIMIT) break;
         await sleep(120);
       } catch (error) {
         if (!signatures.length) throw error;
@@ -342,10 +313,7 @@
       }
     }
 
-    const clean = signatures
-      .filter((item) => !item.err)
-      .filter((item) => hasFreshBlockTime(item, cutoffSeconds))
-      .slice(0, maxTransactions);
+    const clean = signatures.filter((item) => !item.err).slice(0, MAX_TRANSACTION_FETCH);
     const transactions = [];
 
     for (let index = 0; index < clean.length; index += 4) {
@@ -367,31 +335,6 @@
     }
 
     return transactions;
-  }
-
-  async function fetchRecentTransactionsForTargets(targets) {
-    const bySignature = new Map();
-    let lastError = null;
-
-    for (const target of targets) {
-      try {
-        const targetTransactions = await fetchRecentTransactions(target.address, target.maxTransactions);
-        targetTransactions.forEach((item) => {
-          if (!bySignature.has(item.signatureInfo.signature)) {
-            bySignature.set(item.signatureInfo.signature, {
-              ...item,
-              target,
-            });
-          }
-        });
-      } catch (error) {
-        lastError = error;
-      }
-      await sleep(180);
-    }
-
-    if (!bySignature.size && lastError) throw lastError;
-    return [...bySignature.values()];
   }
 
   async function fetchTokenSupply(mint, options = {}) {
@@ -446,36 +389,6 @@
     return balance ? amount(balance) : null;
   }
 
-  function summarizeIoPoolTrade(signatureInfo, transaction, priceUsd) {
-    const pre = transaction.meta?.preTokenBalances ?? [];
-    const post = transaction.meta?.postTokenBalances ?? [];
-    const preIo = tokenAmountByMintAndOwner(pre, IO_MINT, IO_POOL_OWNER);
-    const postIo = tokenAmountByMintAndOwner(post, IO_MINT, IO_POOL_OWNER);
-    const preUsdc = tokenAmountByMintAndOwner(pre, USDC_MINT, IO_POOL_OWNER);
-    const postUsdc = tokenAmountByMintAndOwner(post, USDC_MINT, IO_POOL_OWNER);
-
-    if ([preIo, postIo, preUsdc, postUsdc].some((value) => value === null)) return null;
-
-    const poolTargetDelta = postIo - preIo;
-    const poolQuoteDelta = postUsdc - preUsdc;
-    if (Math.abs(poolTargetDelta) < 0.000001 && Math.abs(poolQuoteDelta) < 0.000001) return null;
-
-    const tokenAmount = Math.abs(poolTargetDelta);
-    const quoteAmount = Math.abs(poolQuoteDelta);
-    const side = poolTargetDelta < 0 ? "buy" : "sell";
-    return buildTrade({
-      signatureInfo,
-      transaction,
-      side,
-      tokenAmount,
-      quoteAmount,
-      quoteUsd: quoteAmount,
-      priceUsd,
-      tokenSymbol: "IO",
-      wallet: firstSigner(transaction),
-    });
-  }
-
   function indexedBalanceDeltas(transaction, targetMint, quoteMint) {
     const pre = transaction.meta?.preTokenBalances ?? [];
     const post = transaction.meta?.postTokenBalances ?? [];
@@ -509,6 +422,26 @@
   }
 
   function summarizeGenericTrade(signatureInfo, transaction, context) {
+    const preTarget = tokenAmountByMintAndOwner(transaction.meta?.preTokenBalances ?? [], context.targetMint, context.poolOwner);
+    const postTarget = tokenAmountByMintAndOwner(transaction.meta?.postTokenBalances ?? [], context.targetMint, context.poolOwner);
+    if (preTarget !== null && postTarget !== null) {
+      const poolTargetDelta = postTarget - preTarget;
+      if (Math.abs(poolTargetDelta) > 0.000001) {
+        const tokenAmount = Math.abs(poolTargetDelta);
+        return buildTrade({
+          signatureInfo,
+          transaction,
+          side: poolTargetDelta < 0 ? "buy" : "sell",
+          tokenAmount,
+          quoteAmount: 0,
+          quoteUsd: tokenAmount * context.priceUsd,
+          priceUsd: context.priceUsd,
+          tokenSymbol: context.tokenSymbol,
+          wallet: firstSigner(transaction),
+        });
+      }
+    }
+
     const signers = signerSet(transaction);
     const deltas = indexedBalanceDeltas(transaction, context.targetMint, context.quoteMint);
     const candidates = deltas
@@ -516,57 +449,26 @@
       .filter((item) => signers.has(item.owner));
 
     const selected = candidates[0];
-    if (selected) {
-      const side = selected.targetDelta > 0 ? "buy" : "sell";
-      const tokenAmount = Math.abs(selected.targetDelta);
-      const quoteAmount = Math.abs(selected.quoteDelta);
-      const trade = buildTrade({
-        signatureInfo,
-        transaction,
-        side,
-        tokenAmount,
-        quoteAmount,
-        quoteUsd: tokenAmount * context.priceUsd,
-        priceUsd: context.priceUsd,
-        tokenSymbol: context.tokenSymbol,
-        wallet: selected.owner,
-      });
-      return isReasonableTrade(trade, context) ? trade : null;
-    }
+    if (!selected) return null;
 
-    const preTarget = tokenAmountByMintAndOwner(transaction.meta?.preTokenBalances ?? [], context.targetMint, context.poolOwner);
-    const postTarget = tokenAmountByMintAndOwner(transaction.meta?.postTokenBalances ?? [], context.targetMint, context.poolOwner);
-    if (preTarget === null || postTarget === null) return null;
-
-    const poolTargetDelta = postTarget - preTarget;
-    if (Math.abs(poolTargetDelta) < 0.000001) return null;
-
-    const tokenAmount = Math.abs(poolTargetDelta);
-    const trade = buildTrade({
+    const side = selected.targetDelta > 0 ? "buy" : "sell";
+    const tokenAmount = Math.abs(selected.targetDelta);
+    const quoteAmount = Math.abs(selected.quoteDelta);
+    return buildTrade({
       signatureInfo,
       transaction,
-      side: poolTargetDelta < 0 ? "buy" : "sell",
+      side,
       tokenAmount,
-      quoteAmount: 0,
+      quoteAmount,
       quoteUsd: tokenAmount * context.priceUsd,
       priceUsd: context.priceUsd,
       tokenSymbol: context.tokenSymbol,
-      wallet: firstSigner(transaction),
+      wallet: selected.owner,
     });
-    return isReasonableTrade(trade, context) ? trade : null;
-  }
-
-  function isReasonableTrade(trade, context) {
-    if (!trade) return false;
-    const cap = Number(context.maxTradeUsd ?? 0);
-    if (!Number.isFinite(trade.quoteUsd) || trade.quoteUsd <= 0) return false;
-    if (!cap) return true;
-    return trade.quoteUsd <= cap;
   }
 
   function buildTrade({ signatureInfo, transaction, side, tokenAmount, quoteAmount, quoteUsd, priceUsd, tokenSymbol, wallet }) {
-    const blockTime = transaction.blockTime ?? signatureInfo.blockTime;
-    if (!hasFreshBlockTime({ blockTime })) return null;
+    const blockTime = transaction.blockTime ?? signatureInfo.blockTime ?? Math.floor(Date.now() / 1000);
     const quoteUsdValue = Number.isFinite(quoteUsd) && quoteUsd > 0 ? quoteUsd : tokenAmount * priceUsd;
     return {
       signature: signatureInfo.signature,
@@ -626,6 +528,14 @@
     const hasSolPrice = thresholds.solPriceUsd > 0;
     const holderTagged = wallet.tags?.includes("holder") || holderUsd > 0;
 
+    if (holderTagged && holderSol >= thresholds.holderSol) {
+      return {
+        tier: "whale",
+        label: "HOLDER",
+        reason: holderUsd ? `${solNotionalLabel(holderUsd, thresholds)} holder balance` : "top holder account",
+      };
+    }
+
     if (hasSolPrice && (buySol >= thresholds.whaleSol || sellSol >= thresholds.whaleSol)) {
       return {
         tier: "whale",
@@ -634,26 +544,26 @@
       };
     }
 
-    if (hasSolPrice && (buySol >= thresholds.candidateSol || sellSol >= thresholds.candidateSol || (!holderTagged && volumeSol >= thresholds.candidateSol))) {
+    if (holderTagged && holderSol >= thresholds.candidateSol) {
       return {
         tier: "candidate",
-        label: tradeTierLabel("WATCH", buySol, sellSol),
-      reason: `${compactSol(buySol)} bought / ${compactSol(sellSol)} sold; below ${thresholds.whaleSol} SOL whale threshold`,
+        label: "HOLDER WATCH",
+        reason: `${solNotionalLabel(holderUsd, thresholds)} holder balance below ${thresholds.whaleSol} SOL`,
       };
     }
 
-    if (holderTagged) {
+    if (hasSolPrice && (buySol >= thresholds.candidateSol || sellSol >= thresholds.candidateSol || volumeSol >= thresholds.candidateSol)) {
       return {
-        tier: "holder",
-        label: holderSol >= thresholds.holderSol ? "HOLDER 100+" : "HOLDER",
-        reason: holderUsd ? `${solNotionalLabel(holderUsd, thresholds)} holder balance; not counted as buy/sell whale` : "top holder account without parsed trade",
+        tier: "candidate",
+        label: tradeTierLabel("WATCH", buySol, sellSol),
+        reason: `${compactSol(buySol)} bought / ${compactSol(sellSol)} sold; below ${thresholds.whaleSol} SOL per-side whale threshold`,
       };
     }
 
     return {
       tier: "noise",
-      label: "SMALL",
-      reason: `${solNotionalLabel(volumeUsd, thresholds)} below ${thresholds.whaleSol} SOL whale threshold`,
+      label: holderTagged ? "HOLDER" : "SMALL",
+      reason: `${solNotionalLabel(holderTagged ? holderUsd : volumeUsd, thresholds)} below ${thresholds.whaleSol} SOL whale threshold`,
     };
   }
 
@@ -661,16 +571,16 @@
     const stats = walletSolStats(wallet, thresholds);
     const { buySol, sellSol, volumeSol, holderSol } = stats;
     const hasSolPrice = thresholds.solPriceUsd > 0;
+    if (wallet.tags?.includes("holder")) {
+      if (holderSol >= thresholds.holderSol) return "whale holder";
+      if (holderSol >= thresholds.candidateSol) return "holder watch";
+      return "holder";
+    }
     if (hasSolPrice && (buySol >= thresholds.whaleSol || sellSol >= thresholds.whaleSol) && wallet.trades >= 1) {
       return buySol >= sellSol ? "whale accumulation" : "whale distribution";
     }
     if (hasSolPrice && (buySol >= thresholds.candidateSol || sellSol >= thresholds.candidateSol || volumeSol >= thresholds.candidateSol) && wallet.trades >= 1) {
       return buySol >= sellSol ? "watch accumulation" : "watch distribution";
-    }
-    if (wallet.tags?.includes("holder")) {
-      if (holderSol >= thresholds.holderSol) return "large holder";
-      if (holderSol >= thresholds.candidateSol) return "holder watch";
-      return "holder";
     }
     if (wallet.buys > wallet.sells && wallet.buyUsd > wallet.sellUsd * 1.25) return "accumulation";
     if (wallet.sells > wallet.buys && wallet.sellUsd > wallet.buyUsd * 1.25) return "distribution";
@@ -912,7 +822,7 @@
         patternNotes.push(`Still net long with positive open edge at current price.`);
       }
       if (whaleTier !== "noise") {
-        patternNotes.push(`${whaleLabel}: ${whaleReason}. Threshold ${thresholds.whaleSol} SOL whale / ${thresholds.candidateSol} SOL watch in last ${LIVE_LOOKBACK_HOURS}h.`);
+        patternNotes.push(`${whaleLabel}: ${whaleReason}. Threshold ${thresholds.whaleSol} SOL whale / ${thresholds.candidateSol} SOL watch.`);
       }
       if (sellUsd > buyUsd * 1.35) {
         patternNotes.push(`Sell notional dominates; avoid copy-buying without fresh confirmation.`);
@@ -1039,8 +949,10 @@
         sellSol: 0,
         volumeSol: usdToSol(holder.holderUsd, thresholds.solPriceUsd),
         netIo: holder.holderToken,
-        hours: `H#${holder.holderRank}`,
-        pattern: holder.holderUsd >= thresholds.holderUsd ? "large holder" : "holder watch",
+        hours: `holder #${holder.holderRank}`,
+        activityLabel: `holder #${holder.holderRank}`,
+        lastSeenTime: "Holder snapshot from public RPC; no recent trade parsed.",
+        pattern: tier.tier === "whale" ? "whale holder" : tier.tier === "candidate" ? "holder watch" : "holder",
         score: holderScore,
         holderRank: holder.holderRank,
         holderToken: holder.holderToken,
@@ -1100,6 +1012,8 @@
           sellToken: 0,
           firstHour: trade.hourUtc,
           lastHour: trade.hourUtc,
+          firstBlock: trade.blockTime,
+          lastBlock: trade.blockTime,
           trades: 0,
           tags: [],
         });
@@ -1109,6 +1023,8 @@
       wallet.trades += 1;
       wallet.firstHour = Math.min(wallet.firstHour, trade.hourUtc);
       wallet.lastHour = Math.max(wallet.lastHour, trade.hourUtc);
+      wallet.firstBlock = Math.min(wallet.firstBlock, trade.blockTime);
+      wallet.lastBlock = Math.max(wallet.lastBlock, trade.blockTime);
       if (isBuy) {
         wallet.buys += 1;
         wallet.buyUsd += trade.quoteUsd;
@@ -1147,7 +1063,10 @@
           sellSol,
           volumeSol,
           netIo: netToken,
-          hours: `${String(wallet.firstHour).padStart(2, "0")}-${String(wallet.lastHour).padStart(2, "0")}`,
+          hours: `${wallet.trades} tx · ${formatUtcHour(wallet.lastHour)} UTC`,
+          activityLabel: `${wallet.trades} tx · last ${new Date(wallet.lastBlock * 1000).toLocaleTimeString("en-GB", { hour12: false, timeZone: "UTC" })} UTC`,
+          firstSeenTime: formatUtcDateTime(wallet.firstBlock),
+          lastSeenTime: formatUtcDateTime(wallet.lastBlock),
           pattern,
           score,
           whaleTier: tier.tier,
@@ -1175,7 +1094,7 @@
           wallet.whaleTier === "whale" ? "whale" : null,
           wallet.whaleTier === "candidate" ? "candidate" : null,
           detail.primaryPattern,
-          detail.signals.includes("WHALE") ? "whale" : null,
+          detail.signals.includes("WHALE") || detail.signals.includes("WHALE HOLDER") ? "whale" : null,
           detail.signals.includes("ACCUMULATION") ? "accumulation" : null,
           detail.signals.includes("DISTRIBUTION") ? "distribution" : null,
         ].filter(Boolean)),
@@ -1190,7 +1109,7 @@
     const whaleBuyRows = whaleRows.filter((wallet) => (wallet.buySol ?? 0) >= thresholds.whaleSol);
     const whaleSellRows = whaleRows.filter((wallet) => (wallet.sellSol ?? 0) >= thresholds.whaleSol);
     const candidateRows = walletRows.filter((wallet) => wallet.whaleTier === "candidate" || wallet.tags.includes("candidate"));
-    const whaleVolumeUsd = whaleRows.reduce((sum, wallet) => sum + (wallet.volumeUsd ?? 0), 0);
+    const whaleVolumeUsd = whaleRows.reduce((sum, wallet) => sum + Math.max(wallet.volumeUsd ?? 0, wallet.holderUsd ?? 0), 0);
     const whaleVolumeSol = usdToSol(whaleVolumeUsd, thresholds.solPriceUsd);
     const whaleNetToken = whaleRows.reduce((sum, wallet) => sum + (wallet.netIo ?? 0), 0);
     const whaleNetUsd = whaleRows.reduce((sum, wallet) => sum + ((wallet.buyUsd ?? 0) - (wallet.sellUsd ?? 0)), 0);
@@ -1200,9 +1119,7 @@
     const peakHour = hourly
       .map(([hour, buys, sells]) => ({ hour, total: buys + sells }))
       .sort((a, b) => b.total - a.total)[0]?.hour;
-    const confidence = whaleRows.length
-      ? Math.min(92, Math.round(35 + whaleRows.length * 12 + trades.length * 0.45 + Math.min(18, trackedWallets * 1.2)))
-      : Math.min(35, Math.round(8 + candidateRows.length * 4));
+    const confidence = Math.min(92, Math.round(35 + trades.length * 1.15 + Math.min(22, trackedWallets * 1.6)));
     const volumeUsd = Number(pair.volume?.h24 ?? totals.buyUsd + totals.sellUsd);
     const txns = pair.txns ?? {};
 
@@ -1212,12 +1129,12 @@
       walletDetails,
       hourly,
       kpis: [
-        { label: "Ballenas foco", value: String(whaleRows.length), delta: `${whaleBuyRows.length} buy / ${whaleSellRows.length} sell >=${thresholds.whaleSol} SOL / ${LIVE_LOOKBACK_HOURS}h`, tone: whaleRows.length ? "positive" : "warning" },
+        { label: "Ballenas foco", value: String(whaleRows.length), delta: `${whaleBuyRows.length} buy / ${whaleSellRows.length} sell >=${thresholds.whaleSol} SOL`, tone: whaleRows.length ? "positive" : "warning" },
         { label: "Whale flow", value: `${signedCompact(whaleNetToken, ` ${tokenSymbol}`)}`, delta: thresholds.solPriceUsd ? signedCompact(whaleNetSol, " SOL eq") : "SOL price unavailable", tone: whaleNetToken >= 0 ? "positive" : "negative" },
         { label: "Whale volume", value: thresholds.solPriceUsd ? compactSol(whaleVolumeSol) : compactUsd(whaleVolumeUsd), delta: `${compactSol(watchVolumeSol)} watch / ${whaleThresholdLabel(thresholds)}`, tone: whaleVolumeSol >= thresholds.whaleSol ? "positive" : "warning" },
-        { label: "Muestra 24h", value: `${totals.buys}/${totals.sells}`, delta: `${activeWalletCount} signers parsed`, tone: "warning" },
-        { label: "Volumen par 24h", value: compactUsd(volumeUsd), delta: `${compactUsd(Number(pair.liquidity?.usd ?? 0))} liq`, tone: "positive" },
-        { label: "Confianza", value: whaleRows.length ? `${confidence}/100` : "NO SIGNAL", delta: whaleRows.length ? (peakHour === undefined ? "syncing" : `${String(peakHour).padStart(2, "0")}:00 UTC peak`) : `0 wallets >=${thresholds.whaleSol} SOL`, tone: whaleRows.length ? "positive" : "warning" },
+        { label: "Muestra live", value: `${totals.buys}/${totals.sells}`, delta: `${activeWalletCount} signers parsed`, tone: "warning" },
+        { label: "Volumen 24h", value: compactUsd(volumeUsd), delta: `${compactUsd(Number(pair.liquidity?.usd ?? 0))} liq`, tone: "positive" },
+        { label: "Confianza", value: `${confidence}/100`, delta: peakHour === undefined ? "syncing" : `${String(peakHour).padStart(2, "0")}:00 UTC peak`, tone: whaleRows.length ? "positive" : "warning" },
       ],
       whaleStats: {
         whales: whaleRows.length,
@@ -1262,7 +1179,7 @@
       {
         title: "Whale pressure",
         value: thresholds.solPriceUsd ? signedCompact(whaleNetSol, " SOL eq") : signedCompact(whaleNetUsd, " USD eq"),
-        copy: `${whaleStats?.buyWhales ?? 0} buy-side and ${whaleStats?.sellWhales ?? 0} sell-side wallets >=${thresholds.whaleSol} SOL in last ${LIVE_LOOKBACK_HOURS}h. Watch: ${whaleStats?.candidates ?? 0} wallets / ${compactSol(whaleStats?.watchVolumeSol ?? 0)}.`,
+        copy: `${whaleStats?.buyWhales ?? 0} buy-side and ${whaleStats?.sellWhales ?? 0} sell-side wallets >=${thresholds.whaleSol} SOL. Watch: ${whaleStats?.candidates ?? 0} wallets / ${compactSol(whaleStats?.watchVolumeSol ?? 0)}.`,
         tone: pressureTone,
       },
       {
@@ -1274,15 +1191,15 @@
         tone: walletTone,
       },
       {
-        title: "Hora activa",
+        title: "Cluster activo RPC",
         value: `${String(peak.hour).padStart(2, "0")}:00 UTC`,
-        copy: `${peak.buy} buys and ${peak.sell} sells in the strongest parsed hour.`,
+        copy: `${peak.buy} buys and ${peak.sell} sells in the strongest parsed UTC hour from the recent RPC sample, not a full 24h index.`,
         tone: peak.buy >= peak.sell ? "buy" : "sell",
       },
       {
         title: "Risk read",
         value: tokenSymbol,
-        copy: `Whale means fresh buy/sell >=${thresholds.whaleSol} SOL equivalent in last ${LIVE_LOOKBACK_HOURS}h; holder coverage is separate from active whale trades.`,
+        copy: `Whale means >=${thresholds.whaleSol} SOL equivalent; holder coverage still requires dedicated RPC or indexer.`,
         tone: "watch",
       },
     ];
@@ -1298,42 +1215,13 @@
     const pressureScore = Math.min(96, Math.max(12, Math.round(scoreBase + Math.min(20, Math.abs(whaleNetSol) * 1.5))));
     const topWallet = wallets.find((wallet) => wallet.whaleTier === "whale") ?? wallets.find((wallet) => wallet.whaleTier === "candidate") ?? wallets[0];
 
-    if (!(whaleStats?.whales ?? 0)) {
-      return [
-        {
-          score: 0,
-          title: `No ${thresholds.whaleSol}+ SOL whale`,
-          meta: `Last ${LIVE_LOOKBACK_HOURS}h / ${pairMetaResult.poolLabel}`,
-          copy: `Parsed ${trades.length} swaps and ${whaleStats?.candidates ?? 0} watch wallets, but no buy or sell reached ${thresholds.whaleSol} SOL. No copy-trade signal.`,
-        },
-        {
-          score: Math.min(45, Math.round((whaleStats?.candidates ?? 0) * 7)),
-          title: "Watch flow only",
-          meta: `${compactSol(whaleStats?.watchVolumeSol ?? 0)} below whale threshold`,
-          copy: topWallet ? `Top watch ${topWallet.address.slice(0, 4)}...${topWallet.address.slice(-4)} still needs a fresh ${thresholds.whaleSol}+ SOL print.` : "No watch wallet is active enough to follow.",
-        },
-        {
-          score: Math.min(88, Math.round(Number(pairMetaResult.pair.txns?.h1?.buys ?? 0) + Number(pairMetaResult.pair.txns?.h1?.sells ?? 0))),
-          title: "DexScreener 1h activity",
-          meta: "live pair API",
-          copy: `${pairMetaResult.pair.txns?.h1?.buys ?? 0} buys / ${pairMetaResult.pair.txns?.h1?.sells ?? 0} sells in pair feed; this is pair-wide, not whale-attributed.`,
-        },
-        {
-          score: 0,
-          title: "Execution lock",
-          meta: "Risk gate",
-          copy: "Dashboard is live-read only; no signing or trading path is active.",
-        },
-      ];
-    }
-
     return [
       {
         score: pressureScore,
         title: whaleNetUsd >= 0 ? "Whale accumulation" : "Whale distribution",
         meta: `${pairMetaResult.poolLabel}`,
         copy: thresholds.solPriceUsd
-          ? `${signedCompact(whaleNetSol, " SOL eq")} from wallets with buy or sell side >=${thresholds.whaleSol} SOL in last ${LIVE_LOOKBACK_HOURS}h; ${whaleStats?.candidates ?? 0} watch wallets are below whale threshold.`
+          ? `${signedCompact(whaleNetSol, " SOL eq")} from wallets with buy or sell side >=${thresholds.whaleSol} SOL; ${whaleStats?.candidates ?? 0} watch wallets are below whale threshold.`
           : "SOL price unavailable; whale classification is locked until conversion returns.",
       },
       {
@@ -1350,19 +1238,18 @@
       },
       {
         score: 0,
-        title: "Execution lock",
+        title: "Execution policy",
         meta: "Risk gate",
-        copy: "Dashboard is live-read only; no signing or trading path is active.",
+        copy: "Dashboard is visual. Hermes/backend controls strategy and any wallet execution through risk gates.",
       },
     ];
   }
 
-  function buildEvents(trades, tokenSymbol, thresholds) {
-    const whaleTrades = trades.filter((trade) => usdToSol(trade.quoteUsd, thresholds.solPriceUsd) >= thresholds.whaleSol);
-    return whaleTrades.slice(0, 12).map((trade) => ({
+  function buildEvents(trades, tokenSymbol) {
+    return trades.slice(0, 12).map((trade) => ({
       side: trade.side,
       title: trade.side === "buy" ? `Buy ${tokenSymbol}` : `Sell ${tokenSymbol}`,
-      value: `${trade.side === "buy" ? "+" : "-"}${compact(trade.tokenAmount)} ${tokenSymbol} / ${compactSol(usdToSol(trade.quoteUsd, thresholds.solPriceUsd))}`,
+      value: `${trade.side === "buy" ? "+" : "-"}${compact(trade.tokenAmount)} ${tokenSymbol}`,
       wallet: `${trade.wallet.slice(0, 4)}...${trade.wallet.slice(-4)}`,
       time: new Date(trade.blockTime * 1000).toLocaleTimeString("en-GB", { hour12: false, timeZone: "UTC" }) + " UTC",
     }));
@@ -1382,7 +1269,7 @@
       risk: [
         { label: "Live execution", value: "blocked", state: "blocked" },
         { label: "Provider abuse guard", value: "browser cooldown", state: "locked" },
-        { label: "Public RPC", value: snapshotMeta.degraded ? "degraded" : `last ${LIVE_LOOKBACK_HOURS}h only`, state: snapshotMeta.degraded ? "blocked" : "locked" },
+        { label: "Public RPC", value: snapshotMeta.degraded ? "degraded" : "sample only", state: snapshotMeta.degraded ? "blocked" : "locked" },
         { label: "Max trade", value: "requires backend", state: "locked" },
         { label: "Approval", value: "dashboard gate", state: "locked" },
         { label: "Hermes execute", value: "blocked", state: "blocked" },
@@ -1400,30 +1287,58 @@
 
   function buildEmptyLiveData(mint, message, pair) {
     const tokenSymbol = pair?.baseToken?.address === mint ? pair.baseToken.symbol : pair?.quoteToken?.symbol ?? "TOKEN";
+    const buyCount = Number(pair?.txns?.h24?.buys ?? 0);
+    const sellCount = Number(pair?.txns?.h24?.sells ?? 0);
+    const volumeUsd = Number(pair?.volume?.h24 ?? 0);
+    const liquidityUsd = Number(pair?.liquidity?.usd ?? 0);
+    const priceUsd = Number(pair?.priceUsd ?? 0);
+    const netTx = buyCount - sellCount;
+    const realPairDataAvailable = Boolean(pair);
     return {
+      totals: {
+        buys: buyCount,
+        sells: sellCount,
+        buyUsd: buyCount + sellCount > 0 ? volumeUsd * (buyCount / (buyCount + sellCount)) : 0,
+        sellUsd: buyCount + sellCount > 0 ? volumeUsd * (sellCount / (buyCount + sellCount)) : 0,
+      },
+      whaleStats: {
+        whales: 0,
+        buyWhales: 0,
+        sellWhales: 0,
+        candidates: 0,
+        holderOnly: 0,
+        volumeUsd: 0,
+        volumeSol: 0,
+        watchVolumeUsd: 0,
+        watchVolumeSol: 0,
+        netToken: 0,
+        netUsd: 0,
+        netSol: 0,
+        thresholds: whaleThresholds(pair, 0),
+      },
       token: {
         symbol: tokenSymbol,
         name: pair?.baseToken?.address === mint ? pair.baseToken.name : pair?.quoteToken?.name ?? "custom mint",
         mint,
         pool: pair ? `${pair.dexId} ${pair.baseToken?.symbol}/${pair.quoteToken?.symbol}`.toUpperCase() : "No pool resolved",
-        window: `last ${LIVE_LOOKBACK_HOURS}h / whale >=${WHALE_SOL_THRESHOLD} SOL`,
+        window: realPairDataAvailable ? `market live ${new Date().toLocaleTimeString("en-GB", { hour12: false })}` : "live degraded",
       },
       kpis: [
-        { label: "Ballenas foco", value: "0", delta: `>=${WHALE_SOL_THRESHOLD} SOL / ${LIVE_LOOKBACK_HOURS}h unavailable`, tone: "warning" },
-        { label: "Compras", value: "0", delta: "rpc unavailable", tone: "warning" },
-        { label: "Ventas", value: "0", delta: "rpc unavailable", tone: "warning" },
-        { label: "Net flow", value: "0", delta: "no signal", tone: "warning" },
-        { label: "Precio", value: pair?.priceUsd ? compactUsd(Number(pair.priceUsd)) : "n/a", delta: "DexScreener", tone: pair ? "positive" : "warning" },
-        { label: "Confianza", value: "0/100", delta: "degraded", tone: "negative" },
+        { label: "Precio real", value: priceUsd ? compactUsd(priceUsd) : "n/a", delta: "DexScreener live", tone: realPairDataAvailable ? "positive" : "warning" },
+        { label: "Volumen 24h", value: compactUsd(volumeUsd), delta: `${compactUsd(liquidityUsd)} liq`, tone: realPairDataAvailable ? "positive" : "warning" },
+        { label: "Tx 24h", value: `${buyCount}/${sellCount}`, delta: "buys/sells reales", tone: buyCount >= sellCount ? "positive" : "negative" },
+        { label: "Net tx", value: signedCompact(netTx), delta: "DexScreener direction", tone: netTx >= 0 ? "positive" : "negative" },
+        { label: "Whales RPC", value: "0", delta: message, tone: "warning" },
+        { label: "Confianza", value: realPairDataAvailable ? "45/100" : "0/100", delta: realPairDataAvailable ? "market-only" : "degraded", tone: realPairDataAvailable ? "warning" : "negative" },
       ],
       wallets: [],
       hourly: Array.from({ length: 24 }, (_, hour) => [hour, 0, 0]),
-      patterns: [{ title: "Live source degraded", value: "blocked", copy: message, tone: "watch" }],
-      signals: [{ score: 0, title: "No execution signal", meta: "degraded", copy: "No trade should be executed from this state." }],
+      patterns: [{ title: realPairDataAvailable ? "Market-only live" : "Live source degraded", value: realPairDataAvailable ? compactUsd(volumeUsd) : "blocked", copy: `${message}. Market data is real; wallet attribution waits for RPC/indexer response.`, tone: "watch" }],
+      signals: [{ score: realPairDataAvailable ? 45 : 0, title: "No whale execution signal", meta: realPairDataAvailable ? "real market data" : "degraded", copy: "No trade should be executed without normalized wallet flow." }],
       events: [],
       walletDetails: {},
-      bot: buildBotState({ providerLabel: "degraded", degraded: true }, 0),
-      source: { degraded: true, message },
+      bot: buildBotState({ providerLabel: realPairDataAvailable ? "DEXSCREENER LIVE / RPC DEGRADED" : "degraded", degraded: true }, 0),
+      source: { degraded: true, message, marketOnly: realPairDataAvailable },
     };
   }
 
@@ -1431,73 +1346,39 @@
     let pairContext = null;
     try {
       const pairs = await fetchDexPairs(mint);
-      const watchPairs = selectWatchPairs(pairs, mint);
-      pairContext = pairMeta(watchPairs[0], mint);
-      const watchTargets = watchPairs.map((pair) => {
-        const context = pairMeta(pair, mint);
-        return {
-          address: pair.pairAddress,
-          label: context.poolLabel,
-          maxTransactions: MAX_TRANSACTION_FETCH_PER_TARGET,
-          context: {
-            targetMint: mint,
-            quoteMint: context.quote?.address,
-            poolOwner: pair.pairAddress,
-            tokenSymbol: context.target?.symbol ?? "TOKEN",
-            priceUsd: Number(context.priceUsd || pairContext.priceUsd || 0),
-            maxTradeUsd: Math.max(
-              Number(pair.volume?.h24 ?? 0) * 1.5,
-              Number(pair.liquidity?.usd ?? 0) * 2.5,
-              25_000,
-            ),
-          },
-        };
-      });
-      if (mint === IO_MINT && !watchTargets.some((target) => target.address === IO_VAULT)) {
-        watchTargets.unshift({
-          address: IO_VAULT,
-          label: `${pairContext.poolLabel} VAULT`,
-          maxTransactions: MAX_TRANSACTION_FETCH_PER_TARGET,
-          context: {
-            targetMint: mint,
-            quoteMint: USDC_MINT,
-            poolOwner: IO_POOL_OWNER,
-            tokenSymbol: "IO",
-            priceUsd: pairContext.priceUsd,
-            maxTradeUsd: Math.max(
-              Number(pairContext.pair.volume?.h24 ?? 0) * 1.5,
-              Number(pairContext.pair.liquidity?.usd ?? 0) * 2.5,
-              25_000,
-            ),
-          },
-        });
-      }
-      const ignoredHolderOwners = new Set([
-        ...watchPairs.map((pair) => pair.pairAddress),
-        mint === IO_MINT ? IO_POOL_OWNER : null,
-      ].filter(Boolean));
+      pairContext = pairMeta(selectPair(pairs, mint), mint);
+      const watchAddress = pairContext.pair.pairAddress;
+      const ignoredHolderOwners = new Set([pairContext.pair.pairAddress].filter(Boolean));
       let transactions = [];
       let transactionError = null;
       try {
-        transactions = await fetchRecentTransactionsForTargets(watchTargets);
+        transactions = await withTimeout(fetchRecentTransactions(watchAddress), TX_SAMPLE_TIMEOUT_MS, "wallet tx scan");
       } catch (error) {
         transactionError = error;
       }
       const [solPriceUsd, topHolders] = await Promise.all([
         fetchSolUsdPrice(),
-        fetchTopTokenHolders(
-          mint,
-          pairContext.priceUsd,
-          pairContext.target?.symbol ?? "TOKEN",
-          ignoredHolderOwners,
-        ),
+        withTimeout(
+          fetchTopTokenHolders(
+            mint,
+            pairContext.priceUsd,
+            pairContext.target?.symbol ?? "TOKEN",
+            ignoredHolderOwners,
+          ),
+          HOLDER_SAMPLE_TIMEOUT_MS,
+          "top holder scan",
+        ).catch(() => []),
       ]);
+      const genericContext = {
+        targetMint: mint,
+        quoteMint: pairContext.quote?.address,
+        poolOwner: pairContext.pair.pairAddress,
+        tokenSymbol: pairContext.target?.symbol ?? "TOKEN",
+        priceUsd: pairContext.priceUsd,
+      };
+
       const trades = transactions
-        .map(({ signatureInfo, transaction, target }) => {
-          const genericTrade = summarizeGenericTrade(signatureInfo, transaction, target.context);
-          if (genericTrade) return genericTrade;
-          return mint === IO_MINT ? summarizeIoPoolTrade(signatureInfo, transaction, pairContext.priceUsd) : null;
-        })
+        .map(({ signatureInfo, transaction }) => summarizeGenericTrade(signatureInfo, transaction, genericContext))
         .filter(Boolean)
         .sort((a, b) => b.blockTime - a.blockTime)
         .slice(0, MAX_RECENT_TRADES);
@@ -1512,17 +1393,15 @@
       );
 
       const sourceLabel = transactionError
-        ? "RPC HOLDERS / TX DEGRADED"
-        : watchTargets.length > 1
-          ? "LIVE RPC MULTI-PAIR"
-          : "LIVE RPC PAIR";
+        ? "DEXSCREENER LIVE / RPC DEGRADED"
+        : "LIVE RPC PAIR";
       return {
         token: {
           symbol: pairContext.target?.symbol ?? "TOKEN",
           name: pairContext.target?.name ?? "custom mint",
           mint,
-          pool: watchTargets.length > 1 ? `${pairContext.poolLabel} + ${watchTargets.length - 1} ROUTES` : pairContext.poolLabel,
-          window: `last ${LIVE_LOOKBACK_HOURS}h / whale >=${aggregate.whaleStats.thresholds.whaleSol} SOL`,
+          pool: pairContext.poolLabel,
+          window: `live ${new Date().toLocaleTimeString("en-GB", { hour12: false })}`,
         },
         kpis: aggregate.kpis,
         wallets: aggregate.wallets,
@@ -1530,23 +1409,16 @@
         hourly: aggregate.hourly,
         patterns: buildPatterns(aggregate, pairContext.target?.symbol ?? "TOKEN"),
         signals: buildSignals(aggregate, pairContext, trades),
-        events: buildEvents(trades, pairContext.target?.symbol ?? "TOKEN", aggregate.whaleStats.thresholds),
+        events: buildEvents(trades, pairContext.target?.symbol ?? "TOKEN"),
         bot: buildBotState({ providerLabel: sourceLabel, degraded: Boolean(transactionError) }, trades.length),
         source: {
           degraded: Boolean(transactionError),
           message: transactionError?.message ?? null,
           providerLabel: sourceLabel,
           pairAddress: pairContext.pair.pairAddress,
-          watchAddress: watchTargets[0]?.address,
-          watchAddresses: watchTargets.map((target) => target.address),
-          watchedPairs: watchTargets.length,
+          watchAddress,
           parsedTrades: trades.length,
           topHolders: topHolders.length,
-          lookbackHours: LIVE_LOOKBACK_HOURS,
-          thresholds: {
-            whaleSol: aggregate.whaleStats.thresholds.whaleSol,
-            candidateSol: aggregate.whaleStats.thresholds.candidateSol,
-          },
           updatedAt: new Date().toISOString(),
         },
       };

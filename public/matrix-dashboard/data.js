@@ -6,7 +6,7 @@ window.TRACKER_FIXTURES = {
       name: "io.net",
       mint: "BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K",
       pool: "Raydium CLMM IO/USDC",
-      window: "last 24h / whale >=30 SOL",
+      window: "live bootstrap",
     },
     bot: {
       mode: "DRY_RUN",

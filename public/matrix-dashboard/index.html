@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Solana Wallet Matrix Tracker</title>
+    <title>IO Local Bot Cockpit</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -12,31 +12,17 @@
     <div class="app-shell">
       <header class="command-bar">
         <div class="brand-block">
-          <div class="brand-mark">IO</div>
+          <div class="brand-mark">SOL</div>
           <div>
-            <h1>Wallet Matrix Tracker</h1>
-            <p>Solana / wallet intelligence</p>
+            <h1>IO Local Bot Cockpit</h1>
+            <p>Next sell target / caja / inventario</p>
           </div>
         </div>
 
-        <form id="scanForm" class="scan-form">
-          <label class="field">
-            <span>Token mint</span>
-            <input
-              id="tokenInput"
-              autocomplete="off"
-              spellcheck="false"
-              value="BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K"
-            />
-          </label>
-          <label class="field network-field">
-            <span>Red</span>
-            <select id="networkSelect">
-              <option>Solana Mainnet</option>
-            </select>
-          </label>
-          <button id="scanButton" class="scan-button" type="submit">Scan</button>
-        </form>
+        <div class="tracked-token">
+          <span>IO mint</span>
+          <code>BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K</code>
+        </div>
 
         <div class="system-status" id="systemStatus">
           <span class="pulse"></span>
@@ -47,7 +33,7 @@
       <section class="token-strip panel">
         <div>
           <span class="eyebrow">Token</span>
-          <strong id="tokenTitle">IO / io.net</strong>
+          <strong id="tokenTitle">TOKEN / esperando scan real</strong>
         </div>
         <div>
           <span class="eyebrow">Mint</span>
@@ -55,47 +41,70 @@
         </div>
         <div>
           <span class="eyebrow">Pool foco</span>
-          <strong id="focusPool">Raydium CLMM IO/USDC</strong>
+          <strong id="focusPool">Sin datos hardcoded</strong>
         </div>
         <div>
           <span class="eyebrow">Ventana</span>
-          <strong id="windowLabel">last 24h / whale >=30 SOL</strong>
+          <strong id="windowLabel">live syncing</strong>
         </div>
-      </section>
-
-      <section class="filter-policy" aria-label="Filtro operativo activo">
-        <span>Fresh 24h only</span>
-        <span>Whale >=30 SOL</span>
-        <span>Buys/Sells parsed swaps</span>
-        <span>No stale fallback</span>
       </section>
 
       <section id="kpiGrid" class="kpi-grid" aria-label="Resumen"></section>
 
-      <section class="control-grid" aria-label="Control visual del bot">
+      <section class="panel money-flow-panel" aria-label="Mapa de flujo de dinero">
+        <div class="money-flow-header">
+          <div>
+            <span class="eyebrow">Money flow</span>
+            <h2>Cómo se está moviendo el dinero</h2>
+          </div>
+          <span id="flowVerdict" class="status-chip warning">SYNCING</span>
+        </div>
+        <div class="money-flow-grid">
+          <div class="flow-main-card">
+            <span class="eyebrow">Presión neta ballena</span>
+            <strong id="flowNetValue">--</strong>
+            <p id="flowNarrative">Esperando datos on-chain.</p>
+            <div class="flow-meter" aria-hidden="true">
+              <i id="flowSellBar" class="sell"></i>
+              <i id="flowBuyBar" class="buy"></i>
+            </div>
+            <div class="flow-meter-labels">
+              <span id="flowSellLabel">Sell --</span>
+              <span id="flowBuyLabel">Buy --</span>
+            </div>
+          </div>
+          <div id="flowStats" class="flow-stat-grid"></div>
+          <div class="flow-feed-card">
+            <div class="flow-feed-head">
+              <span class="eyebrow">Backend whale feed</span>
+              <button id="whaleRefreshButton" class="mini-refresh" type="button">Refresh</button>
+            </div>
+            <div id="backendWhaleFeed" class="backend-whale-feed"></div>
+          </div>
+          <div class="flow-feed-card">
+            <div class="flow-feed-head">
+              <span class="eyebrow">Top wallets ahora</span>
+              <span id="flowWindowLabel">live</span>
+            </div>
+            <div id="topMoneyWallets" class="top-money-wallets"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="control-grid" aria-label="Estado automático del bot">
         <section class="panel bot-control-panel">
           <div class="panel-header">
             <div>
               <span class="eyebrow">Bot</span>
-              <h2>Control visual</h2>
+              <h2>Estado automático</h2>
             </div>
-            <span id="botModeBadge" class="status-chip warning">DRY RUN</span>
+            <span id="botModeBadge" class="status-chip warning">AUTO MONITOR</span>
           </div>
           <div class="control-body">
-            <div class="mode-switch" role="group" aria-label="Modo del bot">
-              <button class="mode-button" data-bot-mode="OFF" type="button">Off</button>
-              <button class="mode-button active" data-bot-mode="DRY_RUN" type="button">Dry</button>
-              <button class="mode-button" data-bot-mode="ARMED" type="button">Armed</button>
-              <button class="mode-button locked" data-bot-mode="LIVE_LOCKED" type="button">Live</button>
-            </div>
             <div id="botRuntime" class="runtime-grid"></div>
-            <div class="control-actions">
-              <button class="control-button" data-bot-action="dry-run" type="button">Strategy step</button>
-              <button class="control-button" data-bot-action="quote" type="button">Manual quote</button>
-              <button class="control-button" data-bot-action="approve" type="button">Approve next</button>
-              <button class="control-button danger" data-bot-action="emergency-stop" type="button">Emergency stop</button>
-            </div>
-            <div id="botActionLog" class="action-log"></div>
+            <div class="bot-cockpit-grid" id="botWalletCockpit"></div>
+            <div class="trade-tape" id="botTradeTape"></div>
+            <div class="holders-panel" id="topHolderPanel"></div>
           </div>
         </section>
 
@@ -127,11 +136,11 @@
           <div class="panel-header">
             <div>
               <span class="eyebrow">Wallets</span>
-              <h2>Ballenas foco</h2>
+              <h2>Wallets foco para IO</h2>
             </div>
             <div class="segmented" role="tablist" aria-label="Filtro de wallets">
-              <button class="segment active" data-filter="whale" type="button">Whale 30+</button>
-              <button class="segment" data-filter="candidate" type="button">Watch 10+</button>
+              <button class="segment active" data-filter="whale" type="button">Whale 100+</button>
+              <button class="segment" data-filter="candidate" type="button">Watch 25+</button>
               <button class="segment" data-filter="distribution" type="button">Sell</button>
               <button class="segment" data-filter="all" type="button">All</button>
             </div>
@@ -147,9 +156,9 @@
                   <th>Sells</th>
                   <th>Sell SOL eq</th>
                   <th>Vol/Hold USD</th>
-                  <th>Net IO</th>
+                  <th>Net token</th>
                   <th>Nivel</th>
-                  <th>Horas</th>
+                  <th>Actividad UTC</th>
                   <th>Patron</th>
                   <th>Score</th>
                   <th>Scan</th>
@@ -163,12 +172,12 @@
         <section class="panel heatmap-panel">
           <div class="panel-header">
             <div>
-              <span class="eyebrow">24h</span>
-              <h2>Horas compra/venta</h2>
+              <span class="eyebrow">Muestra RPC reciente</span>
+              <h2>Clusters buy/sell por hora UTC</h2>
             </div>
             <div class="legend">
-              <span><i class="buy-dot"></i>Buy</span>
-              <span><i class="sell-dot"></i>Sell</span>
+              <span><i class="buy-dot"></i>Buy count</span>
+              <span><i class="sell-dot"></i>Sell count</span>
             </div>
           </div>
           <div id="hourHeatmap" class="hour-heatmap"></div>
@@ -218,7 +227,6 @@
       </main>
     </div>
 
-    <script src="./data.js"></script>
     <script src="./live.js"></script>
     <script src="./app.js"></script>
   </body>

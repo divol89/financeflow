@@ -1,18 +1,23 @@
 (function () {
-  const fixtures = window.TRACKER_FIXTURES;
+  const DEFAULT_MINT = "BZLbGTNCSFfoth2GYDtwr7e4imWzpR5jqcUuGEwr646K";
   const state = {
-    data: fixtures.io,
+    data: buildInitialData(DEFAULT_MINT),
     filter: "whale",
-    botMode: fixtures.io.bot.mode,
+    botMode: "DRY_RUN",
     refreshTimer: null,
     syncInFlight: false,
     activeRequestId: 0,
-    activeMint: fixtures.ioMint,
+    activeMint: DEFAULT_MINT,
     selectedWalletAddress: null,
     botBackend: null,
+    botCockpit: null,
     hermesCapabilities: null,
     pendingApprovalId: null,
     backendWasOnline: false,
+    whaleActivity: null,
+    whaleActivityLoading: false,
+    watcherState: null,
+    topHolders: null,
   };
 
   const els = {
@@ -33,8 +38,23 @@
     patterns: document.getElementById("patternList"),
     signals: document.getElementById("signalFeed"),
     events: document.getElementById("eventStream"),
+    flowVerdict: document.getElementById("flowVerdict"),
+    flowNetValue: document.getElementById("flowNetValue"),
+    flowNarrative: document.getElementById("flowNarrative"),
+    flowSellBar: document.getElementById("flowSellBar"),
+    flowBuyBar: document.getElementById("flowBuyBar"),
+    flowSellLabel: document.getElementById("flowSellLabel"),
+    flowBuyLabel: document.getElementById("flowBuyLabel"),
+    flowStats: document.getElementById("flowStats"),
+    backendWhaleFeed: document.getElementById("backendWhaleFeed"),
+    topMoneyWallets: document.getElementById("topMoneyWallets"),
+    flowWindowLabel: document.getElementById("flowWindowLabel"),
+    whaleRefreshButton: document.getElementById("whaleRefreshButton"),
     botModeBadge: document.getElementById("botModeBadge"),
     botRuntime: document.getElementById("botRuntime"),
+    botWalletCockpit: document.getElementById("botWalletCockpit"),
+    botTradeTape: document.getElementById("botTradeTape"),
+    topHolderPanel: document.getElementById("topHolderPanel"),
     riskGateList: document.getElementById("riskGateList"),
     hermesStatus: document.getElementById("hermesStatus"),
     hermesBridge: document.getElementById("hermesBridge"),
@@ -45,16 +65,60 @@
 
   const base58Pattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
   const REFRESH_MS = 75_000;
-  function isLocalRuntime() {
-    const host = window.location.hostname;
-    return window.location.protocol === "file:" || host === "127.0.0.1" || host === "localhost";
+  const BOT_API_FALLBACK_URL = "http://127.0.0.1:8787";
+  const WSOL_MINT = "So11111111111111111111111111111111111111112";
+  const SCAN_TIMEOUT_MS = 24_000;
+
+  function buildBotShell() {
+    return {
+      mode: "DRY_RUN",
+      runtime: [
+        { label: "Data feed", value: "waiting", tone: "warning" },
+        { label: "Parsed txs", value: "0", tone: "warning" },
+        { label: "Refresh", value: "manual", tone: "warning" },
+        { label: "Trading", value: "locked", tone: "negative" },
+        { label: "Route", value: "Jupiter read-only", tone: "warning" },
+        { label: "Signer", value: "not exposed", tone: "warning" },
+      ],
+      risk: [
+        { label: "Live execution", value: "blocked", state: "blocked" },
+        { label: "Market data", value: "allowed", state: "locked" },
+        { label: "Wallet scanner", value: "on demand", state: "locked" },
+        { label: "Max trade", value: "backend gated", state: "locked" },
+        { label: "Approval", value: "dashboard gate", state: "locked" },
+        { label: "Hermes execute", value: "blocked", state: "blocked" },
+      ],
+      hermes: [
+        { channel: "observe", status: "ready", permission: "market events" },
+        { channel: "request_quote", status: "standby", permission: "risk gated" },
+        { channel: "execute.trade", status: "blocked", permission: "manual only" },
+      ],
+      hermesStatus: "STANDBY",
+    };
   }
 
-  const BOT_API_URL = window.TRACKER_CONFIG?.botApiUrl ?? (isLocalRuntime() ? "http://127.0.0.1:8787" : "");
-  const WSOL_MINT = "So11111111111111111111111111111111111111112";
-  const FOCUS_WHALE_SOL = 30;
-  const WATCH_SOL = 10;
-  const LOOKBACK_HOURS = 24;
+  function buildInitialData(mint) {
+    return {
+      totals: { buys: 0, sells: 0, buyUsd: 0, sellUsd: 0 },
+      whaleStats: { whales: 0, buyWhales: 0, sellWhales: 0, candidates: 0, holderOnly: 0, volumeSol: 0, watchVolumeSol: 0, netToken: 0, netUsd: 0, netSol: 0, thresholds: { solPriceUsd: 0 } },
+      token: { symbol: "TOKEN", name: "esperando scan real", mint, pool: "Sin datos hardcoded", window: "esperando buscar" },
+      kpis: [
+        { label: "Precio real", value: "--", delta: "pulsa Buscar", tone: "warning" },
+        { label: "Volumen 24h", value: "--", delta: "DexScreener", tone: "warning" },
+        { label: "Tx 24h", value: "--", delta: "real feed", tone: "warning" },
+        { label: "Whales RPC", value: "--", delta: "on-chain", tone: "warning" },
+        { label: "Wallets", value: "--", delta: "no fixture", tone: "warning" },
+        { label: "Confianza", value: "--", delta: "waiting", tone: "warning" },
+      ],
+      wallets: [],
+      walletDetails: {},
+      hourly: Array.from({ length: 24 }, (_, hour) => [hour, 0, 0]),
+      patterns: [{ title: "Esperando búsqueda real", value: "no fixture", copy: "Introduce un mint y pulsa Buscar para consultar DexScreener + RPC; no se precargan wallets inventadas.", tone: "watch" }],
+      signals: [{ score: 0, title: "Sin señal", meta: "waiting", copy: "El dashboard no genera señales desde datos hardcoded." }],
+      events: [],
+      bot: buildBotShell(),
+    };
+  }
 
   function formatUsd(value) {
     return new Intl.NumberFormat("en-US", {
@@ -97,6 +161,23 @@
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   }
 
+  function botApiBaseUrl() {
+    if (window.TRACKER_CONFIG?.botApiUrl) return window.TRACKER_CONFIG.botApiUrl.replace(/\/$/, "");
+    if (window.location.protocol === "file:") return BOT_API_FALLBACK_URL;
+    const isBotBackend = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
+    if (isBotBackend && window.location.port === "8787") return window.location.origin;
+    return `${window.location.origin}/api/io-bot`;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function percent(part, total) {
+    const denominator = Math.max(1, Number(total) || 0);
+    return clamp((Number(part) || 0) / denominator, 0.04, 0.96) * 100;
+  }
+
   function walletExplorerUrl(address, explorer = "solscan") {
     const encoded = encodeURIComponent(address);
     if (explorer === "solanafm") return `https://solana.fm/address/${encoded}`;
@@ -124,8 +205,10 @@
   }
 
   function setLoading(isLoading) {
-    els.scanButton.disabled = isLoading;
-    els.scanButton.textContent = isLoading ? "Sync" : "Scan";
+    if (els.scanButton) {
+      els.scanButton.disabled = isLoading;
+      els.scanButton.textContent = isLoading ? "Sync" : "Buscar";
+    }
   }
 
   function renderTokenMeta() {
@@ -171,7 +254,13 @@
   }
 
   function filteredWalletRows() {
-    return (state.data.wallets || []).filter(walletMatchesFilter);
+    const wallets = state.data.wallets || [];
+    if (state.whaleActivity?.status === "provider_required") return [];
+    const rows = wallets.filter(walletMatchesFilter);
+    // If the whale filter is empty but the RPC sample did find real wallets,
+    // show the live sample instead of a blank table. The tier column still says SMALL/WATCH/WHALE.
+    if (!rows.length && wallets.length && state.filter === "whale") return wallets;
+    return rows;
   }
 
   function ensureSelectedWallet(rows = state.data.wallets || []) {
@@ -184,12 +273,12 @@
   function renderWallets() {
     const rows = filteredWalletRows();
     if (!rows.length) {
-      state.selectedWalletAddress = null;
-      els.walletTable.innerHTML = emptyRow(
-        state.filter === "whale"
-          ? `No hay compras o ventas de ballenas >=${FOCUS_WHALE_SOL} SOL en las ultimas ${LOOKBACK_HOURS}h. No se muestran trades viejos para rellenar.`
-          : `No wallets match this ${LOOKBACK_HOURS}h fresh-trade filter.`,
-      );
+      const emptyMessage = state.whaleActivity?.status === "provider_required"
+        ? "No hay discovery profesional configurado. Configura BIRDEYE_API_KEY o HELIUS_API_KEY; no se muestran muestras RPC como ballenas."
+        : state.filter === "whale"
+          ? "No wallets with buy or sell side >=100 SOL detected in the current live window. Use Watch for 25-99 SOL or All to inspect smaller signers."
+          : "No wallets match this filter in the current live window";
+      els.walletTable.innerHTML = emptyRow(emptyMessage);
       return;
     }
 
@@ -207,13 +296,13 @@
               <a class="wallet-address-link" href="${walletExplorerUrl(wallet.address)}" target="_blank" rel="noopener noreferrer" title="Abrir wallet en Solscan">${shorten(wallet.address)}</a>
             </td>
             <td>${wallet.buys}</td>
-            <td class="delta ${Number(wallet.buySol || 0) >= FOCUS_WHALE_SOL ? "positive" : Number(wallet.buySol || 0) >= WATCH_SOL ? "warning" : ""}">${formatSol(wallet.buySol)}</td>
+            <td class="delta ${Number(wallet.buySol || 0) >= 100 ? "positive" : Number(wallet.buySol || 0) >= 25 ? "warning" : ""}">${formatSol(wallet.buySol)}</td>
             <td>${wallet.sells}</td>
-            <td class="delta ${Number(wallet.sellSol || 0) >= FOCUS_WHALE_SOL ? "negative" : Number(wallet.sellSol || 0) >= WATCH_SOL ? "warning" : ""}">${formatSol(wallet.sellSol)}</td>
+            <td class="delta ${Number(wallet.sellSol || 0) >= 100 ? "negative" : Number(wallet.sellSol || 0) >= 25 ? "warning" : ""}">${formatSol(wallet.sellSol)}</td>
             <td>${formatUsd(wallet.volumeUsd)}</td>
             <td class="${wallet.netIo >= 0 ? "delta positive" : "delta negative"}">${formatSigned(wallet.netIo)}</td>
             <td><span class="pill ${wallet.whaleTier === "whale" ? "whale" : wallet.whaleTier === "candidate" ? "watch" : ""}" title="${wallet.whaleReason || ""}">${wallet.whaleLabel || wallet.whaleTier || "n/a"}</span></td>
-            <td>${wallet.hours}</td>
+            <td title="${wallet.lastSeenTime || wallet.whaleReason || ""}">${wallet.activityLabel || wallet.hours || "n/a"}</td>
             <td><span class="pill ${tone}">${wallet.pattern}</span></td>
             <td>${wallet.score}</td>
             <td>${renderWalletExplorerLinks(wallet.address, true)}</td>
@@ -352,9 +441,9 @@
       <div class="wallet-metric-grid">
         ${metric("Whale tier", detail.whaleLabel || detail.whaleTier || "n/a", detail.whaleTier === "whale" ? "positive" : detail.whaleTier === "candidate" ? "warning" : "")}
         ${metric("Whale reason", detail.whaleReason || "n/a", detail.whaleTier === "whale" ? "positive" : "warning")}
-        ${metric("SOL compra eq", formatSol(detail.buySol), Number(detail.buySol || 0) >= FOCUS_WHALE_SOL ? "positive" : Number(detail.buySol || 0) >= WATCH_SOL ? "warning" : "")}
-        ${metric("SOL venta eq", formatSol(detail.sellSol), Number(detail.sellSol || 0) >= FOCUS_WHALE_SOL ? "negative" : Number(detail.sellSol || 0) >= WATCH_SOL ? "warning" : "")}
-        ${Number(detail.volumeSol || 0) ? metric("SOL eq volume", formatSol(detail.volumeSol), detail.volumeSol >= FOCUS_WHALE_SOL ? "positive" : "warning") : ""}
+        ${metric("SOL compra eq", formatSol(detail.buySol), Number(detail.buySol || 0) >= 100 ? "positive" : Number(detail.buySol || 0) >= 25 ? "warning" : "")}
+        ${metric("SOL venta eq", formatSol(detail.sellSol), Number(detail.sellSol || 0) >= 100 ? "negative" : Number(detail.sellSol || 0) >= 25 ? "warning" : "")}
+        ${Number(detail.volumeSol || 0) ? metric("SOL eq volume", formatSol(detail.volumeSol), detail.volumeSol >= 100 ? "positive" : "warning") : ""}
         ${metric("PnL / edge est.", formatSignedUsd(detail.estimatedEdgeUsd), edgeTone)}
         ${metric("Buy/Sell ratio", `${detail.buySellRatio.toFixed(2)}x`, detail.buySellRatio >= 1 ? "positive" : "negative")}
         ${metric("Compras", `${detail.buys} / ${formatCompact(detail.buyToken)} ${detail.tokenSymbol}`, "positive")}
@@ -455,7 +544,7 @@
         const sellAlpha = Math.min(0.5, (sell / maxValue) * 0.5).toFixed(2);
         const label = buy >= sell ? `B ${buy}` : `S ${sell}`;
         return `
-          <div class="hour-cell" style="--buy-alpha:${buyAlpha}; --sell-alpha:${sellAlpha}">
+          <div class="hour-cell" style="--buy-alpha:${buyAlpha}; --sell-alpha:${sellAlpha}" title="UTC hour from parsed recent RPC sample, not full 24h history">
             <strong>${String(hour).padStart(2, "0")}:00</strong>
             <span>${label}</span>
           </div>
@@ -500,7 +589,7 @@
 
   function renderEvents() {
     if (!state.data.events.length) {
-      els.events.innerHTML = `<article class="event-item"><div class="event-copy">No fresh whale swaps >=${FOCUS_WHALE_SOL} SOL in the last ${LOOKBACK_HOURS}h.</div></article>`;
+      els.events.innerHTML = `<article class="event-item"><div class="event-copy">Waiting for parsed live swaps from RPC.</div></article>`;
       return;
     }
 
@@ -519,6 +608,130 @@
       .join("");
   }
 
+  function flowStat(label, value, tone = "") {
+    return `
+      <div class="flow-stat ${tone}">
+        <span>${label}</span>
+        <strong>${value}</strong>
+      </div>
+    `;
+  }
+
+  function renderBackendWhaleFeed() {
+    if (state.whaleActivityLoading) {
+      els.backendWhaleFeed.innerHTML = `<div class="flow-empty">Consultando discovery profesional de whales...</div>`;
+      return;
+    }
+
+    if (!state.whaleActivity) {
+      const indexedWallets = (state.data.wallets || []).filter((wallet) => wallet.tags?.includes("indexed"));
+      if (indexedWallets.length) {
+        els.backendWhaleFeed.innerHTML = indexedWallets
+          .slice(0, 5)
+          .map((wallet) => `
+            <article class="backend-whale-item ${wallet.netIo < 0 ? "sell" : "buy"}">
+              <strong>${wallet.netIo < 0 ? "SELL" : "BUY"} ${formatUsd(Math.abs(wallet.netIo || wallet.volumeUsd || 0))}</strong>
+              <span>${shorten(wallet.address)} / birdeye</span>
+              <em class="${wallet.netIo < 0 ? "negative" : "positive"}">${wallet.pattern || "indexed wallet"} / score ${wallet.score ?? "--"}</em>
+            </article>
+          `)
+          .join("");
+        return;
+      }
+      els.backendWhaleFeed.innerHTML = `<div class="flow-empty">Discovery pendiente. Pulsa Buscar para consultar proveedor indexado real.</div>`;
+      return;
+    }
+
+    if (state.whaleActivity.status === "provider_required") {
+      els.backendWhaleFeed.innerHTML = `<div class="flow-empty">Provider required: configura BIRDEYE_API_KEY o HELIUS_API_KEY. No voy a inventar whales con muestra RPC.</div>`;
+      return;
+    }
+
+    if (state.whaleActivity.quality === "degraded") {
+      els.backendWhaleFeed.innerHTML = `<div class="flow-empty">Muestra RPC degradada: datos reales pero no accionables para seguir whales.</div>`;
+      return;
+    }
+
+    const events = state.whaleActivity.events || [];
+    if (!events.length) {
+      els.backendWhaleFeed.innerHTML = `<div class="flow-empty">No se encontraron compras/ventas whale sobre el umbral ${formatUsd(state.whaleActivity.minUsd || 0)} en el proveedor indexado.</div>`;
+      return;
+    }
+
+    els.backendWhaleFeed.innerHTML = events
+      .slice(0, 5)
+      .map((event) => {
+        const tone = event.side === "sell" ? "negative" : event.side === "buy" ? "positive" : "warning";
+        return `
+          <article class="backend-whale-item ${event.side}">
+            <strong>${event.side.toUpperCase()} ${formatUsd(event.quoteAmountUsd ?? event.stableAmount ?? 0)}</strong>
+            <span>${shorten(event.wallet)} / ${event.source || "indexed"}</span>
+            <em class="${tone}">${event.confidence ? `${event.confidence}% confidence` : event.reason || "indexed whale trade"}</em>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function renderMoneyFlow() {
+    const totals = state.data.totals || {};
+    const whaleStats = state.data.whaleStats || {};
+    const buyUsd = Number(totals.buyUsd ?? 0);
+    const sellUsd = Number(totals.sellUsd ?? 0);
+    const totalFlowUsd = Math.max(1, buyUsd + sellUsd);
+    const whaleNetUsd = Number(whaleStats.netUsd ?? buyUsd - sellUsd);
+    const whaleNetSol = Number(whaleStats.netSol ?? 0);
+    const whaleVolumeSol = Number(whaleStats.volumeSol ?? 0);
+    const candidateVolumeSol = Number(whaleStats.watchVolumeSol ?? 0);
+    const buyWhales = Number(whaleStats.buyWhales ?? 0);
+    const sellWhales = Number(whaleStats.sellWhales ?? 0);
+    const dominant = whaleNetUsd >= 0 ? "buy" : "sell";
+    const tone = Math.abs(whaleNetUsd) < 1 ? "warning" : dominant === "buy" ? "positive" : "negative";
+    const bias = dominant === "buy" ? "entrada neta / acumulacion" : "salida neta / distribucion";
+
+    els.flowVerdict.className = `status-chip ${tone}`;
+    els.flowVerdict.textContent = Math.abs(whaleNetUsd) < 1 ? "NEUTRAL" : dominant === "buy" ? "ACCUMULATION" : "DISTRIBUTION";
+    els.flowNetValue.className = tone;
+    els.flowNetValue.textContent = whaleStats.thresholds?.solPriceUsd ? `${formatSigned(whaleNetSol)} SOL eq` : formatSignedUsd(whaleNetUsd);
+    els.flowNarrative.textContent = `${bias}: ${buyWhales} wallets comprando vs ${sellWhales} vendiendo. Volumen ballena ${formatSol(whaleVolumeSol)}; watch-list ${formatSol(candidateVolumeSol)}.`;
+    els.flowSellBar.style.width = `${percent(sellUsd, totalFlowUsd)}%`;
+    els.flowBuyBar.style.width = `${percent(buyUsd, totalFlowUsd)}%`;
+    els.flowSellLabel.textContent = `Sell ${formatUsd(sellUsd)}`;
+    els.flowBuyLabel.textContent = `Buy ${formatUsd(buyUsd)}`;
+    els.flowWindowLabel.textContent = state.data.token?.window || "live";
+
+    els.flowStats.innerHTML = [
+      flowStat("Compras parseadas", formatUsd(buyUsd), "positive"),
+      flowStat("Ventas parseadas", formatUsd(sellUsd), "negative"),
+      flowStat("Ballenas", `${whaleStats.whales ?? 0}`, (whaleStats.whales ?? 0) ? "positive" : "warning"),
+      flowStat("Watch wallets", `${whaleStats.candidates ?? 0}`, "warning"),
+      flowStat("Holders top", `${whaleStats.holderOnly ?? 0}`, "warning"),
+      flowStat("Net token", `${formatSigned(whaleStats.netToken ?? 0)} ${state.data.token?.symbol || "TOKEN"}`, tone),
+    ].join("");
+
+    const wallets = [...(state.data.wallets || [])]
+      .sort((a, b) => Math.abs((b.buyUsd ?? 0) - (b.sellUsd ?? 0)) - Math.abs((a.buyUsd ?? 0) - (a.sellUsd ?? 0)))
+      .slice(0, 5);
+
+    els.topMoneyWallets.innerHTML = wallets.length
+      ? wallets
+          .map((wallet, index) => {
+            const net = Number(wallet.buyUsd ?? 0) - Number(wallet.sellUsd ?? 0);
+            const walletTone = net >= 0 ? "positive" : "negative";
+            return `
+              <article class="top-money-wallet ${walletTone}" data-wallet-address="${wallet.address}">
+                <span>#${index + 1} ${shorten(wallet.address)}</span>
+                <strong>${formatSignedUsd(net)}</strong>
+                <em>${wallet.whaleLabel || wallet.pattern || "wallet"} / score ${wallet.score ?? "--"}</em>
+              </article>
+            `;
+          })
+          .join("")
+      : `<div class="flow-empty">Sin wallets con flujo suficiente en esta ventana.</div>`;
+
+    renderBackendWhaleFeed();
+  }
+
   function botTone(mode) {
     if (mode === "OFF" || mode === "LIVE_LOCKED" || mode === "LOCKED") return "negative";
     if (mode === "ARMED" || mode === "DRY_RUN" || mode === "LIVE_ARMED") return "warning";
@@ -526,31 +739,29 @@
   }
 
   function renderBotControl() {
-    const bot = state.data.bot || fixtures.io.bot;
+    const bot = state.data.bot || buildBotShell();
     const backend = state.botBackend;
-    const strategy = backend?.strategy;
+    const cockpit = state.botCockpit;
+    const strategy = cockpit?.strategy || backend?.strategy;
     const mode = backend?.mode || state.botMode;
+    const watcher = state.watcherState;
     const runtime = backend
       ? [
           { label: "Backend", value: "online", tone: "positive" },
-          { label: "Mode", value: mode.toLowerCase(), tone: backend.dryRun ? "warning" : backend.liveTradingEnabled ? "positive" : "negative" },
+          { label: "Hermes auto", value: "interno", tone: "positive" },
+          { label: "Watcher", value: watcher?.updatedAt ? "live" : "syncing", tone: watcher?.updatedAt ? "positive" : "warning" },
           { label: "Wallet", value: backend.walletReady ? shorten(backend.publicKey) : "not ready", tone: backend.walletReady ? "positive" : "negative" },
           { label: "Strategy", value: strategy?.enabled ? strategy.phase : "disabled", tone: strategy?.enabled ? "warning" : "negative" },
-          { label: "TP", value: strategy ? `${formatUsd(strategy.takeProfitStableUi)} USDT` : "n/a", tone: "positive" },
-          { label: "Rebuy", value: strategy ? `${strategy.rebuyPullbackPct}% dip` : "n/a", tone: "warning" },
-          { label: "Live", value: backend.liveTradingEnabled ? "armed" : "locked", tone: backend.liveTradingEnabled ? "warning" : "negative" },
-          { label: "Approval", value: backend.requireManualApproval ? "required" : "blocked", tone: backend.requireManualApproval ? "positive" : "negative" },
+          { label: "Last action", value: strategy?.lastAction || "waiting", tone: "warning" },
+          { label: "Rebuy caja", value: strategy ? `${formatUsd(strategy.rebuyTrancheStableUi)} tranche` : "n/a", tone: "positive" },
           { label: "Emergency", value: backend.emergencyStopped ? "active" : "clear", tone: backend.emergencyStopped ? "negative" : "positive" },
         ]
       : [
           { label: "Backend", value: "offline", tone: "negative" },
-          ...bot.runtime.slice(1),
+          { label: "Hermes auto", value: "esperando backend", tone: "warning" },
         ];
-    els.botModeBadge.className = `status-chip ${botTone(mode)}`;
-    els.botModeBadge.textContent = mode.replace("_", " ");
-    document.querySelectorAll(".mode-button").forEach((button) => {
-      button.classList.toggle("active", button.dataset.botMode === state.botMode);
-    });
+    els.botModeBadge.className = `status-chip ${backend ? "positive" : "warning"}`;
+    els.botModeBadge.textContent = backend ? "AUTO INFO" : "SYNCING";
 
     els.botRuntime.innerHTML = runtime
       .map(
@@ -562,10 +773,109 @@
         `,
       )
       .join("");
+    renderBotWalletCockpit();
+    renderBotTradeTape();
+    renderTopHolders();
+  }
+
+  function formatTokenAmount(value, symbol) {
+    const numeric = Number(value) || 0;
+    const maxDigits = symbol === "IO" ? 3 : symbol === "SOL" ? 5 : 2;
+    return `${new Intl.NumberFormat("en-US", { maximumFractionDigits: maxDigits }).format(numeric)} ${symbol}`;
+  }
+
+  function renderBotWalletCockpit() {
+    const cockpit = state.botCockpit;
+    if (!els.botWalletCockpit) return;
+    if (!cockpit?.balances) {
+      els.botWalletCockpit.innerHTML = `
+        <article class="balance-card warning"><span>Wallet cockpit</span><strong>syncing</strong><em>esperando backend</em></article>
+      `;
+      return;
+    }
+    const balances = cockpit.balances;
+    const sellTrigger = state.watcherState?.nearestTrigger?.side === "sell" ? state.watcherState.nearestTrigger : null;
+    const nextSellTone = sellTrigger?.reached ? "positive" : sellTrigger?.price ? "warning" : "negative";
+    const nextSellMeta = sellTrigger?.price
+      ? `${sellTrigger.reached ? "TARGET ALCANZADO" : `${Number(sellTrigger.distancePct ?? 0).toFixed(2)}% ${sellTrigger.direction || "from target"}`} · IO ahora ${formatPrice(state.watcherState?.price)}`
+      : "watcher sin target sell activo";
+    const cards = [
+      { label: "Next sell level", symbol: "PRICE", value: sellTrigger?.price || 0, tone: nextSellTone, meta: nextSellMeta, priority: true },
+      { label: "SOL fees", symbol: "SOL", value: balances.sol?.uiAmount, tone: balances.sol?.feeReserveOk ? "positive" : "negative", meta: balances.sol?.feeReserveOk ? "fee reserve OK" : "fee reserve bajo" },
+      { label: "USDC caja", symbol: "USDC", value: balances.usdc?.uiAmount, tone: Number(balances.usdc?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `${balances.usdc?.accountCount || 0} token acct` },
+      { label: "IO inventario", symbol: "IO", value: balances.io?.uiAmount, tone: Number(balances.io?.uiAmount || 0) > 0 ? "positive" : "warning", meta: `tracked ${formatTokenAmount((cockpit.strategy?.positionAmount || 0) / 10 ** 8, "IO")}` },
+    ];
+    els.botWalletCockpit.innerHTML = cards
+      .map((card) => `
+        <article class="balance-card ${card.tone} ${card.priority ? "sell-target-card" : ""}">
+          <span>${card.label}</span>
+          <strong>${card.symbol === "PRICE" ? formatPrice(card.value) : formatTokenAmount(card.value, card.symbol)}</strong>
+          <em>${card.meta}</em>
+        </article>
+      `)
+      .join("");
+  }
+
+  function renderBotTradeTape() {
+    const cockpit = state.botCockpit;
+    if (!els.botTradeTape) return;
+    const trades = (cockpit?.trades || [])
+      .filter((trade) => trade.status === "recorded" || trade.type === "execution.swap_succeeded")
+      .slice(0, 8);
+    if (!trades.length) {
+      els.botTradeTape.innerHTML = `
+        <div class="trade-tape-head"><span class="eyebrow">Actividad automática Hermes</span><strong>Sin swaps nuevos</strong></div>
+        <div class="trade-row warning"><span>auto</span><strong>Watcher activo</strong><em>esperando trigger real</em></div>
+      `;
+      return;
+    }
+    const rows = trades.map((trade) => {
+      const sideTone = trade.side === "buy" ? "positive" : trade.side === "sell" ? "negative" : "warning";
+      const decimals = trade.side === "sell" ? 8 : 6;
+      const symbol = trade.side === "sell" ? "IO" : "USDC";
+      const amount = trade.amount ? Number(trade.amount) / 10 ** decimals : 0;
+      const route = trade.side === "sell" ? "IO → USDC" : trade.side === "buy" ? "USDC → IO" : "strategy";
+      return `
+        <div class="trade-row ${sideTone}" title="${trade.reason || trade.type}">
+          <span>${new Date(trade.ts).toLocaleTimeString("en-GB", { hour12: false })}</span>
+          <strong>${route}</strong>
+          <em>${amount ? formatCompact(amount) : ""} ${symbol} · ${trade.action || trade.type}</em>
+        </div>
+      `;
+    }).join("");
+    els.botTradeTape.innerHTML = `
+      <div class="trade-tape-head"><span class="eyebrow">Swaps automáticos reales</span><strong>${trades.length} swaps</strong></div>
+      ${rows}
+    `;
+  }
+
+  function renderTopHolders() {
+    if (!els.topHolderPanel) return;
+    const holders = state.topHolders?.holders || [];
+    if (!holders.length) {
+      els.topHolderPanel.innerHTML = `
+        <div class="trade-tape-head"><span class="eyebrow">Top 15 holders IO</span><strong>syncing</strong></div>
+        <div class="holder-empty">Esperando RPC para las wallets con más tokens.</div>
+      `;
+      return;
+    }
+    els.topHolderPanel.innerHTML = `
+      <div class="trade-tape-head"><span class="eyebrow">Top 15 wallets acumulando IO</span><strong>${holders.length} wallets</strong></div>
+      <div class="holder-list">
+        ${holders.map((holder) => `
+          <article class="holder-row">
+            <span>#${holder.rank}</span>
+            <a href="${walletExplorerUrl(holder.owner)}" target="_blank" rel="noopener noreferrer">${shorten(holder.owner)}</a>
+            <strong>${formatCompact(holder.amountUi)} IO</strong>
+            <em>${Number(holder.sharePct || 0) > 0 ? `${Number(holder.sharePct || 0).toFixed(3)}%` : "—"}</em>
+          </article>
+        `).join("")}
+      </div>
+    `;
   }
 
   function renderRiskControls() {
-    const bot = state.data.bot || fixtures.io.bot;
+    const bot = state.data.bot || buildBotShell();
     const backend = state.botBackend;
     const riskItems = backend
       ? [
@@ -591,7 +901,7 @@
   }
 
   function renderHermesBridge() {
-    const bot = state.data.bot || fixtures.io.bot;
+    const bot = state.data.bot || buildBotShell();
     const capabilities = state.hermesCapabilities;
     const hermesRows = capabilities
       ? [
@@ -619,16 +929,13 @@
   }
 
   function pushActionLog(message, tone = "warning") {
+    if (!els.botActionLog) return;
     const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
     els.botActionLog.innerHTML = `<div class="${tone}">${time} / ${message}</div>`;
   }
 
   async function botApi(path, options = {}) {
-    if (!BOT_API_URL) {
-      throw new Error("Hosted dashboard is read-only; local bot backend is not connected");
-    }
-
-    const response = await fetch(`${BOT_API_URL}${path}`, {
+    const response = await fetch(`${botApiBaseUrl()}${path}`, {
       method: options.method || "GET",
       headers: { "Content-Type": "application/json" },
       body: options.body ? JSON.stringify(options.body) : undefined,
@@ -642,24 +949,124 @@
 
   async function refreshBotBackendStatus(silent = true) {
     try {
-      const [status, capabilities] = await Promise.all([
+      const [status, cockpit, capabilities, watcherState, topHolders] = await Promise.all([
         botApi("/api/bot/status"),
+        botApi("/api/bot/cockpit"),
         botApi("/api/hermes/capabilities"),
+        botApi("/api/bot/watcher-state"),
+        botApi("/api/bot/top-holders").catch((error) => ({ status: "degraded", error: error.message, holders: [] })),
       ]);
       state.botBackend = status;
+      state.botCockpit = cockpit;
       state.hermesCapabilities = capabilities;
+      state.watcherState = watcherState;
+      state.topHolders = topHolders;
       state.backendWasOnline = true;
       renderBotControl();
       renderRiskControls();
       renderHermesBridge();
     } catch (error) {
       state.botBackend = null;
+      state.botCockpit = null;
       state.hermesCapabilities = null;
+      state.watcherState = null;
+      state.topHolders = null;
       renderBotControl();
       renderRiskControls();
       renderHermesBridge();
       if (!silent && state.backendWasOnline) pushActionLog(`backend offline: ${error.message}`, "negative");
       state.backendWasOnline = false;
+    }
+  }
+
+  function activeWhaleWallets(limit = 6) {
+    return [...(state.data.wallets || [])]
+      .filter((wallet) => wallet.address && (wallet.whaleTier === "whale" || wallet.whaleTier === "candidate" || wallet.tags?.includes("whale") || wallet.tags?.includes("candidate")))
+      .sort((a, b) => Math.max(b.buySol || 0, b.sellSol || 0) - Math.max(a.buySol || 0, a.sellSol || 0))
+      .slice(0, limit)
+      .map((wallet) => wallet.address);
+  }
+
+  function applyWhaleDiscovery(discovery) {
+    if (discovery?.status === "provider_required") {
+      state.data.wallets = [];
+      state.data.walletDetails = {};
+      state.data.whaleStats = { ...(state.data.whaleStats || {}), whales: 0, buyWhales: 0, sellWhales: 0, candidates: 0, netUsd: 0, volumeSol: 0, watchVolumeSol: 0 };
+      state.data.kpis = [
+        { label: "Whale discovery", value: "API KEY FALTA", delta: "Birdeye o Helius requerido", tone: "negative" },
+        { label: "Market data", value: state.data.token?.priceUsd ? formatPrice(state.data.token.priceUsd) : "OK parcial", delta: "DexScreener/RPC publico", tone: "warning" },
+        { label: "Whales reales", value: "0", delta: "no provider = no wallets", tone: "negative" },
+        { label: "Hardcoded", value: "NO", delta: "bloqueado", tone: "positive" },
+        { label: "Siguiente paso", value: "BIRDEYE_API_KEY", delta: "reiniciar backend", tone: "warning" },
+        { label: "Trading", value: "DRY RUN", delta: "no ejecutar sin datos", tone: "warning" },
+      ];
+      state.data.patterns = [{ title: "Provider requerido", value: "no fake whales", copy: "Configura BIRDEYE_API_KEY o HELIUS_API_KEY para descubrir wallets whale reales por token. La muestra RPC queda bloqueada para decisiones.", tone: "watch" }];
+      state.data.signals = [{ score: 0, title: "Falta API de whale discovery", meta: "provider_required", copy: "El dashboard tiene market/RPC parcial, pero no puede descubrir wallets profesionales sin indexer enriquecido." }];
+      return;
+    }
+    if (discovery?.quality !== "professional" || !discovery.wallets?.length) return;
+    const rows = discovery.wallets.map((wallet, index) => ({
+      address: wallet.wallet,
+      buys: wallet.buyUsd > 0 ? 1 : 0,
+      sells: wallet.sellUsd > 0 ? 1 : 0,
+      buyUsd: wallet.buyUsd,
+      sellUsd: wallet.sellUsd,
+      buySol: 0,
+      sellSol: 0,
+      volumeUsd: wallet.buyUsd + wallet.sellUsd,
+      holdingsUsd: 0,
+      netIo: wallet.netUsd,
+      whaleTier: "whale",
+      whaleLabel: "WHALE",
+      whaleReason: wallet.reason,
+      activityLabel: wallet.lastSeen ? `indexed · ${new Date(wallet.lastSeen).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" })} UTC` : "indexed",
+      lastSeenTime: wallet.lastSeen ? new Date(wallet.lastSeen).toLocaleString("en-GB", { hour12: false, timeZone: "UTC" }) + " UTC" : "Indexed provider event; exact local time unavailable.",
+      hours: wallet.lastSeen ? `indexed · ${new Date(wallet.lastSeen).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" })} UTC` : "indexed",
+      pattern: wallet.netUsd >= 0 ? "indexed accumulation" : "indexed distribution",
+      score: wallet.confidence ?? 80,
+      tags: ["whale", "indexed"],
+      rank: index + 1,
+    }));
+    state.data.wallets = rows;
+    state.data.walletDetails = Object.fromEntries(rows.map((wallet) => [wallet.address, { ...wallet, trades: [] }]));
+    state.data.totals = {
+      buys: discovery.events.filter((event) => event.side === "buy").length,
+      sells: discovery.events.filter((event) => event.side === "sell").length,
+      buyUsd: rows.reduce((sum, wallet) => sum + Number(wallet.buyUsd || 0), 0),
+      sellUsd: rows.reduce((sum, wallet) => sum + Number(wallet.sellUsd || 0), 0),
+    };
+    state.data.whaleStats = {
+      ...(state.data.whaleStats || {}),
+      whales: rows.length,
+      buyWhales: rows.filter((wallet) => wallet.buyUsd > wallet.sellUsd).length,
+      sellWhales: rows.filter((wallet) => wallet.sellUsd > wallet.buyUsd).length,
+      candidates: 0,
+      holderOnly: 0,
+      netUsd: rows.reduce((sum, wallet) => sum + Number(wallet.netIo || 0), 0),
+      volumeSol: 0,
+      watchVolumeSol: 0,
+      netToken: 0,
+    };
+  }
+
+  async function refreshBackendWhaleActivity(silent = true) {
+    if (state.whaleActivityLoading) return;
+    state.whaleActivityLoading = true;
+    renderBackendWhaleFeed();
+    try {
+      state.whaleActivity = await botApi("/api/bot/whales/discover", {
+        method: "POST",
+        body: { mint: state.activeMint },
+      });
+      applyWhaleDiscovery(state.whaleActivity);
+      renderAll();
+    } catch (error) {
+      state.whaleActivity = null;
+      if (!silent) pushActionLog(`whale backend feed unavailable: ${error.message}`, "warning");
+      renderMoneyFlow();
+    } finally {
+      state.whaleActivityLoading = false;
+      renderMoneyFlow();
     }
   }
 
@@ -725,6 +1132,7 @@
     renderPatterns();
     renderSignals();
     renderEvents();
+    renderMoneyFlow();
     renderBotControl();
     renderRiskControls();
     renderHermesBridge();
@@ -746,12 +1154,17 @@
     setLoading(true);
     setStatus(manual ? "LIVE RESYNC" : "LIVE SYNCING", "syncing");
     try {
-      const liveData = await window.LiveTracker.loadTokenSnapshot(mint);
+      const liveData = await Promise.race([
+        window.LiveTracker.loadTokenSnapshot(mint),
+        new Promise((_, reject) => window.setTimeout(() => reject(new Error(`scan timeout after ${Math.round(SCAN_TIMEOUT_MS / 1000)}s`)), SCAN_TIMEOUT_MS)),
+      ]);
       if (requestId !== state.activeRequestId) return;
 
       state.data = liveData;
       state.botMode = liveData.bot?.mode ?? state.botMode;
+      state.whaleActivity = null;
       renderAll();
+      refreshBackendWhaleActivity(true);
       setStatus(liveData.source?.degraded ? "LIVE DEGRADED" : "LIVE ON-CHAIN", liveData.source?.degraded ? "degraded" : "live");
       if (liveData.source?.message) pushActionLog(liveData.source.message, "warning");
     } catch (error) {
@@ -765,41 +1178,37 @@
   }
 
   function scanToken(mint) {
-    const normalized = mint.trim();
+    const normalized = (mint || state.activeMint).trim();
     if (!base58Pattern.test(normalized)) {
-      els.input.classList.add("invalid");
+      if (els.input) els.input.classList.add("invalid");
       setStatus("INVALID MINT", "error");
       return;
     }
 
-    els.input.classList.remove("invalid");
+    if (els.input) els.input.classList.remove("invalid");
     state.activeMint = normalized;
     state.activeRequestId += 1;
     stopRefresh();
 
     state.data = {
-      ...fixtures.io,
+      ...buildInitialData(normalized),
       token: {
-        symbol: normalized === fixtures.ioMint ? "IO" : "TOKEN",
-        name: normalized === fixtures.ioMint ? "io.net" : "custom mint",
+        symbol: "TOKEN",
+        name: "resolviendo desde feeds reales",
         mint: normalized,
         pool: "Resolving live Solana pair",
-        window: `last ${LOOKBACK_HOURS}h / whale >=${FOCUS_WHALE_SOL} SOL`,
+        window: "live syncing",
       },
       kpis: [
-        { label: "Ballenas foco", value: "...", delta: "RPC sync", tone: "warning" },
-        { label: "Whale flow", value: "...", delta: "RPC sync", tone: "warning" },
-        { label: "Whale volume", value: "...", delta: "RPC sync", tone: "warning" },
-        { label: "Muestra 24h", value: "...", delta: "RPC sync", tone: "warning" },
-        { label: "Volumen par 24h", value: "...", delta: "DexScreener", tone: "warning" },
+        { label: "Precio real", value: "...", delta: "DexScreener", tone: "warning" },
+        { label: "Volumen 24h", value: "...", delta: "DexScreener", tone: "warning" },
+        { label: "Tx 24h", value: "...", delta: "pair feed", tone: "warning" },
+        { label: "Whales RPC", value: "...", delta: "on-chain scan", tone: "warning" },
+        { label: "Wallets", value: "...", delta: "RPC/indexer", tone: "warning" },
         { label: "Confianza", value: "...", delta: "building", tone: "warning" },
       ],
-      wallets: [],
-      walletDetails: {},
-      hourly: Array.from({ length: 24 }, (_, hour) => [hour, 0, 0]),
-      patterns: [{ title: "Live sync", value: "running", copy: "Resolving pair and parsing recent on-chain swaps.", tone: "watch" }],
+      patterns: [{ title: "Live sync", value: "running", copy: "Resolving real pair and parsing recent on-chain swaps. No fixture data is used.", tone: "watch" }],
       signals: [{ score: 0, title: "Syncing", meta: "live", copy: "No signal until provider data is parsed." }],
-      events: [],
     };
     state.selectedWalletAddress = null;
     renderAll();
@@ -812,10 +1221,12 @@
   }
 
   function bindEvents() {
-    els.form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      scanToken(els.input.value);
-    });
+    if (els.form) {
+      els.form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        scanToken(els.input?.value || state.activeMint);
+      });
+    }
 
     els.walletTable.addEventListener("click", (event) => {
       if (event.target.closest("a")) return;
@@ -824,6 +1235,18 @@
       state.selectedWalletAddress = row.dataset.walletAddress;
       renderWallets();
       renderWalletDetail();
+    });
+
+    els.topMoneyWallets.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-wallet-address]");
+      if (!card) return;
+      state.selectedWalletAddress = card.dataset.walletAddress;
+      renderWallets();
+      renderWalletDetail();
+    });
+
+    els.whaleRefreshButton.addEventListener("click", () => {
+      refreshBackendWhaleActivity(false);
     });
 
     document.querySelectorAll(".segment").forEach((button) => {
@@ -934,10 +1357,11 @@
   }
 
   bindEvents();
+  renderAll();
   tickClock();
   setInterval(tickClock, 1000);
   startMatrixRain();
-  scanToken(els.input.value);
+  setStatus("LOCAL WATCHER LIVE", "live");
   refreshBotBackendStatus();
   setInterval(() => refreshBotBackendStatus(), 10_000);
 })();
