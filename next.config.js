@@ -1,6 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: "/matrix-dashboard/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store, no-cache, must-revalidate" },
+          { key: "Pragma", value: "no-cache" },
+        ],
+      },
+      {
+        source: "/matrix",
+        headers: [
+          { key: "Cache-Control", value: "no-store, no-cache, must-revalidate" },
+          { key: "Pragma", value: "no-cache" },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { hostname: "ipfs-3.thirdwebcdn.com" },
