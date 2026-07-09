@@ -1,42 +1,15 @@
-import { db } from "../firebase/firebase";
-import React, { createContext, useState, useEffect, useContext } from "react";
-import { collection, getDocs, addDoc, doc, setDoc } from "firebase/firestore";
+import React, { createContext, useContext, useMemo, useState } from "react";
 
-const TokenContext = createContext();
+const TokenContext = createContext(null);
 
-export const TokenContextProvider = ({ children }) => {
-  const [tokens, setTokens] = useState([]);
+export function TokenContextProvider({ children }) {
+  const [selectedToken, setSelectedToken] = useState(null);
+  const value = useMemo(() => ({ selectedToken, setSelectedToken }), [selectedToken]);
+  return <TokenContext.Provider value={value}>{children}</TokenContext.Provider>;
+}
 
-  useEffect(() => {
-    const fetchTokens = async () => {
-      try {
-        const tokenSnapshot = await getDocs(collection(db, "tokens"));
-        const tokenData = tokenSnapshot.docs.map((doc) => doc.data());
-        setTokens(tokenData);
-      } catch (error) {
-        console.error("Error al obtener tokens:", error);
-      }
-    };
+export function useTokenContext() {
+  return useContext(TokenContext);
+}
 
-    fetchTokens();
-  }, []);
-
-  const addToken = (token) => {
-    addDoc(collection(db, "tokens"), token)
-      .then(() => {
-        setTokens((prevTokens) => [...prevTokens, token]);
-        console.log("Token added successfully:", token);
-      })
-      .catch((error) => {
-        console.error("Error adding token:", error);
-      });
-  };
-
-  return (
-    <TokenContext.Provider value={{ tokens, addToken }}>
-      {children}
-    </TokenContext.Provider>
-  );
-};
-
-export const useTokens = () => useContext(TokenContext);
+export default TokenContext;

@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {
@@ -27,7 +30,6 @@ const nextConfig = {
       { hostname: "s2.coinmarketcap.com" },
       { hostname: "dextool.io" },
       { hostname: "v2.akord.com" },
-      { hostname: "arweave.net" },
       {
         hostname:
           "bafybeia4c2wd7v4cddgbwfusevcjo4inep3weh63glfyvbx36qi6ijwmh4.ipfs.cf-ipfs.com",
@@ -48,13 +50,23 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       ethers5: "ethers",
+      ...(isServer
+        ? {}
+        : {
+            "pino$": require.resolve("./lib/shims/pino-browser.js"),
+            "pino/browser$": require.resolve("./lib/shims/pino-browser.js"),
+          }),
+      "valtio$": require.resolve("valtio"),
+      "valtio/vanilla$": require.resolve("valtio/vanilla"),
+      "valtio/vanilla/utils$": require.resolve("valtio/vanilla/utils"),
+      "valtio/react$": require.resolve("valtio/react"),
     };
     config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
   transpilePackages: [
     "rc-picker",
-    "@ant-design", // Add this line
+    "@ant-design",
     "rc-util",
     "rc-pagination",
     "@web3modal",

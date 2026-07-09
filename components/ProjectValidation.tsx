@@ -1,78 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
-import { validationStorage, Project } from "../utils/validationStorage";
-import ProjectList from "./ProjectList";
-import ProjectDetails from "./ProjectDetails";
-import TestFirebaseStorage from "./TestFirebaseStorage";
+import React from "react";
 
-const ProjectValidation = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [viewMode, setViewMode] = useState<"list" | "details">("list");
-
-  const loadProjects = useCallback(async () => {
-    try {
-      const projectsData = await validationStorage.getAllProjects();
-      if (projectsData.length > 0 && !selectedProject) {
-        setSelectedProject(projectsData[0]);
-      }
-    } catch (error) {
-      console.error("Error loading projects:", error);
-    }
-  }, [selectedProject]);
-
-  useEffect(() => {
-    if (viewMode === "list") {
-      loadProjects();
-    }
-  }, [viewMode, loadProjects]);
-
-  const handleProjectSelect = (project: Project) => {
-    setSelectedProject(project);
-    setViewMode("details");
-  };
-
-  const handleBackToList = () => {
-    setViewMode("list");
-    setSelectedProject(null);
-  };
-
-  if (viewMode === "details" && selectedProject) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 text-white p-8">
-        <div className="max-w-7xl mx-auto">
-          <ProjectDetails project={selectedProject} onBack={handleBackToList} />
-        </div>
-      </div>
-    );
-  }
-
+export default function ProjectValidation() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 text-white p-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
-            Project Validation System
-          </h1>
-          <p className="text-xl text-gray-300">
-            Validate your project and gain community trust through our
-            comprehensive verification process
-          </p>
-        </motion.div>
-
-        <ProjectList onProjectSelect={handleProjectSelect} />
-
-        {/* Temporary test component */}
-        <div className="mt-8">
-          <TestFirebaseStorage />
+    <main className="min-h-screen bg-slate-950 px-4 py-16 text-white">
+      <section className="mx-auto max-w-3xl rounded-2xl border border-cyan-500/30 bg-slate-900/70 p-8 shadow-xl">
+        <h1 className="mb-4 text-3xl font-bold text-cyan-300">Project Validation</h1>
+        <p className="mb-6 text-slate-200">Recovered validation page shell. Use this area to present project checks, proofs, contract links, and community review status.</p>
+        <div className="grid gap-4 md:grid-cols-3">
+          {['Contract', 'Liquidity', 'Community'].map((item) => (
+            <div key={item} className="rounded-lg border border-slate-700 bg-slate-950 p-4 text-center">
+              <div className="font-semibold text-cyan-200">{item}</div>
+              <div className="mt-2 text-sm text-slate-400">Pending review</div>
+            </div>
+          ))}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
-};
-
-export default ProjectValidation;
+}

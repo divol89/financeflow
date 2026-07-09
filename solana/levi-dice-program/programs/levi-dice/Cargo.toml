@@ -1,0 +1,21 @@
+[package]
+name = "levi-dice"
+version = "0.1.0"
+description = "LEVI Dice escrow and settlement program for Solana Token-2022"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "levi_dice"
+
+[features]
+default = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+
+[dependencies]
+anchor-lang = "0.31.1"
+anchor-spl = "0.31.1"

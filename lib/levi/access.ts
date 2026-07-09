@@ -1,0 +1,52 @@
+import type { LeviAccessLimits, LeviAccessTier } from "@/types/levi";
+import {
+  BASIC_SCAN_LIMIT,
+  FULL_SCAN_LIMIT,
+  LEVI_BASIC_THRESHOLD,
+  LEVI_DECIMALS,
+  LEVI_FULL_THRESHOLD,
+} from "./constants";
+
+export function rawTokenAmount(tokens: number): bigint {
+  return BigInt(Math.round(tokens * 10 ** LEVI_DECIMALS));
+}
+
+export function uiTokenAmount(rawAmount: bigint, decimals = LEVI_DECIMALS): number {
+  return Number(rawAmount) / 10 ** decimals;
+}
+
+export function getAccessTier(balance: number): LeviAccessTier {
+  if (balance >= LEVI_FULL_THRESHOLD) return "full";
+  if (balance >= LEVI_BASIC_THRESHOLD) return "basic";
+  return "blocked";
+}
+
+export function getAccessLimits(tier: LeviAccessTier): LeviAccessLimits {
+  if (tier === "full") {
+    return {
+      scanLimit: FULL_SCAN_LIMIT,
+      fullDashboard: true,
+      details: "full",
+    };
+  }
+
+  if (tier === "basic") {
+    return {
+      scanLimit: BASIC_SCAN_LIMIT,
+      fullDashboard: false,
+      details: "summary",
+    };
+  }
+
+  return {
+    scanLimit: 0,
+    fullDashboard: false,
+    details: "none",
+  };
+}
+
+export function getAccessReason(tier: LeviAccessTier): string {
+  if (tier === "full") return "Full dashboard unlocked with 50,000+ LEVI.";
+  if (tier === "basic") return "Basic scanner unlocked with 3,000+ LEVI.";
+  return "Hold at least 3,000 LEVI to unlock scanner access.";
+}

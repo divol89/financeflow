@@ -1,22 +1,51 @@
 import { useState } from "react";
 import type { AppProps } from "next/app";
+import dynamic from "next/dynamic";
+import Head from "next/head";
 import "../styles/tailwind.css";
 import { TokenContextProvider } from "../context/TokenContext";
 import React from "react";
 import { Analytics } from "@vercel/analytics/react";
 import CookieConsent from "react-cookie-consent";
-import { Web3ModalProvider } from "../context/Web3Modal";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SolanaWalletProvider } from "../context/SolanaWalletProvider";
+import {
+  focusManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
+
+const Web3ModalProvider = dynamic(
+  () => import("../context/Web3Modal").then((mod) => mod.Web3ModalProvider),
+  { ssr: false }
+);
+
+function routeNeedsWeb3Modal(pathname: string) {
+  return (
+    pathname === "/games" ||
+    pathname.startsWith("/games/crazy-dice") ||
+    pathname.startsWith("/MagicSale") ||
+    pathname.startsWith("/MagicLauncher") ||
+    pathname.startsWith("/MagicPump")
+  );
+}
+
+focusManager.setEventListener(() => () => undefined);
+focusManager.setFocused(true);
 
 export const metadata = {
   title: "FlowFinance",
   description: "FlowFinance",
 };
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, router }: AppProps) {
   const [cookiesAccepted, setCookiesAccepted] = useState(true);
+  const page = (
+    <SolanaWalletProvider>
+      <Component {...pageProps} />
+    </SolanaWalletProvider>
+  );
 
   const handleAccept = () => {
     setCookiesAccepted(true);
@@ -30,39 +59,87 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <Head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </Head>
       {cookiesAccepted ? (
         <QueryClientProvider client={queryClient}>
           <TokenContextProvider>
-            <Web3ModalProvider>
-              <Component {...pageProps} />
-            </Web3ModalProvider>
+            {routeNeedsWeb3Modal(router.pathname) ? (
+              <Web3ModalProvider>{page}</Web3ModalProvider>
+            ) : (
+              page
+            )}
             <Analytics />
             <CookieConsent
               location="bottom"
-              buttonText="Accept All"
-              declineButtonText="Reject All"
+              buttonText="Aceptar"
+              declineButtonText="Rechazar"
               onAccept={handleAccept}
               onDecline={handleReject}
-              cookieName="myAwesomeCookieConsent"
-              style={{ background: "#2B373B" }}
+              cookieName="flowfinance_cookie_consent"
+              style={{
+                background: "rgba(15, 15, 20, 0.95)",
+                backdropFilter: "blur(20px)",
+                borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+                padding: "20px 24px",
+                alignItems: "center",
+                boxShadow: "0 -4px 30px rgba(0, 0, 0, 0.3)",
+              }}
+              contentStyle={{
+                flex: "1 0 300px",
+                margin: "0",
+                fontSize: "14px",
+                lineHeight: "1.6",
+                color: "rgba(255, 255, 255, 0.85)",
+              }}
               buttonStyle={{
-                background: "#ffffff",
-                color: "#000000",
-                fontSize: "13px",
-                borderRadius: "0.125rem",
+                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
+                color: "#ffffff",
+                fontSize: "14px",
+                fontWeight: "600",
+                borderRadius: "12px",
+                padding: "12px 28px",
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                boxShadow: "0 4px 15px rgba(139, 92, 246, 0.4)",
               }}
               declineButtonStyle={{
-                background: "#800080",
-                color: "#ffffff",
-                fontSize: "13px",
-                borderRadius: "0.125rem",
+                background: "transparent",
+                color: "rgba(255, 255, 255, 0.7)",
+                fontSize: "14px",
+                fontWeight: "500",
+                borderRadius: "12px",
+                padding: "12px 28px",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                marginRight: "12px",
               }}
-              expires={1}
-              debug={process.env.NODE_ENV === "development"}
+              expires={365}
               enableDeclineButton
-              setDeclineCookie={false}
+              setDeclineCookie={true}
+              hideOnAccept={true}
+              hideOnDecline={true}
+              overlay={false}
             >
-              This website uses cookies to enhance the user experience.{" "}
+              🍪 Usamos cookies para mejorar tu experiencia, analizar el tráfico
+              y personalizar el contenido. Al continuar navegando, aceptas
+              nuestra{" "}
+              <a
+                href="/privacy"
+                style={{
+                  color: "#A78BFA",
+                  textDecoration: "underline",
+                  fontWeight: "500",
+                }}
+              >
+                Política de Privacidad
+              </a>
+              .
             </CookieConsent>
           </TokenContextProvider>
         </QueryClientProvider>

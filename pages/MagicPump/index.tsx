@@ -562,7 +562,13 @@ const PumpMeSirPage = () => {
   }, [pumpMeSirContract, address, fetchUnclaimedRewards]);
 
   const progress: number =
-    (contractInfo.contractBalance / contractInfo.buyThreshold) * 100;
+    contractInfo.buyThreshold > 0
+      ? (contractInfo.contractBalance / contractInfo.buyThreshold) * 100
+      : 0;
+  const poolSharePercent = (votes: number): string =>
+    contractInfo.contractBalance > 0
+      ? ((votes / contractInfo.contractBalance) * 100).toFixed(2)
+      : "0.00";
 
   return (
     <div className="min-h-screen text-white flex flex-col text-xs md:text-base lg:mt-0">
@@ -688,10 +694,7 @@ const PumpMeSirPage = () => {
                         </span>
                         <span className="flex items-center">
                           <Wallet className="mr-0.5 md:mr-1 h-2 w-2 md:h-4 md:w-4" />
-                          {(
-                            (pool.votes / contractInfo.contractBalance) *
-                            100
-                          ).toFixed(2)}
+                          {poolSharePercent(pool.votes)}
                           % PT
                         </span>
                       </div>

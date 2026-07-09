@@ -1,0 +1,19 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+levi_dice = "CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM"
+
+[programs.devnet]
+levi_dice = "CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "cargo test"

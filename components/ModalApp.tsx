@@ -32,6 +32,16 @@ const launcherItems: LauncherItem[] = [
     img: "/img/magicpump.jpg",
     path: "/MagicPump",
   },
+  {
+    name: "Crazy Dice",
+    img: "/levi-ban-system.png",
+    path: "/games",
+  },
+  {
+    name: "LEVI Dice",
+    img: "/levi-ban-system.png",
+    path: "/games/levi-dice",
+  },
 ];
 
 const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
@@ -61,7 +71,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative z-[60] w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-cyan-300/20 bg-[#121c38]/95 p-5 shadow-[0_0_30px_rgba(34,211,238,0.18)] lg:max-w-5xl lg:p-8"
+            className="relative z-[60] w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-cyan-300/20 bg-[#121c38]/95 p-5 shadow-[0_0_30px_rgba(34,211,238,0.18)] lg:max-w-6xl lg:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -97,7 +107,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                 Matrix Tracker
               </button>
 
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-6 lg:gap-5">
                 {launcherItems.map((item) => {
                   const Icon = item.icon;
 
@@ -128,7 +138,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
               </div>
 
               <p className="mt-4 text-center font-mono text-xs uppercase tracking-[0.18em] text-[#63ff9b]/80">
-                Matrix ops ready
+                Matrix ops and games ready
               </p>
             </div>
           </motion.div>

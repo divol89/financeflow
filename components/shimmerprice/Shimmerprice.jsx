@@ -1,59 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-const CryptoPrice = () => {
-  const [prices, setPrices] = useState({ shimmer: null, iota: null });
-
-  useEffect(() => {
-    const fetchPrices = async () => {
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=shimmer,iota&vs_currencies=usd"
-        );
-        const data = await response.json();
-        setPrices({
-          shimmer: data.shimmer.usd,
-          iota: data.iota.usd
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchPrices();
-  }, []);
-
-  const PriceDisplay = ({ symbol, price, imageSrc }) => (
-    <div className="flex items-center">
-      <Image
-        src={imageSrc}
-        alt={`${symbol.toLowerCase()}.network`}
-        width={32}
-        height={32}
-      />
-      <p className="text-sm ml-2 text-white">{symbol}</p>
-      {price !== null ? (
-        <p className="font-bold ml-2 text-white">${price}</p>
-      ) : (
-        <p className="ml-2 text-gray-400">Loading...</p>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="flex flex-wrap lg:flex-nowrap items-center justify-between lg:justify-start w-full gap-4 lg:gap-8">
-      <PriceDisplay
-        symbol="SMR"
-        price={prices.shimmer}
-        imageSrc="/img/SMR.svg"
-      />
-      <PriceDisplay
-        symbol="MIOTA"
-        price={prices.iota}
-        imageSrc="/img/IOTA.svg"
-      />
-    </div>
-  );
+const format = (value, fallback) => {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return fallback;
+  return `$${n.toFixed(n < 0.001 ? 7 : 5)}`;
 };
 
-export default CryptoPrice;
+export default function ShimmerPrice() {
+  const [prices, setPrices] = useState({});
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/prices")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (mounted && data) setPrices(data);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const smr = prices.shimmer ?? prices.SMR ?? prices.smr;
+  const miota = prices.miota ?? prices.MIOTA ?? prices.iota;
+
+  return (
+    <div className="flex items-center justify-center gap-5 text-white">
+      <div className="flex items-center gap-2">
+        <Image src="/img/SMR.svg" alt="smr.network" width={28} height={28} />
+        <div className="leading-tight">
+          <p className="text-xs font-semibold text-white">SMR</p>
+          <p className="text-xs text-gray-300">{format(smr, "$0.0000991")}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <Image src="/img/IOTA.svg" alt="miota.network" width={28} height={28} />
+        <div className="leading-tight">
+          <p className="text-xs font-semibold text-white">MIOTA</p>
+          <p className="text-xs text-gray-300">{format(miota, "$0.04487527")}</p>
+        </div>
+      </div>
+    </div>
+  );
+}

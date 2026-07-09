@@ -1,60 +1,35 @@
-import React from "react";
-import { Card, CardContent, CardHeader } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import React, { useState } from "react";
 
-interface RewardInfo {
-  round: number;
-  amount: string;
-  token: string;
-  tokenName: string; // Add this line
-}
-
-interface StatsDropdownProps {
-  unclaimedRewards: RewardInfo[];
-  claimReward: (round: number) => void;
-  claimAllRewards: () => void;
-}
-
-const StatsDropdown: React.FC<StatsDropdownProps> = ({
-  unclaimedRewards,
-  claimReward,
-  claimAllRewards,
-}) => {
-  return (
-    <Card className="bg-gray-800 border-b border-gray-700 p-4 shadow-sm  border-2 mb-4">
-      <CardHeader>
-        <h2 className="text-2xl text-gray-400">Unclaimed Rewards</h2>
-      </CardHeader>
-      <CardContent>
-        {unclaimedRewards.length > 0 ? (
-          unclaimedRewards.map((reward) => (
-            <div key={reward.round} className="mb-4">
-              <p className="text-sm text-black">
-                Round {reward.round}: {parseFloat(reward.amount).toFixed(6)}{" "}
-                {reward.tokenName}
-              </p>
-              <Button
-                onClick={() => claimReward(reward.round)}
-                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Claim Reward
-              </Button>
-            </div>
-          ))
-        ) : (
-          <p className="text-sm text-gray-400">No unclaimed rewards</p>
-        )}
-        {unclaimedRewards.length > 1 && (
-          <Button
-            onClick={claimAllRewards}
-            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Claim All Rewards
-          </Button>
-        )}
-      </CardContent>
-    </Card>
-  );
+type StatsDropdownProps = {
+  unclaimedRewards?: unknown[];
+  claimReward?: (round: number) => Promise<void> | void;
+  claimAllRewards?: () => Promise<void> | void;
 };
 
-export default StatsDropdown;
+export default function StatsDropdown({ unclaimedRewards = [], claimAllRewards }: StatsDropdownProps) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-block text-left">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="rounded-md border border-cyan-500/40 bg-slate-900 px-3 py-2 text-sm text-cyan-100"
+      >
+        {open ? "Hide Stats" : "View Stats"}
+      </button>
+      {open && (
+        <div className="absolute right-0 z-20 mt-2 w-64 rounded-lg border border-slate-700 bg-slate-950 p-4 text-sm text-slate-200 shadow-xl">
+          <p className="font-semibold text-cyan-300">MagicPump Stats</p>
+          <p className="mt-2">Unclaimed rewards: {unclaimedRewards.length}</p>
+          <button
+            type="button"
+            onClick={() => claimAllRewards?.()}
+            className="mt-3 rounded bg-cyan-700 px-3 py-1 text-xs text-white"
+          >
+            Claim all
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

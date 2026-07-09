@@ -1,3 +1,5 @@
-/pages/api/auth/[...nextauth].tsx
-/pages/flowtips/*
-/components/juegos/piece.jsx
+node_modules
+.next
+out
+dist
+coverage

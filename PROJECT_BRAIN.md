@@ -10,7 +10,7 @@ Reglas:
 
 - Consultar esa boveda antes de cambios relevantes.
 - No crear `project-brain/` dentro de este repositorio.
-- La ruta activa del proyecto es `/Users/josealmontecolon/Documents/Codex/2026-05-31/goal-can-you-read-the-documentation/work/financeflow-site`.
+- La ruta activa del proyecto es `/Users/josealmontecolon/Documents/flowfinance/work/financeflow-site`.
 - CodeGraph sigue siendo local al proyecto en `.codegraph/`.
 
 ## Project-specific notes

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,11 +38,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
-  useEffect(() => {
-    loadProjectData();
-  }, [project.id]);
-
-  const loadProjectData = async () => {
+  const loadProjectData = useCallback(async () => {
     try {
       setLoading(true);
       const [steps, docs] = await Promise.all([
@@ -56,7 +52,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [project.id]);
+
+  useEffect(() => {
+    loadProjectData();
+  }, [loadProjectData]);
 
   const handleFileUpload = async (stepId: string, file: File) => {
     try {

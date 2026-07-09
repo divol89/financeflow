@@ -3,7 +3,13 @@ import { useRouter } from "next/router";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import ShimmerPrice from "./shimmerprice/Shimmerprice";
 import Image from "next/image";
-import { FaBook, FaRocket, FaShieldAlt, FaTerminal } from "react-icons/fa";
+import {
+  FaBook,
+  FaGamepad,
+  FaRocket,
+  FaShieldAlt,
+  FaTerminal,
+} from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import NavbarWalletButton from "./NavbarWalletButton";
 
@@ -16,7 +22,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -56,7 +61,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
 
   return (
     <>
-      {/* Desktop Navbar */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/5 ${
           isScrolled
@@ -100,6 +104,13 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                   Validate
                 </li>
                 <li
+                  className="bg-gradient-to-r from-orange-400 to-yellow-500 text-white font-bold py-2 px-4 rounded-full hover:from-orange-500 hover:to-yellow-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
+                  onClick={() => handleMenuItemClick("/games")}
+                >
+                  <FaGamepad className="mr-1" />
+                  Games
+                </li>
+                <li
                   className="bg-[#00e47a] text-black font-bold py-2 px-4 rounded-full hover:bg-[#63ff9b] transition-all duration-300 cursor-pointer flex items-center text-sm shadow-[0_0_18px_rgba(0,228,122,0.35)]"
                   onClick={() => handleMenuItemClick("/matrix")}
                 >
@@ -120,7 +131,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
               </ul>
             </div>
 
-            {/* Mobile Menu Toggle */}
             <div className="lg:hidden">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -133,7 +143,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
         </div>
       </nav>
 
-      {/* Mobile Menu - Full Screen Overlay */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -150,7 +159,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "tween", duration: 0.3 }}
           >
-            {/* Close Button */}
             <button
               onClick={() => setMenuOpen(false)}
               className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
@@ -158,9 +166,7 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
               <HiX className="h-6 w-6 text-white" />
             </button>
 
-            {/* Content */}
             <div className="h-full w-full flex flex-col px-8 pt-24 pb-8 overflow-y-auto">
-              {/* Logo */}
               <div className="flex items-center justify-center mb-10">
                 <div className="relative w-14 h-14 mr-4">
                   <Image
@@ -175,12 +181,10 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                 </span>
               </div>
 
-              {/* Price Display */}
               <div className="mb-8 p-5 bg-white/10 rounded-2xl border border-white/20">
                 <ShimmerPrice />
               </div>
 
-              {/* Navigation Links */}
               <div className="space-y-4 flex-1">
                 <button
                   onClick={() => handleMenuItemClick("/whitepaper")}
@@ -207,6 +211,18 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                 </button>
 
                 <button
+                  onClick={() => handleMenuItemClick("/games")}
+                  className="w-full flex items-center p-5 rounded-2xl bg-white/15 border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-14 h-14 rounded-full bg-orange-500/30 flex items-center justify-center mr-4">
+                    <FaGamepad className="text-orange-300 text-xl" />
+                  </div>
+                  <span className="text-white font-semibold text-xl">
+                    Games
+                  </span>
+                </button>
+
+                <button
                   onClick={() => handleMenuItemClick("/matrix")}
                   className="w-full flex items-center p-5 rounded-2xl bg-[#00e47a]/20 border border-[#00e47a]/50 hover:bg-[#00e47a]/30 transition-all active:scale-[0.98] shadow-[0_0_22px_rgba(0,228,122,0.18)]"
                 >
@@ -219,7 +235,6 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                 </button>
               </div>
 
-              {/* Action Buttons */}
               <div className="space-y-4 mt-8">
                 <button
                   onClick={handleLaunchApp}

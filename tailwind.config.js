@@ -1,17 +1,13 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    // Or if using `src` directory:
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './context/**/*.{js,ts,jsx,tsx}',
+    './hooks/**/*.{js,ts,jsx,tsx}',
+    './lib/**/*.{js,ts,jsx,tsx}',
   ],
-  mode: "jit",
   theme: {
-    fontFamily: {
-      display: ["Open Sans", "sans-serif"],
-      body: ["Open Sans", "sans-serif"],
-    },
     extend: {
       backgroundImage: {
         "fondo-waves": "url('/img/WAVES.png')",
@@ -21,62 +17,49 @@ module.exports = {
         farmbanner: "url('/img/farmbanner.png')",
         "flow-gradient": "linear-gradient(to bottom, var(--tw-gradient-stops))",
       },
-      inset: {
-        "1px": "1px",
+      colors: {
+        flow: {
+          from: '#020617',
+          to: '#111827',
+        },
+        muted: 'rgba(148, 163, 184, 0.12)',
+        'muted-foreground': '#94a3b8',
+        background: '#020617',
+        foreground: '#f8fafc',
+        ring: '#22d3ee',
+        border: '#334155',
+        input: '#334155',
+        card: '#0f172a',
+        'card-foreground': '#f8fafc',
       },
-      spacing: {
-        "word-1": "0.25rem",
-        "word-2": "0.5rem",
-        "word-3": "0.75rem",
-      },
-      screens: {
-        mf: "990px",
-        largo: "375px",
-        extralargo: "425px",
-        tabblet: "768px",
-        medium: { min: "640px", max: "768px" },
-        mediumlarge: { min: "768px", max: "990px" },
-        mediumbig: { min: "990px", max: "1023px" },
-        peque: { min: "320px", max: "334px" },
+      fontSize: {
+        xxs: '0.65rem',
       },
       keyframes: {
-        "fade-in-scroll": {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
+        'laser-glow': {
+          '0%, 100%': { opacity: '0.35' },
+          '50%': { opacity: '1' },
         },
-        "slide-in": {
-          "0%": {
-            "-webkit-transform": "translateX(120%)",
-            transform: "translateX(120%)",
-          },
-          "100%": {
-            "-webkit-transform": "translateX(0%)",
-            transform: "translateX(0%)",
-          },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+        'fade-in-scroll': {
+          '0%': { opacity: 0, transform: 'translateY(12px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        gradient: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
         },
       },
       animation: {
-        "fade-in-scroll": "fade-in-scroll 0.3s ease-out",
-        "slide-in": "slide-in 0.5s ease-out",
-      },
-      borderColor: {
-        border: "var(--border)",
-      },
-      colors: {
-        foreground: "var(--foreground)",
-        background: "var(--background)",
-        border: "var(--border)",
-        // ... otros colores personalizados que puedas necesitar
-        "flow-from": "#111827", // gray-900
-        "flow-to": "#1f2937", // gray-800
+        'laser-glow': 'laser-glow 3s infinite',
+        float: 'float 3s ease-in-out infinite',
+        'fade-in-scroll': 'fade-in-scroll 0.3s ease-out',
+        gradient: 'gradient 6s ease infinite',
       },
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/aspect-ratio"),
-  ],
+  plugins: [],
 };

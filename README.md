@@ -1,34 +1,44 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Flow Finance / LEVI Sentinel
 
-## Getting Started
+Production site for `flow-finance.xyz`, connected to the GitHub repo `divol89/financeflow`.
 
-First, run the development server:
+## Product
 
-```bash
-npm run dev
-# or
-yarn dev
+LEVI Sentinel is a token-gated Solana risk-intelligence interface. It scans recent creator-wallet activity for heuristic signals such as mint creation and possible creator-side sell events. The scanner does not label intent or prove wrongdoing.
+
+The LEVI token already exists:
+
+```text
+6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+RPC verification shows it is a Token-2022 mint with symbol `LEVI`.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Access Tiers
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- `< 3,000 LEVI`: locked scanner, public pages only.
+- `>= 3,000 LEVI`: basic scanner summary.
+- `>= 50,000 LEVI`: full dashboard details and larger scan window.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Development
 
-## Learn More
+```bash
+cp .env.example .env.local
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Useful commands:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run scan:levi -- <solana-wallet>
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Use `MOCK_SOLANA=1` only for local UI demos.
 
-## Deploy on Vercel
+## Existing Game
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Crazy Dice is preserved at `/games` and `/games/crazy-dice/[id]`. It uses IOTA EVM, Web3Modal/Ethers, Firebase turn state, and `/api/games/settle`.

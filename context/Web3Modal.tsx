@@ -13,7 +13,7 @@ const mainnet = {
   name: "IOTA EVM",
   currency: "IOTA",
   explorerUrl: "https://explorer.evm.iota.org",
-  rpcUrl: "https://iota-mainnet-evm.public.blastapi.io",
+  rpcUrl: "https://json-rpc.evm.iotaledger.net",
 };
 
 // 3. Create a metadata object
@@ -37,9 +37,9 @@ const ethersConfig = defaultConfig({
   /*Optional*/
   enableEIP6963: false, // true by default
   enableInjected: false, // true by default
-  enableCoinbase: true, // true by default
+  enableCoinbase: false,
   rpcUrl: mainnet.rpcUrl, // Use the mainnet rpcUrl
-  defaultChainId: 1, // used for the Coinbase SDK
+  defaultChainId: mainnet.chainId,
 });
 
 // 5. Create a Web3Modal instance in the browser only.

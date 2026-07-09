@@ -1,4 +1,4 @@
-const Piece = ({ value }) => {
+const Piece = () => {
   return <div>{/* Tu lógica de fichas aquí */}</div>;
 };
 

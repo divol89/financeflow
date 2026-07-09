@@ -2,6 +2,9 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import axios from "axios";
 
+// Export settlement functions for CrazyDice V4
+export { settleGame, settleStuckGames } from "./settleGame";
+
 admin.initializeApp();
 
 export const updateData = functions.pubsub
@@ -11,7 +14,8 @@ export const updateData = functions.pubsub
     const tokensRef = db.collection("tokens");
     const tokensSnapshot = await tokensRef.get();
     const tokens = tokensSnapshot.docs.map(
-      (doc) => doc.data() as { address: string }
+      (doc: admin.firestore.QueryDocumentSnapshot) =>
+        doc.data() as { address: string }
     );
 
     for (const token of tokens) {
