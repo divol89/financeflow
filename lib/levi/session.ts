@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bs58 from "bs58";
 import nacl from "tweetnacl";
@@ -43,8 +43,7 @@ function fromBase64url(input: string): Buffer {
 
 function signPayload(payload: unknown): string {
   const body = base64url(JSON.stringify(payload));
-  const signature = crypto
-    .createHmac("sha256", getSessionSecret())
+  const signature = createHmac("sha256", getSessionSecret())
     .update(body)
     .digest();
   return `${body}.${base64url(signature)}`;
@@ -55,11 +54,11 @@ function verifyPayload<T>(token: string): T | null {
   if (!body || !signature) return null;
 
   const expected = base64url(
-    crypto.createHmac("sha256", getSessionSecret()).update(body).digest()
+    createHmac("sha256", getSessionSecret()).update(body).digest()
   );
   if (signature.length !== expected.length) return null;
 
-  const valid = crypto.timingSafeEqual(
+  const valid = timingSafeEqual(
     Buffer.from(signature),
     Buffer.from(expected)
   );
@@ -85,7 +84,7 @@ export function buildSignInMessage(
 
 export function createNonce(walletInput: string): NoncePayload {
   const wallet = normalizeSolanaAddress(walletInput);
-  const nonce = crypto.randomBytes(16).toString("hex");
+  const nonce = randomBytes(16).toString("hex");
   const expiresAt = Date.now() + NONCE_TTL_MS;
   return {
     wallet,
