@@ -11,6 +11,7 @@ import {
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
 import { BullChargeProposal } from "@/components/levi/BullChargeProposal";
 import { LeviEntranceImage } from "@/components/levi/LeviEntranceImage";
+import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { MetricCard } from "@/components/levi/MetricCard";
 import { ScannerPanel } from "@/components/levi/ScannerPanel";
@@ -29,69 +30,94 @@ export default function Home() {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
 
-      <section
-        className="relative min-h-screen overflow-hidden bg-cover bg-center pt-24"
-        style={{ backgroundImage: "url('/levi-ban-system.png')" }}
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.96),rgba(0,0,0,0.76),rgba(0,0,0,0.46))]" />
-        <LeviEntranceImage />
-        <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-10 px-4 pb-16 pt-10 sm:px-6 lg:pt-20">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-semibold text-emerald-100">
-              <ShieldCheck className="h-4 w-4" />
-              Token-gated Solana risk intelligence
-            </div>
-            <h1 className="mt-6 text-5xl font-black leading-none text-white sm:text-7xl">
-              LEVI Sentinel
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
-              Scan creator wallets, surface suspected rug-pattern signals, and
-              gate deeper intelligence by real LEVI holdings.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <section className="levi-home">
+        <div className="levi-home-grid" aria-hidden="true" />
+        <div className="levi-home-light" aria-hidden="true" />
+
+        <div className="levi-container">
+          <div className="levi-hero">
+            <div className="levi-hero-copy">
+              <div className="levi-eyebrow">
+                <ShieldCheck className="h-4 w-4" />
+                Solana-native risk intelligence
+              </div>
+              <h1 className="levi-display">
+                See the signal.
+                <span>Protect the flow.</span>
+              </h1>
+              <p className="levi-hero-lede">
+                LEVI Sentinel inspects creator wallets, surfaces suspicious
+                patterns, and unlocks deeper intelligence for real LEVI holders.
+              </p>
+              <div className="levi-hero-actions">
               <Link
                 href="/scanner"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-emerald-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-emerald-300"
+                  className="levi-primary-button"
               >
-                Open Scanner
+                  Open Scanner
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/games"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/25 bg-black/50 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                  className="levi-secondary-button"
               >
                 <Dice5 className="h-4 w-4" />
                 Crazy Dice
               </Link>
+              </div>
+              <div className="levi-hero-proof">
+                <span><ShieldCheck className="h-4 w-4" /> Token-gated</span>
+                <span><Radar className="h-4 w-4" /> Human-reviewed</span>
+                <span><Lock className="h-4 w-4" /> Read-only by design</span>
+              </div>
             </div>
+
+            <LeviEntranceImage />
           </div>
 
-          <AgenticDevelopmentNotice />
-
-          <BullChargeProposal />
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <MetricCard
-              label="Basic Gate"
-              value="3,000 LEVI"
-              icon={<Lock className="h-4 w-4" />}
-              tone="amber"
-            />
-            <MetricCard
-              label="Full Gate"
-              value="50,000 LEVI"
-              icon={<Radar className="h-4 w-4" />}
-              tone="green"
-            />
-            <MetricCard
-              label="Signal Mode"
-              value="Heuristic"
-              icon={<Volume2 className="h-4 w-4" />}
-              tone="cyan"
-            />
+          <div className="levi-hero-rail" aria-hidden="true">
+            <span>LEVI / SENTINEL</span>
+            <span>ON-CHAIN VISIBILITY FOR THE COMMUNITY</span>
+            <span className="levi-hero-rail-line" />
+            <ArrowRight className="h-4 w-4" />
           </div>
 
-          <ScannerPanel />
+          <div className="levi-flow">
+            <LeviReveal>
+              <div className="levi-metric-grid">
+                <MetricCard
+                  label="Basic gate"
+                  value="3,000 LEVI"
+                  icon={<Lock className="h-4 w-4" />}
+                  tone="amber"
+                />
+                <MetricCard
+                  label="Full gate"
+                  value="50,000 LEVI"
+                  icon={<Radar className="h-4 w-4" />}
+                  tone="green"
+                />
+                <MetricCard
+                  label="Signal mode"
+                  value="Heuristic"
+                  icon={<Volume2 className="h-4 w-4" />}
+                  tone="cyan"
+                />
+              </div>
+            </LeviReveal>
+
+            <LeviReveal>
+              <AgenticDevelopmentNotice />
+            </LeviReveal>
+
+            <LeviReveal>
+              <BullChargeProposal />
+            </LeviReveal>
+
+            <LeviReveal>
+              <ScannerPanel />
+            </LeviReveal>
+          </div>
         </div>
       </section>
     </LeviShell>

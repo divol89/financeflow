@@ -4,18 +4,20 @@ export function LeviEntranceImage() {
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex justify-center px-4 lg:justify-end lg:px-16"
-      initial={{ opacity: 0, y: 110, scale: 0.76, filter: "blur(12px)" }}
-      animate={{ opacity: 0.72, y: 0, scale: 1, filter: "blur(0px)" }}
-      transition={{ duration: 1.25, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+      className="levi-hero-art"
+      initial={{ opacity: 0, y: 84, scale: 0.88, filter: "blur(12px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
     >
+      <span className="levi-hero-art-ring" />
       <motion.img
         src="/levi-avatar.png"
         alt=""
-        className="h-auto w-48 select-none drop-shadow-[0_0_42px_rgba(52,211,153,0.42)] sm:w-60 lg:w-80"
-        animate={{ y: [0, -10, 0], scale: [1, 1.025, 1] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+        className="levi-hero-art-image"
+        animate={{ y: [0, -8, 0], rotate: [0, 0.35, 0] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
       />
+      <span className="levi-hero-art-caption">THE WHITE BULL / LEVI</span>
     </motion.div>
   );
 }

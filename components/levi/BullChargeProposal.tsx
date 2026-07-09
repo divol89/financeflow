@@ -24,29 +24,29 @@ const rewards = [
 
 export function BullChargeProposal() {
   return (
-    <section className="rounded-lg border border-yellow-300/20 bg-black/70 p-5 shadow-2xl shadow-yellow-950/10">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        <div className="lg:w-1/3">
-          <div className="inline-flex items-center gap-2 rounded-md border border-yellow-300/30 bg-yellow-300/10 px-3 py-1 text-xs font-semibold uppercase text-yellow-200">
+    <section className="levi-panel">
+      <div className="levi-bull-grid">
+        <div>
+          <div className="levi-section-label text-yellow-200">
             <Gamepad2 className="h-4 w-4" />
             Proposed game
           </div>
-          <h2 className="mt-4 text-3xl font-black text-white">Bull Charge</h2>
-          <p className="mt-3 leading-7 text-slate-300">
+          <h2 className="levi-panel-title">Bull Charge</h2>
+          <p className="levi-panel-copy">
             A viral LEVI mini-game concept where holders charge through market
             obstacles, collect green candles, and compete for daily rewards.
           </p>
         </div>
 
-        <div className="grid flex-1 gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
-            <div className="flex items-center gap-2 font-semibold text-white">
+        <div className="levi-list-columns">
+          <div className="levi-list-column">
+            <div className="levi-list-heading">
               <CandlestickChart className="h-5 w-5 text-emerald-300" />
               Gameplay
             </div>
-            <ul className="mt-4 grid gap-2 text-sm leading-6 text-slate-300">
+            <ul className="levi-list">
               {gameLoop.map((item) => (
-                <li key={item} className="flex gap-2">
+                <li key={item}>
                   <ShieldCheck className="mt-1 h-4 w-4 flex-none text-emerald-300" />
                   <span>{item}</span>
                 </li>
@@ -54,14 +54,14 @@ export function BullChargeProposal() {
             </ul>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
-            <div className="flex items-center gap-2 font-semibold text-white">
+          <div className="levi-list-column">
+            <div className="levi-list-heading">
               <Trophy className="h-5 w-5 text-yellow-300" />
               Rewards and utility
             </div>
-            <ul className="mt-4 grid gap-2 text-sm leading-6 text-slate-300">
+            <ul className="levi-list">
               {rewards.map((item) => (
-                <li key={item} className="flex gap-2">
+                <li key={item}>
                   <Flame className="mt-1 h-4 w-4 flex-none text-orange-300" />
                   <span>{item}</span>
                 </li>
@@ -71,7 +71,7 @@ export function BullChargeProposal() {
         </div>
       </div>
 
-      <div className="mt-5 flex gap-3 rounded-lg border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm leading-6 text-emerald-50">
+      <div className="levi-proposal-note">
         <HeartHandshake className="mt-0.5 h-5 w-5 flex-none text-emerald-300" />
         <p>
           This is a proposal stage feature. The community can fund the agent

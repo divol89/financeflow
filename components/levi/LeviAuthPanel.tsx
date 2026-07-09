@@ -16,7 +16,7 @@ export function LeviAuthPanel() {
   } = useLeviAuth();
 
   return (
-    <div className="rounded-lg border border-white/10 bg-black/65 p-5 shadow-2xl shadow-black/30">
+    <div className="levi-auth-panel">
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -34,7 +34,7 @@ export function LeviAuthPanel() {
             onClick={() => {
               void connectWallet().catch(() => undefined);
             }}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="levi-secondary-button"
           >
             <PlugZap className="h-4 w-4" />
             {walletAddress
@@ -45,7 +45,7 @@ export function LeviAuthPanel() {
             type="button"
             onClick={signIn}
             disabled={isSigning || isLoading}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-emerald-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60"
+            className="levi-primary-button disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Signature className="h-4 w-4" />
             {isSigning ? "Signing..." : "Sign Access"}
@@ -54,7 +54,7 @@ export function LeviAuthPanel() {
             <button
               type="button"
               onClick={logout}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="levi-secondary-button"
             >
               <LogOut className="h-4 w-4" />
               Logout
@@ -90,7 +90,7 @@ export function LeviAuthPanel() {
         ) : null}
 
         {error ? (
-          <p className="rounded-md border border-red-400/25 bg-red-950/60 px-3 py-2 text-sm text-red-100">
+          <p className="border-l border-red-400/60 bg-red-950/30 px-3 py-2 text-sm text-red-100">
             {error}
           </p>
         ) : null}

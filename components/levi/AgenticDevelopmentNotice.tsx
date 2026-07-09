@@ -3,17 +3,17 @@ import { LEVI_DEVELOPMENT_WALLET } from "@/lib/levi/community";
 
 export function AgenticDevelopmentNotice() {
   return (
-    <section className="rounded-lg border border-emerald-400/25 bg-black/70 p-5 shadow-2xl shadow-emerald-950/20">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+    <section className="levi-panel">
+      <div className="levi-panel-header flex-col lg:flex-row">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase text-emerald-200">
+          <div className="levi-section-label">
             <Bot className="h-4 w-4" />
             Agentic page
           </div>
-          <h2 className="mt-4 text-2xl font-semibold text-white">
+          <h2 className="levi-panel-title">
             Community proposals can become agent-built features.
           </h2>
-          <p className="mt-3 leading-7 text-slate-300">
+          <p className="levi-panel-copy">
             LEVI Sentinel is an agentic development surface. Propose tools,
             games, dashboards, scanner ideas, or token-growth work in the LEVI
             chat. Community-backed ideas can be turned into scoped development
@@ -24,8 +24,8 @@ export function AgenticDevelopmentNotice() {
           </p>
         </div>
 
-        <div className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4 lg:max-w-md">
-          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+        <div className="levi-wallet-panel">
+          <div className="levi-section-label text-white">
             <HeartHandshake className="h-4 w-4 text-emerald-300" />
             Fund the agent wallet
           </div>
@@ -35,16 +35,16 @@ export function AgenticDevelopmentNotice() {
             around the token. Funding is voluntary and does not guarantee a
             specific delivery date or scope until it is reviewed.
           </p>
-          <div className="mt-4 rounded-md border border-emerald-400/20 bg-emerald-400/10 p-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase text-emerald-200">
+          <div className="mt-4 border-t border-emerald-400/20 pt-3">
+            <div className="levi-section-label">
               <Wallet className="h-4 w-4" />
               Agent wallet
             </div>
-            <p className="mt-2 break-all font-mono text-sm text-white">
+            <p className="levi-wallet-address">
               {LEVI_DEVELOPMENT_WALLET}
             </p>
           </div>
-          <p className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+          <p className="levi-panel-note">
             <MessageCircle className="h-4 w-4" />
             Use the LEVI chat to describe what the agent wallet funding should
             support.

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
   BookOpen,
@@ -23,24 +23,38 @@ const navItems = [
   { href: "/games/levi-dice", label: "LEVI Dice", icon: Dice5 },
 ];
 
-export function LeviShell({ children }: { children: React.ReactNode }) {
+export function LeviShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 18);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#050705] text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md border border-emerald-400/40 bg-emerald-500/10">
-              <ShieldCheck className="h-5 w-5 text-emerald-300" />
+    <div className="levi-site min-h-screen text-white">
+      <header className={`levi-header ${scrolled ? "is-scrolled" : ""}`}>
+        <div className="levi-container flex h-[4.75rem] items-center justify-between">
+          <Link href="/" className="levi-brand" aria-label="LEVI Sentinel home">
+            <span className="levi-brand-mark">
+              <img src="/levi-avatar.png" alt="" />
+              <ShieldCheck className="h-4 w-4" />
             </span>
-            <span className="text-base font-semibold text-white sm:text-lg">
-              LEVI Sentinel
+            <span>
+              <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-emerald-300/80">
+                Flow Finance
+              </span>
+              <span className="block text-[0.98rem] font-semibold text-white sm:text-lg">
+                LEVI Sentinel
+              </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="levi-nav hidden xl:flex" aria-label="Primary navigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = router.pathname === item.href;
@@ -48,11 +62,7 @@ export function LeviShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm transition ${
-                    active
-                      ? "bg-white text-black"
-                      : "text-slate-300 hover:bg-white/10 hover:text-white"
-                  }`}
+                  className={`levi-nav-item ${active ? "is-active" : ""}`}
                 >
                   <Icon className="h-4 w-4" />
                   {item.label}
@@ -63,7 +73,7 @@ export function LeviShell({ children }: { children: React.ReactNode }) {
 
           <Link
             href="/token-gate"
-            className="hidden rounded-md bg-emerald-400 px-4 py-2 text-sm font-semibold text-black transition hover:bg-emerald-300 lg:inline-flex"
+            className="levi-shell-cta hidden xl:inline-flex"
           >
             Connect LEVI
           </Link>
@@ -71,24 +81,26 @@ export function LeviShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/15 text-white lg:hidden"
-            aria-label="Open menu"
+            className="levi-menu-button inline-flex xl:hidden"
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
         {open ? (
-          <div className="border-t border-white/10 bg-black px-4 py-4 lg:hidden">
-            <div className="grid gap-2">
+          <div className="levi-mobile-panel xl:hidden">
+            <div className="levi-container grid gap-1 py-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
+                const active = router.pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white"
+                    className={`levi-mobile-item ${active ? "is-active" : ""}`}
                   >
                     <Icon className="h-4 w-4" />
                     {item.label}
@@ -98,7 +110,7 @@ export function LeviShell({ children }: { children: React.ReactNode }) {
               <Link
                 href="/token-gate"
                 onClick={() => setOpen(false)}
-                className="mt-2 flex items-center justify-center rounded-md bg-emerald-400 px-4 py-3 text-sm font-semibold text-black"
+                className="levi-shell-cta mt-3 flex justify-center"
               >
                 Connect LEVI
               </Link>
@@ -109,13 +121,13 @@ export function LeviShell({ children }: { children: React.ReactNode }) {
 
       <main>{children}</main>
 
-      <footer className="border-t border-white/10 bg-black px-4 py-8 text-sm text-slate-400">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <footer className="levi-footer">
+        <div className="levi-container flex flex-col gap-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-emerald-300" />
             <span>Signals are heuristic and require human review.</span>
           </div>
-          <Link href="/games/levi-dice" className="text-emerald-300 hover:text-emerald-200">
+          <Link href="/games/levi-dice" className="levi-footer-link">
             LEVI Dice Solana preview
           </Link>
         </div>

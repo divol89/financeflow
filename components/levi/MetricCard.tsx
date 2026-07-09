@@ -8,11 +8,11 @@ interface MetricCardProps {
 }
 
 const toneClasses = {
-  green: "border-emerald-400/25 text-emerald-200",
-  red: "border-red-400/25 text-red-200",
-  cyan: "border-cyan-400/25 text-cyan-200",
-  amber: "border-amber-400/25 text-amber-200",
-  neutral: "border-white/10 text-slate-100",
+  green: "levi-tone-green",
+  red: "levi-tone-red",
+  cyan: "levi-tone-cyan",
+  amber: "levi-tone-amber",
+  neutral: "levi-tone-neutral",
 };
 
 export function MetricCard({
@@ -22,12 +22,12 @@ export function MetricCard({
   tone = "neutral",
 }: MetricCardProps) {
   return (
-    <div className={`rounded-lg border bg-black/55 p-4 ${toneClasses[tone]}`}>
+    <div className={`levi-metric ${toneClasses[tone]}`}>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-xs uppercase text-slate-400">{label}</p>
+        <p className="levi-metric-label">{label}</p>
         {icon ? <div className="text-current">{icon}</div> : null}
       </div>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+      <p className="levi-metric-value">{value}</p>
     </div>
   );
 }
