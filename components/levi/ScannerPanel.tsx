@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Search, ShieldAlert } from "lucide-react";
 import type { LeviAccessState, LeviScanReport } from "@/types/levi";
+import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { LeviAuthPanel } from "./LeviAuthPanel";
 import { ScanResult } from "./ScanResult";
 
@@ -32,7 +33,10 @@ export function ScannerPanel() {
           tokenMint: tokenMint.trim() || undefined,
         }),
       });
-      const payload = (await response.json()) as ScanResponse;
+      const payload = await readJsonResponse<ScanResponse>(
+        response,
+        "Scanner is temporarily unavailable. Try again in a moment."
+      );
 
       if (!response.ok || !payload.report) {
         throw new Error(payload.error || "Unable to scan wallet");

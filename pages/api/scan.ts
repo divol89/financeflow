@@ -17,22 +17,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const limited = checkRateLimit(`scan:${getClientKey(req)}`, 20, 60_000);
-  if (!limited.allowed) {
-    return res.status(429).json({ error: "Too many scan requests" });
-  }
-
-  const session = getSessionFromRequest(req);
-  if (!session) {
-    return res.status(401).json({ error: "Connect and sign with a Solana wallet first" });
-  }
-
-  const parsed = BodySchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid wallet payload" });
-  }
-
   try {
+    const limited = checkRateLimit(`scan:${getClientKey(req)}`, 20, 60_000);
+    if (!limited.allowed) {
+      return res.status(429).json({ error: "Too many scan requests" });
+    }
+
+    const session = getSessionFromRequest(req);
+    if (!session) {
+      return res.status(401).json({ error: "Connect and sign with a Solana wallet first" });
+    }
+
+    const parsed = BodySchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid wallet payload" });
+    }
+
     const access = await getLeviAccessForWallet(session.wallet);
     if (access.tier === "blocked") {
       return res.status(403).json({
@@ -58,6 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
+    console.error("LEVI scanner failed", error);
     const message = error instanceof Error ? error.message : "Scanner failed";
     const status = message.startsWith("Solana RPC") ? 502 : 500;
     return res.status(status).json({ error: message });

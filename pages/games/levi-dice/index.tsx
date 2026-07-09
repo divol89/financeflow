@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import Dice3D from "@/components/games/Dice3D";
 import type { LeviAccessState } from "@/types/levi";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
+import { readJsonResponse } from "@/lib/levi/fetchJson";
 import {
   LEVI_DICE_MINT,
   LEVI_DICE_PROGRAM_ID,
@@ -60,7 +61,10 @@ function LeviDiceLobby() {
     setIsCheckingAccess(true);
     try {
       const response = await fetch(`/api/access?wallet=${encodeURIComponent(address)}`);
-      const payload = (await response.json()) as AccessResponse;
+      const payload = await readJsonResponse<AccessResponse>(
+        response,
+        "Unable to read LEVI balance"
+      );
       if (!response.ok || !payload.access) {
         throw new Error(payload.error || "Unable to read LEVI balance");
       }

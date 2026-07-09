@@ -19,24 +19,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const parsed = BodySchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid verification payload" });
-  }
-
-  const nonce = getNonceFromRequest(req);
-  if (!nonce) {
-    return res.status(401).json({ error: "Nonce expired or missing" });
-  }
-
-  if (
-    nonce.wallet !== parsed.data.wallet ||
-    nonce.message !== parsed.data.message
-  ) {
-    return res.status(401).json({ error: "Nonce payload mismatch" });
-  }
-
   try {
+    const parsed = BodySchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid verification payload" });
+    }
+
+    const nonce = getNonceFromRequest(req);
+    if (!nonce) {
+      return res.status(401).json({ error: "Nonce expired or missing" });
+    }
+
+    if (
+      nonce.wallet !== parsed.data.wallet ||
+      nonce.message !== parsed.data.message
+    ) {
+      return res.status(401).json({ error: "Nonce payload mismatch" });
+    }
+
     const valid = verifySolanaSignature(
       parsed.data.wallet,
       parsed.data.message,
@@ -50,7 +50,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     setSessionCookie(res, parsed.data.wallet);
     clearCookie(res, NONCE_COOKIE);
     return res.status(200).json({ authenticated: true, wallet: nonce.wallet });
-  } catch {
-    return res.status(401).json({ error: "Invalid Solana signature" });
+  } catch (error) {
+    console.error("LEVI signature verification failed", error);
+    return res.status(401).json({ error: "Unable to verify wallet signature" });
   }
 }

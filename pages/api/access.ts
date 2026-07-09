@@ -9,25 +9,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const limited = checkRateLimit(`access:${getClientKey(req)}`, 60, 60_000);
-  if (!limited.allowed) {
-    return res.status(429).json({ error: "Too many access checks" });
-  }
-
-  const session = getSessionFromRequest(req);
-  const queryWallet = Array.isArray(req.query.wallet)
-    ? req.query.wallet[0]
-    : req.query.wallet;
-  const wallet = queryWallet || session?.wallet;
-
-  if (!wallet) {
-    return res.status(401).json({ error: "Wallet is required" });
-  }
-
   try {
+    const limited = checkRateLimit(`access:${getClientKey(req)}`, 60, 60_000);
+    if (!limited.allowed) {
+      return res.status(429).json({ error: "Too many access checks" });
+    }
+
+    const queryWallet = Array.isArray(req.query.wallet)
+      ? req.query.wallet[0]
+      : req.query.wallet;
+    const session = queryWallet ? null : getSessionFromRequest(req);
+    const wallet = queryWallet || session?.wallet;
+
+    if (!wallet) {
+      return res.status(401).json({ error: "Wallet is required" });
+    }
+
     const access = await getLeviAccessForWallet(wallet);
     return res.status(200).json({ access });
-  } catch {
-    return res.status(400).json({ error: "Invalid Solana wallet address" });
+  } catch (error) {
+    console.error("LEVI access check failed", error);
+    const message =
+      error instanceof Error && error.message.toLowerCase().includes("invalid")
+        ? "Invalid Solana wallet address"
+        : "Unable to read LEVI access";
+    return res.status(400).json({ error: message });
   }
 }

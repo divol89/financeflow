@@ -103,7 +103,12 @@ export function getNonceFromRequest(req: NextApiRequest): NoncePayload | null {
   const token = parseCookies(req)[NONCE_COOKIE];
   if (!token) return null;
 
-  const payload = verifyPayload<NoncePayload>(token);
+  let payload: NoncePayload | null = null;
+  try {
+    payload = verifyPayload<NoncePayload>(token);
+  } catch {
+    return null;
+  }
   if (!payload || payload.expiresAt <= Date.now()) return null;
   return payload;
 }
@@ -135,7 +140,12 @@ export function getSessionFromRequest(req: NextApiRequest): LeviSession | null {
   const token = parseCookies(req)[SESSION_COOKIE];
   if (!token) return null;
 
-  const session = verifyPayload<LeviSession>(token);
+  let session: LeviSession | null = null;
+  try {
+    session = verifyPayload<LeviSession>(token);
+  } catch {
+    return null;
+  }
   if (!session || session.expiresAt <= Date.now()) return null;
   return session;
 }

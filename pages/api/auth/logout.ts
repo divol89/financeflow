@@ -6,6 +6,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  clearAuthCookies(res);
+  try {
+    clearAuthCookies(res);
+  } catch (error) {
+    console.error("LEVI logout cleanup failed", error);
+  }
+
   return res.status(200).json({ authenticated: false });
 }

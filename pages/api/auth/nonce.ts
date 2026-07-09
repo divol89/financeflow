@@ -13,17 +13,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const limited = checkRateLimit(`nonce:${getClientKey(req)}`, 20, 60_000);
-  if (!limited.allowed) {
-    return res.status(429).json({ error: "Too many nonce requests" });
-  }
-
-  const parsed = BodySchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid wallet payload" });
-  }
-
   try {
+    const limited = checkRateLimit(`nonce:${getClientKey(req)}`, 20, 60_000);
+    if (!limited.allowed) {
+      return res.status(429).json({ error: "Too many nonce requests" });
+    }
+
+    const parsed = BodySchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid wallet payload" });
+    }
+
     const nonce = createNonce(parsed.data.wallet);
     setNonceCookie(res, nonce);
     return res.status(200).json({
@@ -32,7 +32,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       message: nonce.message,
       expiresAt: nonce.expiresAt,
     });
-  } catch {
-    return res.status(400).json({ error: "Invalid Solana wallet address" });
+  } catch (error) {
+    console.error("LEVI nonce creation failed", error);
+    return res.status(400).json({ error: "Unable to create auth nonce" });
   }
 }

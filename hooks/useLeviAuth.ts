@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import bs58 from "bs58";
 import type { LeviAccessState, LeviSession } from "@/types/levi";
+import { readJsonResponse } from "@/lib/levi/fetchJson";
 import {
   getInjectedSolanaProvider,
   type InjectedSolanaProvider,
@@ -21,23 +22,42 @@ export function useLeviAuth() {
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (options?: { showErrors?: boolean }) => {
     setIsLoading(true);
     try {
       const response = await fetch("/api/auth/me");
-      const data = (await response.json()) as MeResponse;
+      const data = await readJsonResponse<MeResponse>(
+        response,
+        "LEVI access is temporarily unavailable. Try again in a moment."
+      );
+
+      if (!response.ok) {
+        setSession(null);
+        setAccess(null);
+        setError(options?.showErrors ? data.error || "Unable to load session" : null);
+        return;
+      }
+
       setSession(data.session || null);
       setAccess(data.access || null);
-      setError(data.error || null);
+      setError(options?.showErrors ? data.error || null : null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to load session");
+      setSession(null);
+      setAccess(null);
+      setError(
+        options?.showErrors
+          ? err instanceof Error
+            ? err.message
+            : "Unable to load session"
+          : null
+      );
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    refresh();
+    refresh({ showErrors: false });
   }, [refresh]);
 
   const getProvider = useCallback((): InjectedSolanaProvider | null => {
@@ -80,9 +100,15 @@ export function useLeviAuth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wallet: connected.address }),
       });
-      const noncePayload = await nonceResponse.json();
+      const noncePayload = await readJsonResponse<{ message?: string; error?: string }>(
+        nonceResponse,
+        "Unable to create auth nonce"
+      );
       if (!nonceResponse.ok) {
         throw new Error(noncePayload.error || "Unable to create auth nonce");
+      }
+      if (!noncePayload.message) {
+        throw new Error("Unable to create auth nonce");
       }
 
       const messageBytes = new TextEncoder().encode(noncePayload.message);
@@ -99,12 +125,15 @@ export function useLeviAuth() {
           signature,
         }),
       });
-      const verifyPayload = await verifyResponse.json();
+      const verifyPayload = await readJsonResponse<{ error?: string }>(
+        verifyResponse,
+        "Wallet signature rejected"
+      );
       if (!verifyResponse.ok) {
         throw new Error(verifyPayload.error || "Wallet signature rejected");
       }
 
-      await refresh();
+      await refresh({ showErrors: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in");
     } finally {
