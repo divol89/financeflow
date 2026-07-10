@@ -7,6 +7,7 @@ import {
   Dice5,
   FileText,
   Gauge,
+  GraduationCap,
   Megaphone,
   Menu,
   Radar,
@@ -14,15 +15,21 @@ import {
   X,
 } from "lucide-react";
 
-const navItems = [
+const primaryNavItems = [
   { href: "/scanner", label: "Scanner", icon: Radar },
   { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { href: "/token-gate", label: "Token Gate", icon: ShieldCheck },
+];
+
+const secondaryNavItems = [
+  { href: "/learn", label: "Learn", icon: GraduationCap },
   { href: "/methodology", label: "Methodology", icon: Gauge },
   { href: "/docs", label: "Docs", icon: FileText },
   { href: "/contest", label: "LEVI Social", icon: Megaphone },
   { href: "/games/levi-dice", label: "LEVI Dice", icon: Dice5 },
 ];
+
+const navItems = [...primaryNavItems, ...secondaryNavItems];
 
 export function LeviShell({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -55,21 +62,40 @@ export function LeviShell({ children }: { children: ReactNode }) {
             </span>
           </Link>
 
-          <nav className="levi-nav hidden xl:flex" aria-label="Primary navigation">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = router.pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`levi-nav-item ${active ? "is-active" : ""}`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
+          <nav className="levi-nav-shell hidden xl:flex" aria-label="Primary navigation">
+            <div className="levi-nav-group">
+              {primaryNavItems.map((item) => {
+                const Icon = item.icon;
+                const active = router.pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`levi-nav-item ${active ? "is-active" : ""}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+            <span className="levi-nav-divider" aria-hidden="true" />
+            <div className="levi-nav-group is-utility">
+              {secondaryNavItems.map((item) => {
+                const Icon = item.icon;
+                const active = router.pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`levi-nav-item ${active ? "is-active" : ""}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
 
           <Link
