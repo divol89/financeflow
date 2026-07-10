@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
+import { BitcoinLearningLink } from "@/components/levi/BitcoinLearningLink";
 import {
   MarketCycleChart,
   PositionLoopDiagram,
@@ -133,6 +134,8 @@ export default function LearnPage() {
             </div>
           </LeviReveal>
         </section>
+
+        <BitcoinLearningLink />
 
         <section id="mechanics" className="levi-container levi-learn-section">
           <LeviReveal>

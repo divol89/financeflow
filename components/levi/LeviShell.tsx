@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
+import { CommunityBurnBanner } from "@/components/levi/CommunityBurnBanner";
 
 const primaryNavItems = [
   { href: "/scanner", label: "Scanner", icon: Radar },
@@ -189,6 +190,8 @@ export function LeviShell({ children }: { children: ReactNode }) {
       </header>
 
       <main>{children}</main>
+
+      <CommunityBurnBanner />
 
       <footer className="levi-footer">
         <div className="levi-container flex flex-col gap-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">

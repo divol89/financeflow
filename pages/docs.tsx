@@ -18,7 +18,6 @@ import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNo
 import { BullChargeProposal } from "@/components/levi/BullChargeProposal";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
-import { BitcoinPrimer } from "@/components/levi/BitcoinPrimer";
 import { WhitepaperFlow } from "@/components/levi/WhitepaperFlow";
 
 const productCards = [
@@ -70,7 +69,7 @@ export default function DocsPage() {
         <title>White Bull Agent | LEVI AI Whitepaper</title>
         <meta
           name="description"
-          content="White Bull Agent is an AI-assisted intelligence platform for understanding Solana activity through LEVI AI, with an educational Bitcoin primer."
+          content="White Bull Agent is an AI-assisted intelligence platform for understanding Solana activity through LEVI AI."
         />
         <meta property="og:title" content="White Bull Agent | LEVI AI Whitepaper" />
         <meta property="og:description" content="Community-led intelligence for the Solana ecosystem." />
@@ -129,8 +128,6 @@ export default function DocsPage() {
 
           <LeviReveal><WhitepaperFlow /></LeviReveal>
         </section>
-
-        <BitcoinPrimer />
 
         <section className="levi-container levi-docs-section levi-docs-section-dark">
           <div className="levi-docs-two-column">

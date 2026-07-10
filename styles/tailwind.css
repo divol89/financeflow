@@ -1396,6 +1396,1144 @@ img.site-logo {
   }
 }
 
+/* LEVI Learn: interactive Bitcoin field guide */
+.levi-bitcoin-link-section {
+  position: relative;
+  z-index: 1;
+  margin-top: 2rem;
+}
+
+.levi-bitcoin-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+  border-top: 1px solid rgba(245, 213, 138, 0.5);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  background: rgba(8, 11, 7, 0.58);
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.levi-bitcoin-link-copy,
+.levi-bitcoin-link-map,
+.levi-bitcoin-link-map > div,
+.levi-bitcoin-page :where(section, article, div, button, span, strong, h1, h2, h3, p, li) {
+  min-width: 0;
+}
+
+.levi-bitcoin-link-copy h2 {
+  max-width: 34rem;
+  margin-top: 0.8rem;
+  color: var(--levi-warm) !important;
+  font-size: clamp(1.8rem, 3.6vw, 3rem);
+  font-weight: 750;
+  line-height: 1.06;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-link-copy > p:last-of-type {
+  max-width: 36rem;
+  margin-top: 0.9rem;
+  color: #a8b6a7;
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.levi-bitcoin-link-map {
+  display: grid;
+  align-content: center;
+  gap: 0;
+  border-left: 1px solid rgba(222, 246, 220, 0.12);
+  padding-left: clamp(1rem, 3vw, 2rem);
+}
+
+.levi-bitcoin-link-map > div {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 3.8rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  color: #dcead9;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.levi-bitcoin-link-map > div:last-child {
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+}
+
+.levi-bitcoin-link-map svg {
+  flex: none;
+  color: #f5d58a;
+}
+
+.levi-bitcoin-page {
+  position: relative;
+  min-width: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 9rem 0 6rem;
+  background: #070906;
+}
+
+.levi-bitcoin-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(222, 246, 220, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(222, 246, 220, 0.038) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem;
+  mask-image: linear-gradient(to bottom, black, transparent 62%);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.levi-bitcoin-page :where(h1, h2, h3, p, strong, span, li) {
+  overflow-wrap: anywhere;
+}
+
+.levi-bitcoin-hero,
+.levi-bitcoin-section,
+.levi-bitcoin-close {
+  position: relative;
+  z-index: 1;
+}
+
+.levi-bitcoin-hero {
+  display: grid;
+  min-height: min(42rem, calc(100svh - 4.75rem));
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.82fr);
+  align-items: center;
+  gap: clamp(2rem, 7vw, 6rem);
+}
+
+.levi-bitcoin-hero-copy {
+  max-width: 44rem;
+}
+
+.levi-bitcoin-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #a5b5a4;
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.levi-bitcoin-back-link:hover {
+  color: #eff8e9;
+}
+
+.levi-bitcoin-hero h1 {
+  max-width: 46rem;
+  margin-top: 1.45rem;
+  color: var(--levi-warm) !important;
+  font-size: clamp(3.25rem, 7.6vw, 6.8rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-hero h1 span {
+  display: block;
+  color: #f5d58a;
+}
+
+.levi-bitcoin-hero-copy > p:not(.levi-eyebrow):not(.levi-bitcoin-source-note) {
+  max-width: 39rem;
+  margin-top: 1.45rem;
+  color: #acbaaa;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.levi-bitcoin-hero-actions,
+.levi-bitcoin-payment-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.levi-bitcoin-source-note {
+  max-width: 35rem;
+  margin-top: 1.15rem;
+  color: #758574;
+  font-size: 0.72rem;
+  line-height: 1.65;
+}
+
+.levi-bitcoin-hero-map {
+  display: grid;
+  min-height: 25rem;
+  align-content: space-between;
+  border: 1px solid rgba(222, 246, 220, 0.12);
+  background: rgba(5, 8, 5, 0.72);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.levi-bitcoin-map-topline,
+.levi-bitcoin-map-readout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #829181;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.64rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-bitcoin-map-nodes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+  position: relative;
+  padding: 1.5rem 0;
+}
+
+.levi-bitcoin-map-nodes::before {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  left: 0.65rem;
+  height: 1px;
+  background: rgba(245, 213, 138, 0.28);
+  content: "";
+}
+
+.levi-bitcoin-map-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
+  min-height: 4.2rem;
+  place-items: center;
+  gap: 0.3rem;
+  border: 1px solid rgba(222, 246, 220, 0.16);
+  border-radius: 0.45rem;
+  background: #0b100a;
+  color: #95a793;
+  cursor: pointer;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.levi-bitcoin-map-node:hover,
+.levi-bitcoin-map-node.is-active {
+  border-color: rgba(245, 213, 138, 0.72);
+  background: #14160d;
+  color: #f5d58a;
+  transform: translateY(-2px);
+}
+
+.levi-bitcoin-map-node span {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58rem;
+}
+
+.levi-bitcoin-map-readout {
+  align-items: flex-start;
+  border-top: 1px solid rgba(222, 246, 220, 0.11);
+  padding-top: 1rem;
+}
+
+.levi-bitcoin-map-readout strong {
+  max-width: 17rem;
+  color: #e9efdc;
+  font-family: inherit;
+  font-size: 0.66rem;
+  font-weight: 550;
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-align: right;
+  text-transform: none;
+}
+
+.levi-bitcoin-section {
+  padding-top: 5.5rem;
+}
+
+.levi-bitcoin-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.levi-bitcoin-section-heading > div {
+  max-width: 48rem;
+}
+
+.levi-bitcoin-section-heading h2,
+.levi-bitcoin-quiz-heading h2,
+.levi-bitcoin-close h2 {
+  margin-top: 0.75rem;
+  color: #f4f7ee !important;
+  font-size: clamp(2rem, 4.4vw, 3.65rem);
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-section-heading p:not(.levi-section-label) {
+  max-width: 46rem;
+  margin-top: 0.95rem;
+  color: #9ba999;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.levi-bitcoin-progress {
+  flex: none;
+  border-left: 1px solid rgba(245, 213, 138, 0.48);
+  padding: 0.3rem 0 0.3rem 0.9rem;
+  color: #f5d58a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-bitcoin-explorer {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.52fr) minmax(0, 1fr);
+  border-top: 1px solid rgba(222, 246, 220, 0.15);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.levi-bitcoin-chapter-list {
+  border-right: 1px solid rgba(222, 246, 220, 0.1);
+}
+
+.levi-bitcoin-chapter-button {
+  display: grid;
+  width: 100%;
+  min-height: 4.85rem;
+  grid-template-columns: 1.75rem 1.35rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  border: 0;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  background: transparent;
+  padding: 0.9rem 1rem;
+  color: #889787;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.levi-bitcoin-chapter-button:last-child {
+  border-bottom: 0;
+}
+
+.levi-bitcoin-chapter-button:hover,
+.levi-bitcoin-chapter-button.is-active {
+  background: rgba(184, 243, 107, 0.065);
+  box-shadow: inset 2px 0 0 #b8f36b;
+  color: #edf5e8;
+}
+
+.levi-bitcoin-chapter-button > span {
+  color: #778776;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+}
+
+.levi-bitcoin-chapter-button svg {
+  color: #b8f36b;
+}
+
+.levi-bitcoin-chapter-button strong {
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.levi-bitcoin-chapter-panel {
+  min-height: 29rem;
+  padding: clamp(1.35rem, 4vw, 3.5rem);
+}
+
+.levi-bitcoin-chapter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #b8f36b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-bitcoin-chapter-panel h3 {
+  max-width: 38rem;
+  margin-top: 1.25rem;
+  color: #f1f6ed !important;
+  font-size: clamp(1.55rem, 3.2vw, 2.65rem);
+  font-weight: 720;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-chapter-summary {
+  max-width: 40rem;
+  margin-top: 1rem;
+  color: #aab7a8;
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.levi-bitcoin-chapter-panel ul {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 42rem;
+  margin-top: 1.7rem;
+  padding: 0;
+  list-style: none;
+}
+
+.levi-bitcoin-chapter-panel li {
+  display: grid;
+  grid-template-columns: 1.1rem minmax(0, 1fr);
+  gap: 0.65rem;
+  color: #d5dfd2;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.levi-bitcoin-chapter-panel li svg {
+  margin-top: 0.15rem;
+  color: #b8f36b;
+}
+
+.levi-bitcoin-chapter-signal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  max-width: 43rem;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(245, 213, 138, 0.28);
+  padding-top: 1rem;
+  color: #e6d39e;
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.levi-bitcoin-chapter-signal svg {
+  flex: none;
+  margin-top: 0.1rem;
+}
+
+.levi-bitcoin-band {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin-top: 5.5rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  background: rgba(4, 6, 4, 0.5);
+  padding-bottom: 5.5rem;
+}
+
+.levi-bitcoin-band .levi-bitcoin-section {
+  padding-top: 5.5rem;
+}
+
+.levi-bitcoin-payment {
+  border-top: 1px solid rgba(245, 213, 138, 0.35);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  background: rgba(255, 255, 255, 0.025);
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.levi-bitcoin-payment-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.levi-bitcoin-payment-step {
+  display: grid;
+  min-height: 8.5rem;
+  align-content: start;
+  gap: 0.7rem;
+  border: 1px solid rgba(222, 246, 220, 0.1);
+  border-radius: 0.45rem;
+  background: #0a0e09;
+  padding: 1rem;
+  color: #8b9a89;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.levi-bitcoin-payment-step:hover,
+.levi-bitcoin-payment-step.is-active {
+  border-color: rgba(245, 213, 138, 0.63);
+  background: #15160d;
+  color: #f4f1dc;
+  transform: translateY(-2px);
+}
+
+.levi-bitcoin-payment-step span {
+  color: #748473;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+}
+
+.levi-bitcoin-payment-step svg {
+  color: #f5d58a;
+}
+
+.levi-bitcoin-payment-step strong {
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.levi-bitcoin-payment-readout {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1.25rem;
+}
+
+.levi-bitcoin-payment-readout > svg {
+  color: #b8f36b;
+}
+
+.levi-bitcoin-payment-readout span {
+  color: #829181;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-bitcoin-payment-readout h3 {
+  margin-top: 0.35rem;
+  color: #f0f5eb !important;
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-payment-readout p {
+  max-width: 44rem;
+  margin-top: 0.6rem;
+  color: #a3b0a1;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.levi-bitcoin-reality-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.levi-bitcoin-reality-grid article {
+  min-height: 15rem;
+  border-top: 1px solid rgba(184, 243, 107, 0.34);
+  background: rgba(255, 255, 255, 0.028);
+  padding: 1.35rem;
+}
+
+.levi-bitcoin-reality-grid article:nth-child(2) {
+  border-top-color: rgba(245, 213, 138, 0.48);
+}
+
+.levi-bitcoin-reality-grid article:nth-child(3) {
+  border-top-color: rgba(142, 233, 220, 0.42);
+}
+
+.levi-bitcoin-reality-grid article > span {
+  color: #829181;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-bitcoin-reality-grid h3 {
+  margin-top: 1.7rem;
+  color: #eff5eb !important;
+  font-size: 1.04rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.levi-bitcoin-reality-grid p {
+  margin-top: 0.7rem;
+  color: #8f9e8e;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.levi-bitcoin-quiz-section {
+  max-width: 58rem;
+}
+
+.levi-bitcoin-quiz-heading {
+  max-width: 48rem;
+}
+
+.levi-bitcoin-quiz-options {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 2rem;
+}
+
+.levi-bitcoin-quiz-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  min-height: 4.2rem;
+  border: 1px solid rgba(222, 246, 220, 0.12);
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.9rem 1rem;
+  color: #cdd8ca;
+  cursor: pointer;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  text-align: left;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.levi-bitcoin-quiz-option:hover,
+.levi-bitcoin-quiz-option.is-selected {
+  border-color: rgba(245, 213, 138, 0.66);
+  background: rgba(245, 213, 138, 0.07);
+  color: #f5f1e2;
+}
+
+.levi-bitcoin-quiz-option.is-correct {
+  border-color: rgba(184, 243, 107, 0.68);
+  background: rgba(184, 243, 107, 0.09);
+}
+
+.levi-bitcoin-quiz-option svg {
+  flex: none;
+  color: #b8f36b;
+}
+
+.levi-bitcoin-quiz-feedback {
+  margin-top: 1rem;
+  border-left: 2px solid #f5d58a;
+  padding: 0.8rem 0 0.8rem 1rem;
+  color: #e9e4cf;
+}
+
+.levi-bitcoin-quiz-feedback.is-correct {
+  border-left-color: #b8f36b;
+  color: #e2f2d5;
+}
+
+.levi-bitcoin-quiz-feedback strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.levi-bitcoin-quiz-feedback p {
+  margin-top: 0.35rem;
+  color: #a8b5a6;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.levi-bitcoin-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #879786;
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+
+.levi-bitcoin-reset:hover:not(:disabled) {
+  color: #edf5e8;
+}
+
+.levi-bitcoin-reset:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.levi-bitcoin-close {
+  max-width: 64rem;
+  margin-top: 5.5rem;
+}
+
+.levi-bitcoin-close > p:not(.levi-section-label) {
+  max-width: 43rem;
+  margin-top: 1rem;
+  color: #9ba999;
+  font-size: 0.92rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 1023px) {
+  .levi-bitcoin-link {
+    grid-template-columns: 1fr;
+  }
+
+  .levi-bitcoin-link-map {
+    border-top: 1px solid rgba(222, 246, 220, 0.12);
+    border-left: 0;
+    padding-top: 1.25rem;
+    padding-left: 0;
+  }
+
+  .levi-bitcoin-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.7fr);
+    gap: 2rem;
+  }
+
+  .levi-bitcoin-explorer {
+    grid-template-columns: minmax(12rem, 0.48fr) minmax(0, 1fr);
+  }
+
+  .levi-bitcoin-payment-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .levi-bitcoin-link-section {
+    margin-top: 1rem;
+  }
+
+  .levi-bitcoin-link {
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .levi-bitcoin-page {
+    padding-top: 7.2rem;
+  }
+
+  .levi-bitcoin-hero {
+    display: flex;
+    min-height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2.5rem;
+  }
+
+  .levi-bitcoin-hero h1 {
+    font-size: clamp(3rem, 14.5vw, 4.6rem);
+  }
+
+  .levi-bitcoin-hero-map {
+    min-height: 18rem;
+  }
+
+  .levi-bitcoin-map-nodes {
+    gap: 0.35rem;
+  }
+
+  .levi-bitcoin-map-node {
+    min-height: 3.65rem;
+  }
+
+  .levi-bitcoin-map-readout {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .levi-bitcoin-map-readout strong {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .levi-bitcoin-section {
+    padding-top: 4rem;
+  }
+
+  .levi-bitcoin-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .levi-bitcoin-explorer {
+    grid-template-columns: 1fr;
+  }
+
+  .levi-bitcoin-chapter-list {
+    border-right: 0;
+    border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  }
+
+  .levi-bitcoin-chapter-button {
+    min-height: 3.9rem;
+  }
+
+  .levi-bitcoin-chapter-panel {
+    min-height: 0;
+    padding: 1.25rem;
+  }
+
+  .levi-bitcoin-band {
+    margin-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .levi-bitcoin-band .levi-bitcoin-section {
+    padding-top: 4rem;
+  }
+
+  .levi-bitcoin-payment {
+    padding: 0.8rem;
+  }
+
+  .levi-bitcoin-payment-steps,
+  .levi-bitcoin-reality-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .levi-bitcoin-payment-step {
+    min-height: 5.4rem;
+    grid-template-columns: 1.5rem 1.4rem minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .levi-bitcoin-payment-readout {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+
+  .levi-bitcoin-payment-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .levi-bitcoin-payment-controls .levi-primary-button,
+  .levi-bitcoin-payment-controls .levi-secondary-button {
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .levi-bitcoin-reality-grid article {
+    min-height: 0;
+  }
+
+  .levi-bitcoin-reality-grid h3 {
+    margin-top: 1.1rem;
+  }
+
+  .levi-bitcoin-close {
+    margin-top: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .levi-bitcoin-map-node,
+  .levi-bitcoin-payment-step,
+  .levi-bitcoin-chapter-button,
+  .levi-bitcoin-quiz-option {
+    transition: none;
+  }
+}
+
+/* LEVI AI community burn information */
+.levi-burn-fab,
+.levi-burn-banner {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 40;
+}
+
+.levi-burn-fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.8rem;
+  border: 1px solid rgba(245, 213, 138, 0.58);
+  border-radius: 0.5rem;
+  background: #15130b;
+  padding: 0.65rem 0.85rem;
+  color: #f5d58a;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.levi-burn-fab:hover {
+  border-color: #f5d58a;
+  background: #211d0f;
+  transform: translateY(-2px);
+}
+
+.levi-burn-banner {
+  width: min(23rem, calc(100vw - 2rem));
+  border: 1px solid rgba(245, 213, 138, 0.4);
+  border-radius: 0.5rem;
+  background: rgba(9, 11, 7, 0.98);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.42);
+  padding: 0.9rem;
+}
+
+.levi-burn-banner :where(div, span, strong, code, p, button, a) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.levi-burn-banner-topline,
+.levi-burn-brand,
+.levi-burn-signal > div,
+.levi-burn-token,
+.levi-burn-notice {
+  display: flex;
+  align-items: center;
+}
+
+.levi-burn-banner-topline {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.levi-burn-brand {
+  gap: 0.65rem;
+}
+
+.levi-burn-brand img {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border: 1px solid rgba(184, 243, 107, 0.38);
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.levi-burn-brand > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.levi-burn-brand span,
+.levi-burn-address > span,
+.levi-burn-token > span {
+  color: #829181;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-burn-brand strong {
+  color: #eff5eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.levi-burn-close {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgba(222, 246, 220, 0.13);
+  border-radius: 0.45rem;
+  background: transparent;
+  color: #93a192;
+  cursor: pointer;
+}
+
+.levi-burn-close:hover {
+  border-color: rgba(222, 246, 220, 0.35);
+  color: #eff5eb;
+}
+
+.levi-burn-signal {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  border-top: 1px solid rgba(245, 213, 138, 0.34);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  padding: 0.8rem 0;
+}
+
+.levi-burn-signal > div {
+  gap: 0.45rem;
+  color: #f5d58a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-burn-signal strong {
+  color: #dce8d6;
+  font-size: 0.76rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.levi-burn-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  margin-top: 0.8rem;
+}
+
+.levi-burn-steps span {
+  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  padding-top: 0.35rem;
+  color: #93a292;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-burn-address {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+  border: 1px solid rgba(222, 246, 220, 0.12);
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.7rem;
+}
+
+.levi-burn-address code,
+.levi-burn-token code {
+  color: #dbe6d5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  line-height: 1.55;
+  word-break: break-all;
+}
+
+.levi-burn-address button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.3rem;
+  border: 1px solid rgba(245, 213, 138, 0.56);
+  border-radius: 0.4rem;
+  background: #1a170d;
+  color: #f5d58a;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.levi-burn-address button:hover {
+  border-color: #f5d58a;
+}
+
+.levi-burn-token {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.45rem 0.6rem;
+  margin-top: 0.75rem;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+.levi-burn-token svg {
+  grid-row: span 2;
+  align-self: center;
+  color: #b8f36b;
+}
+
+.levi-burn-notice {
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  color: #abb7a8;
+}
+
+.levi-burn-notice svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: #f5d58a;
+}
+
+.levi-burn-notice > div {
+  min-width: 0;
+}
+
+.levi-burn-notice strong {
+  display: block;
+  color: #e3d39f;
+  font-size: 0.67rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.levi-burn-notice details {
+  margin-top: 0.25rem;
+}
+
+.levi-burn-notice summary {
+  color: #9fada0;
+  cursor: pointer;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.levi-burn-notice p {
+  margin: 0.5rem 0 0;
+  font-size: 0.67rem;
+  line-height: 1.55;
+}
+
+.levi-burn-notice code {
+  color: #f0d78f;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+}
+
+.levi-burn-solscan-link {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  color: #b8f36b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.levi-burn-solscan-link:hover {
+  color: #d8f9a9;
+}
+
+@media (max-width: 767px) {
+  .levi-burn-fab,
+  .levi-burn-banner {
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .levi-burn-banner {
+    width: min(23rem, calc(100vw - 1.5rem));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .levi-site *,
   .levi-site *::before,
