@@ -3,6 +3,10 @@ import bs58 from "bs58";
 import type { LeviAccessState, LeviSession } from "@/types/levi";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import {
+  notifyLeviAuthStateChange,
+  subscribeToLeviAuthStateChange,
+} from "@/lib/levi/authEvents";
+import {
   getInjectedSolanaProvider,
   type InjectedSolanaProvider,
 } from "./useInjectedSolanaWallet";
@@ -60,9 +64,21 @@ export function useLeviAuth() {
     refresh({ showErrors: false });
   }, [refresh]);
 
+  useEffect(() => {
+    return subscribeToLeviAuthStateChange((nextWalletAddress) => {
+      setWalletAddress(nextWalletAddress);
+      void refresh({ showErrors: false });
+    });
+  }, [refresh]);
+
   const getProvider = useCallback((): InjectedSolanaProvider | null => {
     return getInjectedSolanaProvider();
   }, []);
+
+  useEffect(() => {
+    const connectedAddress = getProvider()?.publicKey?.toBase58() || null;
+    if (connectedAddress) setWalletAddress(connectedAddress);
+  }, [getProvider]);
 
   const connectWallet = useCallback(async () => {
     setError(null);
@@ -77,6 +93,7 @@ export function useLeviAuth() {
       const connected = await provider.connect();
       const address = connected.publicKey.toBase58();
       setWalletAddress(address);
+      notifyLeviAuthStateChange(address);
       return { provider, address };
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wallet connection failed");
@@ -134,6 +151,7 @@ export function useLeviAuth() {
       }
 
       await refresh({ showErrors: true });
+      notifyLeviAuthStateChange(connected.address);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in");
     } finally {
@@ -142,11 +160,27 @@ export function useLeviAuth() {
   }, [connectWallet, getProvider, refresh, walletAddress]);
 
   const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    await getProvider()?.disconnect?.();
+    setError(null);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Unable to log out");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to log out");
+      return;
+    }
+
+    try {
+      await getProvider()?.disconnect?.();
+    } catch {
+      // The signed session is already cleared even if the extension disconnect fails.
+    }
+
     setWalletAddress(null);
     setSession(null);
     setAccess(null);
+    notifyLeviAuthStateChange(null);
   }, [getProvider]);
 
   return {

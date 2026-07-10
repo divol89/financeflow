@@ -5,7 +5,10 @@ import {
   normalizePostUrl,
 } from "../lib/contest/validation";
 import { getHighestContestTier } from "../lib/contest/eligibility";
-import { AQP_HOLDER_MINT, CONTEST_HOLDER_TOKENS } from "../lib/contest/constants";
+import {
+  CONTEST_HOLDER_TOKENS,
+  LEVI_AI_HOLDER_MINT,
+} from "../lib/contest/constants";
 
 test("normalizes direct x.com post links", () => {
   assert.equal(
@@ -32,14 +35,15 @@ test("rejects profiles, non-https URLs and unrelated hosts", () => {
   }
 });
 
-test("supports LEVI and AQP with the three surprise holding tiers", () => {
+test("supports LEVI and LEVI AI with the three surprise holding tiers", () => {
   assert.equal(CONTEST_HOLDER_TOKENS.length, 2);
-  assert.equal(CONTEST_HOLDER_TOKENS[1].mint, AQP_HOLDER_MINT);
+  assert.equal(CONTEST_HOLDER_TOKENS[1].symbol, "LEVI AI");
+  assert.equal(CONTEST_HOLDER_TOKENS[1].mint, LEVI_AI_HOLDER_MINT);
 
   const holding = (balance: number) => [
     {
-      symbol: "AQP",
-      mint: AQP_HOLDER_MINT,
+      symbol: "LEVI AI",
+      mint: LEVI_AI_HOLDER_MINT,
       balance,
       available: true,
     },

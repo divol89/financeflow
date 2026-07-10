@@ -61,6 +61,18 @@ export interface ContestPublicResponse {
   error?: string;
 }
 
+export interface ContestSubmissionResponse {
+  submission?: {
+    id: string;
+    postUrl: string;
+    submittedAt: string;
+    status: ContestSubmissionStatus;
+  };
+  totalEntries?: number;
+  eligibility?: ContestEligibilityResponse;
+  error?: string;
+}
+
 export interface ContestSubmissionRecord {
   id: string;
   campaignId: string;

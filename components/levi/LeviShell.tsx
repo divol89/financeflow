@@ -8,12 +8,14 @@ import {
   FileText,
   Gauge,
   GraduationCap,
+  LogOut,
   Megaphone,
   Menu,
   Radar,
   ShieldCheck,
   X,
 } from "lucide-react";
+import { useLeviAuth } from "@/hooks/useLeviAuth";
 
 const primaryNavItems = [
   { href: "/scanner", label: "Scanner", icon: Radar },
@@ -33,6 +35,7 @@ const navItems = [...primaryNavItems, ...secondaryNavItems];
 
 export function LeviShell({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const auth = useLeviAuth();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -53,6 +56,11 @@ export function LeviShell({ children }: { children: ReactNode }) {
       router.events.off("hashChangeStart", closeMenu);
     };
   }, [router.events]);
+
+  async function handleLogout() {
+    setOpen(false);
+    await auth.logout();
+  }
 
   return (
     <div className="levi-site min-h-screen text-white">
@@ -109,12 +117,23 @@ export function LeviShell({ children }: { children: ReactNode }) {
             </div>
           </nav>
 
-          <Link
-            href="/token-gate"
-            className="levi-shell-cta hidden xl:inline-flex"
-          >
-            Connect LEVI
-          </Link>
+          {auth.session || auth.walletAddress ? (
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="levi-shell-cta hidden xl:inline-flex"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/token-gate"
+              className="levi-shell-cta hidden xl:inline-flex"
+            >
+              Connect LEVI
+            </Link>
+          )}
 
           <button
             type="button"
@@ -146,13 +165,24 @@ export function LeviShell({ children }: { children: ReactNode }) {
                   </Link>
                 );
               })}
-              <Link
-                href="/token-gate"
-                onClick={() => setOpen(false)}
-                className="levi-shell-cta mt-3 flex justify-center"
-              >
-                Connect LEVI
-              </Link>
+              {auth.session || auth.walletAddress ? (
+                <button
+                  type="button"
+                  onClick={() => void handleLogout()}
+                  className="levi-shell-cta mt-3 flex justify-center"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  href="/token-gate"
+                  onClick={() => setOpen(false)}
+                  className="levi-shell-cta mt-3 flex justify-center"
+                >
+                  Connect LEVI
+                </Link>
+              )}
             </div>
           </div>
         ) : null}

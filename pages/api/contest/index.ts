@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ContestPublicResponse } from "@/types/contest";
-import { getContestCampaign } from "@/lib/contest/store";
-import { listPublicSubmissions } from "@/lib/contest/store";
+import {
+  countCampaignSubmissions,
+  getContestCampaign,
+  listPublicSubmissions,
+} from "@/lib/contest/store";
 import { getDefaultContestCampaign } from "@/lib/contest/constants";
 
 export default async function handler(
@@ -14,11 +17,14 @@ export default async function handler(
 
   try {
     const campaign = await getContestCampaign();
-    const entries = await listPublicSubmissions(campaign.id);
+    const [entries, totalEntries] = await Promise.all([
+      listPublicSubmissions(campaign.id),
+      countCampaignSubmissions(campaign.id),
+    ]);
     return res.status(200).json({
       campaign,
       entries,
-      totalEntries: entries.length,
+      totalEntries,
       storageAvailable: true,
     });
   } catch (error) {

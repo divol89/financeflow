@@ -9,7 +9,7 @@ import type {
 export const LEVI_SOCIAL_CONTEST_ID = "levi-social-2026-01";
 export const CONTEST_SUBMISSIONS_COLLECTION = "leviSocialContestSubmissions";
 export const CONTEST_CAMPAIGNS_COLLECTION = "leviSocialContests";
-export const AQP_HOLDER_MINT =
+export const LEVI_AI_HOLDER_MINT =
   "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
 
 export const CONTEST_HOLDER_TOKENS: ContestHolderToken[] = [
@@ -18,8 +18,8 @@ export const CONTEST_HOLDER_TOKENS: ContestHolderToken[] = [
     mint: LEVI_MINT_ADDRESS,
   },
   {
-    symbol: "AQP",
-    mint: AQP_HOLDER_MINT,
+    symbol: "LEVI AI",
+    mint: LEVI_AI_HOLDER_MINT,
   },
 ];
 
@@ -50,7 +50,7 @@ export function getDefaultContestCampaign(): LeviSocialContestCampaign {
     id: LEVI_SOCIAL_CONTEST_ID,
     title: "LEVI Social Contest",
     description:
-      "Share a thoughtful post about LEVI on X, submit the link, and unlock a surprise reward tier through your LEVI or AQP holding.",
+      "Share a thoughtful post about LEVI on X, submit the link, and unlock a surprise reward tier through either a LEVI or LEVI AI holding.",
     status,
     closesAt,
     eligibleTokens: CONTEST_HOLDER_TOKENS,

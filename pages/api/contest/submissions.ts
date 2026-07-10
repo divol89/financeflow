@@ -4,9 +4,13 @@ import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
 import { getSessionFromRequest } from "@/lib/levi/session";
 import { getContestEligibility } from "@/lib/contest/eligibility";
-import { getContestCampaign } from "@/lib/contest/store";
-import { createSubmission } from "@/lib/contest/store";
+import {
+  countCampaignSubmissions,
+  createSubmission,
+  getContestCampaign,
+} from "@/lib/contest/store";
 import { normalizePostUrl, ContestValidationError } from "@/lib/contest/validation";
+import type { ContestSubmissionResponse } from "@/types/contest";
 
 const BodySchema = z.object({
   postUrl: z.string().min(1).max(400),
@@ -14,7 +18,7 @@ const BodySchema = z.object({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<ContestSubmissionResponse>
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -34,7 +38,7 @@ export default async function handler(
     const eligibility = await getContestEligibility(session.wallet);
     if (!eligibility.eligible) {
       return res.status(403).json({
-        error: "Hold at least 500 LEVI or 500 AQP to enter this campaign.",
+        error: "Hold at least 500 LEVI or 500 LEVI AI to enter this campaign.",
         eligibility,
       });
     }
@@ -65,6 +69,13 @@ export default async function handler(
       postUrl,
     });
 
+    let totalEntries: number | undefined;
+    try {
+      totalEntries = await countCampaignSubmissions(campaign.id);
+    } catch (countError) {
+      console.error("LEVI Social contest count refresh failed", countError);
+    }
+
     return res.status(201).json({
       submission: {
         id: submission.id,
@@ -72,6 +83,7 @@ export default async function handler(
         submittedAt: submission.submittedAt,
         status: submission.status,
       },
+      totalEntries,
     });
   } catch (error) {
     console.error("LEVI Social contest submission failed", error);

@@ -46,11 +46,24 @@ export async function getContestCampaign(): Promise<LeviSocialContestCampaign> {
 
   if (!snapshot.exists) return fallback;
   const data = snapshot.data() || {};
+
   return {
     ...fallback,
-    ...data,
+    status:
+      data.status === "open" || data.status === "closed" || data.status === "revealed"
+        ? data.status
+        : fallback.status,
+    closesAt: typeof data.closesAt === "string" ? data.closesAt : fallback.closesAt,
+    prizeRevealed:
+      typeof data.prizeRevealed === "boolean"
+        ? data.prizeRevealed
+        : fallback.prizeRevealed,
+    prizeLabel:
+      typeof data.prizeLabel === "string" || data.prizeLabel === null
+        ? data.prizeLabel
+        : fallback.prizeLabel,
     id: LEVI_SOCIAL_CONTEST_ID,
-  } as LeviSocialContestCampaign;
+  };
 }
 
 export async function createSubmission(input: {
@@ -113,6 +126,16 @@ export async function listPublicSubmissions(
       submittedAt: submission.submittedAt,
       walletLabel: abbreviatedWallet(submission.wallet),
     }));
+}
+
+export async function countCampaignSubmissions(campaignId: string): Promise<number> {
+  const aggregate = await getAdminFirestore()
+    .collection(CONTEST_SUBMISSIONS_COLLECTION)
+    .where("campaignId", "==", campaignId)
+    .count()
+    .get();
+
+  return aggregate.data().count;
 }
 
 export async function listAdminSubmissions(

@@ -22,6 +22,7 @@ import { getDefaultContestCampaign } from "@/lib/contest/constants";
 import type {
   ContestEligibilityResponse,
   ContestPublicResponse,
+  ContestSubmissionResponse,
   LeviSocialContestCampaign,
 } from "@/types/contest";
 
@@ -42,6 +43,7 @@ export default function ContestPage() {
     getDefaultContestCampaign()
   );
   const [entries, setEntries] = useState<ContestPublicResponse["entries"]>([]);
+  const [totalEntries, setTotalEntries] = useState(0);
   const [eligibility, setEligibility] = useState<ContestEligibilityResponse | null>(null);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const [postUrl, setPostUrl] = useState("");
@@ -66,6 +68,7 @@ export default function ContestPage() {
 
         if (payload.campaign) setCampaign(payload.campaign);
         setEntries(payload.entries || []);
+        setTotalEntries(payload.totalEntries || 0);
         setStorageAvailable(payload.storageAvailable !== false);
         setContestError(response.ok ? null : payload.error || "Contest data is temporarily unavailable.");
       } catch {
@@ -138,17 +141,20 @@ export default function ContestPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ postUrl }),
       });
-      const payload = await readJsonResponse<{
-        submission?: { postUrl: string };
-        error?: string;
-      }>(response, "Unable to submit this post right now.");
+      const payload = await readJsonResponse<ContestSubmissionResponse>(
+        response,
+        "Unable to submit this post right now."
+      );
 
       if (!response.ok) {
         throw new Error(payload.error || "Unable to submit this post right now.");
       }
 
       setPostUrl("");
-      setSubmitMessage("Your post is in the review queue. We will publish approved entries here.");
+      setTotalEntries((current) => payload.totalEntries ?? current + 1);
+      setSubmitMessage(
+        "Your post has been received and is now in the review queue. It will appear publicly after approval."
+      );
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Unable to submit this post right now.");
     } finally {
@@ -182,7 +188,7 @@ export default function ContestPage() {
               </h1>
               <p className="levi-contest-lede">
                 Share a considered LEVI post on X, submit the direct link and unlock a
-                surprise reward tier through your LEVI or AQP holding.
+                surprise reward tier through either LEVI or LEVI AI.
               </p>
               <div className="levi-contest-proof">
                 <span>
@@ -229,8 +235,8 @@ export default function ContestPage() {
 
         <section className="levi-container levi-contest-stats" aria-label="Contest overview">
           <div className="levi-contest-stat">
-            <span>Approved entries</span>
-            <strong>{entries.length}</strong>
+            <span>Entries received</span>
+            <strong>{totalEntries}</strong>
           </div>
           <div className="levi-contest-stat">
             <span>Access threshold</span>
@@ -360,7 +366,7 @@ export default function ContestPage() {
                       </button>
                     </div>
                     <p className="levi-contest-form-note">
-                      Your wallet: <strong>{shortenWallet(auth.session.wallet)}</strong>. We only accept a direct post URL.
+                      Your wallet: <strong>{shortenWallet(auth.session.wallet)}</strong>. Use a direct X post URL such as <code>https://x.com/account/status/1234567890</code>.
                     </p>
                     {submitMessage ? (
                       <p className="levi-contest-feedback is-success" role="status">
@@ -393,8 +399,8 @@ export default function ContestPage() {
                 <li>
                   <span>01</span>
                   <div>
-                    <strong>Hold LEVI or AQP</strong>
-                    <p>Keep at least {minimumHolding.toLocaleString()} tokens in the wallet you use to enter.</p>
+                    <strong>Hold LEVI or LEVI AI</strong>
+                    <p>Keep the tier amount in either LEVI or LEVI AI in the wallet you use to enter. Holdings are checked independently.</p>
                   </div>
                 </li>
                 <li>
@@ -428,7 +434,7 @@ export default function ContestPage() {
                 </p>
                 <h2 className="levi-panel-title">Approved posts.</h2>
                 <p className="levi-panel-copy">
-                  A quiet record of the community putting LEVI in front of new people.
+                  Entries are counted when received. Only approved posts are published here.
                 </p>
               </div>
               <div className="levi-contest-feed-status">
