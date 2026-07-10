@@ -1249,3 +1249,573 @@ img.site-logo {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* LEVI Social contest surface. Keep campaign styling inside the LEVI shell. */
+.levi-contest-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 9rem 0 4rem;
+  background:
+    radial-gradient(ellipse 58% 52% at 78% 5%, rgba(39, 104, 67, 0.22), transparent 72%),
+    radial-gradient(ellipse 52% 40% at 8% 38%, rgba(171, 121, 44, 0.08), transparent 74%),
+    linear-gradient(145deg, #070906 0%, #0a100a 58%, #050805 100%);
+}
+
+.levi-contest-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(199, 236, 182, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199, 236, 182, 0.045) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.levi-contest-light {
+  position: absolute;
+  top: -14rem;
+  right: -12rem;
+  width: 42rem;
+  height: 30rem;
+  background: radial-gradient(ellipse, rgba(184, 243, 107, 0.1), transparent 68%);
+  filter: blur(32px);
+  pointer-events: none;
+}
+
+.levi-contest-hero,
+.levi-contest-stats,
+.levi-contest-workspace,
+.levi-contest-feed-section,
+.levi-contest-footer-rail {
+  position: relative;
+  z-index: 1;
+}
+
+.levi-contest-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.58fr);
+  align-items: center;
+  gap: clamp(2rem, 7vw, 7rem);
+}
+
+.levi-contest-copy {
+  max-width: 42rem;
+}
+
+.levi-contest-title {
+  max-width: 40rem;
+  margin-top: 1.6rem;
+  color: var(--levi-warm) !important;
+  font-size: clamp(3.4rem, 7vw, 6.6rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+
+.levi-contest-title span {
+  display: block;
+  color: var(--levi-green);
+}
+
+.levi-contest-lede {
+  max-width: 37rem;
+  margin-top: 1.6rem;
+  color: #b4beb1;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.levi-contest-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.2rem;
+  margin-top: 2rem;
+  color: #8c998b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.levi-contest-proof span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.levi-contest-proof svg {
+  color: var(--levi-green-strong);
+}
+
+.levi-contest-signal {
+  position: relative;
+  border-top: 1px solid rgba(184, 243, 107, 0.48);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  padding: 1.6rem;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.25);
+}
+
+.levi-contest-signal-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 2.2rem;
+  place-items: center;
+  border: 1px solid rgba(184, 243, 107, 0.32);
+  border-radius: 0.65rem;
+  background: rgba(184, 243, 107, 0.08);
+  color: var(--levi-green);
+}
+
+.levi-contest-signal-title {
+  margin-top: 0.65rem;
+  color: #f3f7ee;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.levi-contest-signal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  color: #819083;
+  font-size: 0.75rem;
+}
+
+.levi-contest-signal-row strong {
+  color: #e6eee2;
+  font-weight: 700;
+  text-align: right;
+}
+
+.levi-contest-signal-lock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.4rem;
+  color: #d5b979;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.levi-contest-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 5rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.14);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  background: rgba(222, 246, 220, 0.1);
+}
+
+.levi-contest-stat {
+  min-height: 7rem;
+  background: rgba(7, 10, 7, 0.78);
+  padding: 1.15rem 1.25rem;
+}
+
+.levi-contest-stat span {
+  color: #849183;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.levi-contest-stat strong {
+  display: block;
+  margin-top: 0.85rem;
+  color: #f4f7ef;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+}
+
+.levi-contest-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.7fr);
+  align-items: start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.levi-contest-submit {
+  min-height: 25rem;
+}
+
+.levi-contest-requirement {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(184, 243, 107, 0.24);
+  border-radius: 999px;
+  background: rgba(184, 243, 107, 0.07);
+  padding: 0.55rem 0.75rem;
+  color: #d3efa9;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.levi-contest-form-area {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  padding-top: 1.4rem;
+}
+
+.levi-contest-form label {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: #cdd7ca;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.levi-contest-input-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.65rem;
+}
+
+.levi-contest-submit-button {
+  flex: none;
+  min-width: 9rem;
+}
+
+.levi-contest-form-note {
+  margin-top: 0.75rem;
+  color: #7f8d80;
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.levi-contest-form-note strong {
+  color: #d5e6ce;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 600;
+}
+
+.levi-contest-feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.levi-contest-feedback.is-success {
+  color: #b9ef9b;
+}
+
+.levi-contest-feedback.is-error {
+  color: #ffaea1;
+}
+
+.levi-contest-state {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  min-height: 10rem;
+  color: #aab6a8;
+}
+
+.levi-contest-state h3 {
+  color: #f3f7ee !important;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.levi-contest-state p {
+  max-width: 30rem;
+  margin-top: 0.45rem;
+  color: #899789;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.levi-contest-state-icon {
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgba(184, 243, 107, 0.3);
+  border-radius: 0.55rem;
+  background: rgba(184, 243, 107, 0.08);
+  color: var(--levi-green);
+}
+
+.levi-contest-state-icon.is-amber {
+  border-color: rgba(245, 213, 138, 0.28);
+  background: rgba(245, 213, 138, 0.07);
+  color: #f5d58a;
+}
+
+.levi-contest-state-icon.is-red {
+  border-color: rgba(255, 155, 145, 0.28);
+  background: rgba(255, 155, 145, 0.07);
+  color: #ff9b91;
+}
+
+.levi-contest-spinner {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.3rem;
+  border: 2px solid rgba(184, 243, 107, 0.25);
+  border-top-color: var(--levi-green);
+  border-radius: 50%;
+  animation: levi-contest-spin 0.8s linear infinite;
+}
+
+@keyframes levi-contest-spin {
+  to { transform: rotate(360deg); }
+}
+
+.levi-contest-steps {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.7rem;
+}
+
+.levi-contest-steps li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.levi-contest-steps li > span {
+  color: var(--levi-green);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.levi-contest-steps strong {
+  color: #eff5ea;
+  font-size: 0.85rem;
+}
+
+.levi-contest-steps p {
+  margin-top: 0.28rem;
+  color: #879487;
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.levi-contest-disclaimer {
+  margin-top: 1.8rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  padding-top: 1rem;
+  color: #7c8a7b;
+  font-size: 0.72rem;
+  line-height: 1.65;
+}
+
+.levi-contest-feed-section {
+  margin-top: 6rem;
+}
+
+.levi-contest-feed-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  padding-bottom: 1.25rem;
+}
+
+.levi-contest-feed-status {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  color: #98a698;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.levi-contest-status-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--levi-green-strong);
+  box-shadow: 0 0 12px rgba(54, 211, 153, 0.65);
+}
+
+.levi-contest-feed {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.levi-contest-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 1rem;
+  color: #8e9c8e;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.levi-contest-entry:hover {
+  border-color: rgba(184, 243, 107, 0.38);
+  background: rgba(184, 243, 107, 0.055);
+  color: var(--levi-green);
+  transform: translateY(-2px);
+}
+
+.levi-contest-entry-icon {
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgba(184, 243, 107, 0.2);
+  border-radius: 0.5rem;
+  background: rgba(184, 243, 107, 0.07);
+  color: var(--levi-green);
+}
+
+.levi-contest-entry strong,
+.levi-contest-entry span {
+  display: block;
+}
+
+.levi-contest-entry strong {
+  color: #e8f1e4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.levi-contest-entry span {
+  margin-top: 0.25rem;
+  color: #7d8b7e;
+  font-size: 0.7rem;
+}
+
+.levi-contest-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding: 1.25rem 0;
+  color: #859285;
+  font-size: 0.8rem;
+}
+
+.levi-contest-empty svg {
+  color: #d5b979;
+}
+
+.levi-contest-footer-rail {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 5rem;
+  color: #718071;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.levi-contest-footer-rail div {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(184, 243, 107, 0.42), transparent);
+}
+
+@media (max-width: 1023px) {
+  .levi-contest-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.8fr);
+    gap: 2rem;
+  }
+
+  .levi-contest-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .levi-contest-page {
+    padding-top: 7.3rem;
+  }
+
+  .levi-contest-hero,
+  .levi-contest-stats,
+  .levi-contest-feed {
+    grid-template-columns: 1fr;
+  }
+
+  .levi-contest-hero {
+    gap: 2.75rem;
+  }
+
+  .levi-contest-title {
+    font-size: clamp(3.15rem, 15vw, 4.6rem);
+  }
+
+  .levi-contest-signal {
+    max-width: 32rem;
+  }
+
+  .levi-contest-stats {
+    gap: 0;
+    margin-top: 3.5rem;
+  }
+
+  .levi-contest-stat {
+    min-height: auto;
+    border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  }
+
+  .levi-contest-stat:last-child {
+    border-bottom: 0;
+  }
+
+  .levi-contest-input-row {
+    display: grid;
+  }
+
+  .levi-contest-submit-button {
+    width: 100%;
+  }
+
+  .levi-contest-feed-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .levi-contest-feed-section {
+    margin-top: 4.5rem;
+  }
+
+  .levi-contest-footer-rail {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .levi-contest-footer-rail div {
+    width: 100%;
+    flex: none;
+  }
+}

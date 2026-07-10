@@ -4,6 +4,7 @@ import {
   Dice5,
   FileText,
   Lock,
+  Megaphone,
   Radar,
   ShieldCheck,
 } from "lucide-react";
@@ -32,6 +33,11 @@ const purposeCards = [
     icon: Dice5,
     body: "The original IOTA Crazy Dice game remains available, while the LEVI Dice Solana edition is prepared as a separate LEVI experience.",
   },
+  {
+    title: "LEVI Social",
+    icon: Megaphone,
+    body: "A holder-gated community campaign where LEVI holders submit direct X posts for manual review and a later prize reveal.",
+  },
 ];
 
 const principles = [
@@ -39,6 +45,7 @@ const principles = [
   "Show signals as risk indicators, not as final accusations.",
   "Keep wallet access explicit: connect, sign, inspect, disconnect.",
   "Treat scan results as a decision aid that still needs human judgment.",
+  "Review social entries manually; the campaign does not promise an automated prize payout.",
 ];
 
 export default function DocsPage() {

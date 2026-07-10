@@ -7,6 +7,7 @@ import {
   Dice5,
   FileText,
   Gauge,
+  Megaphone,
   Menu,
   Radar,
   ShieldCheck,
@@ -19,7 +20,7 @@ const navItems = [
   { href: "/token-gate", label: "Token Gate", icon: ShieldCheck },
   { href: "/methodology", label: "Methodology", icon: Gauge },
   { href: "/docs", label: "Docs", icon: FileText },
-  { href: "/games", label: "Crazy Dice", icon: Dice5 },
+  { href: "/contest", label: "LEVI Social", icon: Megaphone },
   { href: "/games/levi-dice", label: "LEVI Dice", icon: Dice5 },
 ];
 
