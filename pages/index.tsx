@@ -2,10 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 import {
   ArrowRight,
-  Dice5,
+  FileText,
   Lock,
   Radar,
   ShieldCheck,
+  Sparkles,
   Volume2,
 } from "lucide-react";
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
@@ -20,10 +21,10 @@ export default function Home() {
   return (
     <LeviShell>
       <Head>
-        <title>LEVI Sentinel | Flow Finance</title>
+        <title>White Bull Agent | LEVI Sentinel</title>
         <meta
           name="description"
-          content="LEVI Sentinel scans Solana creator wallets for heuristic token-risk signals."
+          content="White Bull Agent and LEVI AI turn Solana activity into clearer signals and community-built Web3 products."
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-32x32.png" type="image/png" />
@@ -39,15 +40,16 @@ export default function Home() {
             <div className="levi-hero-copy">
               <div className="levi-eyebrow">
                 <ShieldCheck className="h-4 w-4" />
-                Solana-native risk intelligence
+                White Bull Agent / Solana-native intelligence
               </div>
               <h1 className="levi-display">
-                See the signal.
-                <span>Protect the flow.</span>
+                Read the chain.
+                <span>Build what matters.</span>
               </h1>
               <p className="levi-hero-lede">
-                LEVI Sentinel inspects creator wallets, surfaces suspicious
-                patterns, and unlocks deeper intelligence for real LEVI holders.
+                White Bull Agent turns public Solana activity into AI-assisted
+                context, while community ideas become real Web3 products. LEVI
+                Sentinel is the intelligence surface for reviewing the signal.
               </p>
               <div className="levi-hero-actions">
               <Link
@@ -57,18 +59,15 @@ export default function Home() {
                   Open Scanner
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link
-                href="/games"
-                  className="levi-secondary-button"
-              >
-                <Dice5 className="h-4 w-4" />
-                Crazy Dice
+              <Link href="/docs" className="levi-secondary-button">
+                <FileText className="h-4 w-4" />
+                Read Whitepaper
               </Link>
               </div>
               <div className="levi-hero-proof">
-                <span><ShieldCheck className="h-4 w-4" /> Token-gated</span>
+                <span><Sparkles className="h-4 w-4" /> AI-assisted</span>
                 <span><Radar className="h-4 w-4" /> Human-reviewed</span>
-                <span><Lock className="h-4 w-4" /> Read-only by design</span>
+                <span><ShieldCheck className="h-4 w-4" /> Community-built</span>
               </div>
             </div>
 
@@ -76,11 +75,31 @@ export default function Home() {
           </div>
 
           <div className="levi-hero-rail" aria-hidden="true">
-            <span>LEVI / SENTINEL</span>
-            <span>ON-CHAIN VISIBILITY FOR THE COMMUNITY</span>
+            <span>WHITE BULL AGENT / LEVI AI</span>
+            <span>FROM PUBLIC SIGNALS TO USEFUL PRODUCTS</span>
             <span className="levi-hero-rail-line" />
             <ArrowRight className="h-4 w-4" />
           </div>
+
+          <LeviReveal>
+            <section className="levi-home-narrative" aria-labelledby="home-narrative-title">
+              <div className="levi-home-narrative-copy">
+                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> The White Bull Agent idea</div>
+                <h2 id="home-narrative-title">Community ideas become real Web3 products.</h2>
+                <p>
+                  LEVI AI helps make Solana activity easier to read. The community
+                  helps decide what gets built next. Together, signals become context,
+                  proposals become products, and utility grows in public.
+                </p>
+              </div>
+              <div className="levi-home-narrative-flow" aria-label="White Bull Agent development flow">
+                <div><span>01</span><strong>Observe</strong><p>Read public activity.</p></div>
+                <div><span>02</span><strong>Understand</strong><p>Surface useful context.</p></div>
+                <div><span>03</span><strong>Propose</strong><p>Share the next idea.</p></div>
+                <div><span>04</span><strong>Build</strong><p>Ship useful utility.</p></div>
+              </div>
+            </section>
+          </LeviReveal>
 
           <div className="levi-flow">
             <LeviReveal>
