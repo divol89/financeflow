@@ -111,13 +111,14 @@ export function LeviShell({ children }: { children: ReactNode }) {
             className="levi-menu-button inline-flex xl:hidden"
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
+            aria-controls="levi-mobile-navigation"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
         {open ? (
-          <div className="levi-mobile-panel xl:hidden">
+          <div id="levi-mobile-navigation" className="levi-mobile-panel xl:hidden">
             <div className="levi-container grid gap-1 py-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
