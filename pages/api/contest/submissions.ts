@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
 import { getSessionFromRequest } from "@/lib/levi/session";
-import { getLeviAccessForWallet } from "@/lib/levi/tokenGate";
+import { getContestEligibility } from "@/lib/contest/eligibility";
 import { getContestCampaign } from "@/lib/contest/store";
 import { createSubmission } from "@/lib/contest/store";
 import { normalizePostUrl, ContestValidationError } from "@/lib/contest/validation";
@@ -31,11 +31,11 @@ export default async function handler(
       return res.status(401).json({ error: "Connect and sign with your Solana wallet first." });
     }
 
-    const access = await getLeviAccessForWallet(session.wallet);
-    if (access.tier === "blocked") {
+    const eligibility = await getContestEligibility(session.wallet);
+    if (!eligibility.eligible) {
       return res.status(403).json({
-        error: "Hold at least 3,000 LEVI to enter this campaign.",
-        access,
+        error: "Hold at least 500 LEVI or 500 AQP to enter this campaign.",
+        eligibility,
       });
     }
 

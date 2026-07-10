@@ -20,6 +20,7 @@ import { useLeviAuth } from "@/hooks/useLeviAuth";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { getDefaultContestCampaign } from "@/lib/contest/constants";
 import type {
+  ContestEligibilityResponse,
   ContestPublicResponse,
   LeviSocialContestCampaign,
 } from "@/types/contest";
@@ -41,11 +42,13 @@ export default function ContestPage() {
     getDefaultContestCampaign()
   );
   const [entries, setEntries] = useState<ContestPublicResponse["entries"]>([]);
+  const [eligibility, setEligibility] = useState<ContestEligibilityResponse | null>(null);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const [postUrl, setPostUrl] = useState("");
   const [isLoadingContest, setIsLoadingContest] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contestError, setContestError] = useState<string | null>(null);
+  const [eligibilityError, setEligibilityError] = useState<string | null>(null);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -81,9 +84,47 @@ export default function ContestPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!auth.session) {
+      setEligibility(null);
+      setEligibilityError(null);
+      return;
+    }
+
+    let cancelled = false;
+    setEligibility(null);
+    setEligibilityError(null);
+
+    async function loadEligibility() {
+      try {
+        const response = await fetch("/api/contest/eligibility");
+        const payload = await readJsonResponse<ContestEligibilityResponse>(
+          response,
+          "Unable to read contest holder balances."
+        );
+        if (cancelled) return;
+        if (!response.ok) {
+          setEligibilityError(payload.error || "Unable to read contest holder balances.");
+          return;
+        }
+        setEligibility(payload);
+      } catch {
+        if (!cancelled) setEligibilityError("Unable to read contest holder balances.");
+      }
+    }
+
+    loadEligibility();
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.session]);
+
   const campaignOpen =
     campaign.status === "open" && new Date(campaign.closesAt).getTime() > Date.now();
-  const isEligible = Boolean(auth.session && auth.access && auth.access.tier !== "blocked");
+  const contestTokens = campaign.eligibleTokens.map((token) => token.symbol).join(" or ");
+  const minimumHolding = campaign.tiers[0]?.minimumHolding || 500;
+  const tierLabels = campaign.tiers.map((tier) => `${tier.minimumHolding.toLocaleString()}+`).join(" / ");
+  const isEligible = Boolean(eligibility?.eligible);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -140,8 +181,8 @@ export default function ContestPage() {
                 <span>Move the signal.</span>
               </h1>
               <p className="levi-contest-lede">
-                Share a considered LEVI post on X, submit the direct link and help the
-                community make the project impossible to overlook.
+                Share a considered LEVI post on X, submit the direct link and unlock a
+                surprise reward tier through your LEVI or AQP holding.
               </p>
               <div className="levi-contest-proof">
                 <span>
@@ -172,7 +213,11 @@ export default function ContestPage() {
               </div>
               <div className="levi-contest-signal-row">
                 <span>Requirement</span>
-                <strong>{campaign.requiredLevi.toLocaleString()} LEVI</strong>
+                <strong>{minimumHolding.toLocaleString()}+ {contestTokens}</strong>
+              </div>
+              <div className="levi-contest-signal-row">
+                <span>Reward tiers</span>
+                <strong>{tierLabels}</strong>
               </div>
               <div className="levi-contest-signal-lock">
                 <LockKeyhole className="h-4 w-4" />
@@ -189,11 +234,11 @@ export default function ContestPage() {
           </div>
           <div className="levi-contest-stat">
             <span>Access threshold</span>
-            <strong>{campaign.requiredLevi.toLocaleString()} LEVI</strong>
+            <strong>{minimumHolding.toLocaleString()}+ {contestTokens}</strong>
           </div>
           <div className="levi-contest-stat">
-            <span>Ranking</span>
-            <strong>Revealed later</strong>
+            <span>Surprise tiers</span>
+            <strong>{tierLabels}</strong>
           </div>
         </section>
 
@@ -213,12 +258,12 @@ export default function ContestPage() {
                 </div>
                 <div className="levi-contest-requirement">
                   <BadgeCheck className="h-5 w-5" />
-                  <span>3,000 LEVI minimum</span>
+                  <span>{minimumHolding.toLocaleString()}+ {contestTokens}</span>
                 </div>
               </div>
 
               <div className="levi-contest-form-area">
-                {auth.isLoading || isLoadingContest ? (
+                {auth.isLoading || isLoadingContest || (auth.session && !eligibility && !eligibilityError) ? (
                   <div className="levi-contest-state">
                     <span className="levi-contest-spinner" aria-hidden="true" />
                     Loading campaign access...
@@ -229,7 +274,7 @@ export default function ContestPage() {
                       <ShieldCheck className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3>Connect your LEVI wallet</h3>
+                      <h3>Connect your Solana wallet</h3>
                       <p>Sign once to verify ownership and unlock the submission form.</p>
                       <button
                         type="button"
@@ -242,16 +287,26 @@ export default function ContestPage() {
                       </button>
                     </div>
                   </div>
+                ) : eligibilityError ? (
+                  <div className="levi-contest-state is-error">
+                    <div className="levi-contest-state-icon is-red">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3>Holder check temporarily unavailable</h3>
+                      <p>{eligibilityError}</p>
+                    </div>
+                  </div>
                 ) : !isEligible ? (
                   <div className="levi-contest-state">
                     <div className="levi-contest-state-icon is-amber">
                       <LockKeyhole className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3>More LEVI unlocks entry</h3>
+                      <h3>Reach a surprise reward tier</h3>
                       <p>
-                        This wallet currently holds {auth.access?.balance.toLocaleString() || "0"} LEVI.
-                        Hold at least {campaign.requiredLevi.toLocaleString()} LEVI to participate.
+                        Hold at least {minimumHolding.toLocaleString()} {contestTokens} to participate.
+                        The available tiers are {tierLabels}.
                       </p>
                     </div>
                   </div>
@@ -276,7 +331,12 @@ export default function ContestPage() {
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="levi-contest-form">
+                  <>
+                    <p className="levi-contest-tier-status">
+                      <Sparkles className="h-4 w-4" />
+                      Current reward tier: <strong>{eligibility?.tier?.label}</strong>. Surprise revealed later.
+                    </p>
+                    <form onSubmit={handleSubmit} className="levi-contest-form">
                     <label htmlFor="post-url">Direct X post link</label>
                     <div className="levi-contest-input-row">
                       <input
@@ -312,7 +372,8 @@ export default function ContestPage() {
                         {submitError}
                       </p>
                     ) : null}
-                  </form>
+                    </form>
+                  </>
                 )}
                 {auth.error ? <p className="levi-contest-feedback is-error" role="alert">{auth.error}</p> : null}
                 {contestError && storageAvailable ? (
@@ -332,21 +393,21 @@ export default function ContestPage() {
                 <li>
                   <span>01</span>
                   <div>
-                    <strong>Hold LEVI</strong>
-                    <p>Keep at least 3,000 LEVI in the wallet you use to enter.</p>
+                    <strong>Hold LEVI or AQP</strong>
+                    <p>Keep at least {minimumHolding.toLocaleString()} tokens in the wallet you use to enter.</p>
                   </div>
                 </li>
                 <li>
                   <span>02</span>
                   <div>
-                    <strong>Post on X</strong>
-                    <p>Share something original that helps people understand the project.</p>
+                    <strong>Reach a tier</strong>
+                    <p>{tierLabels} unlock different surprise reward levels.</p>
                   </div>
                 </li>
                 <li>
                   <span>03</span>
                   <div>
-                    <strong>Submit the link</strong>
+                    <strong>Post and submit</strong>
                     <p>The team reviews relevance, originality and social impact manually.</p>
                   </div>
                 </li>

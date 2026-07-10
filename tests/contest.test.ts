@@ -4,6 +4,8 @@ import {
   ContestValidationError,
   normalizePostUrl,
 } from "../lib/contest/validation";
+import { getHighestContestTier } from "../lib/contest/eligibility";
+import { AQP_HOLDER_MINT, CONTEST_HOLDER_TOKENS } from "../lib/contest/constants";
 
 test("normalizes direct x.com post links", () => {
   assert.equal(
@@ -28,4 +30,23 @@ test("rejects profiles, non-https URLs and unrelated hosts", () => {
   ]) {
     assert.throws(() => normalizePostUrl(value), ContestValidationError);
   }
+});
+
+test("supports LEVI and AQP with the three surprise holding tiers", () => {
+  assert.equal(CONTEST_HOLDER_TOKENS.length, 2);
+  assert.equal(CONTEST_HOLDER_TOKENS[1].mint, AQP_HOLDER_MINT);
+
+  const holding = (balance: number) => [
+    {
+      symbol: "AQP",
+      mint: AQP_HOLDER_MINT,
+      balance,
+      available: true,
+    },
+  ];
+
+  assert.equal(getHighestContestTier(holding(499)), null);
+  assert.equal(getHighestContestTier(holding(500))?.id, "signal");
+  assert.equal(getHighestContestTier(holding(1_000))?.id, "amplifier");
+  assert.equal(getHighestContestTier(holding(10_000))?.id, "sentinel");
 });

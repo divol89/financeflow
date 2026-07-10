@@ -36,7 +36,7 @@ const purposeCards = [
   {
     title: "LEVI Social",
     icon: Megaphone,
-    body: "A holder-gated community campaign where LEVI holders submit direct X posts for manual review and a later prize reveal.",
+    body: "A holder-gated community campaign where LEVI or AQP holders submit direct X posts, reach 500 / 1,000 / 10,000+ holding tiers, and receive a later surprise reveal.",
   },
 ];
 
@@ -45,7 +45,7 @@ const principles = [
   "Show signals as risk indicators, not as final accusations.",
   "Keep wallet access explicit: connect, sign, inspect, disconnect.",
   "Treat scan results as a decision aid that still needs human judgment.",
-  "Review social entries manually; the campaign does not promise an automated prize payout.",
+  "Review social entries manually; holding tiers do not promise an automated prize payout.",
 ];
 
 export default function DocsPage() {

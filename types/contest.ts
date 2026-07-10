@@ -6,15 +6,44 @@ export type ContestSubmissionStatus =
 
 export type ContestCampaignStatus = "open" | "closed" | "revealed";
 
+export interface ContestHolderToken {
+  symbol: string;
+  mint: string;
+}
+
+export interface ContestHolderTier {
+  id: "signal" | "amplifier" | "sentinel";
+  label: string;
+  minimumHolding: number;
+}
+
 export interface LeviSocialContestCampaign {
   id: string;
   title: string;
   description: string;
   status: ContestCampaignStatus;
   closesAt: string;
-  requiredLevi: number;
+  eligibleTokens: ContestHolderToken[];
+  tiers: ContestHolderTier[];
   prizeRevealed: boolean;
   prizeLabel: string | null;
+}
+
+export interface ContestHolderBalance {
+  symbol: string;
+  mint: string;
+  balance: number | null;
+  available: boolean;
+}
+
+export interface ContestEligibilityResponse {
+  wallet: string;
+  eligible: boolean;
+  tier: ContestHolderTier | null;
+  qualifyingToken: string | null;
+  holdings: ContestHolderBalance[];
+  checkedAt: string;
+  error?: string;
 }
 
 export interface ContestPublicSubmission {
