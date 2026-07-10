@@ -2324,7 +2324,14 @@ img.site-logo {
 .marker-attention { top: 76%; left: 10%; }
 .marker-expansion { top: 7%; left: 70%; }
 .marker-distribution { top: 21%; left: 80%; }
-.marker-reset { top: 83%; left: 100%; }
+.marker-reset {
+  top: 83%;
+  right: clamp(0.5rem, 2vw, 1.25rem);
+  left: auto;
+  justify-items: end;
+  text-align: right;
+  transform: translateY(-50%);
+}
 
 .levi-learning-chart-caption {
   margin-top: 0.9rem;
@@ -2707,10 +2714,6 @@ img.site-logo {
   .levi-learning-cycle-marker {
     font-size: 0.58rem;
     max-width: 30%;
-  }
-
-  .marker-reset {
-    left: 92%;
   }
 
   .levi-learning-loop {
