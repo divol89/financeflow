@@ -75,8 +75,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
             <Analytics />
             <CookieConsent
               location="bottom"
-              buttonText="Aceptar"
-              declineButtonText="Rechazar"
+              buttonText="Accept"
+              declineButtonText="Decline"
               onAccept={handleAccept}
               onDecline={handleReject}
               cookieName="flowfinance_cookie_consent"
@@ -89,7 +89,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                 boxShadow: "0 -4px 30px rgba(0, 0, 0, 0.3)",
               }}
               contentStyle={{
-                flex: "1 0 300px",
+                flex: "1 1 300px",
+                minWidth: 0,
                 margin: "0",
                 fontSize: "14px",
                 lineHeight: "1.6",
@@ -126,9 +127,8 @@ function MyApp({ Component, pageProps, router }: AppProps) {
               hideOnDecline={true}
               overlay={false}
             >
-              🍪 Usamos cookies para mejorar tu experiencia, analizar el tráfico
-              y personalizar el contenido. Al continuar navegando, aceptas
-              nuestra{" "}
+              🍪 We use cookies to improve your experience, analyze traffic and
+              personalize content. By continuing to browse, you accept our{" "}
               <a
                 href="/privacy"
                 style={{
@@ -137,7 +137,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                   fontWeight: "500",
                 }}
               >
-                Política de Privacidad
+                Privacy Policy
               </a>
               .
             </CookieConsent>

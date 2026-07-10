@@ -1892,6 +1892,7 @@ img.site-logo {
 /* LEVI Learn guide. Educational visuals stay local, scoped and data-agnostic. */
 .levi-learn-page {
   position: relative;
+  min-width: 0;
   min-height: 100vh;
   overflow: hidden;
   padding: 9rem 0 5rem;
@@ -1928,7 +1929,18 @@ img.site-logo {
 .levi-learn-section,
 .levi-learn-disclaimer {
   position: relative;
+  min-width: 0;
   z-index: 1;
+}
+
+.levi-learn-page :where(h1, h2, h3, p, strong, span) {
+  overflow-wrap: anywhere;
+}
+
+.levi-learn-hero > *,
+.levi-learn-section > *,
+.levi-learn-disclaimer > * {
+  min-width: 0;
 }
 
 .levi-learn-hero {
@@ -1984,6 +1996,7 @@ img.site-logo {
 .levi-learn-hero-art {
   position: relative;
   display: grid;
+  min-width: 0;
   min-height: 30rem;
   place-items: center;
   isolation: isolate;
@@ -2033,6 +2046,7 @@ img.site-logo {
   position: absolute;
   right: 0;
   bottom: 1.5rem;
+  max-width: calc(100% - 1rem);
   z-index: 2;
   display: grid;
   gap: 0.28rem;
@@ -2068,6 +2082,7 @@ img.site-logo {
   display: flex;
   align-items: end;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -2100,6 +2115,8 @@ img.site-logo {
 .levi-learn-formula,
 .levi-learn-callout {
   flex: none;
+  min-width: 0;
+  max-width: 100%;
   border-left: 1px solid rgba(184, 243, 107, 0.34);
   padding: 0.25rem 0 0.25rem 1rem;
 }
@@ -2143,6 +2160,14 @@ img.site-logo {
 .levi-learn-phases-grid {
   display: grid;
   gap: 0.75rem;
+}
+
+.levi-learn-mechanics-grid > *,
+.levi-learn-failure-grid > *,
+.levi-learn-phases-grid > *,
+.levi-learning-profit-grid > *,
+.levi-learning-loop > * {
+  min-width: 0;
 }
 
 .levi-learn-mechanics-grid {
@@ -2194,6 +2219,7 @@ img.site-logo {
 }
 
 .levi-learning-chart {
+  min-width: 0;
   overflow: hidden;
   margin-top: 1rem;
   border-top: 1px solid rgba(222, 246, 220, 0.15);
@@ -2206,6 +2232,8 @@ img.site-logo {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  min-width: 0;
   gap: 1rem;
   color: #d9e7d5;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -2215,6 +2243,7 @@ img.site-logo {
 }
 
 .levi-learning-chart-topline span:last-child {
+  margin-left: auto;
   color: #778578;
 }
 
@@ -2281,6 +2310,8 @@ img.site-logo {
   gap: 0.18rem;
   color: #f1f7ed;
   font-size: 0.7rem;
+  line-height: 1.2;
+  max-width: 32%;
   transform: translate(-50%, -50%);
 }
 
@@ -2477,6 +2508,7 @@ img.site-logo {
 }
 
 .levi-learn-check p {
+  min-width: 0;
   color: #a6b1a4;
   font-size: 0.8rem;
   line-height: 1.65;
@@ -2546,6 +2578,28 @@ img.site-logo {
 }
 
 @media (max-width: 767px) {
+  .CookieConsent {
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+  }
+
+  .CookieConsent > div:first-child {
+    width: 100%;
+    flex: 0 1 auto !important;
+  }
+
+  .CookieConsent > div:last-child {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .CookieConsent button {
+    flex: 1 1 7rem;
+    margin: 0 !important;
+  }
+
   .levi-learn-page {
     padding-top: 7.3rem;
   }
@@ -2563,6 +2617,8 @@ img.site-logo {
   }
 
   .levi-learn-hero-art {
+    width: 100%;
+    overflow: hidden;
     min-height: 17rem;
   }
 
@@ -2586,9 +2642,12 @@ img.site-logo {
   }
 
   .levi-learn-art-label {
-    right: 0.25rem;
+    left: 50%;
+    right: auto;
     bottom: 0;
+    width: min(calc(100% - 1rem), 17rem);
     font-size: 0.55rem;
+    transform: translateX(-50%);
   }
 
   .levi-learn-section {
@@ -2605,6 +2664,16 @@ img.site-logo {
     align-items: flex-start;
     flex-direction: column;
     gap: 1.25rem;
+  }
+
+  .levi-learning-chart-topline {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .levi-learning-chart-topline span:last-child {
+    margin-left: 0;
   }
 
   .levi-learn-formula,
@@ -2628,7 +2697,7 @@ img.site-logo {
 
   .levi-learning-cycle-plot {
     height: 16rem;
-    margin-left: 1.1rem;
+    margin-left: 0;
   }
 
   .levi-learning-chart-y-axis {
@@ -2637,6 +2706,11 @@ img.site-logo {
 
   .levi-learning-cycle-marker {
     font-size: 0.58rem;
+    max-width: 30%;
+  }
+
+  .marker-reset {
+    left: 92%;
   }
 
   .levi-learning-loop {

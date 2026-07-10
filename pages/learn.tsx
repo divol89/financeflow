@@ -94,12 +94,12 @@ export default function LearnPage() {
               </p>
               <h1 className="levi-learn-title">
                 Memecoins,
-                <span>sin ruido.</span>
+                <span>without the noise.</span>
               </h1>
               <p className="levi-learn-lede">
-                Una guía para entender qué estás comprando, por qué muchas personas
-                ven ganancias en pantalla y terminan sin realizarlas, y cómo operar una
-                posición con más disciplina que esperanza.
+                A guide to understanding what you are buying, why many people watch
+                gains appear on screen only to give them back, and how to manage a
+                position with more discipline than hope.
               </p>
               <div className="levi-learn-hero-actions">
                 <a href="#mechanics" className="levi-primary-button">
@@ -110,7 +110,7 @@ export default function LearnPage() {
                 </a>
               </div>
               <p className="levi-learn-hero-note">
-                Educación general e ilustrativa. No es asesoramiento financiero ni una promesa de resultados.
+                General educational information and illustrative material. Not financial advice or a promise of results.
               </p>
             </div>
           </LeviReveal>
@@ -139,10 +139,10 @@ export default function LearnPage() {
             <div className="levi-learn-section-heading">
               <div>
                 <p className="levi-section-label"><LineChart className="h-3.5 w-3.5" /> The mechanics</p>
-                <h2>Una memecoin no es solo un gráfico.</h2>
+                <h2>A memecoin is not just a chart.</h2>
                 <p>
-                  El precio es la salida visible de un sistema con narrativa, oferta,
-                  liquidez, comportamiento humano y condiciones de mercado.
+                  Price is the visible output of a system shaped by narrative, supply,
+                  liquidity, human behavior and market conditions.
                 </p>
               </div>
               <div className="levi-learn-formula">
@@ -178,12 +178,12 @@ export default function LearnPage() {
             <div className="levi-learn-section-heading compact-heading">
               <div>
                 <p className="levi-section-label"><CircleAlert className="h-3.5 w-3.5" /> The common trap</p>
-                <h2>Por qué holdear sin plan suele destruir la ganancia.</h2>
+                <h2>Why holding without a plan often destroys gains.</h2>
                 <p>
-                  Holdear no es automáticamente malo. El problema es tratarlo como una
-                  estrategia completa cuando solo describe una acción: no vender. Una
-                  posición sin reglas convierte una ganancia realizada potencial en una
-                  cifra que puede desaparecer con la misma velocidad con la que llegó.
+                  Holding is not automatically wrong. The problem is treating it as a
+                  complete strategy when it only describes one action: not selling. A
+                  position without rules turns a potential realized gain into a number
+                  that can disappear as quickly as it arrived.
                 </p>
               </div>
             </div>
@@ -211,11 +211,11 @@ export default function LearnPage() {
             <div className="levi-learn-section-heading">
               <div>
                 <p className="levi-section-label"><Scale className="h-3.5 w-3.5" /> The operating loop</p>
-                <h2>Si te gusta un proyecto, trabájalo.</h2>
+                <h2>If you like a project, work the position.</h2>
                 <p>
-                  Ser holder puede significar apoyar, investigar, comunicar y mantener
-                  una parte del token. También significa gestionar el riesgo de la
-                  posición para poder seguir participando mañana.
+                  Being a holder can mean supporting, researching, communicating and
+                  keeping part of the token. It also means managing position risk so
+                  you can keep participating tomorrow.
                 </p>
               </div>
               <div className="levi-learn-callout">
@@ -233,31 +233,31 @@ export default function LearnPage() {
             <LeviReveal>
               <article className="levi-learn-phase phase-build">
                 <span className="levi-learn-phase-number">01 / Build</span>
-                <h3>Acumula con una razón.</h3>
+                <h3>Accumulate with a reason.</h3>
                 <p>
-                  Define qué problema, comunidad o narrativa te hace participar. Comprar
-                  más solo porque bajó no es una tesis; es una decisión que necesita una
-                  nueva comprobación.
+                  Define the problem, community or narrative that makes you participate.
+                  Buying more only because the price fell is not a thesis; it is a
+                  decision that needs to be checked again.
                 </p>
               </article>
             </LeviReveal>
             <LeviReveal>
               <article className="levi-learn-phase phase-protect">
                 <span className="levi-learn-phase-number">02 / Protect</span>
-                <h3>Convierte parte del valor.</h3>
+                <h3>Convert part of the value.</h3>
                 <p>
-                  Vender por tramos puede recuperar capital, pagar costes y bajar la
-                  presión emocional sin obligarte a abandonar todo el proyecto.
+                  Selling in tranches can recover capital, cover costs and reduce
+                  emotional pressure without forcing you to abandon the entire project.
                 </p>
               </article>
             </LeviReveal>
             <LeviReveal>
               <article className="levi-learn-phase phase-compound">
                 <span className="levi-learn-phase-number">03 / Compound</span>
-                <h3>Reinvierte con evidencia.</h3>
+                <h3>Reinvest with evidence.</h3>
                 <p>
-                  Si vuelves a comprar, que sea por liquidez, actividad, distribución,
-                  producto o comunidad que sigan justificando la exposición.
+                  If you buy again, let the reason be liquidity, activity, distribution,
+                  product or community that still justifies the exposure.
                 </p>
               </article>
             </LeviReveal>
@@ -269,10 +269,10 @@ export default function LearnPage() {
             <div className="levi-learn-section-heading compact-heading">
               <div>
                 <p className="levi-section-label"><WalletCards className="h-3.5 w-3.5" /> A practical checklist</p>
-                <h2>Antes de comprar, vender o añadir.</h2>
+                <h2>Before you buy, sell or add.</h2>
                 <p>
-                  No existe una fórmula que elimine la volatilidad. Sí existe un proceso
-                  que reduce decisiones impulsivas y hace que tus resultados sean medibles.
+                  No formula removes volatility. A process can reduce impulsive decisions
+                  and make your results measurable.
                 </p>
               </div>
             </div>
@@ -291,11 +291,11 @@ export default function LearnPage() {
             <div className="levi-learn-risk-note">
               <LockKeyhole className="h-5 w-5" />
               <div>
-                <strong>La liquidez también es parte del riesgo.</strong>
+                <strong>Liquidity is part of risk too.</strong>
                 <p>
-                  Una venta grande puede mover el precio, especialmente en pools pequeños.
-                  No confundas el valor mostrado por una app con el efectivo que realmente
-                  puedes retirar al precio esperado.
+                  A large sale can move price, especially in small pools. Do not confuse
+                  the value shown by an app with the cash you can actually withdraw at
+                  the expected price.
                 </p>
               </div>
             </div>
@@ -304,12 +304,12 @@ export default function LearnPage() {
 
         <section className="levi-container levi-learn-disclaimer">
           <p className="levi-section-label"><ShieldCheck className="h-3.5 w-3.5" /> Keep the signal clean</p>
-          <h2>El objetivo no es venderlo todo. Es no perder el control.</h2>
+          <h2>The goal is not to sell everything. It is to stay in control.</h2>
           <p>
-            Los gráficos de esta guía son ilustrativos. Los memecoins pueden perder gran
-            parte o todo su valor, tener liquidez limitada y estar expuestos a contratos,
-            equipos o mercados adversos. Haz tu propia investigación y consulta a un
-            profesional cualificado para tu situación.
+            The charts in this guide are illustrative. Memecoins can lose much or all of
+            their value, have limited liquidity and be exposed to adverse contracts,
+            teams or markets. Do your own research and consult a qualified professional
+            for your situation.
           </p>
         </section>
       </div>
