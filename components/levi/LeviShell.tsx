@@ -43,6 +43,17 @@ export function LeviShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const closeMenu = () => setOpen(false);
+    router.events.on("routeChangeStart", closeMenu);
+    router.events.on("hashChangeStart", closeMenu);
+
+    return () => {
+      router.events.off("routeChangeStart", closeMenu);
+      router.events.off("hashChangeStart", closeMenu);
+    };
+  }, [router.events]);
+
   return (
     <div className="levi-site min-h-screen text-white">
       <header className={`levi-header ${scrolled ? "is-scrolled" : ""}`}>
