@@ -1,0 +1,18 @@
+import {
+  LEVI_AI_MINT_ADDRESS,
+  SOLANA_INCINERATOR_ADDRESS,
+  SOLANA_INCINERATOR_URL,
+} from "@/lib/levi/communityBurn";
+
+export { LEVI_AI_MINT_ADDRESS, SOLANA_INCINERATOR_ADDRESS, SOLANA_INCINERATOR_URL };
+
+export const LEVI_AI_SYMBOL = "LEVI AI";
+export const LEVI_AI_DECIMALS = 6;
+export const LEVI_AI_INITIAL_SUPPLY_RAW = "1000000000000000";
+
+export const BURN_TRACKER_COLLECTION = "leviBurnTracker";
+export const BURN_TRACKER_DOCUMENT_ID = "levi-ai";
+export const BURN_TRACKER_CACHE_TTL_MS = 2 * 60 * 60 * 1000;
+export const BURN_TRACKER_REFRESH_LEASE_MS = 90 * 1000;
+export const BURN_TRACKER_SIGNATURE_PAGE_SIZE = 12;
+export const BURN_TRACKER_SOLSCAN_TRANSACTION_URL = "https://solscan.io/tx";

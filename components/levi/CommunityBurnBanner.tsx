@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Check, Copy, Flame, LockKeyhole, ShieldAlert, X } from "lucide-react";
 import {
@@ -7,7 +8,7 @@ import {
   SOLANA_INCINERATOR_URL,
 } from "@/lib/levi/communityBurn";
 
-const BANNER_SESSION_KEY = "levi-ai-community-burn-banner-dismissed";
+const BANNER_SESSION_KEY = "levi-ai-community-lock-banner-dismissed";
 
 function getPageScrollY() {
   return Math.max(
@@ -72,29 +73,29 @@ export function CommunityBurnBanner() {
         type="button"
         className="levi-burn-fab"
         onClick={() => setIsOpen(true)}
-        aria-label="Open LEVI AI community burn information"
+        aria-label="Open LEVI AI community lock information"
       >
         <Flame className="h-4 w-4" />
-        <span>LEVI AI burn</span>
+        <span>LEVI AI lock</span>
       </button>
     );
   }
 
   return (
-    <aside className="levi-burn-banner" aria-label="LEVI AI community burn information">
+    <aside className="levi-burn-banner" aria-label="LEVI AI community lock information">
       <div className="levi-burn-banner-topline">
         <div className="levi-burn-brand">
           <Image src="/levi-avatar.png" alt="White Bull Agent" width={42} height={42} />
           <div>
             <span>White Bull Agent</span>
-            <strong>LEVI AI community burn</strong>
+            <strong>LEVI AI community lock</strong>
           </div>
         </div>
         <button
           type="button"
           className="levi-burn-close"
           onClick={closeBanner}
-          aria-label="Dismiss LEVI AI community burn information"
+          aria-label="Dismiss LEVI AI community lock information"
         >
           <X className="h-4 w-4" />
         </button>
@@ -108,14 +109,14 @@ export function CommunityBurnBanner() {
         <strong>Choose deliberately. Sign independently. Verify on-chain.</strong>
       </div>
 
-      <div className="levi-burn-steps" aria-label="Community burn steps">
+      <div className="levi-burn-steps" aria-label="Community lock steps">
         <span>01 Review</span>
         <span>02 Copy</span>
         <span>03 Verify</span>
       </div>
 
       <div className="levi-burn-address">
-        <span>Community incinerator destination</span>
+        <span>Community lock destination</span>
         <code>{SOLANA_INCINERATOR_ADDRESS}</code>
         <button type="button" onClick={() => void copyIncineratorAddress()}>
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -148,6 +149,9 @@ export function CommunityBurnBanner() {
       <a href={SOLANA_INCINERATOR_URL} target="_blank" rel="noreferrer" className="levi-burn-solscan-link">
         Verify the destination on Solscan
       </a>
+      <Link href="/#live-burn-tracker" className="levi-burn-tracker-link">
+        View real burn tracker
+      </Link>
     </aside>
   );
 }

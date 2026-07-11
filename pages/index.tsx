@@ -15,6 +15,7 @@ import { LeviEntranceImage } from "@/components/levi/LeviEntranceImage";
 import { HomeNarrativeFlow } from "@/components/levi/HomeNarrativeFlow";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
+import { LiveBurnTracker } from "@/components/levi/LiveBurnTracker";
 import { MetricCard } from "@/components/levi/MetricCard";
 import { ScannerPanel } from "@/components/levi/ScannerPanel";
 
@@ -119,6 +120,10 @@ export default function Home() {
                   tone="cyan"
                 />
               </div>
+            </LeviReveal>
+
+            <LeviReveal>
+              <LiveBurnTracker />
             </LeviReveal>
 
             <LeviReveal>

@@ -1095,6 +1095,310 @@ img.site-logo {
   line-height: 1.1;
 }
 
+/* Live LEVI AI supply burns. Community locks remain visually and semantically separate. */
+.levi-burn-tracker {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(184, 243, 107, 0.5);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.13);
+  background:
+    linear-gradient(115deg, rgba(184, 243, 107, 0.075), transparent 42%),
+    rgba(8, 11, 7, 0.7);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.levi-burn-tracker::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(184, 243, 107, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 243, 107, 0.04) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+  content: "";
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 78%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 78%);
+  pointer-events: none;
+}
+
+.levi-burn-tracker > * {
+  position: relative;
+  z-index: 1;
+}
+
+.levi-burn-tracker-header,
+.levi-burn-tracker-footer,
+.levi-burn-tracker-lock,
+.levi-burn-tracker-transaction,
+.levi-burn-tracker-metric-topline,
+.levi-burn-tracker-status,
+.levi-burn-tracker-status button,
+.levi-burn-tracker-transaction a,
+.levi-burn-tracker-lock a,
+.levi-burn-tracker-unavailable,
+.levi-burn-tracker-unavailable button {
+  display: flex;
+  align-items: center;
+}
+
+.levi-burn-tracker-header {
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.35rem;
+}
+
+.levi-burn-tracker-header > div:first-child,
+.levi-burn-tracker-lock > div,
+.levi-burn-tracker-transaction > div {
+  min-width: 0;
+}
+
+.levi-burn-tracker h2 {
+  margin-top: 0.65rem;
+  color: #f4f7ed;
+  font-size: clamp(1.4rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.levi-burn-tracker-header p {
+  max-width: 43rem;
+  margin-top: 0.65rem;
+  color: #9ca99a;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.levi-burn-tracker-status {
+  flex: none;
+  gap: 0.45rem;
+  border: 1px solid rgba(184, 243, 107, 0.28);
+  border-radius: 999px;
+  background: rgba(184, 243, 107, 0.08);
+  padding: 0.45rem 0.5rem 0.45rem 0.65rem;
+  color: #c9f68a;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.levi-burn-tracker-status.is-stale {
+  border-color: rgba(245, 213, 138, 0.36);
+  background: rgba(245, 213, 138, 0.08);
+  color: #f0d78f;
+}
+
+.levi-burn-tracker-status button {
+  width: 1.65rem;
+  height: 1.65rem;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+}
+
+.levi-burn-tracker-status button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.levi-burn-tracker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-left: 1px solid rgba(222, 246, 220, 0.12);
+}
+
+.levi-burn-tracker-metric {
+  display: flex;
+  min-width: 0;
+  min-height: 11.25rem;
+  flex-direction: column;
+  border-right: 1px solid rgba(222, 246, 220, 0.12);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  background: rgba(255, 255, 255, 0.018);
+  padding: 1rem;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.levi-burn-tracker-metric:hover {
+  background: rgba(184, 243, 107, 0.052);
+  transform: translateY(-2px);
+}
+
+.levi-burn-tracker-metric-topline {
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: #89978a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.levi-burn-tracker-metric-topline svg {
+  flex: none;
+  color: #9fdf5b;
+}
+
+.levi-burn-tracker-metric-burned .levi-burn-tracker-metric-topline svg {
+  color: #f5d58a;
+}
+
+.levi-burn-tracker-metric strong {
+  min-width: 0;
+  margin-top: auto;
+  color: #f5f8ef;
+  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.levi-burn-tracker-metric-latest strong {
+  font-size: 0.93rem;
+  line-height: 1.35;
+}
+
+.levi-burn-tracker-metric p {
+  margin-top: 0.5rem;
+  color: #849283;
+  font-size: 0.67rem;
+  line-height: 1.5;
+}
+
+.levi-burn-tracker-footer {
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  padding: 1rem 0;
+}
+
+.levi-burn-tracker-transaction,
+.levi-burn-tracker-lock {
+  min-width: 0;
+  gap: 0.7rem;
+}
+
+.levi-burn-tracker-transaction {
+  flex: 1 1 20rem;
+  justify-content: space-between;
+}
+
+.levi-burn-tracker-transaction span,
+.levi-burn-tracker-lock span {
+  display: block;
+  color: #d8e6d2;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.levi-burn-tracker-transaction p,
+.levi-burn-tracker-lock p {
+  margin-top: 0.2rem;
+  color: #7f8d80;
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+
+.levi-burn-tracker-transaction a,
+.levi-burn-tracker-lock a {
+  flex: none;
+  gap: 0.35rem;
+  color: #b8f36b;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.levi-burn-tracker-transaction a:hover,
+.levi-burn-tracker-lock a:hover {
+  color: #ddffae;
+}
+
+.levi-burn-tracker-transaction .is-disabled {
+  flex: none;
+  color: #657062;
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.levi-burn-tracker-lock {
+  flex: 1 1 24rem;
+  border-left: 1px solid rgba(222, 246, 220, 0.12);
+  padding-left: 1.25rem;
+}
+
+.levi-burn-tracker-lock > svg {
+  flex: none;
+  color: #f5d58a;
+}
+
+.levi-burn-tracker-lock code {
+  display: block;
+  margin-top: 0.3rem;
+  color: #bdcbb8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.61rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.levi-burn-tracker-note {
+  margin-top: 0.85rem;
+  color: #738070;
+  font-size: 0.62rem;
+  line-height: 1.5;
+}
+
+.levi-burn-tracker-unavailable {
+  gap: 0.55rem;
+  border-top: 1px solid rgba(245, 213, 138, 0.28);
+  border-bottom: 1px solid rgba(245, 213, 138, 0.2);
+  color: #d5bd7d;
+  padding: 1rem 0;
+  font-size: 0.76rem;
+}
+
+.levi-burn-tracker-unavailable button {
+  min-height: 2rem;
+  margin-left: auto;
+  border: 1px solid rgba(245, 213, 138, 0.4);
+  border-radius: 0.35rem;
+  background: transparent;
+  padding: 0 0.65rem;
+  color: #f0d78f;
+  cursor: pointer;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.levi-burn-tracker-placeholder {
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.levi-burn-tracker-placeholder-line {
+  display: block;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(222, 246, 220, 0.06), rgba(222, 246, 220, 0.16), rgba(222, 246, 220, 0.06));
+  background-size: 200% 100%;
+  animation: levi-burn-tracker-shimmer 1.6s ease-in-out infinite;
+}
+
+.levi-burn-tracker-placeholder-label { width: 52%; }
+.levi-burn-tracker-placeholder-value { width: 84%; height: 1rem; }
+.levi-burn-tracker-placeholder-copy { width: 68%; }
+
+@keyframes levi-burn-tracker-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
 .levi-tone-green { color: #b8f36b; }
 .levi-tone-red { color: #ff9b91; }
 .levi-tone-cyan { color: #8ee9dc; }
@@ -1412,6 +1716,24 @@ img.site-logo {
   .levi-list-columns,
   .levi-scanner-shell {
     grid-template-columns: 1fr;
+  }
+
+  .levi-burn-tracker-header,
+  .levi-burn-tracker-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .levi-burn-tracker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .levi-burn-tracker-lock {
+    width: 100%;
+    border-top: 1px solid rgba(222, 246, 220, 0.12);
+    border-left: 0;
+    padding-top: 1rem;
+    padding-left: 0;
   }
 
   .levi-panel-header {
@@ -2553,7 +2875,49 @@ img.site-logo {
   color: #d8f9a9;
 }
 
+.levi-burn-tracker-link {
+  display: inline-flex;
+  margin: 0.35rem 0 0.1rem;
+  color: #f0d78f;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.levi-burn-tracker-link:hover {
+  color: #ffedb4;
+}
+
 @media (max-width: 767px) {
+  .levi-burn-tracker {
+    padding: 1.1rem;
+  }
+
+  .levi-burn-tracker-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .levi-burn-tracker-metric {
+    min-height: 9.6rem;
+  }
+
+  .levi-burn-tracker-status {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .levi-burn-tracker-transaction,
+  .levi-burn-tracker-lock {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .levi-burn-tracker-transaction a,
+  .levi-burn-tracker-transaction .is-disabled,
+  .levi-burn-tracker-lock a {
+    width: 100%;
+  }
+
   .levi-burn-fab,
   .levi-burn-banner {
     right: 0.75rem;
