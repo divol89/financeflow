@@ -81,6 +81,12 @@ function pressureHeading(report: LeviScanReport): string {
 
 function EventIcon({ event }: { event: ClassifiedTokenActivity }) {
   if (event.classification === "routed") {
+    if (event.routeDirection === "sell") {
+      return <ArrowUpRight className="h-4 w-4" />;
+    }
+    if (event.routeDirection === "buy") {
+      return <ArrowDownLeft className="h-4 w-4" />;
+    }
     return <Repeat2 className="h-4 w-4" />;
   }
   if (event.classification === "sell" || event.classification === "transfer_out") {
@@ -100,11 +106,23 @@ function ActivityRow({
   report: LeviScanReport;
 }) {
   const definition = CLASSIFICATION_LABELS[event.classification];
+  const routedLabel =
+    event.routeDirection === "sell"
+      ? "Sell-side route"
+      : event.routeDirection === "buy"
+        ? "Buy-side route"
+        : definition.label;
   return (
     <article className="levi-activity-row">
-      <div className={`levi-activity-kind is-${event.classification}`}>
+      <div
+        className={`levi-activity-kind is-${event.classification} ${
+          event.classification === "routed"
+            ? `is-route-${event.routeDirection || "neutral"}`
+            : ""
+        }`}
+      >
         <EventIcon event={event} />
-        <span>{definition.label}</span>
+        <span>{routedLabel}</span>
       </div>
       <div className="levi-activity-amount">
         <strong>{groupDigits(event.targetAmount.formatted)}</strong>
@@ -112,13 +130,26 @@ function ActivityRow({
       </div>
       <div className="levi-activity-context">
         <span>{event.venue || "Direct token movement"}</span>
+        {event.classification === "routed" && event.routeActor ? (
+          <small>{compactAddress(event.routeActor)} initiating signer</small>
+        ) : null}
         <small>{formatTime(event.blockTime)}</small>
       </div>
       <div className="levi-activity-quote">
         {event.quoteAsset ? (
           <>
             <strong>{groupDigits(event.quoteAsset.delta.formatted)}</strong>
-            <span>{event.quoteAsset.symbol}</span>
+            <span>{event.quoteAsset.symbol}{event.classification === "routed" ? " signer movement" : ""}</span>
+          </>
+        ) : event.netSolLamports !== "0" ? (
+          <>
+            <strong>{groupDigits(event.netSol)}</strong>
+            <span>net SOL{event.classification === "routed" ? " at signer" : ""}</span>
+          </>
+        ) : event.classification === "routed" && event.routeActor ? (
+          <>
+            <strong>{compactAddress(event.routeActor)}</strong>
+            <span>initiating signer</span>
           </>
         ) : (
           <>
@@ -239,14 +270,23 @@ export function ScanResult({
           <AlertTriangle className="h-4 w-4" />
           <p>
             <strong>Programmatic address detected.</strong>
-            This address cannot sign like a normal user wallet. Gross routed volume is shown below, but it must not be interpreted as a human buying or selling strategy.
+            Metrics cover this address as infrastructure. Buy-side and sell-side routes describe the signing account in each swap, not a human intention attributed to the program address itself.
           </p>
         </div>
       ) : null}
 
       <div className="levi-snapshot-grid">
-        <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{snapshot.complete ? groupDigits(snapshot.walletBalance.formatted) : "Unavailable"}</strong><small>{snapshot.complete ? snapshot.symbol || "tokens" : "Snapshot could not be completed"}</small></div>
-        <div><Gauge className="h-4 w-4" /><span>Current supply share</span><strong>{snapshot.walletSharePercent === null ? "Unknown" : `${snapshot.walletSharePercent.toFixed(4)}%`}</strong><small>{snapshot.authoritiesRevoked ? "Authorities revoked" : "Authority review required"}</small></div>
+        {isProgrammatic ? (
+          <>
+            <div><Repeat2 className="h-4 w-4" /><span>Address role</span><strong>Program router</strong><small>{groupDigits(snapshot.walletBalance.formatted)} {snapshot.symbol || "tokens"} currently held</small></div>
+            <div><WalletCards className="h-4 w-4" /><span>SOL at address</span><strong>{snapshot.walletSol ? groupDigits(snapshot.walletSol) : "Unavailable"}</strong><small>{snapshot.walletSol ? "SOL" : "Balance could not be loaded"}</small></div>
+          </>
+        ) : (
+          <>
+            <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{snapshot.complete ? groupDigits(snapshot.walletBalance.formatted) : "Unavailable"}</strong><small>{snapshot.complete ? snapshot.symbol || "tokens" : "Snapshot could not be completed"}</small></div>
+            <div><Gauge className="h-4 w-4" /><span>Current supply share</span><strong>{snapshot.walletSharePercent === null ? "Unknown" : `${snapshot.walletSharePercent.toFixed(4)}%`}</strong><small>{snapshot.authoritiesRevoked ? "Authorities revoked" : "Authority review required"}</small></div>
+          </>
+        )}
         <div>
           {hasRoutedFlow ? <Repeat2 className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
           <span>{hasRoutedFlow ? "Routed volume" : "Observed sold"}</span>
@@ -268,27 +308,53 @@ export function ScanResult({
         symbol={snapshot.symbol || "tokens"}
       />
 
-      <div className="levi-pressure-layout">
-        <section className="levi-pressure-factors" aria-labelledby="pressure-factors-title">
+      {isProgrammatic ? (
+        <div className="levi-program-context" aria-labelledby="program-context-title">
           <div className="levi-result-section-heading">
-            <div><p className="levi-section-label">Transparent scoring</p><h3 id="pressure-factors-title">Pressure factors</h3></div>
-            <span>{pressure.confidence} confidence</span>
-          </div>
-          {factors.map(([label, value, maximum]) => (
-            <div key={label} className="levi-factor-row">
-              <div><span>{label}</span><strong>{value}/{maximum}</strong></div>
-              <div className="levi-factor-track"><span style={{ width: `${maximum > 0 ? (value / maximum) * 100 : 0}%` }} /></div>
+            <div>
+              <p className="levi-section-label">Program activity</p>
+              <h3 id="program-context-title">Routing context</h3>
             </div>
-          ))}
-        </section>
-        <section className="levi-evidence-panel" aria-labelledby="evidence-title">
-          <div className="levi-result-section-heading"><div><p className="levi-section-label">Human review</p><h3 id="evidence-title">What the evidence says</h3></div></div>
-          <ul>
+            <span>Pressure score not applicable</span>
+          </div>
+          <p className="levi-program-context-copy">
+            This address routes assets as program infrastructure. Human-holder pressure factors are intentionally hidden because zero values would not represent safety or trading intent.
+          </p>
+          <div className="levi-program-context-grid">
+            <div><span>Current target balance</span><strong>{groupDigits(snapshot.walletBalance.formatted)} {snapshot.symbol || "tokens"}</strong><small>Live account snapshot; routers can settle to zero</small></div>
+            <div><span>Buy-side routes</span><strong>{summary.routedBuyCount} / {groupDigits(summary.totalRoutedBought.formatted)} {snapshot.symbol || "tokens"}</strong></div>
+            <div><span>Sell-side routes</span><strong>{summary.routedSellCount} / {groupDigits(summary.totalRoutedSold.formatted)} {snapshot.symbol || "tokens"}</strong></div>
+            <div><span>Undirected routes</span><strong>{summary.routedNeutralCount}</strong><small>No signer-side token delta was available</small></div>
+            <div><span>Transaction coverage</span><strong>{Math.round((report.scanCoverage.loadedRatio || 0) * 100)}%</strong></div>
+          </div>
+          <ul className="levi-program-context-evidence">
             {pressure.reasons.map((reason) => <li key={reason}><CheckCircle2 className="h-4 w-4" />{reason}</li>)}
             {pressure.unknowns.map((unknown) => <li key={unknown} className="is-unknown"><AlertTriangle className="h-4 w-4" />{unknown}</li>)}
           </ul>
-        </section>
-      </div>
+        </div>
+      ) : (
+        <div className="levi-pressure-layout">
+          <section className="levi-pressure-factors" aria-labelledby="pressure-factors-title">
+            <div className="levi-result-section-heading">
+              <div><p className="levi-section-label">Transparent scoring</p><h3 id="pressure-factors-title">Pressure factors</h3></div>
+              <span>{pressure.confidence} confidence</span>
+            </div>
+            {factors.map(([label, value, maximum]) => (
+              <div key={label} className="levi-factor-row">
+                <div><span>{label}</span><strong>{value}/{maximum}</strong></div>
+                <div className="levi-factor-track"><span style={{ width: `${maximum > 0 ? (value / maximum) * 100 : 0}%` }} /></div>
+              </div>
+            ))}
+          </section>
+          <section className="levi-evidence-panel" aria-labelledby="evidence-title">
+            <div className="levi-result-section-heading"><div><p className="levi-section-label">Human review</p><h3 id="evidence-title">What the evidence says</h3></div></div>
+            <ul>
+              {pressure.reasons.map((reason) => <li key={reason}><CheckCircle2 className="h-4 w-4" />{reason}</li>)}
+              {pressure.unknowns.map((unknown) => <li key={unknown} className="is-unknown"><AlertTriangle className="h-4 w-4" />{unknown}</li>)}
+            </ul>
+          </section>
+        </div>
+      )}
 
       <section className="levi-activity-section" aria-labelledby="activity-title">
         <div className="levi-result-section-heading">
@@ -316,7 +382,7 @@ export function ScanResult({
         {canExtend && report.scanCoverage.nextCursor && onExtend ? (
           <button type="button" className="levi-inline-action" onClick={onExtend} disabled={isExtending}>
             {isExtending ? <Loader2 className="h-4 w-4 animate-spin" /> : <History className="h-4 w-4" />}
-            {isExtending ? "Loading older window" : "Extend history"}
+            {isExtending ? "Loading older history" : "Load up to 60 older transactions"}
           </button>
         ) : null}
       </footer>

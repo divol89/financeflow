@@ -30,17 +30,19 @@ export class SolanaRpcError extends Error {
   method: string;
   status?: number;
   code?: number;
+  retryAfterMs?: number;
 
   constructor(
     method: string,
     message: string,
-    details: { status?: number; code?: number } = {}
+    details: { status?: number; code?: number; retryAfterMs?: number } = {}
   ) {
     super(message);
     this.name = "SolanaRpcError";
     this.method = method;
     this.status = details.status;
     this.code = details.code;
+    this.retryAfterMs = details.retryAfterMs;
   }
 }
 
@@ -56,6 +58,15 @@ function isRetryableRpcStatus(status: number): boolean {
 
 function isRetryableRpcCode(code?: number): boolean {
   return code === 429 || code === -32005 || code === -32603;
+}
+
+function responseRetryAfterMs(response: Response): number | undefined {
+  const value = response.headers.get("Retry-After")?.trim();
+  if (!value) return undefined;
+  const seconds = Number(value);
+  if (Number.isFinite(seconds)) return Math.max(0, Math.ceil(seconds * 1_000));
+  const retryAt = Date.parse(value);
+  return Number.isFinite(retryAt) ? Math.max(0, retryAt - Date.now()) : undefined;
 }
 
 export function isSolanaRpcRateLimitError(error: unknown): boolean {
@@ -121,7 +132,10 @@ async function postRpc<T>(
       throw new SolanaRpcError(
         method,
         `Solana RPC ${method} failed with ${response.status}`,
-        { status: response.status }
+        {
+          status: response.status,
+          retryAfterMs: responseRetryAfterMs(response),
+        }
       );
     }
 
@@ -156,6 +170,7 @@ export async function solanaRpc<T>(
     Math.max(1, options.maxEndpoints || Number.MAX_SAFE_INTEGER)
   );
   let lastError: SolanaRpcError | null = null;
+  let lastRetryableError: SolanaRpcError | null = null;
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     let retryableFailure = false;
@@ -184,7 +199,10 @@ export async function solanaRpc<T>(
             ? error
             : new SolanaRpcError(method, "Solana RPC request failed", { status: 503 });
         lastError = rpcError;
-        retryableFailure = retryableFailure || shouldRetryRpcError(rpcError);
+        if (shouldRetryRpcError(rpcError)) {
+          retryableFailure = true;
+          lastRetryableError = rpcError;
+        }
       }
     }
 
@@ -199,7 +217,11 @@ export async function solanaRpc<T>(
     await waitBeforeRetry(attempt);
   }
 
-  throw lastError || new SolanaRpcError(method, `Solana RPC ${method} failed`);
+  throw (
+    lastRetryableError ||
+    lastError ||
+    new SolanaRpcError(method, `Solana RPC ${method} failed`)
+  );
 }
 
 async function postRpcBatch<T>(
@@ -239,7 +261,10 @@ async function postRpcBatch<T>(
       throw new SolanaRpcError(
         method,
         `Solana RPC batch failed with ${response.status}`,
-        { status: response.status }
+        {
+          status: response.status,
+          retryAfterMs: responseRetryAfterMs(response),
+        }
       );
     }
 
@@ -283,6 +308,7 @@ export async function solanaRpcBatch<T>(
     Math.max(1, options.maxEndpoints || Number.MAX_SAFE_INTEGER)
   );
   let lastError: SolanaRpcError | null = null;
+  let lastRetryableError: SolanaRpcError | null = null;
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     let retryableFailure = false;
@@ -310,7 +336,10 @@ export async function solanaRpcBatch<T>(
             ? error
             : new SolanaRpcError(method, "Solana RPC batch failed", { status: 503 });
         lastError = rpcError;
-        retryableFailure = retryableFailure || shouldRetryRpcError(rpcError);
+        if (shouldRetryRpcError(rpcError)) {
+          retryableFailure = true;
+          lastRetryableError = rpcError;
+        }
       }
     }
 
@@ -325,5 +354,9 @@ export async function solanaRpcBatch<T>(
     await waitBeforeRetry(attempt);
   }
 
-  throw lastError || new SolanaRpcError(method, "Solana RPC batch failed");
+  throw (
+    lastRetryableError ||
+    lastError ||
+    new SolanaRpcError(method, "Solana RPC batch failed")
+  );
 }

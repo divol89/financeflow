@@ -6,6 +6,8 @@ export type LeviScanMode = "token" | "creator";
 
 export type SignalConfidence = "low" | "medium" | "high";
 
+export type RoutedTradeDirection = "buy" | "sell" | "neutral";
+
 export type TokenActivityClassification =
   | "sell"
   | "buy"
@@ -128,6 +130,8 @@ export interface ClassifiedTokenActivity {
   targetAmount: RawAmountValue;
   grossTargetInRaw?: string;
   grossTargetOutRaw?: string;
+  routeDirection?: RoutedTradeDirection;
+  routeActor?: string | null;
   preBalanceRaw: string;
   postBalanceRaw: string;
   quoteAsset: {
@@ -149,11 +153,16 @@ export interface TokenActivitySummaryV2 {
   probableSellCount: number;
   buyCount: number;
   routedCount: number;
+  routedBuyCount: number;
+  routedSellCount: number;
+  routedNeutralCount: number;
   transferCount: number;
   unknownCount: number;
   totalSold: RawAmountValue;
   totalBought: RawAmountValue;
   totalRouted: RawAmountValue;
+  totalRoutedBought: RawAmountValue;
+  totalRoutedSold: RawAmountValue;
   possibleOutflow: RawAmountValue;
   netTokenChange: RawAmountValue;
   largestSell: RawAmountValue;

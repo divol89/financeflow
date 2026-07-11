@@ -5,7 +5,7 @@ import { checkRateLimit } from "@/lib/levi/rateLimit";
 import { getSessionFromRequest } from "@/lib/levi/session";
 import { scanSolanaCreatorWallet, redactScanReportForTier } from "@/lib/levi/scanner/scanWallet";
 import { getLeviAccessForWallet } from "@/lib/levi/tokenGate";
-import { isSolanaRpcRateLimitError } from "@/lib/levi/rpc";
+import { isSolanaRpcRateLimitError, SolanaRpcError } from "@/lib/levi/rpc";
 import { InvalidScannerCursorError } from "@/lib/levi/scanner/cursor";
 import { isValidSolanaAddress } from "@/lib/levi/wallet";
 import {
@@ -47,7 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!limited.allowed) {
       const retryAfterMs = Math.max(1_000, limited.resetAt - Date.now());
       res.setHeader("Retry-After", String(Math.ceil(retryAfterMs / 1_000)));
-      return res.status(429).json({
+      return res.status(202).json({
+        code: "SCAN_COOLDOWN",
         error: "Too many scanner pages were requested. Wait a moment and continue.",
         retryAfterMs,
       });
@@ -127,21 +128,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: error.message });
     }
     if (isSolanaRpcRateLimitError(error)) {
-      res.setHeader("Retry-After", "2");
-      return res.status(503).json({
+      const retryAfterMs =
+        error instanceof SolanaRpcError && error.retryAfterMs
+          ? Math.max(2_000, error.retryAfterMs)
+          : 5_000;
+      res.setHeader("Retry-After", String(Math.ceil(retryAfterMs / 1_000)));
+      return res.status(202).json({
+        code: "RPC_COOLDOWN",
         error:
           "Public Solana RPC rate limit reached. Wait a moment and scan again.",
-        retryAfterMs: 2_000,
+        retryAfterMs,
+      });
+    }
+
+    const message = error instanceof Error ? error.message : "Scanner failed";
+    if (error instanceof SolanaRpcError || message.startsWith("Solana RPC")) {
+      const retryAfterMs =
+        error instanceof SolanaRpcError && error.retryAfterMs
+          ? Math.max(2_000, error.retryAfterMs)
+          : 3_000;
+      res.setHeader("Retry-After", String(Math.ceil(retryAfterMs / 1_000)));
+      return res.status(202).json({
+        code: "RPC_COOLDOWN",
+        error: message,
+        retryAfterMs,
       });
     }
 
     console.error("LEVI scanner failed", error);
-    const message = error instanceof Error ? error.message : "Scanner failed";
-    const status = message.startsWith("Solana RPC") ? 502 : 500;
-    if (status === 502) res.setHeader("Retry-After", "1");
-    return res.status(status).json({
-      error: message,
-      ...(status === 502 ? { retryAfterMs: 1_200 } : {}),
-    });
+    return res.status(500).json({ error: message });
   }
 }

@@ -119,9 +119,9 @@ describe("Scanner cursor and tier pagination", () => {
       ),
       [6, 6, 6, 2, 0]
     );
-    assert.equal(scannerInitialPageCount("full"), 7);
-    assert.equal(scannerBatchSizeForPage("full", 6), 4);
-    assert.equal(scannerBatchSizeForPage("full", 7), 6);
+    assert.equal(scannerInitialPageCount("full"), 17);
+    assert.equal(scannerBatchSizeForPage("full", 16), 4);
+    assert.equal(scannerBatchSizeForPage("full", 17), 6);
   });
 
   it("rotates a bounded transaction budget across token accounts", () => {
@@ -152,12 +152,13 @@ describe("Scanner cursor and tier pagination", () => {
   });
 
   it("backs off transient scanner pages without retrying auth failures forever", () => {
-    assert.equal(scannerRetryDelay({ status: 503, attempt: 0 }), 1_500);
+    assert.equal(scannerRetryDelay({ status: 503, attempt: 0 }), 2_000);
     assert.equal(
       scannerRetryDelay({ status: 429, attempt: 1, retryAfterMs: 4_000 }),
       4_000
     );
-    assert.equal(scannerRetryDelay({ status: 503, attempt: 3 }), null);
+    assert.equal(scannerRetryDelay({ status: 503, attempt: 4 }), 20_000);
+    assert.equal(scannerRetryDelay({ status: 503, attempt: 5 }), null);
     assert.equal(scannerRetryDelay({ status: 401, attempt: 0 }), null);
   });
 });

@@ -7035,6 +7035,59 @@ img.site-logo {
 .levi-evidence-panel li svg { flex: none; color: #78dcae; }
 .levi-evidence-panel li.is-unknown svg { color: #e9c66c; }
 
+.levi-program-context {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(105, 215, 223, 0.3);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.09);
+  padding: 1.4rem 0;
+}
+
+.levi-program-context-copy {
+  max-width: 58rem;
+  margin-top: 0.8rem;
+  color: #8c998a;
+  font-size: 0.76rem;
+  line-height: 1.7;
+}
+
+.levi-program-context-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 1.2rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.09);
+}
+
+.levi-program-context-grid > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  padding: 1rem;
+}
+
+.levi-program-context-grid > div:last-child { border-right: 0; }
+.levi-program-context-grid span { color: #718070; font-size: 0.64rem; text-transform: uppercase; }
+.levi-program-context-grid strong { overflow-wrap: anywhere; color: #e7eee3; font-size: 0.95rem; }
+.levi-program-context-grid small { color: #778476; font-size: 0.65rem; line-height: 1.45; }
+
+.levi-program-context-evidence {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.levi-program-context-evidence li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: #aab5a7;
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.levi-program-context-evidence li svg { flex: none; color: #69d7df; }
+.levi-program-context-evidence li.is-unknown svg { color: #e9c66c; }
+
 .levi-activity-section {
   margin-top: 2rem;
 }
@@ -7088,6 +7141,8 @@ img.site-logo {
 .levi-activity-kind.is-mint { color: #99e8c9; }
 .levi-activity-kind.is-liquidity { color: #8ee9dc; }
 .levi-activity-kind.is-routed { color: #69d7df; }
+.levi-activity-kind.is-routed.is-route-buy { color: #99e8c9; }
+.levi-activity-kind.is-routed.is-route-sell { color: #ffaaa2; }
 .levi-activity-kind.is-burn { color: #f2cf74; }
 
 .levi-activity-amount,
@@ -7563,6 +7618,9 @@ img.site-logo {
   .levi-method-pipeline-arrow { display: none; }
   .levi-explanation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .levi-scanner-chart-header { grid-template-columns: 1fr; }
+  .levi-program-context-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .levi-program-context-grid > div:nth-child(2n) { border-right: 0; }
+  .levi-program-context-grid > div:nth-child(n + 3) { border-top: 1px solid rgba(222, 246, 220, 0.09); }
   .levi-scanner-posture { border-top: 1px solid rgba(222, 246, 220, 0.12); border-left: 0; padding-top: 0.8rem; padding-left: 0; }
 }
 
@@ -7622,6 +7680,8 @@ img.site-logo {
   .levi-method-output { min-height: auto; }
   .levi-signal-explanation > header { flex-direction: column; }
   .levi-scanner-chart-stats { grid-template-columns: 1fr; }
+  .levi-program-context-grid { grid-template-columns: 1fr; }
+  .levi-program-context-grid > div { border-top: 1px solid rgba(222, 246, 220, 0.09); border-right: 0; }
   .levi-scanner-chart-stats > div { border-top: 1px solid rgba(222, 246, 220, 0.08); border-right: 0; }
   .levi-scanner-chart-frame { height: 20rem; }
   .levi-scanner-activity-chart > footer { display: grid; }

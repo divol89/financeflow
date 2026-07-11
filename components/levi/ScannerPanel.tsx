@@ -13,6 +13,8 @@ import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { notifyLeviAuthStateChange } from "@/lib/levi/authEvents";
 import { mergeScanReports } from "@/lib/levi/scanner/mergeReports";
 import {
+  SCANNER_DEEP_PAGE_COOLDOWN_MS,
+  SCANNER_DEEP_PAGES_PER_RUN,
   SCANNER_PAGE_COOLDOWN_MS,
   scannerRetryDelay,
 } from "@/lib/levi/scanner/retry";
@@ -164,8 +166,10 @@ export function ScannerPanel() {
         await auth.refresh({ showErrors: false });
         notifyLeviAuthStateChange(auth.walletAddress);
       }
+      const isCooldown =
+        payload.code === "RPC_COOLDOWN" || payload.code === "SCAN_COOLDOWN";
       throw new ScannerRequestError(
-        response.status,
+        isCooldown ? 503 : response.status,
         payload.error || "Unable to scan wallet",
         payload.retryAfterMs ||
           Math.max(0, Number(response.headers.get("Retry-After") || 0) * 1_000)
@@ -293,24 +297,62 @@ export function ScannerPanel() {
       setError("Your signed session expired. Sign Access again to extend this scan.");
       return;
     }
+    activeRequest.current?.abort();
     const controller = new AbortController();
     activeRequest.current = controller;
     setError(null);
     setIsExtending(true);
+    const pageSize = report.scanCoverage.batchSize || 6;
+    const extensionTarget =
+      report.scanCoverage.selectedSignatures +
+      pageSize * SCANNER_DEEP_PAGES_PER_RUN;
+    setProgress({
+      stage: "loading",
+      inspected: report.scanCoverage.selectedSignatures,
+      target: extensionTarget,
+      batches: report.scanCoverage.loadedPageIndexes?.length || 1,
+      statusText: "Loading older blockchain history in paced batches.",
+    });
+    let accumulated = report;
+    let nextCursor: string | undefined = cursor;
+    let loadedPages = 0;
     try {
-      const payload = await requestScanWithRetry({
-        cursor,
-        scanId: report.scanId,
-        signal: controller.signal,
-      });
-      const extended = combineScannerReports(report, payload.report);
-      setReport(extended);
+      while (
+        nextCursor &&
+        loadedPages < SCANNER_DEEP_PAGES_PER_RUN &&
+        !controller.signal.aborted
+      ) {
+        const payload = await requestScanWithRetry({
+          cursor: nextCursor,
+          scanId: accumulated.scanId,
+          signal: controller.signal,
+        });
+        accumulated = combineScannerReports(accumulated, payload.report);
+        loadedPages += 1;
+        nextCursor = accumulated.scanCoverage.nextCursor || undefined;
+        setReport(accumulated);
+        setProgress({
+          stage: "loading",
+          inspected: accumulated.scanCoverage.selectedSignatures,
+          target: extensionTarget,
+          batches: accumulated.scanCoverage.loadedPageIndexes?.length || 1,
+          statusText: `Loaded ${loadedPages} of up to ${SCANNER_DEEP_PAGES_PER_RUN} older batches.`,
+        });
+
+        if (!nextCursor || loadedPages >= SCANNER_DEEP_PAGES_PER_RUN) break;
+        await waitForScanner(
+          SCANNER_DEEP_PAGE_COOLDOWN_MS,
+          controller.signal
+        );
+      }
       setProgress({
         stage: "complete",
-        inspected: extended.scanCoverage.selectedSignatures,
-        target: extended.scanCoverage.tierWindowLimit || 0,
-        batches: extended.scanCoverage.loadedPageIndexes?.length || 1,
-        statusText: undefined,
+        inspected: accumulated.scanCoverage.selectedSignatures,
+        target: accumulated.scanCoverage.selectedSignatures,
+        batches: accumulated.scanCoverage.loadedPageIndexes?.length || 1,
+        statusText: nextCursor
+          ? "Older history loaded. Continue when you need a deeper window."
+          : "Available token-account history loaded.",
       });
     } catch (reason) {
       if (!controller.signal.aborted) {
@@ -320,6 +362,9 @@ export function ScannerPanel() {
             : reason instanceof Error
               ? reason.message
               : "Unable to load an older window"
+        );
+        setProgress((current) =>
+          current ? { ...current, stage: "paused" } : current
         );
       }
     } finally {
@@ -478,7 +523,7 @@ export function ScannerPanel() {
             <p className="levi-scanner-access-note">
               <History className="h-4 w-4" />
               {access.tier === "full"
-                ? "Full access loads the latest 40 signature slots progressively and can extend older history on demand."
+                ? "Full access loads the latest 100 signature slots progressively and can add up to 60 older slots per extension."
                 : "Basic access loads up to 20 signature slots progressively."}
             </p>
           ) : null}

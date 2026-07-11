@@ -1,7 +1,9 @@
 const TRANSIENT_SCAN_STATUSES = new Set([429, 500, 502, 503, 504]);
-const SCANNER_RETRY_DELAYS_MS = [1_500, 3_000, 5_000];
+const SCANNER_RETRY_DELAYS_MS = [2_000, 4_000, 8_000, 12_000, 20_000];
 
 export const SCANNER_PAGE_COOLDOWN_MS = 900;
+export const SCANNER_DEEP_PAGE_COOLDOWN_MS = 1_500;
+export const SCANNER_DEEP_PAGES_PER_RUN = 10;
 
 export function scannerRetryDelay(input: {
   status: number;

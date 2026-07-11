@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import {
-  Bar,
   CartesianGrid,
   ComposedChart,
   Legend,
@@ -47,11 +46,11 @@ export function ScannerActivityChart({
         <div>
           <p className="levi-section-label"><Activity className="h-4 w-4" /> On-chain behavior timeline</p>
           <h3 id="scanner-activity-chart-title">
-            {hasRoutedFlow ? "Routed volume and token flow" : "Buys, sells and token flow"}
+            {hasRoutedFlow ? "Buy-side and sell-side routed flow" : "Buys, sells and token flow"}
           </h3>
           <p>
             {hasRoutedFlow
-              ? "Gross route volume is recovered from parsed token instructions even when the account ends the transaction at zero."
+              ? "Route direction follows the signing account's target-token change inside successful known-swap transactions."
               : "Each point comes from the same parsed transactions used by the evidence table below."}
           </p>
         </div>
@@ -63,12 +62,18 @@ export function ScannerActivityChart({
       </header>
 
       <div className="levi-scanner-chart-stats">
-        <div><ArrowDownLeft className="h-4 w-4" /><span>Verified buys</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.totalBought.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? `${summary.buyCount} transaction(s)` : "No transaction coverage"}</small></div>
-        <div><ArrowUpRight className="h-4 w-4" /><span>Verified sells</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.totalSold.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? `${summary.observedSellCount} transaction(s)` : "No transaction coverage"}</small></div>
         {hasRoutedFlow ? (
-          <div><Repeat2 className="h-4 w-4" /><span>Routed volume</span><strong>{`${exactNumber(summary.totalRouted.formatted)} ${symbol}`}</strong><small>{`${summary.routedCount} balanced route(s)`}</small></div>
+          <>
+            <div><ArrowDownLeft className="h-4 w-4" /><span>Buy-side routes</span><strong>{`${exactNumber(summary.totalRoutedBought.formatted)} ${symbol}`}</strong><small>{`${summary.routedBuyCount} signer-side route(s)`}</small></div>
+            <div><ArrowUpRight className="h-4 w-4" /><span>Sell-side routes</span><strong>{`${exactNumber(summary.totalRoutedSold.formatted)} ${symbol}`}</strong><small>{`${summary.routedSellCount} signer-side route(s)`}</small></div>
+            <div><Repeat2 className="h-4 w-4" /><span>Total routed volume</span><strong>{`${exactNumber(summary.totalRouted.formatted)} ${symbol}`}</strong><small>{`${summary.routedCount} balanced route(s)`}</small></div>
+          </>
         ) : (
-          <div><MoveRight className="h-4 w-4" /><span>Unproven outflow</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.possibleOutflow.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? "Transfers remain separate from sales" : "No transaction coverage"}</small></div>
+          <>
+            <div><ArrowDownLeft className="h-4 w-4" /><span>Verified buys</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.totalBought.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? `${summary.buyCount} transaction(s)` : "No transaction coverage"}</small></div>
+            <div><ArrowUpRight className="h-4 w-4" /><span>Verified sells</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.totalSold.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? `${summary.observedSellCount} transaction(s)` : "No transaction coverage"}</small></div>
+            <div><MoveRight className="h-4 w-4" /><span>Unproven outflow</span><strong>{hasTransactionCoverage ? `${exactNumber(summary.possibleOutflow.formatted)} ${symbol}` : "Not established"}</strong><small>{hasTransactionCoverage ? "Transfers remain separate from sales" : "No transaction coverage"}</small></div>
+          </>
         )}
       </div>
 
@@ -94,12 +99,22 @@ export function ScannerActivityChart({
               />
               <Legend wrapperStyle={{ fontSize: 11, color: "#9eaa9b" }} />
               <ReferenceLine y={0} stroke="rgba(222,246,220,0.2)" />
-              <Bar dataKey="buy" name="Verified buy" fill="#7ee3b8" maxBarSize={14} />
-              <Bar dataKey="sell" name="Verified sell" fill="#ff7569" maxBarSize={14} />
-              <Bar dataKey="otherFlow" name="Transfer / other" fill="#7a8791" maxBarSize={10} />
-              <Bar dataKey="routed" name="Routed volume" fill="#69d7df" maxBarSize={12} />
-              <Bar dataKey="burn" name="Burn" fill="#e9c66c" maxBarSize={10} />
-              <Line type="monotone" dataKey="cumulativeNet" name="Cumulative net flow" stroke="#b8f36b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+              {hasRoutedFlow ? (
+                <>
+                  <Line type="monotone" dataKey="routedBuy" name="Buy-side route" stroke="#7ee3b8" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="routedSell" name="Sell-side route" stroke="#ff7569" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="routedNeutral" name="Undirected route" stroke="#69d7df" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
+                  <Line type="monotone" dataKey="cumulativeRoutedNet" name="Cumulative route balance" stroke="#b8f36b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+                </>
+              ) : (
+                <>
+                  <Line type="monotone" dataKey="buy" name="Verified buy" stroke="#7ee3b8" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="sell" name="Verified sell" stroke="#ff7569" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="otherFlow" name="Transfer / other" stroke="#7a8791" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
+                  <Line type="monotone" dataKey="burn" name="Burn" stroke="#e9c66c" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
+                  <Line type="monotone" dataKey="cumulativeNet" name="Cumulative net flow" stroke="#b8f36b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+                </>
+              )}
             </ComposedChart>
           </ResponsiveContainer>
         )}
@@ -108,7 +123,7 @@ export function ScannerActivityChart({
       <footer>
         <span>{coverage.loadedTransactions}/{coverage.selectedSignatures} transactions loaded</span>
         <span>{model.buyCount + model.sellCount} verified trade(s)</span>
-        {model.routedCount > 0 ? <span>{model.routedCount} routed transaction(s)</span> : null}
+        {model.routedCount > 0 ? <span>{model.routedBuyCount} buy-side / {model.routedSellCount} sell-side route(s)</span> : null}
         <span>{model.otherMovementCount} other movement(s)</span>
         <span>Cached for up to 10 minutes</span>
       </footer>

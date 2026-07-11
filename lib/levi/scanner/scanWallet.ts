@@ -62,7 +62,18 @@ const SCANNER_RPC_POLICY: SolanaRpcRequestOptions = {
   requestTimeoutMs: 1_200,
   deadlineMs: 2_500,
 };
-const SCANNER_TRANSACTION_CONCURRENCY = 6;
+const SCANNER_TRANSACTION_RPC_POLICY: SolanaRpcRequestOptions = {
+  maxAttempts: 1,
+  requestTimeoutMs: 2_500,
+  deadlineMs: 7_000,
+};
+const SCANNER_TRANSACTION_ITEM_COOLDOWN_MS = 250;
+
+function waitBetweenTransactions(): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, SCANNER_TRANSACTION_ITEM_COOLDOWN_MS);
+  });
+}
 
 export function deriveAssociatedTokenAccounts(
   wallet: string,
@@ -160,49 +171,41 @@ async function loadParsedTransactions(
   const errors: unknown[] = [];
   let missingTransactions = 0;
 
-  for (
-    let offset = 0;
-    offset < signatures.length;
-    offset += SCANNER_TRANSACTION_CONCURRENCY
-  ) {
-    const chunk = signatures.slice(
-      offset,
-      offset + SCANNER_TRANSACTION_CONCURRENCY
-    );
-    const results = await Promise.allSettled(
-      chunk.map((item) =>
-        solanaRpc<ParsedSolanaTransaction | null>(
-          "getTransaction",
-          [
-            item.signature,
-            {
-              encoding: "jsonParsed",
-              maxSupportedTransactionVersion: 0,
-              commitment: "confirmed",
-            },
-          ],
-          SCANNER_RPC_POLICY
-        )
-      )
-    );
-
-    for (const result of results) {
-      if (result.status === "fulfilled") {
-        if (result.value) transactions.push(result.value);
-        else missingTransactions += 1;
-      } else {
-        errors.push(result.reason);
-      }
+  for (const [index, item] of signatures.entries()) {
+    try {
+      const transaction = await solanaRpc<ParsedSolanaTransaction | null>(
+        "getTransaction",
+        [
+          item.signature,
+          {
+            encoding: "jsonParsed",
+            maxSupportedTransactionVersion: 0,
+            commitment: "confirmed",
+          },
+        ],
+        SCANNER_TRANSACTION_RPC_POLICY
+      );
+      if (transaction) transactions.push(transaction);
+      else missingTransactions += 1;
+    } catch (error) {
+      errors.push(error);
     }
+
+    if (index + 1 < signatures.length) await waitBetweenTransactions();
   }
 
-  if (transactions.length === 0 && errors.length === signatures.length) {
-    throw errors[0];
+  const rateLimitError = errors.find(isSolanaRpcRateLimitError);
+  if (
+    errors.length === signatures.length ||
+    (rateLimitError && transactions.length < Math.ceil(signatures.length / 2))
+  ) {
+    throw rateLimitError || errors[0];
   }
+
   return {
     transactions,
     skippedTransactions: missingTransactions + errors.length,
-    rateLimited: errors.some(isSolanaRpcRateLimitError),
+    rateLimited: Boolean(rateLimitError),
   };
 }
 

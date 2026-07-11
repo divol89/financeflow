@@ -61,6 +61,12 @@ export function calculateDistributionPressure({
     const routedEvents = events.filter(
       (event) => event.classification === "routed"
     );
+    const routedBuyCount = routedEvents.filter(
+      (event) => event.routeDirection === "buy"
+    ).length;
+    const routedSellCount = routedEvents.filter(
+      (event) => event.routeDirection === "sell"
+    ).length;
     return {
       score: null,
       level: "insufficient",
@@ -85,6 +91,7 @@ export function calculateDistributionPressure({
         ...(routedEvents.length > 0
           ? [
               `${routedEvents.length} program-routed transaction${routedEvents.length === 1 ? "" : "s"} appeared in the observed window.`,
+              `${routedBuyCount} buy-side and ${routedSellCount} sell-side route${routedEvents.length === 1 ? "" : "s"} were derived from initiating signer balances.`,
             ]
           : []),
       ],

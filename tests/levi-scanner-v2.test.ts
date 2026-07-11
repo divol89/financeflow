@@ -86,15 +86,26 @@ function transaction(input: {
   };
 }
 
-function routedTransaction(): {
+function routedTransaction(
+  direction: "buy" | "sell" | "neutral" = "sell"
+): {
   transaction: ParsedSolanaTransaction;
   tokenAccount: string;
 } {
   const tokenAccount = "RouteTokenAccount11111111111111111111111111111";
+  const routeActor = "RouteActor111111111111111111111111111111111111";
+  const actorTokenAccount =
+    "RouteActorToken111111111111111111111111111111111";
+  const actorQuoteAccount =
+    "RouteActorQuote111111111111111111111111111111111";
   const sourceAccount = "RouteSource1111111111111111111111111111111111";
   const destinationAccount =
     "RouteDestination111111111111111111111111111111";
   const amount = "311801097424";
+  const actorBefore = direction === "sell" ? amount : "0";
+  const actorAfter = direction === "buy" ? amount : "0";
+  const quoteBefore = direction === "buy" ? "50000000" : "0";
+  const quoteAfter = direction === "sell" ? "50000000" : "0";
   return {
     tokenAccount,
     transaction: {
@@ -107,31 +118,59 @@ function routedTransaction(): {
         postBalances: [2_000_000_000],
         preTokenBalances: [
           {
-            accountIndex: 1,
+            accountIndex: 2,
             mint,
             owner: wallet,
             uiTokenAmount: { amount: "0", decimals: 6 },
+          },
+          {
+            accountIndex: 5,
+            mint,
+            owner: routeActor,
+            uiTokenAmount: { amount: actorBefore, decimals: 6 },
+          },
+          {
+            accountIndex: 6,
+            mint: usdc,
+            owner: routeActor,
+            uiTokenAmount: { amount: quoteBefore, decimals: 6 },
           },
         ],
         postTokenBalances: [
           {
-            accountIndex: 1,
+            accountIndex: 2,
             mint,
             owner: wallet,
             uiTokenAmount: { amount: "0", decimals: 6 },
           },
+          {
+            accountIndex: 5,
+            mint,
+            owner: routeActor,
+            uiTokenAmount: { amount: actorAfter, decimals: 6 },
+          },
+          {
+            accountIndex: 6,
+            mint: usdc,
+            owner: routeActor,
+            uiTokenAmount: { amount: quoteAfter, decimals: 6 },
+          },
         ],
       },
       transaction: {
-        signatures: ["routed-flow"],
+        signatures: [`routed-flow-${direction}`],
         message: {
           accountKeys: [
+            { pubkey: routeActor, signer: true },
             { pubkey: wallet, signer: false },
             { pubkey: tokenAccount },
             { pubkey: sourceAccount },
             { pubkey: destinationAccount },
+            { pubkey: actorTokenAccount },
+            { pubkey: actorQuoteAccount },
           ],
           instructions: [
+            { programId: pumpProgram },
             {
               parsed: {
                 type: "transferChecked",
@@ -279,6 +318,10 @@ describe("Scanner V2 classification", () => {
     assert.equal(event?.grossTargetInRaw, "311801097424");
     assert.equal(event?.grossTargetOutRaw, "311801097424");
     assert.equal(event?.ruleId, "balanced-token-routing");
+    assert.equal(event?.routeDirection, "sell");
+    assert.match(event?.routeActor || "", /^RouteActor/);
+    assert.equal(event?.quoteAsset?.symbol, "USDC");
+    assert.equal(event?.quoteAsset?.delta.formatted, "50");
   });
 
   it("derives both legacy and Token-2022 associated accounts", () => {
@@ -360,23 +403,41 @@ describe("Scanner V2 activity chart", () => {
     assert.equal(model.posture.tone, "outbound");
   });
 
-  it("plots routed volume without presenting it as a buy or sell", () => {
-    const routed = routedTransaction();
-    const event = classifyTokenTransaction(
+  it("plots signer-side direction for program-routed volume", () => {
+    const routedSell = routedTransaction("sell");
+    const sellEvent = classifyTokenTransaction(
       wallet,
       mint,
-      routed.transaction,
-      [routed.tokenAccount]
+      routedSell.transaction,
+      [routedSell.tokenAccount]
     );
-    const events = event ? [event] : [];
+    const routedBuy = routedTransaction("buy");
+    const buyEvent = classifyTokenTransaction(
+      wallet,
+      mint,
+      routedBuy.transaction,
+      [routedBuy.tokenAccount]
+    );
+    if (sellEvent) sellEvent.blockTime = 1_700_000_000;
+    if (buyEvent) buyEvent.blockTime = 1_700_000_100;
+    const events = [sellEvent, buyEvent].filter(
+      (event): event is ClassifiedTokenActivity => Boolean(event)
+    );
     const summary = summarizeClassifiedActivity(events, 6);
     const model = buildScannerActivityChart(events);
 
-    assert.equal(summary.routedCount, 1);
-    assert.equal(summary.totalRouted.formatted, "311801.097424");
+    assert.equal(summary.routedCount, 2);
+    assert.equal(summary.routedBuyCount, 1);
+    assert.equal(summary.routedSellCount, 1);
+    assert.equal(summary.totalRouted.formatted, "623602.194848");
+    assert.equal(summary.totalRoutedBought.formatted, "311801.097424");
+    assert.equal(summary.totalRoutedSold.formatted, "311801.097424");
     assert.equal(summary.observedSellCount, 0);
-    assert.equal(model.points[0]?.routed, 311801.097424);
-    assert.equal(model.routedCount, 1);
+    assert.equal(model.points[0]?.routedSell, -311801.097424);
+    assert.equal(model.points[1]?.routedBuy, 311801.097424);
+    assert.equal(model.routedCount, 2);
+    assert.equal(model.routedBuyCount, 1);
+    assert.equal(model.routedSellCount, 1);
     assert.equal(model.posture.tone, "routing");
   });
 });

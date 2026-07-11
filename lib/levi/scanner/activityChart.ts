@@ -16,12 +16,15 @@ export interface ScannerActivityChartPoint {
   id: string;
   timeLabel: string;
   timestamp: number | null;
-  buy: number;
-  sell: number;
-  otherFlow: number;
-  routed: number;
-  burn: number;
+  buy: number | null;
+  sell: number | null;
+  otherFlow: number | null;
+  routedBuy: number | null;
+  routedSell: number | null;
+  routedNeutral: number | null;
+  burn: number | null;
   cumulativeNet: number;
+  cumulativeRoutedNet: number;
 }
 
 export interface ScannerActivityChartModel {
@@ -34,6 +37,8 @@ export interface ScannerActivityChartModel {
   buyCount: number;
   sellCount: number;
   routedCount: number;
+  routedBuyCount: number;
+  routedSellCount: number;
   otherMovementCount: number;
 }
 
@@ -58,8 +63,18 @@ function observedPosture(input: {
   inboundRaw: bigint;
   outboundRaw: bigint;
   routedRaw: bigint;
+  routedBoughtRaw: bigint;
+  routedSoldRaw: bigint;
 }): ScannerActivityChartModel["posture"] {
-  const { boughtRaw, soldRaw, inboundRaw, outboundRaw, routedRaw } = input;
+  const {
+    boughtRaw,
+    soldRaw,
+    inboundRaw,
+    outboundRaw,
+    routedRaw,
+    routedBoughtRaw,
+    routedSoldRaw,
+  } = input;
 
   if (boughtRaw > ZERO || soldRaw > ZERO) {
     if (boughtRaw * BigInt(100) > soldRaw * BigInt(120)) {
@@ -84,10 +99,24 @@ function observedPosture(input: {
   }
 
   if (routedRaw > ZERO) {
+    if (routedBoughtRaw * BigInt(100) > routedSoldRaw * BigInt(120)) {
+      return {
+        tone: "accumulating",
+        label: "Buy-side routing dominates",
+        summary: "Signer-side target-token increases exceed sell-side route volume in the loaded window.",
+      };
+    }
+    if (routedSoldRaw * BigInt(100) > routedBoughtRaw * BigInt(120)) {
+      return {
+        tone: "distributing",
+        label: "Sell-side routing dominates",
+        summary: "Signer-side target-token decreases exceed buy-side route volume in the loaded window.",
+      };
+    }
     return {
       tone: "routing",
-      label: "Routed token flow",
-      summary: "Target tokens entered and left a controlled account inside the same transactions; this is volume, not a directional holding strategy.",
+      label: "Mixed routed flow",
+      summary: "Both buy-side and sell-side target-token routes appear in the loaded window.",
     };
   }
 
@@ -125,9 +154,14 @@ export function buildScannerActivityChart(
   let inboundRaw = ZERO;
   let outboundRaw = ZERO;
   let routedRaw = ZERO;
+  let routedBoughtRaw = ZERO;
+  let routedSoldRaw = ZERO;
+  let cumulativeRoutedRaw = ZERO;
   let buyCount = 0;
   let sellCount = 0;
   let routedCount = 0;
+  let routedBuyCount = 0;
+  let routedSellCount = 0;
   let otherMovementCount = 0;
 
   const points = ordered.map((event, index) => {
@@ -136,11 +170,13 @@ export function buildScannerActivityChart(
     const decimals = event.targetAmount.decimals;
     const amount = chartNumber(amountRaw, decimals);
     cumulativeRaw += deltaRaw;
-    let buy = 0;
-    let sell = 0;
-    let otherFlow = 0;
-    let routed = 0;
-    let burn = 0;
+    let buy: number | null = null;
+    let sell: number | null = null;
+    let otherFlow: number | null = null;
+    let routedBuy: number | null = null;
+    let routedSell: number | null = null;
+    let routedNeutral: number | null = null;
+    let burn: number | null = null;
 
     if (event.classification === "buy") {
       boughtRaw += amountRaw;
@@ -158,7 +194,19 @@ export function buildScannerActivityChart(
       const routedAmountRaw = BigInt(event.targetAmount.raw);
       routedRaw += routedAmountRaw;
       routedCount += 1;
-      routed = chartNumber(routedAmountRaw, decimals);
+      if (event.routeDirection === "buy") {
+        routedBoughtRaw += routedAmountRaw;
+        cumulativeRoutedRaw += routedAmountRaw;
+        routedBuyCount += 1;
+        routedBuy = chartNumber(routedAmountRaw, decimals);
+      } else if (event.routeDirection === "sell") {
+        routedSoldRaw += routedAmountRaw;
+        cumulativeRoutedRaw -= routedAmountRaw;
+        routedSellCount += 1;
+        routedSell = -chartNumber(routedAmountRaw, decimals);
+      } else {
+        routedNeutral = chartNumber(routedAmountRaw, decimals);
+      }
     } else {
       otherMovementCount += 1;
       otherFlow = chartNumber(deltaRaw, decimals);
@@ -173,9 +221,12 @@ export function buildScannerActivityChart(
       buy,
       sell,
       otherFlow,
-      routed,
+      routedBuy,
+      routedSell,
+      routedNeutral,
       burn,
       cumulativeNet: chartNumber(cumulativeRaw, decimals),
+      cumulativeRoutedNet: chartNumber(cumulativeRoutedRaw, decimals),
     };
   });
 
@@ -187,10 +238,14 @@ export function buildScannerActivityChart(
       inboundRaw,
       outboundRaw,
       routedRaw,
+      routedBoughtRaw,
+      routedSoldRaw,
     }),
     buyCount,
     sellCount,
     routedCount,
+    routedBuyCount,
+    routedSellCount,
     otherMovementCount,
   };
 }
