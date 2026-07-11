@@ -81,6 +81,7 @@ function LeviDiceLobby() {
   const connectWallet = async () => {
     try {
       const connected = await wallet.connect();
+      if (!connected) return;
       await refreshAccess(connected.address);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Wallet connection failed");
@@ -94,6 +95,7 @@ function LeviDiceLobby() {
         connected = wallet.address;
       } else {
         const nextWallet = await wallet.connect();
+        if (!nextWallet) return;
         connected = nextWallet.address;
       }
       const currentAccess = access || (await refreshAccess(connected));

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Check, Copy, Flame, LockKeyhole, ShieldAlert, X } from "lucide-react";
 import {
@@ -19,16 +20,22 @@ function getPageScrollY() {
 }
 
 export function CommunityBurnBanner() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (router.pathname !== "/") return;
     if (window.sessionStorage.getItem(BANNER_SESSION_KEY) === "true") return;
     const timer = window.setTimeout(() => {
       if (getPageScrollY() < 32) setIsOpen(true);
     }, 900);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [router.pathname]);
+
+  useEffect(() => {
+    if (router.pathname !== "/") setIsOpen(false);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (!isOpen) return;

@@ -75,6 +75,7 @@ export function useLeviBurn() {
     setError(null);
     try {
       const connected = await wallet.connect();
+      if (!connected) return null;
       await refreshQuote(connected.address);
       return connected.address;
     } catch (reason) {

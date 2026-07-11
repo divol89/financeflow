@@ -48,13 +48,14 @@ function LeviDiceRoom() {
   const connectOrGetAddress = async () => {
     if (wallet.address) return wallet.address;
     const connected = await wallet.connect();
-    return connected.address;
+    return connected?.address || null;
   };
 
   const joinPreview = async () => {
     try {
       if (!game) return;
       const address = await connectOrGetAddress();
+      if (!address) return;
       if (game.players.includes(address)) {
         toast.info("You are already in this room.");
         return;
@@ -93,6 +94,7 @@ function LeviDiceRoom() {
     try {
       if (!game) return;
       const address = await connectOrGetAddress();
+      if (!address) return;
       if (!game.players.includes(address)) {
         toast.error("Join the room before rolling.");
         return;
@@ -274,7 +276,9 @@ function LeviDiceRoom() {
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               {!wallet.address ? (
                 <Button
-                  onClick={() => void wallet.connect()}
+                  onClick={() => {
+                    void wallet.connect().catch(() => undefined);
+                  }}
                   className="bg-emerald-400 font-bold text-black hover:bg-emerald-300"
                 >
                   Connect Solana

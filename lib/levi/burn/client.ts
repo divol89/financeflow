@@ -3,7 +3,7 @@ import {
   createBurnCheckedInstruction,
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
-import type { InjectedSolanaProvider } from "@/hooks/useInjectedSolanaWallet";
+import type { InjectedSolanaProvider } from "@/lib/levi/solanaWallet";
 import {
   LEVI_AI_MINT_ADDRESS,
 } from "@/lib/levi/communityBurn";

@@ -6,10 +6,7 @@ import {
   notifyLeviAuthStateChange,
   subscribeToLeviAuthStateChange,
 } from "@/lib/levi/authEvents";
-import {
-  getInjectedSolanaProvider,
-  type InjectedSolanaProvider,
-} from "./useInjectedSolanaWallet";
+import { useInjectedSolanaWallet } from "./useInjectedSolanaWallet";
 
 interface MeResponse {
   authenticated: boolean;
@@ -19,7 +16,7 @@ interface MeResponse {
 }
 
 export function useLeviAuth() {
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const wallet = useInjectedSolanaWallet();
   const [session, setSession] = useState<LeviSession | null>(null);
   const [access, setAccess] = useState<LeviAccessState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,52 +62,36 @@ export function useLeviAuth() {
   }, [refresh]);
 
   useEffect(() => {
-    return subscribeToLeviAuthStateChange((nextWalletAddress) => {
-      setWalletAddress(nextWalletAddress);
+    return subscribeToLeviAuthStateChange(() => {
       void refresh({ showErrors: false });
     });
   }, [refresh]);
 
-  const getProvider = useCallback((): InjectedSolanaProvider | null => {
-    return getInjectedSolanaProvider();
-  }, []);
-
-  useEffect(() => {
-    const connectedAddress = getProvider()?.publicKey?.toBase58() || null;
-    if (connectedAddress) setWalletAddress(connectedAddress);
-  }, [getProvider]);
-
   const connectWallet = useCallback(async () => {
     setError(null);
-    const provider = getProvider();
-    if (!provider) {
-      const message = "Install Phantom or Solflare to connect a Solana wallet.";
-      setError(message);
-      throw new Error(message);
-    }
 
     try {
-      const connected = await provider.connect();
-      const address = connected.publicKey.toBase58();
-      setWalletAddress(address);
-      notifyLeviAuthStateChange(address);
-      return { provider, address };
+      const connected = await wallet.connect();
+      if (!connected) return null;
+      notifyLeviAuthStateChange(connected.address);
+      return connected;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wallet connection failed");
       throw err;
     }
-  }, [getProvider]);
+  }, [wallet.connect]);
 
   const signIn = useCallback(async () => {
     setError(null);
     setIsSigning(true);
 
     try {
-      const provider = getProvider();
+      const provider = wallet.provider;
       const connected =
-        provider?.publicKey && walletAddress
-          ? { provider, address: walletAddress }
+        provider && wallet.address
+          ? { provider, address: wallet.address }
           : await connectWallet();
+      if (!connected) return;
 
       const nonceResponse = await fetch("/api/auth/nonce", {
         method: "POST",
@@ -157,7 +138,7 @@ export function useLeviAuth() {
     } finally {
       setIsSigning(false);
     }
-  }, [connectWallet, getProvider, refresh, walletAddress]);
+  }, [connectWallet, refresh, wallet.address, wallet.provider]);
 
   const logout = useCallback(async () => {
     setError(null);
@@ -172,24 +153,28 @@ export function useLeviAuth() {
     }
 
     try {
-      await getProvider()?.disconnect?.();
+      await wallet.disconnect();
     } catch {
       // The signed session is already cleared even if the extension disconnect fails.
     }
 
-    setWalletAddress(null);
     setSession(null);
     setAccess(null);
     notifyLeviAuthStateChange(null);
-  }, [getProvider]);
+  }, [wallet.disconnect]);
+
+  const sessionMatchesWallet =
+    !wallet.address || !session || session.wallet === wallet.address;
+  const activeSession = sessionMatchesWallet ? session : null;
+  const activeAccess = activeSession ? access : null;
 
   return {
-    walletAddress,
-    session,
-    access,
+    walletAddress: wallet.address,
+    session: activeSession,
+    access: activeAccess,
     isLoading,
     isSigning,
-    error,
+    error: error || wallet.error,
     connectWallet,
     refresh,
     signIn,

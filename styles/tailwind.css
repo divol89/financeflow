@@ -45,6 +45,244 @@
   }
 }
 
+/* Shared Solana wallet connection fallback */
+.levi-wallet-connect-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(3, 5, 3, 0.78);
+  backdrop-filter: blur(14px) saturate(115%);
+  animation: levi-wallet-backdrop-in 180ms ease-out both;
+}
+
+.levi-wallet-connect-sheet {
+  position: relative;
+  width: min(100%, 29rem);
+  overflow: hidden;
+  border: 1px solid rgba(184, 243, 107, 0.24);
+  border-radius: 0.5rem;
+  background: #0b0f0a;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
+  padding: 1.4rem;
+  color: #f4f1e8;
+  animation: levi-wallet-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.levi-wallet-connect-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: rgba(184, 243, 107, 0.72);
+}
+
+.levi-wallet-connect-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: inline-grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(222, 246, 220, 0.14);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.035);
+  color: #a7b0a4;
+  transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+}
+
+.levi-wallet-connect-close:hover {
+  border-color: rgba(184, 243, 107, 0.42);
+  background: rgba(184, 243, 107, 0.08);
+  color: #f4f1e8;
+}
+
+.levi-wallet-connect-mark {
+  display: inline-grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  place-items: center;
+  border: 1px solid rgba(184, 243, 107, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(184, 243, 107, 0.1);
+  color: #b8f36b;
+}
+
+.levi-wallet-connect-eyebrow {
+  margin-top: 1.3rem;
+  color: #b8f36b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.levi-wallet-connect-sheet h2 {
+  margin-top: 0.45rem;
+  max-width: 22rem;
+  background: none;
+  color: #f4f1e8;
+  font-size: clamp(1.55rem, 5vw, 2.05rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: 0;
+  -webkit-text-fill-color: currentColor;
+}
+
+.levi-wallet-connect-copy {
+  margin-top: 0.85rem;
+  max-width: 25rem;
+  color: #a7b0a4;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.levi-wallet-connect-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  margin-top: 1.35rem;
+}
+
+.levi-wallet-connect-primary,
+.levi-wallet-connect-secondary {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 3.15rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 0.5rem;
+  padding: 0.78rem 0.9rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease,
+    transform 160ms ease;
+}
+
+.levi-wallet-connect-primary {
+  border: 1px solid #b8f36b;
+  background: #b8f36b;
+  color: #071006;
+}
+
+.levi-wallet-connect-primary:hover {
+  background: #cdfb91;
+  color: #071006;
+  transform: translateY(-1px);
+}
+
+.levi-wallet-connect-secondary {
+  border: 1px solid rgba(222, 246, 220, 0.18);
+  background: rgba(255, 255, 255, 0.035);
+  color: #f4f1e8;
+}
+
+.levi-wallet-connect-secondary:hover:not(:disabled) {
+  border-color: rgba(184, 243, 107, 0.44);
+  background: rgba(184, 243, 107, 0.08);
+}
+
+.levi-wallet-connect-secondary:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.levi-wallet-connect-status {
+  margin-top: 0.8rem;
+  border-left: 2px solid rgba(184, 243, 107, 0.72);
+  padding: 0.15rem 0 0.15rem 0.7rem;
+  color: #c8cec5;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.levi-wallet-connect-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  color: #c8cec5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.levi-wallet-connect-download:hover {
+  color: #b8f36b;
+}
+
+.levi-wallet-connect-safety {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-top: 1.15rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1rem;
+  color: #8f9a8c;
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+
+.levi-wallet-connect-safety svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+  color: #36d399;
+}
+
+.levi-wallet-connect-sheet :where(a, button):focus-visible {
+  outline: 2px solid #b8f36b;
+  outline-offset: 3px;
+}
+
+@keyframes levi-wallet-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes levi-wallet-sheet-in {
+  from { opacity: 0; transform: translateY(0.75rem) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 639px) {
+  .levi-wallet-connect-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+
+  .levi-wallet-connect-sheet {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 1.2rem 1rem calc(1.1rem + env(safe-area-inset-bottom));
+  }
+
+  .levi-wallet-connect-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .levi-wallet-connect-backdrop,
+  .levi-wallet-connect-sheet {
+    animation: none;
+  }
+
+  .levi-wallet-connect-primary,
+  .levi-wallet-connect-secondary,
+  .levi-wallet-connect-close {
+    transition: none;
+  }
+}
+
 /* Holder-signed Token-2022 burn surface. No project wallet or custody is involved. */
 .levi-burn-page {
   position: relative;
