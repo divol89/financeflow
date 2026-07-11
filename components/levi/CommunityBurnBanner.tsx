@@ -9,15 +9,48 @@ import {
 
 const BANNER_SESSION_KEY = "levi-ai-community-burn-banner-dismissed";
 
+function getPageScrollY() {
+  return Math.max(
+    window.scrollY,
+    document.documentElement.scrollTop,
+    document.body.scrollTop,
+  );
+}
+
 export function CommunityBurnBanner() {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (window.sessionStorage.getItem(BANNER_SESSION_KEY) === "true") return;
-    const timer = window.setTimeout(() => setIsOpen(true), 900);
+    const timer = window.setTimeout(() => {
+      if (getPageScrollY() < 32) setIsOpen(true);
+    }, 900);
     return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function collapseBanner() {
+      window.sessionStorage.setItem(BANNER_SESSION_KEY, "true");
+      setIsOpen(false);
+    }
+
+    function collapseOnScroll() {
+      if (getPageScrollY() >= 32) collapseBanner();
+    }
+
+    window.addEventListener("scroll", collapseOnScroll, { passive: true });
+    window.addEventListener("wheel", collapseBanner, { passive: true });
+    window.addEventListener("touchmove", collapseBanner, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", collapseOnScroll);
+      window.removeEventListener("wheel", collapseBanner);
+      window.removeEventListener("touchmove", collapseBanner);
+    };
+  }, [isOpen]);
 
   function closeBanner() {
     window.sessionStorage.setItem(BANNER_SESSION_KEY, "true");

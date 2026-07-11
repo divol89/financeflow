@@ -12,6 +12,7 @@ import {
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
 import { BullChargeProposal } from "@/components/levi/BullChargeProposal";
 import { LeviEntranceImage } from "@/components/levi/LeviEntranceImage";
+import { HomeNarrativeFlow } from "@/components/levi/HomeNarrativeFlow";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { MetricCard } from "@/components/levi/MetricCard";
@@ -92,12 +93,7 @@ export default function Home() {
                   proposals become products, and utility grows in public.
                 </p>
               </div>
-              <div className="levi-home-narrative-flow" aria-label="White Bull Agent development flow">
-                <div><span>01</span><strong>Observe</strong><p>Read public activity.</p></div>
-                <div><span>02</span><strong>Understand</strong><p>Surface useful context.</p></div>
-                <div><span>03</span><strong>Propose</strong><p>Share the next idea.</p></div>
-                <div><span>04</span><strong>Build</strong><p>Ship useful utility.</p></div>
-              </div>
+              <HomeNarrativeFlow />
             </section>
           </LeviReveal>
 
