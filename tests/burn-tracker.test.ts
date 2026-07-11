@@ -13,6 +13,7 @@ import {
   sumTokenAccountBalances,
 } from "../lib/levi/burnTracker/chain";
 import { toBurnTrackerPublicSnapshot } from "../lib/levi/burnTracker/service";
+import { parseStoredBurnTrackerSnapshot } from "../lib/levi/burnTracker/clientEvents";
 import {
   LEVI_AI_MINT_ADDRESS,
   BURN_TRACKER_CACHE_TTL_MS,
@@ -133,6 +134,38 @@ test("serves an expired cached snapshot as stale without inventing a burn transa
   assert.equal(snapshot.communityLockRaw, "100000000");
   assert.equal(snapshot.effectiveCirculatingSupplyRaw, "999999449999999");
   assert.equal(snapshot.nextRefreshAt, "2026-07-11T12:00:00.000Z");
+});
+
+test("accepts only complete public snapshots shared between browser tabs", () => {
+  const snapshot = toBurnTrackerPublicSnapshot(
+    {
+      version: 2,
+      mint: LEVI_AI_MINT_ADDRESS,
+      initialSupplyRaw: "1000000000000000",
+      currentSupplyRaw: "999999549999999",
+      totalBurnedRaw: "450000001",
+      communityLockRaw: "100000000",
+      latestBurn: null,
+      lastObservedMintSignature: "observedSignature",
+      pendingBurnCursor: null,
+      pendingBurnUntil: null,
+      verificationPending: false,
+      refreshedAt: "2026-07-11T10:00:00.000Z",
+      refreshLeaseId: null,
+      refreshLeaseUntil: null,
+    },
+    false
+  );
+
+  assert.deepEqual(
+    parseStoredBurnTrackerSnapshot(JSON.stringify({ snapshot, publishedAt: 1 })),
+    snapshot
+  );
+  assert.equal(
+    parseStoredBurnTrackerSnapshot(JSON.stringify({ snapshot: { mint: "incomplete" } })),
+    null
+  );
+  assert.equal(parseStoredBurnTrackerSnapshot("not-json"), null);
 });
 
 test("detects a finalized Token-2022 Burn for the LEVI AI mint", () => {

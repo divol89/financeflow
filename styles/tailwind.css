@@ -719,6 +719,33 @@
 .levi-burn-success a { display: inline-flex; align-items: center; gap: 0.35rem; color: #e5ffc2; font-size: 0.68rem; font-weight: 750; text-decoration: none; }
 .levi-burn-success a:hover { color: #fff; }
 
+.levi-burn-success button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 0;
+  background: transparent;
+  color: #e5ffc2;
+  padding: 0;
+  font-size: 0.68rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.levi-burn-success button:hover { color: #fff; }
+
+.levi-burn-success .levi-burn-sync-status {
+  margin-top: 0.65rem;
+  border-left: 2px solid rgba(184, 243, 107, 0.5);
+  padding-left: 0.6rem;
+  color: #c8d6bb;
+}
+
+.levi-burn-success .levi-burn-sync-status.is-deferred {
+  border-left-color: rgba(245, 213, 138, 0.65);
+  color: #d8c99e;
+}
+
 .levi-burn-tool-footnote {
   margin-top: 1rem;
   color: #6f7d6e;

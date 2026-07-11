@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
+import { subscribeToBurnTrackerSnapshots } from "@/lib/levi/burnTracker/clientEvents";
+import { isBurnTrackerPublicSnapshot } from "@/lib/levi/burnTracker/validation";
 import type { BurnTrackerPublicSnapshot } from "@/types/burnTracker";
 
 interface BurnTrackerResponse extends Partial<BurnTrackerPublicSnapshot> {
@@ -22,13 +24,15 @@ function getRefreshDelay(snapshot: BurnTrackerPublicSnapshot | null): number {
   return Math.max(MIN_REFRESH_DELAY_MS, nextRefreshAt - Date.now() + 1_500);
 }
 
-function isSnapshot(data: BurnTrackerResponse): data is BurnTrackerPublicSnapshot {
-  return (
-    typeof data.mint === "string" &&
-    typeof data.currentSupplyRaw === "string" &&
-    typeof data.totalBurnedRaw === "string" &&
-    typeof data.nextRefreshAt === "string"
-  );
+function isNewerSnapshot(
+  current: BurnTrackerPublicSnapshot | null,
+  next: BurnTrackerPublicSnapshot
+): boolean {
+  if (!current) return true;
+  const currentTime = Date.parse(current.refreshedAt);
+  const nextTime = Date.parse(next.refreshedAt);
+  if (!Number.isFinite(currentTime) || !Number.isFinite(nextTime)) return true;
+  return nextTime >= currentTime;
 }
 
 export function useBurnTracker() {
@@ -46,7 +50,7 @@ export function useBurnTracker() {
         "Live burn data is temporarily unavailable."
       );
 
-      if (!response.ok || !isSnapshot(data)) {
+      if (!response.ok || !isBurnTrackerPublicSnapshot(data)) {
         setState((current) => ({
           snapshot: current.snapshot,
           isLoading: false,
@@ -67,6 +71,39 @@ export function useBurnTracker() {
 
   useEffect(() => {
     void refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    return subscribeToBurnTrackerSnapshots((snapshot) => {
+      setState((current) =>
+        isNewerSnapshot(current.snapshot, snapshot)
+          ? { snapshot, isLoading: false, error: null }
+          : current
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    let lastVisibilityRefreshAt = 0;
+    const refreshWhenVisible = () => {
+      const now = Date.now();
+      if (
+        document.visibilityState !== "visible" ||
+        now - lastVisibilityRefreshAt < 1_000
+      ) {
+        return;
+      }
+
+      lastVisibilityRefreshAt = now;
+      void refresh();
+    };
+
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    return () => {
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
   }, [refresh]);
 
   useEffect(() => {

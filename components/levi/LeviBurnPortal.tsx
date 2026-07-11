@@ -41,8 +41,10 @@ export function LeviBurnPortal() {
     isBurning,
     error,
     submission,
+    trackerSyncState,
     connectWallet,
     refreshQuote,
+    retryTrackerSync,
     burn,
   } = useLeviBurn();
   const [amount, setAmount] = useState("");
@@ -260,7 +262,11 @@ export function LeviBurnPortal() {
 
                 <button type="submit" className="levi-burn-submit" disabled={!canBurn}>
                   {isBurning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Flame className="h-4 w-4" />}
-                  {isBurning ? "Waiting for confirmation" : "Burn LEVI AI"}
+                  {isBurning
+                    ? trackerSyncState === "refreshing"
+                      ? "Updating tracker"
+                      : "Waiting for confirmation"
+                    : "Burn LEVI AI"}
                 </button>
               </>
             ) : (
@@ -296,6 +302,20 @@ export function LeviBurnPortal() {
                   ? `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was confirmed by Solana.`
                   : `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was sent by your wallet. Verify final status on Solscan.`}
               </p>
+              {trackerSyncState !== "idle" ? (
+                <p
+                  className={`levi-burn-sync-status is-${trackerSyncState}`}
+                  aria-live="polite"
+                >
+                  {trackerSyncState === "updated"
+                    ? "Live Burn Tracker updated automatically."
+                    : trackerSyncState === "refreshing"
+                      ? "Finalized on Solana. Updating the Live Burn Tracker now."
+                      : trackerSyncState === "waiting"
+                        ? "Waiting for Solana finalization. The tracker will update automatically."
+                        : "Automatic tracker sync was delayed. The burn remains valid on-chain."}
+                </p>
+              ) : null}
               <div>
                 <a href={submission.solscanUrl} target="_blank" rel="noreferrer">
                   View transaction <ExternalLink className="h-3.5 w-3.5" />
@@ -303,14 +323,20 @@ export function LeviBurnPortal() {
                 <Link href="/#live-burn-tracker">
                   Open tracker <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
+                {trackerSyncState === "deferred" ? (
+                  <button type="button" onClick={() => void retryTrackerSync()}>
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    Retry tracker update
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
         ) : null}
 
         <p className="levi-burn-tool-footnote">
-          The tracker records finalized supply changes on its next scheduled cache refresh.
-          Your Solscan transaction is the immediate proof while confirmation completes.
+          Burns made here update the tracker automatically after Solana finalization. The
+          two-hour verification remains only as a fallback for burns made elsewhere.
         </p>
       </form>
     </section>

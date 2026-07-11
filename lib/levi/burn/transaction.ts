@@ -33,10 +33,10 @@ export function classifyLeviBurnTransactionStatus(
 ): LeviBurnTransactionStatus {
   if (!record) return { signature, state: "pending" };
   if (record.err) return { signature, state: "failed" };
-  if (
-    record.confirmationStatus === "confirmed" ||
-    record.confirmationStatus === "finalized"
-  ) {
+  if (record.confirmationStatus === "finalized") {
+    return { signature, state: "finalized" };
+  }
+  if (record.confirmationStatus === "confirmed") {
     return { signature, state: "confirmed" };
   }
 

@@ -17,7 +17,18 @@ export interface LeviBurnSigningContext {
   blockhash: string;
 }
 
-export type LeviBurnTransactionState = "pending" | "confirmed" | "failed";
+export type LeviBurnTransactionState =
+  | "pending"
+  | "confirmed"
+  | "finalized"
+  | "failed";
+
+export type LeviBurnTrackerSyncState =
+  | "idle"
+  | "waiting"
+  | "refreshing"
+  | "updated"
+  | "deferred";
 
 export interface LeviBurnTransactionStatus {
   signature: string;

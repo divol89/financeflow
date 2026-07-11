@@ -1,14 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { submitLeviBurn } from "@/lib/levi/burn/client";
 import {
-  refreshBurnTrackerAfterBurn,
   requestLeviBurnSigningContext,
+  synchronizeBurnTrackerAfterBurn,
   waitForLeviBurnConfirmation,
 } from "@/lib/levi/burn/gateway";
+import { publishBurnTrackerSnapshot } from "@/lib/levi/burnTracker/clientEvents";
 import { parseLeviBurnAmount } from "@/lib/levi/burn/validation";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
-import type { LeviBurnQuote, LeviBurnSubmission } from "@/types/leviBurn";
+import type {
+  LeviBurnQuote,
+  LeviBurnSubmission,
+  LeviBurnTrackerSyncState,
+  LeviBurnTransactionState,
+} from "@/types/leviBurn";
 
 interface BurnQuoteResponse extends Partial<LeviBurnQuote> {
   error?: string;
@@ -21,6 +27,67 @@ export function useLeviBurn() {
   const [isBurning, setIsBurning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submission, setSubmission] = useState<LeviBurnSubmission | null>(null);
+  const [trackerSyncState, setTrackerSyncState] =
+    useState<LeviBurnTrackerSyncState>("idle");
+  const activeTrackerSignatureRef = useRef<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const updateTrackerSyncState = useCallback(
+    (signature: string, nextState: LeviBurnTrackerSyncState) => {
+      if (
+        isMountedRef.current &&
+        activeTrackerSignatureRef.current === signature
+      ) {
+        setTrackerSyncState(nextState);
+      }
+    },
+    []
+  );
+
+  const synchronizeTracker = useCallback(
+    async (signature: string, initialState: LeviBurnTransactionState) => {
+      updateTrackerSyncState(
+        signature,
+        initialState === "finalized" ? "refreshing" : "waiting"
+      );
+
+      try {
+        const result = await synchronizeBurnTrackerAfterBurn(signature, {
+          initialState,
+        });
+        if (!result.snapshot) {
+          updateTrackerSyncState(signature, "deferred");
+          return null;
+        }
+
+        updateTrackerSyncState(signature, "refreshing");
+        publishBurnTrackerSnapshot(result.snapshot);
+        if (
+          isMountedRef.current &&
+          activeTrackerSignatureRef.current === signature
+        ) {
+          setSubmission((current) =>
+            current?.signature === signature
+              ? { ...current, state: "confirmed" }
+              : current
+          );
+        }
+        updateTrackerSyncState(signature, "updated");
+        return result.snapshot;
+      } catch {
+        updateTrackerSyncState(signature, "deferred");
+        return null;
+      }
+    },
+    [updateTrackerSyncState]
+  );
 
   const refreshQuote = useCallback(
     async (walletAddress = wallet.address) => {
@@ -65,6 +132,8 @@ export function useLeviBurn() {
     if (!wallet.address) {
       setQuote(null);
       setSubmission(null);
+      setTrackerSyncState("idle");
+      activeTrackerSignatureRef.current = null;
       return;
     }
 
@@ -103,6 +172,8 @@ export function useLeviBurn() {
         setIsBurning(true);
         setError(null);
         setSubmission(null);
+        setTrackerSyncState("idle");
+        activeTrackerSignatureRef.current = null;
         const signingContext = await requestLeviBurnSigningContext();
         const result = await submitLeviBurn({
           provider: wallet.provider,
@@ -116,13 +187,19 @@ export function useLeviBurn() {
           throw new Error("The burn transaction failed on Solana.");
         }
 
+        activeTrackerSignatureRef.current = result.signature;
         const completedResult: LeviBurnSubmission = {
           ...result,
-          state: status.state === "confirmed" ? "confirmed" : "submitted",
+          state:
+            status.state === "confirmed" || status.state === "finalized"
+              ? "confirmed"
+              : "submitted",
         };
         setSubmission(completedResult);
-        if (completedResult.state === "confirmed") {
-          void refreshBurnTrackerAfterBurn(result.signature).catch(() => undefined);
+        if (status.state === "finalized") {
+          await synchronizeTracker(result.signature, status.state);
+        } else {
+          void synchronizeTracker(result.signature, status.state);
         }
         await refreshQuote(wallet.address);
         return completedResult;
@@ -135,8 +212,17 @@ export function useLeviBurn() {
         setIsBurning(false);
       }
     },
-    [quote, refreshQuote, wallet.address, wallet.provider]
+    [quote, refreshQuote, synchronizeTracker, wallet.address, wallet.provider]
   );
+
+  const retryTrackerSync = useCallback(async () => {
+    if (!submission) return null;
+    activeTrackerSignatureRef.current = submission.signature;
+    return synchronizeTracker(
+      submission.signature,
+      submission.state === "confirmed" ? "confirmed" : "pending"
+    );
+  }, [submission, synchronizeTracker]);
 
   return {
     ...wallet,
@@ -145,8 +231,10 @@ export function useLeviBurn() {
     isBurning,
     error,
     submission,
+    trackerSyncState,
     connectWallet,
     refreshQuote,
+    retryTrackerSync,
     burn,
   };
 }

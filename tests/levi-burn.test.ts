@@ -7,6 +7,11 @@ import {
   submitLeviBurn,
 } from "../lib/levi/burn/client";
 import {
+  refreshBurnTrackerAfterBurn,
+  synchronizeBurnTrackerAfterBurn,
+  waitForLeviBurnFinalization,
+} from "../lib/levi/burn/gateway";
+import {
   classifyLeviBurnTransactionStatus,
   getLeviBurnSigningContext,
 } from "../lib/levi/burn/transaction";
@@ -110,13 +115,20 @@ test("uses a server-provided blockhash and delegates submission to the wallet", 
   assert.equal(capturedInstructionCount, 1);
 });
 
-test("classifies pending, failed and confirmed burn transaction states", () => {
+test("distinguishes confirmed from finalized burn transaction states", () => {
   const signature = "signature";
 
   assert.deepEqual(classifyLeviBurnTransactionStatus(signature, null), {
     signature,
     state: "pending",
   });
+  assert.deepEqual(
+    classifyLeviBurnTransactionStatus(signature, {
+      err: null,
+      confirmationStatus: "confirmed",
+    }),
+    { signature, state: "confirmed" }
+  );
   assert.deepEqual(
     classifyLeviBurnTransactionStatus(signature, {
       err: { InstructionError: [0, "Custom"] },
@@ -129,8 +141,110 @@ test("classifies pending, failed and confirmed burn transaction states", () => {
       err: null,
       confirmationStatus: "finalized",
     }),
-    { signature, state: "confirmed" }
+    { signature, state: "finalized" }
   );
+});
+
+test("waits for finalization before forcing one tracker refresh", async () => {
+  const signature = "2".repeat(64);
+  let statusReads = 0;
+  let trackerPosts = 0;
+  const snapshot = {
+    mint: LEVI_AI_MINT_ADDRESS,
+    symbol: "LEVI AI",
+    decimals: 6,
+    initialSupplyRaw: "1000000000000000",
+    currentSupplyRaw: "999996549999999",
+    totalBurnedRaw: "3450000001",
+    percentageBurned: "0.000345",
+    communityLockRaw: "100000000",
+    effectiveCirculatingSupplyRaw: "999996449999999",
+    latestBurn: {
+      signature,
+      occurredAt: "2026-07-11T12:00:00.000Z",
+      amountRaw: "1000000000",
+      solscanUrl: `https://solscan.io/tx/${signature}`,
+    },
+    communityLockWallet: "1nc1nerator11111111111111111111111111111111",
+    communityLockUrl: "https://solscan.io/account/1nc1nerator11111111111111111111111111111111",
+    refreshedAt: "2026-07-11T12:00:01.000Z",
+    nextRefreshAt: "2026-07-11T14:00:01.000Z",
+    stale: false,
+    verificationPending: false,
+  };
+
+  globalThis.fetch = (async (input, init) => {
+    const url = String(input);
+    if (url.startsWith("/api/burn/transaction")) {
+      statusReads += 1;
+      return new Response(
+        JSON.stringify({
+          signature,
+          state: statusReads === 1 ? "confirmed" : "finalized",
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    assert.equal(url, "/api/burn-tracker");
+    assert.equal(init?.method, "POST");
+    trackerPosts += 1;
+    return new Response(JSON.stringify(snapshot), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }) as typeof fetch;
+
+  try {
+    const result = await synchronizeBurnTrackerAfterBurn(signature, {
+      initialState: "confirmed",
+      finalizationAttempts: 2,
+      delayMs: 0,
+      refreshAttempts: 1,
+    });
+
+    assert.equal(statusReads, 2);
+    assert.equal(trackerPosts, 1);
+    assert.equal(result.state, "finalized");
+    assert.deepEqual(result.snapshot, snapshot);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("rejects an invalid tracker payload after a finalized burn", async () => {
+  globalThis.fetch = (async () =>
+    new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })) as typeof fetch;
+
+  try {
+    await assert.rejects(
+      () => refreshBurnTrackerAfterBurn("3".repeat(64)),
+      /Unable to refresh the burn tracker/
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("reports the latest non-final state when finalization times out", async () => {
+  const signature = "4".repeat(64);
+  globalThis.fetch = (async () =>
+    new Response(JSON.stringify({ signature, state: "confirmed" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })) as typeof fetch;
+
+  try {
+    assert.deepEqual(await waitForLeviBurnFinalization(signature, 2, 0), {
+      signature,
+      state: "confirmed",
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("retrieves a signing blockhash through the server RPC service", async () => {

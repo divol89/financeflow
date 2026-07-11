@@ -199,8 +199,8 @@ export function LiveBurnTracker() {
       )}
 
       <p className="levi-burn-tracker-note">
-        Automatic cache refresh every two hours. Burns reduce mint supply; effective circulation
-        also excludes permanent community locks. Transaction observation begins with this tracker.
+        Portal burns update this tracker immediately after Solana finalization. A two-hour
+        verification remains as fallback for external burns and community locks.
       </p>
     </section>
   );
