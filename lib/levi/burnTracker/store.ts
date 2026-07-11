@@ -95,7 +95,8 @@ function hasActiveStoredLease(data: DocumentData, nowMs: number): boolean {
 }
 
 export async function acquireBurnTrackerRefreshLease(
-  now: Date
+  now: Date,
+  options: { force?: boolean } = {}
 ): Promise<BurnTrackerRefreshLease> {
   const db = getAdminFirestore();
   const ref = db.collection(BURN_TRACKER_COLLECTION).doc(BURN_TRACKER_DOCUMENT_ID);
@@ -106,7 +107,7 @@ export async function acquireBurnTrackerRefreshLease(
     const data = snapshot.data() || {};
     const record = snapshot.exists ? readRecord(data) : null;
 
-    if (record && isBurnTrackerSnapshotFresh(record, nowMs)) {
+    if (!options.force && record && isBurnTrackerSnapshotFresh(record, nowMs)) {
       return { state: "fresh", record };
     }
 

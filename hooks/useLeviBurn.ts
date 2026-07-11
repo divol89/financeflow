@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { submitLeviBurn } from "@/lib/levi/burn/client";
 import {
+  refreshBurnTrackerAfterBurn,
   requestLeviBurnSigningContext,
   waitForLeviBurnConfirmation,
 } from "@/lib/levi/burn/gateway";
@@ -119,6 +120,9 @@ export function useLeviBurn() {
           state: status.state === "confirmed" ? "confirmed" : "submitted",
         };
         setSubmission(completedResult);
+        if (completedResult.state === "confirmed") {
+          void refreshBurnTrackerAfterBurn(result.signature).catch(() => undefined);
+        }
         await refreshQuote(wallet.address);
         return completedResult;
       } catch (reason) {

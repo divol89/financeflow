@@ -81,6 +81,39 @@ function allInstructions(transaction: ParsedBurnTransaction): ParsedInstruction[
   ];
 }
 
+function extractInstructionAmountRaw(info?: Record<string, unknown>): string | null {
+  const directAmount = info?.amount;
+  if (typeof directAmount === "string" || typeof directAmount === "number") {
+    return String(directAmount);
+  }
+
+  const tokenAmount = info?.tokenAmount;
+  if (!tokenAmount || typeof tokenAmount !== "object") return null;
+  const rawAmount = (tokenAmount as Record<string, unknown>).amount;
+  return typeof rawAmount === "string" || typeof rawAmount === "number"
+    ? String(rawAmount)
+    : null;
+}
+
+function toDetectedBurn(
+  signature: string,
+  transaction: ParsedBurnTransaction,
+  fallbackBlockTime?: number | null
+): DetectedBurn | null {
+  const amountRaw = extractBurnAmountRaw(transaction);
+  if (amountRaw === null) return null;
+
+  const occurredAtSeconds = transaction.blockTime ?? fallbackBlockTime ?? null;
+  if (!occurredAtSeconds) return null;
+
+  return {
+    signature,
+    occurredAt: new Date(occurredAtSeconds * 1000).toISOString(),
+    amountRaw,
+    solscanUrl: `${BURN_TRACKER_SOLSCAN_TRANSACTION_URL}/${signature}`,
+  };
+}
+
 export function extractBurnAmountRaw(
   transaction: ParsedBurnTransaction,
   mint = LEVI_AI_MINT_ADDRESS
@@ -92,9 +125,7 @@ export function extractBurnAmountRaw(
     const info = instruction.parsed?.info;
     if ((type !== "burn" && type !== "burnchecked") || info?.mint !== mint) continue;
 
-    return typeof info.amount === "string" || typeof info.amount === "number"
-      ? String(info.amount)
-      : null;
+    return extractInstructionAmountRaw(info);
   }
 
   return null;
@@ -146,6 +177,22 @@ export async function fetchLatestLeviAiMintSignature(): Promise<string | null> {
   return signatures.find((item) => !item.err)?.signature || null;
 }
 
+export async function fetchLeviAiBurnBySignature(
+  signature: string
+): Promise<DetectedBurn | null> {
+  const transaction = await solanaRpc<ParsedBurnTransaction | null>("getTransaction", [
+    signature,
+    {
+      commitment: "finalized",
+      encoding: "jsonParsed",
+      maxSupportedTransactionVersion: 0,
+    },
+  ]);
+  if (!transaction) return null;
+
+  return toDetectedBurn(signature, transaction);
+}
+
 export async function scanForLatestLeviAiBurn(input: {
   before: string | null;
   until: string | null;
@@ -172,19 +219,15 @@ export async function scanForLatestLeviAiBurn(input: {
     ]);
     if (!transaction) continue;
 
-    const amountRaw = extractBurnAmountRaw(transaction);
-    if (amountRaw === null) continue;
-
-    const occurredAtSeconds = transaction.blockTime ?? signatureInfo.blockTime ?? null;
-    if (!occurredAtSeconds) continue;
+    const latestBurn = toDetectedBurn(
+      signatureInfo.signature,
+      transaction,
+      signatureInfo.blockTime
+    );
+    if (!latestBurn) continue;
 
     return {
-      latestBurn: {
-        signature: signatureInfo.signature,
-        occurredAt: new Date(occurredAtSeconds * 1000).toISOString(),
-        amountRaw,
-        solscanUrl: `${BURN_TRACKER_SOLSCAN_TRANSACTION_URL}/${signatureInfo.signature}`,
-      },
+      latestBurn,
       nextCursor: null,
       hasMore: false,
     };

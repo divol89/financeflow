@@ -177,6 +177,29 @@ test("detects a LEVI AI BurnChecked nested inside a transaction", () => {
   assert.equal(amount, "1234567");
 });
 
+test("detects the Token-2022 parsed burn amount shape returned by Solana RPC", () => {
+  const amount = extractBurnAmountRaw({
+    meta: { err: null },
+    transaction: {
+      message: {
+        instructions: [
+          {
+            parsed: {
+              type: "burnChecked",
+              info: {
+                mint: LEVI_AI_MINT_ADDRESS,
+                tokenAmount: { amount: "1000000000", decimals: 6 },
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  assert.equal(amount, "1000000000");
+});
+
 test("ignores transfers, dead-wallet locks, unrelated mints and failed transactions", () => {
   const tokenTransfer = {
     meta: { err: null },

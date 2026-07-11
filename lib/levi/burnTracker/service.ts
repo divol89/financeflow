@@ -4,6 +4,7 @@ import {
   fetchLeviAiCommunityLockBalance,
   fetchLeviAiMintSupply,
   scanForLatestLeviAiBurn,
+  type DetectedBurn,
 } from "./chain";
 import {
   calculateBurnMetrics,
@@ -64,7 +65,8 @@ export function toBurnTrackerPublicSnapshot(
 async function refreshBurnTracker(
   previous: BurnTrackerRecord | null,
   leaseId: string,
-  now: Date
+  now: Date,
+  verifiedBurn?: DetectedBurn
 ): Promise<BurnTrackerPublicSnapshot> {
   const [currentSupplyRaw, latestMintSignature, communityLockRaw] = await Promise.all([
     fetchLeviAiMintSupply(),
@@ -82,7 +84,7 @@ async function refreshBurnTracker(
       currentSupplyRaw: metrics.currentSupplyRaw,
       totalBurnedRaw: metrics.totalBurnedRaw,
       communityLockRaw,
-      latestBurn: null,
+      latestBurn: verifiedBurn || null,
       lastObservedMintSignature: latestMintSignature,
       pendingBurnCursor: null,
       pendingBurnUntil: null,
@@ -102,7 +104,12 @@ async function refreshBurnTracker(
   let pendingBurnUntil = previous.pendingBurnUntil;
   let verificationPending = previous.verificationPending;
 
-  if (supplyDecreased && previous.lastObservedMintSignature) {
+  if (verifiedBurn) {
+    latestBurn = verifiedBurn;
+    pendingBurnCursor = null;
+    pendingBurnUntil = null;
+    verificationPending = false;
+  } else if (supplyDecreased && previous.lastObservedMintSignature) {
     pendingBurnCursor = null;
     pendingBurnUntil = previous.lastObservedMintSignature;
     verificationPending = true;
@@ -148,9 +155,10 @@ async function refreshBurnTracker(
 }
 
 export async function getLiveBurnTrackerSnapshot(
-  now = new Date()
+  now = new Date(),
+  options: { force?: boolean; verifiedBurn?: DetectedBurn } = {}
 ): Promise<BurnTrackerPublicSnapshot> {
-  const lease = await acquireBurnTrackerRefreshLease(now);
+  const lease = await acquireBurnTrackerRefreshLease(now, { force: options.force });
 
   if (lease.state === "fresh") return toBurnTrackerPublicSnapshot(lease.record, false);
   if (lease.state === "locked") {
@@ -159,7 +167,12 @@ export async function getLiveBurnTrackerSnapshot(
   }
 
   try {
-    return await refreshBurnTracker(lease.record, lease.leaseId, now);
+    return await refreshBurnTracker(
+      lease.record,
+      lease.leaseId,
+      now,
+      options.verifiedBurn
+    );
   } catch (error) {
     await releaseBurnTrackerRefreshLease(lease.leaseId).catch(() => undefined);
     if (lease.record) return toBurnTrackerPublicSnapshot(lease.record, true);

@@ -61,3 +61,18 @@ export async function waitForLeviBurnConfirmation(
 
   return { signature, state: "pending" };
 }
+
+export async function refreshBurnTrackerAfterBurn(signature: string): Promise<void> {
+  const response = await fetch("/api/burn-tracker", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ signature }),
+  });
+  const data = await readJsonResponse<{ error?: string }>(
+    response,
+    "Unable to refresh the burn tracker right now."
+  );
+  if (!response.ok) {
+    throw new Error(data.error || "Unable to refresh the burn tracker right now.");
+  }
+}
