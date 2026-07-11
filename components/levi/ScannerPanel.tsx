@@ -84,6 +84,8 @@ export function ScannerPanel() {
   const router = useRouter();
   const auth = useLeviAuth();
   const activeRequest = useRef<AbortController | null>(null);
+  const resultAnchor = useRef<HTMLDivElement | null>(null);
+  const revealCompletedResult = useRef(false);
   const [mode, setMode] = useState<LeviScanMode>("token");
   const [wallet, setWallet] = useState("");
   const [tokenMint, setTokenMint] = useState("");
@@ -112,6 +114,29 @@ export function ScannerPanel() {
   useEffect(() => {
     return () => activeRequest.current?.abort();
   }, []);
+
+  useEffect(() => {
+    if (
+      !report ||
+      progress?.stage !== "complete" ||
+      !revealCompletedResult.current
+    ) {
+      return;
+    }
+    revealCompletedResult.current = false;
+    const frame = window.requestAnimationFrame(() => {
+      const target = resultAnchor.current;
+      if (!target) return;
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "start",
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [progress?.stage, report]);
 
   const requestScan = async (input: {
     cursor?: string;
@@ -192,6 +217,7 @@ export function ScannerPanel() {
     activeRequest.current = controller;
     setError(null);
     setReport(null);
+    revealCompletedResult.current = true;
     setProgress({
       stage: "loading",
       inspected: 0,
@@ -333,6 +359,7 @@ export function ScannerPanel() {
                 setMode("token");
                 setReport(null);
                 setProgress(null);
+                revealCompletedResult.current = false;
               }}
             >
               <Search className="h-4 w-4" />
@@ -346,6 +373,7 @@ export function ScannerPanel() {
                 setMode("creator");
                 setReport(null);
                 setProgress(null);
+                revealCompletedResult.current = false;
               }}
             >
               <UserRoundSearch className="h-4 w-4" />
@@ -464,14 +492,20 @@ export function ScannerPanel() {
       </div>
 
       {report ? (
-        <ScanResult
-          report={report}
-          canExtend={
-            !isScanning && Boolean(access?.limits.canExtendScanHistory)
-          }
-          isExtending={isExtending}
-          onExtend={handleExtend}
-        />
+        <div
+          ref={resultAnchor}
+          className="levi-scan-result-anchor"
+          tabIndex={-1}
+        >
+          <ScanResult
+            report={report}
+            canExtend={
+              !isScanning && Boolean(access?.limits.canExtendScanHistory)
+            }
+            isExtending={isExtending}
+            onExtend={handleExtend}
+          />
+        </div>
       ) : null}
     </section>
   );

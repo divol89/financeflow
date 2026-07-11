@@ -263,6 +263,59 @@ function matchesMintInstruction(
   return parsedMint === null || parsedMint === mint;
 }
 
+interface TargetInstructionFlow {
+  incomingRaw: bigint;
+  outgoingRaw: bigint;
+  decimals: number;
+}
+
+function targetInstructionFlow(
+  mint: string,
+  instructions: ParsedInstruction[],
+  ownedAccounts: Set<string>
+): TargetInstructionFlow {
+  let incomingRaw = ZERO;
+  let outgoingRaw = ZERO;
+  let decimals = 0;
+
+  for (const instruction of instructions) {
+    if (!instructionType(instruction).startsWith("transfer")) continue;
+    const info = instruction.parsed?.info;
+    if (!info) continue;
+    const source = typeof info.source === "string" ? info.source : null;
+    const destination =
+      typeof info.destination === "string" ? info.destination : null;
+    const sourceOwned = Boolean(source && ownedAccounts.has(source));
+    const destinationOwned = Boolean(
+      destination && ownedAccounts.has(destination)
+    );
+    if (!sourceOwned && !destinationOwned) continue;
+
+    const parsedMint = instructionMint(instruction);
+    if (parsedMint && parsedMint !== mint) continue;
+    const tokenAmount =
+      info.tokenAmount && typeof info.tokenAmount === "object"
+        ? (info.tokenAmount as Record<string, unknown>)
+        : null;
+    const rawAmount = tokenAmount?.amount ?? info.amount;
+    const amount =
+      typeof rawAmount === "string" && /^\d+$/.test(rawAmount)
+        ? BigInt(rawAmount)
+        : typeof rawAmount === "number" && Number.isSafeInteger(rawAmount)
+          ? BigInt(rawAmount)
+          : ZERO;
+    if (amount <= ZERO) continue;
+
+    if (destinationOwned) incomingRaw += amount;
+    if (sourceOwned) outgoingRaw += amount;
+    if (typeof tokenAmount?.decimals === "number") {
+      decimals = tokenAmount.decimals;
+    }
+  }
+
+  return { incomingRaw, outgoingRaw, decimals };
+}
+
 export function classifyTokenTransaction(
   wallet: string,
   mint: string,
@@ -287,14 +340,22 @@ export function classifyTokenTransaction(
     ownedAccounts
   );
   const targetDeltaRaw = after.raw - before.raw;
-  if (targetDeltaRaw === ZERO) return null;
+  const instructions = allInstructions(tx);
+  const targetFlow = targetInstructionFlow(mint, instructions, ownedAccounts);
+  const routedRaw =
+    targetFlow.incomingRaw > ZERO && targetFlow.outgoingRaw > ZERO
+      ? targetFlow.incomingRaw < targetFlow.outgoingRaw
+        ? targetFlow.incomingRaw
+        : targetFlow.outgoingRaw
+      : ZERO;
+  const isRoutedFlow = targetDeltaRaw === ZERO && routedRaw > ZERO;
+  if (targetDeltaRaw === ZERO && !isRoutedFlow) return null;
 
   const accountIndex = walletIndex(tx, wallet);
   const preSol = accountIndex >= 0 ? tx.meta?.preBalances?.[accountIndex] || 0 : 0;
   const postSol = accountIndex >= 0 ? tx.meta?.postBalances?.[accountIndex] || 0 : 0;
   const fee = accountIndex === 0 ? tx.meta?.fee || 0 : 0;
   const netSolLamports = BigInt(Math.trunc(postSol - preSol + fee));
-  const instructions = allInstructions(tx);
   const programIds = collectProgramIds(tx);
   const venue = getVenue(programIds);
   const quote = findQuoteDelta(wallet, tx);
@@ -307,17 +368,30 @@ export function classifyTokenTransaction(
   const hasMintInstruction = instructions.some((instruction) =>
     matchesMintInstruction(instruction, mint, "mintto")
   );
-  const classified = classifyActivityEvidence({
-    targetDeltaRaw,
-    quoteDeltaRaw: quote?.delta || ZERO,
-    nativeSolDeltaLamports: netSolLamports,
-    venue,
-    hasTransferInstruction,
-    hasBurnInstruction,
-    hasMintInstruction,
-  });
+  const classified: ActivityClassificationResult = isRoutedFlow
+    ? {
+        classification: "routed",
+        confidence: "high",
+        ruleId: "balanced-token-routing",
+        evidence: [
+          "Target tokens entered and left an inspected token account in the same transaction.",
+          "The account finished with no net target-token change, so this is routed volume rather than a user buy or sell.",
+        ],
+      }
+    : classifyActivityEvidence({
+        targetDeltaRaw,
+        quoteDeltaRaw: quote?.delta || ZERO,
+        nativeSolDeltaLamports: netSolLamports,
+        venue,
+        hasTransferInstruction,
+        hasBurnInstruction,
+        hasMintInstruction,
+      });
   const signature = tx.transaction?.signatures?.[0] || "unknown";
-  const decimals = after.decimals || before.decimals;
+  const decimals = after.decimals || before.decimals || targetFlow.decimals;
+  const displayedTargetRaw = isRoutedFlow
+    ? routedRaw
+    : absBigInt(targetDeltaRaw);
 
   return {
     id: `${signature}:${mint}`,
@@ -328,7 +402,15 @@ export function classifyTokenTransaction(
     classification: classified.classification,
     confidence: classified.confidence,
     targetDeltaRaw: targetDeltaRaw.toString(),
-    targetAmount: rawAmountValue(absBigInt(targetDeltaRaw), decimals),
+    targetAmount: rawAmountValue(displayedTargetRaw, decimals),
+    grossTargetInRaw:
+      targetFlow.incomingRaw > ZERO
+        ? targetFlow.incomingRaw.toString()
+        : undefined,
+    grossTargetOutRaw:
+      targetFlow.outgoingRaw > ZERO
+        ? targetFlow.outgoingRaw.toString()
+        : undefined,
     preBalanceRaw: before.raw.toString(),
     postBalanceRaw: after.raw.toString(),
     quoteAsset: quote
@@ -341,7 +423,7 @@ export function classifyTokenTransaction(
     netSolLamports: netSolLamports.toString(),
     netSol: formatRawAmount(netSolLamports, 9),
     feeLamports: String(tx.meta?.fee || 0),
-    venue,
+    venue: venue || (isRoutedFlow ? "Balanced routed flow" : null),
     programIds,
     evidence: classified.evidence,
     ruleId: classified.ruleId,
@@ -368,13 +450,16 @@ export function summarizeClassifiedActivity(
 ): TokenActivitySummaryV2 {
   let totalSold = ZERO;
   let totalBought = ZERO;
+  let totalRouted = ZERO;
   let possibleOutflow = ZERO;
   let netTokenChange = ZERO;
   let largestSell = ZERO;
   let latestSellAt: number | null = null;
+  let latestRoutedAt: number | null = null;
   let observedSellCount = 0;
   let probableSellCount = 0;
   let buyCount = 0;
+  let routedCount = 0;
   let transferCount = 0;
   let unknownCount = 0;
   const quoteTotals = new Map<string, { symbol: string; decimals: number; raw: bigint }>();
@@ -406,6 +491,11 @@ export function summarizeClassifiedActivity(
     } else if (event.classification === "buy") {
       buyCount += 1;
       totalBought += amount;
+    } else if (event.classification === "routed") {
+      routedCount += 1;
+      totalRouted += BigInt(event.targetAmount.raw);
+      latestRoutedAt =
+        Math.max(latestRoutedAt || 0, event.blockTime || 0) || null;
     } else if (
       event.classification === "transfer_in" ||
       event.classification === "transfer_out"
@@ -422,14 +512,17 @@ export function summarizeClassifiedActivity(
     observedSellCount,
     probableSellCount,
     buyCount,
+    routedCount,
     transferCount,
     unknownCount,
     totalSold: rawAmountValue(totalSold, decimals),
     totalBought: rawAmountValue(totalBought, decimals),
+    totalRouted: rawAmountValue(totalRouted, decimals),
     possibleOutflow: rawAmountValue(possibleOutflow, decimals),
     netTokenChange: rawAmountValue(netTokenChange, decimals),
     largestSell: rawAmountValue(largestSell, decimals),
     latestSellAt,
+    latestRoutedAt,
     quoteReceived: [...quoteTotals.entries()].map(([mint, value]) => ({
       mint,
       symbol: value.symbol,

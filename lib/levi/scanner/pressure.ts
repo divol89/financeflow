@@ -57,6 +57,42 @@ export function calculateDistributionPressure({
       ? coverage.loadedTransactions / coverage.selectedSignatures
       : 0);
   const confidence = confidenceForCoverage(coverage, snapshot.complete);
+  if (snapshot.addressKind === "programmatic-address") {
+    const routedEvents = events.filter(
+      (event) => event.classification === "routed"
+    );
+    return {
+      score: null,
+      level: "insufficient",
+      confidence,
+      factors: {
+        authorities:
+          (snapshot.mintAuthority ? 15 : 0) +
+          (snapshot.freezeAuthority ? 10 : 0),
+        concentration: 0,
+        observedSelling: 0,
+        repeatedPattern: 0,
+        unknownOutflow: 0,
+      },
+      summary:
+        routedEvents.length > 0
+          ? "This program address routes target-token volume, so a human distribution-pressure score does not apply."
+          : "This is a program address, so its activity cannot be scored as a human holder strategy.",
+      reasons: [
+        snapshot.authoritiesRevoked
+          ? "Mint and freeze authorities are revoked."
+          : "Token authorities still require review.",
+        ...(routedEvents.length > 0
+          ? [
+              `${routedEvents.length} program-routed transaction${routedEvents.length === 1 ? "" : "s"} appeared in the observed window.`,
+            ]
+          : []),
+      ],
+      unknowns: [
+        "A program address cannot be interpreted as a user wallet or creator trading strategy.",
+      ],
+    };
+  }
   const sellEvents = events.filter(
     (event) => event.classification === "sell" && event.confidence === "high"
   );

@@ -86,6 +86,81 @@ function transaction(input: {
   };
 }
 
+function routedTransaction(): {
+  transaction: ParsedSolanaTransaction;
+  tokenAccount: string;
+} {
+  const tokenAccount = "RouteTokenAccount11111111111111111111111111111";
+  const sourceAccount = "RouteSource1111111111111111111111111111111111";
+  const destinationAccount =
+    "RouteDestination111111111111111111111111111111";
+  const amount = "311801097424";
+  return {
+    tokenAccount,
+    transaction: {
+      slot: 432_000_100,
+      blockTime: 1_700_000_200,
+      meta: {
+        err: null,
+        fee: 5_000,
+        preBalances: [2_000_000_000],
+        postBalances: [2_000_000_000],
+        preTokenBalances: [
+          {
+            accountIndex: 1,
+            mint,
+            owner: wallet,
+            uiTokenAmount: { amount: "0", decimals: 6 },
+          },
+        ],
+        postTokenBalances: [
+          {
+            accountIndex: 1,
+            mint,
+            owner: wallet,
+            uiTokenAmount: { amount: "0", decimals: 6 },
+          },
+        ],
+      },
+      transaction: {
+        signatures: ["routed-flow"],
+        message: {
+          accountKeys: [
+            { pubkey: wallet, signer: false },
+            { pubkey: tokenAccount },
+            { pubkey: sourceAccount },
+            { pubkey: destinationAccount },
+          ],
+          instructions: [
+            {
+              parsed: {
+                type: "transferChecked",
+                info: {
+                  mint,
+                  source: sourceAccount,
+                  destination: tokenAccount,
+                  tokenAmount: { amount, decimals: 6 },
+                },
+              },
+            },
+            {
+              parsed: {
+                type: "transferChecked",
+                info: {
+                  mint,
+                  source: tokenAccount,
+                  destination: destinationAccount,
+                  tokenAmount: { amount, decimals: 6 },
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  };
+}
+
 describe("Scanner V2 classification", () => {
   it("counts a token-out and quote-in swap as a high-confidence sell", () => {
     const event = classifyTokenTransaction(
@@ -189,6 +264,23 @@ describe("Scanner V2 classification", () => {
     assert.equal(event?.targetAmount.formatted, "250");
   });
 
+  it("recovers balanced program-routed volume when net balance stays zero", () => {
+    const routed = routedTransaction();
+    const event = classifyTokenTransaction(
+      wallet,
+      mint,
+      routed.transaction,
+      [routed.tokenAccount]
+    );
+
+    assert.equal(event?.classification, "routed");
+    assert.equal(event?.targetDeltaRaw, "0");
+    assert.equal(event?.targetAmount.formatted, "311801.097424");
+    assert.equal(event?.grossTargetInRaw, "311801097424");
+    assert.equal(event?.grossTargetOutRaw, "311801097424");
+    assert.equal(event?.ruleId, "balanced-token-routing");
+  });
+
   it("derives both legacy and Token-2022 associated accounts", () => {
     const accounts = deriveAssociatedTokenAccounts(
       "BYCgQQpJT1odaunfvk6gtm5hVd7Xu93vYwbumFfqgHb3",
@@ -267,6 +359,26 @@ describe("Scanner V2 activity chart", () => {
     assert.equal(model.points[0]?.otherFlow, -200);
     assert.equal(model.posture.tone, "outbound");
   });
+
+  it("plots routed volume without presenting it as a buy or sell", () => {
+    const routed = routedTransaction();
+    const event = classifyTokenTransaction(
+      wallet,
+      mint,
+      routed.transaction,
+      [routed.tokenAccount]
+    );
+    const events = event ? [event] : [];
+    const summary = summarizeClassifiedActivity(events, 6);
+    const model = buildScannerActivityChart(events);
+
+    assert.equal(summary.routedCount, 1);
+    assert.equal(summary.totalRouted.formatted, "311801.097424");
+    assert.equal(summary.observedSellCount, 0);
+    assert.equal(model.points[0]?.routed, 311801.097424);
+    assert.equal(model.routedCount, 1);
+    assert.equal(model.posture.tone, "routing");
+  });
 });
 
 describe("Scanner V2 pressure", () => {
@@ -308,6 +420,36 @@ describe("Scanner V2 pressure", () => {
 
     assert.equal(result.level, "insufficient");
     assert.equal(result.score, null);
+  });
+
+  it("does not assign human distribution pressure to a program address", () => {
+    const routed = routedTransaction();
+    const event = classifyTokenTransaction(
+      wallet,
+      mint,
+      routed.transaction,
+      [routed.tokenAccount]
+    );
+    const result = calculateDistributionPressure({
+      snapshot: { ...snapshot, addressKind: "programmatic-address" },
+      events: event ? [event] : [],
+      quickSellSignalCount: 0,
+      coverage: {
+        source: "token-accounts",
+        walletSignatures: 0,
+        tokenAccountSignatures: 10,
+        tokenAccounts: 1,
+        selectedSignatures: 10,
+        loadedTransactions: 10,
+        skippedTransactions: 0,
+        rateLimited: false,
+        loadedRatio: 1,
+      },
+    });
+
+    assert.equal(result.score, null);
+    assert.equal(result.level, "insufficient");
+    assert.match(result.summary, /program address routes/i);
   });
 
   it("summarizes classified amounts without floating point arithmetic", () => {

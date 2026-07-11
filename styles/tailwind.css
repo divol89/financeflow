@@ -7087,6 +7087,7 @@ img.site-logo {
 .levi-activity-kind.is-transfer_in,
 .levi-activity-kind.is-mint { color: #99e8c9; }
 .levi-activity-kind.is-liquidity { color: #8ee9dc; }
+.levi-activity-kind.is-routed { color: #69d7df; }
 .levi-activity-kind.is-burn { color: #f2cf74; }
 
 .levi-activity-amount,
@@ -7471,6 +7472,15 @@ img.site-logo {
 .levi-scanner-posture.is-distributing strong,
 .levi-scanner-posture.is-outbound strong { color: #ff938a; }
 .levi-scanner-posture.is-mixed strong { color: #e9c66c; }
+.levi-scanner-posture.is-routing strong { color: #69d7df; }
+
+.levi-scan-result-anchor {
+  scroll-margin-top: 7rem;
+}
+
+.levi-scan-result-anchor:focus {
+  outline: none;
+}
 
 .levi-scanner-chart-stats {
   display: grid;

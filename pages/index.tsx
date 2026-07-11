@@ -63,7 +63,7 @@ export default function Home() {
               </Link>
               <Link href="/docs" className="levi-secondary-button">
                 <FileText className="h-4 w-4" />
-                Read Whitepaper
+                Open Docs
               </Link>
               </div>
               <div className="levi-hero-proof">

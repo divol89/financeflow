@@ -70,14 +70,17 @@ export function buildMockScanReport(wallet: string): LeviScanReport {
       observedSellCount: 1,
       probableSellCount: 0,
       buyCount: 1,
+      routedCount: 0,
       transferCount: 0,
       unknownCount: 0,
       totalSold: { raw: "250000000000", decimals: 6, formatted: "250000" },
       totalBought: { raw: "90000000000", decimals: 6, formatted: "90000" },
+      totalRouted: { raw: "0", decimals: 6, formatted: "0" },
       possibleOutflow: { raw: "0", decimals: 6, formatted: "0" },
       netTokenChange: { raw: "-160000000000", decimals: 6, formatted: "-160000" },
       largestSell: { raw: "250000000000", decimals: 6, formatted: "250000" },
       latestSellAt: 1_781_001_500,
+      latestRoutedAt: null,
       quoteReceived: [
         {
           mint: "So11111111111111111111111111111111111111112",

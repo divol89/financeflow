@@ -3,7 +3,7 @@ import type {
   TokenActivityClassification,
 } from "@/types/levi";
 
-export const SCANNER_METHODOLOGY_VERSION = "2.0.0";
+export const SCANNER_METHODOLOGY_VERSION = "2.1.0";
 export const SCANNER_METHODOLOGY_UPDATED_AT = "2026-07-11";
 
 export const QUOTE_ASSETS = {
@@ -49,6 +49,10 @@ export const CLASSIFICATION_LABELS: Record<
   transfer_out: {
     label: "Transfer out",
     description: "Tokens left without enough swap evidence to call the movement a sell.",
+  },
+  routed: {
+    label: "Routed token flow",
+    description: "Tokens entered and left a controlled token account within the same transaction, leaving no directional balance change.",
   },
   liquidity: {
     label: "Liquidity operation",

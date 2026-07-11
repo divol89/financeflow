@@ -13,6 +13,7 @@ import {
   History,
   Loader2,
   Radar,
+  Repeat2,
   ShieldAlert,
   WalletCards,
 } from "lucide-react";
@@ -57,6 +58,12 @@ function formatTime(value: number | null): string {
 
 function pressureHeading(report: LeviScanReport): string {
   const pressure = report.distributionPressure;
+  if (report.snapshot?.addressKind === "programmatic-address") {
+    const routedCount = report.tokenActivitySummaryV2?.routedCount || 0;
+    return routedCount > 0
+      ? `${routedCount} program-routed transaction${routedCount === 1 ? "" : "s"}`
+      : "Programmatic address activity";
+  }
   if (pressure?.score !== null && pressure?.score !== undefined) {
     return `${pressure.score}/100 distribution pressure`;
   }
@@ -73,6 +80,9 @@ function pressureHeading(report: LeviScanReport): string {
 }
 
 function EventIcon({ event }: { event: ClassifiedTokenActivity }) {
+  if (event.classification === "routed") {
+    return <Repeat2 className="h-4 w-4" />;
+  }
   if (event.classification === "sell" || event.classification === "transfer_out") {
     return <ArrowUpRight className="h-4 w-4" />;
   }
@@ -144,6 +154,8 @@ export function ScanResult({
   const snapshot = report.snapshot;
   const summary = report.tokenActivitySummaryV2;
   const hasLoadedTransactions = report.scanCoverage.loadedTransactions > 0;
+  const isProgrammatic = snapshot?.addressKind === "programmatic-address";
+  const hasRoutedFlow = Boolean(summary?.routedCount);
 
   const saveInvestigation = async () => {
     if (!report.targetMint) return;
@@ -204,7 +216,11 @@ export function ScanResult({
         <div>
           <div className={`levi-pressure-badge ${pressureTone[pressure.level]}`}>
             <ShieldAlert className="h-4 w-4" />
-            {pressure.level === "insufficient" ? "Insufficient data" : `${pressure.level} pressure`}
+            {isProgrammatic
+              ? "Program address"
+              : pressure.level === "insufficient"
+                ? "Insufficient data"
+                : `${pressure.level} pressure`}
           </div>
           <h2>{pressureHeading(report)}</h2>
           <p>{pressure.summary}</p>
@@ -223,7 +239,7 @@ export function ScanResult({
           <AlertTriangle className="h-4 w-4" />
           <p>
             <strong>Programmatic address detected.</strong>
-            This address cannot sign like a normal user wallet. It may route assets temporarily, so zero net balance changes must not be interpreted as a human trading strategy.
+            This address cannot sign like a normal user wallet. Gross routed volume is shown below, but it must not be interpreted as a human buying or selling strategy.
           </p>
         </div>
       ) : null}
@@ -231,8 +247,18 @@ export function ScanResult({
       <div className="levi-snapshot-grid">
         <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{snapshot.complete ? groupDigits(snapshot.walletBalance.formatted) : "Unavailable"}</strong><small>{snapshot.complete ? snapshot.symbol || "tokens" : "Snapshot could not be completed"}</small></div>
         <div><Gauge className="h-4 w-4" /><span>Current supply share</span><strong>{snapshot.walletSharePercent === null ? "Unknown" : `${snapshot.walletSharePercent.toFixed(4)}%`}</strong><small>{snapshot.authoritiesRevoked ? "Authorities revoked" : "Authority review required"}</small></div>
-        <div><ArrowUpRight className="h-4 w-4" /><span>Observed sold</span><strong>{hasLoadedTransactions ? groupDigits(summary.totalSold.formatted) : "Not established"}</strong><small>{hasLoadedTransactions ? `${summary.observedSellCount} high-confidence swap(s)` : "No transaction coverage"}</small></div>
-        <div><Clock3 className="h-4 w-4" /><span>Latest observed sell</span><strong>{summary.latestSellAt ? new Date(summary.latestSellAt * 1000).toLocaleDateString() : hasLoadedTransactions ? "None found" : "Not established"}</strong><small>{snapshot.walletSol ? `${groupDigits(snapshot.walletSol)} SOL in wallet` : "SOL balance unavailable"}</small></div>
+        <div>
+          {hasRoutedFlow ? <Repeat2 className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
+          <span>{hasRoutedFlow ? "Routed volume" : "Observed sold"}</span>
+          <strong>{hasRoutedFlow ? groupDigits(summary.totalRouted.formatted) : hasLoadedTransactions ? groupDigits(summary.totalSold.formatted) : "Not established"}</strong>
+          <small>{hasRoutedFlow ? `${summary.routedCount} balanced route(s)` : hasLoadedTransactions ? `${summary.observedSellCount} high-confidence swap(s)` : "No transaction coverage"}</small>
+        </div>
+        <div>
+          <Clock3 className="h-4 w-4" />
+          <span>{hasRoutedFlow ? "Latest routed flow" : "Latest observed sell"}</span>
+          <strong>{hasRoutedFlow && summary.latestRoutedAt ? new Date(summary.latestRoutedAt * 1000).toLocaleDateString() : summary.latestSellAt ? new Date(summary.latestSellAt * 1000).toLocaleDateString() : hasLoadedTransactions ? "None found" : "Not established"}</strong>
+          <small>{snapshot.walletSol ? `${groupDigits(snapshot.walletSol)} SOL at address` : "SOL balance unavailable"}</small>
+        </div>
       </div>
 
       <ScannerActivityChart

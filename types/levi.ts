@@ -11,6 +11,7 @@ export type TokenActivityClassification =
   | "buy"
   | "transfer_in"
   | "transfer_out"
+  | "routed"
   | "liquidity"
   | "burn"
   | "mint"
@@ -125,6 +126,8 @@ export interface ClassifiedTokenActivity {
   confidence: SignalConfidence;
   targetDeltaRaw: string;
   targetAmount: RawAmountValue;
+  grossTargetInRaw?: string;
+  grossTargetOutRaw?: string;
   preBalanceRaw: string;
   postBalanceRaw: string;
   quoteAsset: {
@@ -145,14 +148,17 @@ export interface TokenActivitySummaryV2 {
   observedSellCount: number;
   probableSellCount: number;
   buyCount: number;
+  routedCount: number;
   transferCount: number;
   unknownCount: number;
   totalSold: RawAmountValue;
   totalBought: RawAmountValue;
+  totalRouted: RawAmountValue;
   possibleOutflow: RawAmountValue;
   netTokenChange: RawAmountValue;
   largestSell: RawAmountValue;
   latestSellAt: number | null;
+  latestRoutedAt: number | null;
   quoteReceived: Array<{
     mint: string;
     symbol: string;

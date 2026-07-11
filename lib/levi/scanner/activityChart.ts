@@ -9,6 +9,7 @@ export type ScannerObservedPostureTone =
   | "mixed"
   | "inbound"
   | "outbound"
+  | "routing"
   | "unknown";
 
 export interface ScannerActivityChartPoint {
@@ -18,6 +19,7 @@ export interface ScannerActivityChartPoint {
   buy: number;
   sell: number;
   otherFlow: number;
+  routed: number;
   burn: number;
   cumulativeNet: number;
 }
@@ -31,6 +33,7 @@ export interface ScannerActivityChartModel {
   };
   buyCount: number;
   sellCount: number;
+  routedCount: number;
   otherMovementCount: number;
 }
 
@@ -54,8 +57,9 @@ function observedPosture(input: {
   soldRaw: bigint;
   inboundRaw: bigint;
   outboundRaw: bigint;
+  routedRaw: bigint;
 }): ScannerActivityChartModel["posture"] {
-  const { boughtRaw, soldRaw, inboundRaw, outboundRaw } = input;
+  const { boughtRaw, soldRaw, inboundRaw, outboundRaw, routedRaw } = input;
 
   if (boughtRaw > ZERO || soldRaw > ZERO) {
     if (boughtRaw * BigInt(100) > soldRaw * BigInt(120)) {
@@ -76,6 +80,14 @@ function observedPosture(input: {
       tone: "mixed",
       label: "Mixed trading",
       summary: "Verified buying and selling are close enough to require transaction-level review.",
+    };
+  }
+
+  if (routedRaw > ZERO) {
+    return {
+      tone: "routing",
+      label: "Routed token flow",
+      summary: "Target tokens entered and left a controlled account inside the same transactions; this is volume, not a directional holding strategy.",
     };
   }
 
@@ -112,8 +124,10 @@ export function buildScannerActivityChart(
   let soldRaw = ZERO;
   let inboundRaw = ZERO;
   let outboundRaw = ZERO;
+  let routedRaw = ZERO;
   let buyCount = 0;
   let sellCount = 0;
+  let routedCount = 0;
   let otherMovementCount = 0;
 
   const points = ordered.map((event, index) => {
@@ -125,6 +139,7 @@ export function buildScannerActivityChart(
     let buy = 0;
     let sell = 0;
     let otherFlow = 0;
+    let routed = 0;
     let burn = 0;
 
     if (event.classification === "buy") {
@@ -139,6 +154,11 @@ export function buildScannerActivityChart(
       outboundRaw += amountRaw;
       otherMovementCount += 1;
       burn = -amount;
+    } else if (event.classification === "routed") {
+      const routedAmountRaw = BigInt(event.targetAmount.raw);
+      routedRaw += routedAmountRaw;
+      routedCount += 1;
+      routed = chartNumber(routedAmountRaw, decimals);
     } else {
       otherMovementCount += 1;
       otherFlow = chartNumber(deltaRaw, decimals);
@@ -153,6 +173,7 @@ export function buildScannerActivityChart(
       buy,
       sell,
       otherFlow,
+      routed,
       burn,
       cumulativeNet: chartNumber(cumulativeRaw, decimals),
     };
@@ -160,9 +181,16 @@ export function buildScannerActivityChart(
 
   return {
     points,
-    posture: observedPosture({ boughtRaw, soldRaw, inboundRaw, outboundRaw }),
+    posture: observedPosture({
+      boughtRaw,
+      soldRaw,
+      inboundRaw,
+      outboundRaw,
+      routedRaw,
+    }),
     buyCount,
     sellCount,
+    routedCount,
     otherMovementCount,
   };
 }

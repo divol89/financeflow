@@ -6,7 +6,7 @@ import { mergeScanReports } from "./mergeReports";
 const SCAN_CACHE_COLLECTION = "levi_scanner_cache";
 const OWNED_SCANS_COLLECTION = "levi_scanner_reports";
 const SCAN_CACHE_TTL_MS = 10 * 60 * 1000;
-const SCAN_CACHE_SCHEMA = "scanner-v2.2";
+const SCAN_CACHE_SCHEMA = "scanner-v2.3";
 
 interface CachedScanDocument {
   expiresAt?: string;
