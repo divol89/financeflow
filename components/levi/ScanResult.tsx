@@ -212,9 +212,21 @@ export function ScanResult({
         <div className="levi-scan-subject">
           <span>{snapshot.name || snapshot.symbol || "Inspected token"}</span>
           <code>{compactAddress(snapshot.mint)}</code>
-          <small>{compactAddress(report.wallet)} / {pressure.confidence} confidence</small>
+          <small>
+            {compactAddress(report.wallet)} / {snapshot.addressKind === "programmatic-address" ? "programmatic address" : `${pressure.confidence} confidence`}
+          </small>
         </div>
       </header>
+
+      {snapshot.addressKind === "programmatic-address" ? (
+        <div className="levi-programmatic-address-note">
+          <AlertTriangle className="h-4 w-4" />
+          <p>
+            <strong>Programmatic address detected.</strong>
+            This address cannot sign like a normal user wallet. It may route assets temporarily, so zero net balance changes must not be interpreted as a human trading strategy.
+          </p>
+        </div>
+      ) : null}
 
       <div className="levi-snapshot-grid">
         <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{snapshot.complete ? groupDigits(snapshot.walletBalance.formatted) : "Unavailable"}</strong><small>{snapshot.complete ? snapshot.symbol || "tokens" : "Snapshot could not be completed"}</small></div>

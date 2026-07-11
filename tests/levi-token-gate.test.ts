@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
 import {
-  LEVI_MINT_ADDRESS,
   TOKEN_2022_PROGRAM_ID,
 } from "@/lib/levi/constants";
-import { getLeviAccessForWallet } from "@/lib/levi/tokenGate";
+import { LEVI_AI_MINT_ADDRESS } from "@/lib/levi/communityBurn";
+import {
+  clearLeviAccessCacheForTests,
+  getLeviAccessForWallet,
+} from "@/lib/levi/tokenGate";
 
 const originalFetch = globalThis.fetch;
 
@@ -16,6 +19,7 @@ interface RpcRequestBody {
 describe("LEVI token gate RPC", () => {
   afterEach(() => {
     globalThis.fetch = originalFetch;
+    clearLeviAccessCacheForTests();
   });
 
   it("uses the canonical Token-2022 program id", () => {
@@ -25,7 +29,7 @@ describe("LEVI token gate RPC", () => {
     );
   });
 
-  it("queries the LEVI mint directly and computes access", async () => {
+  it("queries the LEVI AI mint directly and computes access", async () => {
     const requestBody: { current?: RpcRequestBody } = {};
 
     globalThis.fetch = (async (_input, init) => {
@@ -42,7 +46,7 @@ describe("LEVI token gate RPC", () => {
                   data: {
                     parsed: {
                       info: {
-                        mint: LEVI_MINT_ADDRESS,
+                        mint: LEVI_AI_MINT_ADDRESS,
                         tokenAmount: {
                           amount: "3000000000",
                           decimals: 6,
@@ -67,9 +71,30 @@ describe("LEVI token gate RPC", () => {
     );
 
     assert.equal(requestBody.current?.method, "getTokenAccountsByOwner");
-    assert.deepEqual(requestBody.current?.params?.[1], { mint: LEVI_MINT_ADDRESS });
+    assert.deepEqual(requestBody.current?.params?.[1], { mint: LEVI_AI_MINT_ADDRESS });
     assert.equal(access.balanceRaw, "3000000000");
     assert.equal(access.balance, 3000);
     assert.equal(access.tier, "basic");
+  });
+
+  it("reuses one short-lived access check across scanner pages", async () => {
+    let calls = 0;
+    globalThis.fetch = (async () => {
+      calls += 1;
+      return new Response(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          result: { value: [] },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }) as typeof fetch;
+
+    const wallet = "So11111111111111111111111111111111111111112";
+    await getLeviAccessForWallet(wallet);
+    await getLeviAccessForWallet(wallet);
+
+    assert.equal(calls, 1);
   });
 });

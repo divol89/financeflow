@@ -83,7 +83,7 @@ export function DecisionJournal({
         </form>
       ) : null}
 
-      {limit <= 0 ? <div className="levi-empty-state">Your balances remain visible. Journal storage unlocks at 3,000 LEVI.</div> : entries.length ? (
+      {limit <= 0 ? <div className="levi-empty-state">Your balances remain visible. Journal storage unlocks at 3,000 LEVI AI.</div> : entries.length ? (
         <div className="levi-journal-list">
           {entries.map((entry) => (
             <article key={entry.id}>

@@ -37,7 +37,7 @@ export function WalletAccessSheet({
           <div><p className="levi-section-label">Holder access</p><h2 id="wallet-access-title">Prove ownership. Keep custody.</h2></div>
           <button ref={closeRef} type="button" onClick={onClose} aria-label="Close holder access"><X className="h-5 w-5" /></button>
         </header>
-        <p className="levi-access-sheet-lede">LEVI controls product limits. It does not secure your wallet or authorize trading.</p>
+        <p className="levi-access-sheet-lede">LEVI AI holdings control product limits. They do not secure your wallet or authorize trading.</p>
         <LeviAuthPanel onConnectionGuideOpened={onClose} />
         <div className="levi-access-sheet-safety"><KeyRound className="h-4 w-4" /><span>The signature contains a login message only. Flow Finance cannot move your assets.</span></div>
         <div className="levi-access-sheet-links">

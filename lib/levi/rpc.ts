@@ -8,6 +8,13 @@ const DEFAULT_PUBLIC_RPC_URLS = [
   "https://api.mainnet-beta.solana.com",
 ];
 
+export interface SolanaRpcRequestOptions {
+  maxAttempts?: number;
+  requestTimeoutMs?: number;
+  deadlineMs?: number;
+  maxEndpoints?: number;
+}
+
 interface RpcResponse<T> {
   jsonrpc: "2.0";
   id: number;
@@ -82,10 +89,11 @@ function shouldRetryRpcError(error: SolanaRpcError): boolean {
 async function postRpc<T>(
   rpcUrl: string,
   method: string,
-  params: unknown[]
+  params: unknown[],
+  timeoutMs = RPC_TIMEOUT_MS
 ): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     let response: Response;
@@ -134,16 +142,42 @@ async function postRpc<T>(
 
 export async function solanaRpc<T>(
   method: string,
-  params: unknown[] = []
+  params: unknown[] = [],
+  options: SolanaRpcRequestOptions = {}
 ): Promise<T> {
-  const rpcUrls = getSolanaRpcUrls();
+  const maxAttempts = Math.max(1, options.maxAttempts || MAX_RPC_ATTEMPTS);
+  const requestTimeoutMs = Math.max(
+    250,
+    options.requestTimeoutMs || RPC_TIMEOUT_MS
+  );
+  const startedAt = Date.now();
+  const rpcUrls = getSolanaRpcUrls().slice(
+    0,
+    Math.max(1, options.maxEndpoints || Number.MAX_SAFE_INTEGER)
+  );
   let lastError: SolanaRpcError | null = null;
 
-  for (let attempt = 0; attempt < MAX_RPC_ATTEMPTS; attempt += 1) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     let retryableFailure = false;
     for (const rpcUrl of rpcUrls) {
+      const remainingMs = options.deadlineMs
+        ? options.deadlineMs - (Date.now() - startedAt)
+        : requestTimeoutMs;
+      if (remainingMs <= 0) {
+        lastError = new SolanaRpcError(
+          method,
+          `Solana RPC ${method} exceeded its request deadline`,
+          { status: 504 }
+        );
+        break;
+      }
       try {
-        return await postRpc<T>(rpcUrl, method, params);
+        return await postRpc<T>(
+          rpcUrl,
+          method,
+          params,
+          Math.min(requestTimeoutMs, remainingMs)
+        );
       } catch (error) {
         const rpcError =
           error instanceof SolanaRpcError
@@ -154,7 +188,14 @@ export async function solanaRpc<T>(
       }
     }
 
-    if (!retryableFailure || attempt === MAX_RPC_ATTEMPTS - 1) break;
+    if (!retryableFailure || attempt === maxAttempts - 1) break;
+    if (
+      options.deadlineMs &&
+      Date.now() - startedAt + RPC_RETRY_BASE_MS * (attempt + 1) >=
+        options.deadlineMs
+    ) {
+      break;
+    }
     await waitBeforeRetry(attempt);
   }
 
@@ -163,11 +204,12 @@ export async function solanaRpc<T>(
 
 async function postRpcBatch<T>(
   rpcUrl: string,
-  requests: Array<{ method: string; params?: unknown[] }>
+  requests: Array<{ method: string; params?: unknown[] }>,
+  timeoutMs = RPC_TIMEOUT_MS
 ): Promise<Array<T | null>> {
   const method = "batch";
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     let response: Response;
@@ -202,6 +244,9 @@ async function postRpcBatch<T>(
     }
 
     const payload = (await response.json()) as Array<RpcResponse<T>>;
+    if (!Array.isArray(payload)) {
+      throw new SolanaRpcError(method, "Solana RPC batch returned an invalid payload");
+    }
     const rateLimited = payload.find((item) => isRetryableRpcCode(item.error?.code));
     if (rateLimited?.error) {
       throw new SolanaRpcError(
@@ -211,25 +256,54 @@ async function postRpcBatch<T>(
       );
     }
 
-    return payload.map((item) => (item.error ? null : item.result ?? null));
+    const responsesById = new Map(payload.map((item) => [item.id, item]));
+    return requests.map((_, index) => {
+      const item = responsesById.get(index + 1);
+      return !item || item.error ? null : item.result ?? null;
+    });
   } finally {
     clearTimeout(timeout);
   }
 }
 
 export async function solanaRpcBatch<T>(
-  requests: Array<{ method: string; params?: unknown[] }>
+  requests: Array<{ method: string; params?: unknown[] }>,
+  options: SolanaRpcRequestOptions = {}
 ): Promise<Array<T | null>> {
   if (requests.length === 0) return [];
   const method = "batch";
-  const rpcUrls = getSolanaRpcUrls();
+  const maxAttempts = Math.max(1, options.maxAttempts || MAX_RPC_ATTEMPTS);
+  const requestTimeoutMs = Math.max(
+    250,
+    options.requestTimeoutMs || RPC_TIMEOUT_MS
+  );
+  const startedAt = Date.now();
+  const rpcUrls = getSolanaRpcUrls().slice(
+    0,
+    Math.max(1, options.maxEndpoints || Number.MAX_SAFE_INTEGER)
+  );
   let lastError: SolanaRpcError | null = null;
 
-  for (let attempt = 0; attempt < MAX_RPC_ATTEMPTS; attempt += 1) {
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     let retryableFailure = false;
     for (const rpcUrl of rpcUrls) {
+      const remainingMs = options.deadlineMs
+        ? options.deadlineMs - (Date.now() - startedAt)
+        : requestTimeoutMs;
+      if (remainingMs <= 0) {
+        lastError = new SolanaRpcError(
+          method,
+          "Solana RPC batch exceeded its request deadline",
+          { status: 504 }
+        );
+        break;
+      }
       try {
-        return await postRpcBatch<T>(rpcUrl, requests);
+        return await postRpcBatch<T>(
+          rpcUrl,
+          requests,
+          Math.min(requestTimeoutMs, remainingMs)
+        );
       } catch (error) {
         const rpcError =
           error instanceof SolanaRpcError
@@ -240,7 +314,14 @@ export async function solanaRpcBatch<T>(
       }
     }
 
-    if (!retryableFailure || attempt === MAX_RPC_ATTEMPTS - 1) break;
+    if (!retryableFailure || attempt === maxAttempts - 1) break;
+    if (
+      options.deadlineMs &&
+      Date.now() - startedAt + RPC_RETRY_BASE_MS * (attempt + 1) >=
+        options.deadlineMs
+    ) {
+      break;
+    }
     await waitBeforeRetry(attempt);
   }
 

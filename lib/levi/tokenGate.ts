@@ -1,5 +1,6 @@
 import type { LeviAccessState } from "@/types/levi";
-import { LEVI_DECIMALS, LEVI_MINT_ADDRESS } from "./constants";
+import { LEVI_AI_MINT_ADDRESS } from "./communityBurn";
+import { LEVI_AI_DECIMALS } from "./burnTracker/constants";
 import { getAccessLimits, getAccessReason, getAccessTier, uiTokenAmount } from "./access";
 import { solanaRpc } from "./rpc";
 import { normalizeSolanaAddress } from "./wallet";
@@ -29,6 +30,23 @@ export interface TokenBalance {
   balance: number;
 }
 
+const ACCESS_CACHE_TTL_MS = 60_000;
+const accessCache = new Map<
+  string,
+  { value: LeviAccessState; expiresAt: number }
+>();
+const accessRequests = new Map<string, Promise<LeviAccessState>>();
+const ACCESS_RPC_POLICY = {
+  maxAttempts: 1,
+  requestTimeoutMs: 1_200,
+  deadlineMs: 2_500,
+} as const;
+
+export function clearLeviAccessCacheForTests(): void {
+  accessCache.clear();
+  accessRequests.clear();
+}
+
 export async function getTokenBalanceForMint(
   inputWallet: string,
   inputMint: string
@@ -43,7 +61,8 @@ export async function getTokenBalanceForMint(
       {
         encoding: "jsonParsed",
       },
-    ]
+    ],
+    ACCESS_RPC_POLICY
   );
 
   const tokenAmount = result.value.reduce(
@@ -57,7 +76,7 @@ export async function getTokenBalanceForMint(
         decimals: info.tokenAmount?.decimals ?? acc.decimals,
       };
     },
-    { raw: BigInt(0), decimals: LEVI_DECIMALS }
+    { raw: BigInt(0), decimals: LEVI_AI_DECIMALS }
   );
 
   return {
@@ -67,17 +86,17 @@ export async function getTokenBalanceForMint(
   };
 }
 
-export async function getLeviAccessForWallet(
+async function loadLeviAccessForWallet(
   inputWallet: string
 ): Promise<LeviAccessState> {
   const wallet = normalizeSolanaAddress(inputWallet);
-  const tokenBalance = await getTokenBalanceForMint(wallet, LEVI_MINT_ADDRESS);
+  const tokenBalance = await getTokenBalanceForMint(wallet, LEVI_AI_MINT_ADDRESS);
   const { raw: balanceRaw, decimals, balance } = tokenBalance;
   const tier = getAccessTier(balance);
 
   return {
     wallet,
-    mint: LEVI_MINT_ADDRESS,
+    mint: LEVI_AI_MINT_ADDRESS,
     balance,
     balanceRaw: balanceRaw.toString(),
     decimals,
@@ -86,4 +105,29 @@ export async function getLeviAccessForWallet(
     checkedAt: new Date().toISOString(),
     reason: getAccessReason(tier),
   };
+}
+
+export async function getLeviAccessForWallet(
+  inputWallet: string
+): Promise<LeviAccessState> {
+  const wallet = normalizeSolanaAddress(inputWallet);
+  const cached = accessCache.get(wallet);
+  if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+  const pending = accessRequests.get(wallet);
+  if (pending) return pending;
+
+  const request = loadLeviAccessForWallet(wallet)
+    .then((value) => {
+      accessCache.set(wallet, {
+        value,
+        expiresAt: Date.now() + ACCESS_CACHE_TTL_MS,
+      });
+      return value;
+    })
+    .finally(() => {
+      accessRequests.delete(wallet);
+    });
+  accessRequests.set(wallet, request);
+  return request;
 }

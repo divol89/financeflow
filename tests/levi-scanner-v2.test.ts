@@ -197,6 +197,15 @@ describe("Scanner V2 classification", () => {
     assert.equal(accounts.length, 2);
     assert.equal(new Set(accounts).size, 2);
   });
+
+  it("accepts an off-curve public address for read-only wallet analysis", () => {
+    const accounts = deriveAssociatedTokenAccounts(
+      "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn",
+      "CashcatZMRn4Jv8sPQZUSsbTLi2PcPe1ssqbHcnaJqSS"
+    );
+    assert.equal(accounts.length, 2);
+    assert.equal(new Set(accounts).size, 2);
+  });
 });
 
 describe("Scanner V2 activity chart", () => {
@@ -263,6 +272,7 @@ describe("Scanner V2 activity chart", () => {
 describe("Scanner V2 pressure", () => {
   const snapshot: ScannerTokenSnapshot = {
     mint,
+    addressKind: "signer-wallet",
     name: "Test token",
     symbol: "TEST",
     tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",

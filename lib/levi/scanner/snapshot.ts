@@ -1,6 +1,7 @@
 import type { ScannerTokenSnapshot } from "@/types/levi";
-import { solanaRpc } from "@/lib/levi/rpc";
+import { solanaRpc, type SolanaRpcRequestOptions } from "@/lib/levi/rpc";
 import { normalizeSolanaAddress } from "@/lib/levi/wallet";
+import { PublicKey } from "@solana/web3.js";
 import { formatRawAmount, percentageOf, rawAmountValue } from "./amounts";
 
 interface ParsedMintInfo {
@@ -34,6 +35,7 @@ interface BalanceResponse {
 
 interface TokenAccountsResponse {
   value: Array<{
+    pubkey?: string;
     account?: {
       data?: {
         parsed?: {
@@ -50,6 +52,12 @@ interface TokenAccountsResponse {
   }>;
 }
 
+export interface ScannerTokenContext {
+  snapshot: ScannerTokenSnapshot;
+  tokenAccounts: string[];
+  accountDiscoveryComplete: boolean;
+}
+
 function readTokenMetadata(info: ParsedMintInfo): {
   name: string | null;
   symbol: string | null;
@@ -63,23 +71,29 @@ function readTokenMetadata(info: ParsedMintInfo): {
   };
 }
 
-export async function getScannerTokenSnapshot(
+export async function getScannerTokenContext(
   inputWallet: string,
-  inputMint: string
-): Promise<ScannerTokenSnapshot> {
+  inputMint: string,
+  rpcOptions?: SolanaRpcRequestOptions
+): Promise<ScannerTokenContext> {
   const wallet = normalizeSolanaAddress(inputWallet);
   const mint = normalizeSolanaAddress(inputMint);
   const [mintResult, accountsResult, solResult] = await Promise.allSettled([
-    solanaRpc<MintAccountResponse>("getAccountInfo", [
-      mint,
-      { encoding: "jsonParsed", commitment: "confirmed" },
-    ]),
-    solanaRpc<TokenAccountsResponse>("getTokenAccountsByOwner", [
-      wallet,
-      { mint },
-      { encoding: "jsonParsed", commitment: "confirmed" },
-    ]),
-    solanaRpc<BalanceResponse>("getBalance", [wallet, { commitment: "confirmed" }]),
+    solanaRpc<MintAccountResponse>(
+      "getAccountInfo",
+      [mint, { encoding: "jsonParsed", commitment: "confirmed" }],
+      rpcOptions
+    ),
+    solanaRpc<TokenAccountsResponse>(
+      "getTokenAccountsByOwner",
+      [wallet, { mint }, { encoding: "jsonParsed", commitment: "confirmed" }],
+      rpcOptions
+    ),
+    solanaRpc<BalanceResponse>(
+      "getBalance",
+      [wallet, { commitment: "confirmed" }],
+      rpcOptions
+    ),
   ]);
 
   const mintAccount = mintResult.status === "fulfilled" ? mintResult.value.value : null;
@@ -111,25 +125,44 @@ export async function getScannerTokenSnapshot(
     solResult.status === "fulfilled";
 
   return {
-    mint,
-    name: metadata.name,
-    symbol: metadata.symbol,
-    tokenProgram: mintAccount?.owner || null,
-    walletBalance: rawAmountValue(walletAmount.raw, decimals),
-    currentSupply: rawAmountValue(supplyRaw, decimals),
-    walletSharePercent: percentageOf(walletAmount.raw, supplyRaw),
-    walletSolLamports: solLamports?.toString() || null,
-    walletSol: solLamports === null ? null : formatRawAmount(solLamports, 9),
-    tokenAccountCount: accounts.length,
-    mintAuthority:
-      typeof mintInfo.mintAuthority === "string" ? mintInfo.mintAuthority : null,
-    freezeAuthority:
-      typeof mintInfo.freezeAuthority === "string" ? mintInfo.freezeAuthority : null,
-    authoritiesRevoked:
-      mintResult.status === "fulfilled" &&
-      Boolean(mintAccount) &&
-      !mintInfo.mintAuthority &&
-      !mintInfo.freezeAuthority,
-    complete,
+    snapshot: {
+      mint,
+      addressKind: PublicKey.isOnCurve(new PublicKey(wallet).toBytes())
+        ? "signer-wallet"
+        : "programmatic-address",
+      name: metadata.name,
+      symbol: metadata.symbol,
+      tokenProgram: mintAccount?.owner || null,
+      walletBalance: rawAmountValue(walletAmount.raw, decimals),
+      currentSupply: rawAmountValue(supplyRaw, decimals),
+      walletSharePercent: percentageOf(walletAmount.raw, supplyRaw),
+      walletSolLamports: solLamports?.toString() || null,
+      walletSol: solLamports === null ? null : formatRawAmount(solLamports, 9),
+      tokenAccountCount: accounts.length,
+      mintAuthority:
+        typeof mintInfo.mintAuthority === "string" ? mintInfo.mintAuthority : null,
+      freezeAuthority:
+        typeof mintInfo.freezeAuthority === "string" ? mintInfo.freezeAuthority : null,
+      authoritiesRevoked:
+        mintResult.status === "fulfilled" &&
+        Boolean(mintAccount) &&
+        !mintInfo.mintAuthority &&
+        !mintInfo.freezeAuthority,
+      complete,
+    },
+    tokenAccounts: accounts
+      .map((item) => item.pubkey)
+      .filter((pubkey): pubkey is string => Boolean(pubkey)),
+    accountDiscoveryComplete: accountsResult.status === "fulfilled",
   };
+}
+
+export async function getScannerTokenSnapshot(
+  inputWallet: string,
+  inputMint: string,
+  rpcOptions?: SolanaRpcRequestOptions
+): Promise<ScannerTokenSnapshot> {
+  return (
+    await getScannerTokenContext(inputWallet, inputMint, rpcOptions)
+  ).snapshot;
 }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getSolanaRpcUrls, solanaRpc } from "@/lib/levi/rpc";
+import { getSolanaRpcUrls, solanaRpc, solanaRpcBatch } from "@/lib/levi/rpc";
 
 describe("Solana RPC fallback", () => {
   it("keeps both free public RPC endpoints available", () => {
@@ -26,6 +26,31 @@ describe("Solana RPC fallback", () => {
       const result = await solanaRpc<{ value: number }>("getBalance", ["wallet"]);
       assert.deepEqual(result, { value: 42 });
       assert.equal(calls, 2);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("restores JSON-RPC batch results to request order", async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () =>
+      new Response(
+        JSON.stringify([
+          { jsonrpc: "2.0", id: 2, result: "second" },
+          { jsonrpc: "2.0", id: 1, result: "first" },
+        ]),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+
+    try {
+      const result = await solanaRpcBatch<string>(
+        [
+          { method: "getBalance", params: ["first"] },
+          { method: "getBalance", params: ["second"] },
+        ],
+        { maxAttempts: 1, maxEndpoints: 1 }
+      );
+      assert.deepEqual(result, ["first", "second"]);
     } finally {
       globalThis.fetch = originalFetch;
     }

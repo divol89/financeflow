@@ -1,11 +1,12 @@
 import { createHash, randomUUID } from "crypto";
 import { getAdminFirestore } from "@/lib/server/firebaseAdmin";
 import type { ClassifiedTokenActivity, LeviScanReport } from "@/types/levi";
+import { mergeScanReports } from "./mergeReports";
 
 const SCAN_CACHE_COLLECTION = "levi_scanner_cache";
 const OWNED_SCANS_COLLECTION = "levi_scanner_reports";
 const SCAN_CACHE_TTL_MS = 10 * 60 * 1000;
-const SCAN_CACHE_SCHEMA = "scanner-v2.1";
+const SCAN_CACHE_SCHEMA = "scanner-v2.2";
 
 interface CachedScanDocument {
   expiresAt?: string;
@@ -69,26 +70,59 @@ export async function cacheScanReport(
 
 export async function saveOwnedScanReport(
   ownerWallet: string,
-  report: LeviScanReport
+  report: LeviScanReport,
+  existingScanId?: string
 ): Promise<LeviScanReport> {
-  const scanId = randomUUID();
-  const storedReport = serializableReport({
-    ...report,
-    scanId,
-    activityEvents: report.activityEvents?.map((event) => ({
-      ...event,
-      sourceScanId: scanId,
-    })),
-  });
-  await getAdminFirestore()
-    .collection(OWNED_SCANS_COLLECTION)
-    .doc(scanId)
-    .set({
+  const firestore = getAdminFirestore();
+  const scanId = existingScanId || randomUUID();
+  const reference = firestore.collection(OWNED_SCANS_COLLECTION).doc(scanId);
+  const attachScanId = (value: LeviScanReport): LeviScanReport =>
+    serializableReport({
+      ...value,
+      scanId,
+      activityEvents: value.activityEvents?.map((event) => ({
+        ...event,
+        sourceScanId: scanId,
+      })),
+    });
+
+  if (!existingScanId) {
+    const storedReport = attachScanId(report);
+    await reference.set({
       ownerWallet,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       report: storedReport,
     });
-  return storedReport;
+    return storedReport;
+  }
+
+  return firestore.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(reference);
+    const existing = snapshot.data() as
+      | { ownerWallet?: string; report?: LeviScanReport }
+      | undefined;
+    if (!snapshot.exists || !existing?.report) {
+      throw new Error("The scanner report continuation no longer exists.");
+    }
+    if (existing.ownerWallet !== ownerWallet) {
+      throw new Error("The scanner report belongs to another wallet.");
+    }
+
+    const storedReport = attachScanId(
+      mergeScanReports(existing.report, report)
+    );
+    transaction.set(
+      reference,
+      {
+        ownerWallet,
+        updatedAt: new Date().toISOString(),
+        report: storedReport,
+      },
+      { merge: true }
+    );
+    return storedReport;
+  });
 }
 
 export async function getOwnedScanExplanation(input: {

@@ -2,13 +2,18 @@ import type { LeviAccessTier, LeviScanMode, LeviScanReport } from "@/types/levi"
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
 import {
-  BASIC_SCAN_LIMIT,
-  FULL_SCAN_LIMIT,
   MOCK_SOLANA,
+  SCANNER_MAX_TOKEN_ACCOUNT_SOURCES,
   TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from "../constants";
-import { isSolanaRpcRateLimitError, solanaRpc } from "../rpc";
+import {
+  isSolanaRpcRateLimitError,
+  SolanaRpcError,
+  solanaRpc,
+  solanaRpcBatch,
+  type SolanaRpcRequestOptions,
+} from "../rpc";
 import { normalizeSolanaAddress } from "../wallet";
 import {
   countQuickSellSignals,
@@ -21,8 +26,21 @@ import {
 import { buildMockScanReport } from "./mock";
 import { scoreCreatorRisk } from "./score";
 import { classifyTokenTransactions, summarizeClassifiedActivity } from "./classification";
+import {
+  createScannerCursor,
+  InvalidScannerCursorError,
+  parseScannerCursor,
+  type ScannerSignatureSourceCursor,
+} from "./cursor";
 import { calculateDistributionPressure } from "./pressure";
-import { getScannerTokenSnapshot } from "./snapshot";
+import {
+  allocateScannerSourceLimits,
+  canContinueScannerPage,
+  scannerBatchSizeForPage,
+  scannerInitialWindowComplete,
+  scannerTierWindowLimit,
+} from "./pagination";
+import { getScannerTokenContext } from "./snapshot";
 
 interface SignatureRecord {
   signature: string;
@@ -32,12 +50,6 @@ interface SignatureRecord {
   blockTime: number | null;
 }
 
-interface TokenAccountsResponse {
-  value: Array<{
-    pubkey?: string;
-  }>;
-}
-
 export interface ScanOptions {
   tier: LeviAccessTier;
   mode?: LeviScanMode;
@@ -45,30 +57,12 @@ export interface ScanOptions {
   cursor?: string;
 }
 
-const PUBLIC_RPC_TRANSACTION_DELAY_MS = 180;
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-function getLimitForTier(tier: LeviAccessTier): number {
-  if (tier === "full") return FULL_SCAN_LIMIT;
-  if (tier === "basic") return BASIC_SCAN_LIMIT;
-  return 0;
-}
-
-async function fetchSignaturesForAddress(
-  address: string,
-  limit: number,
-  before?: string
-): Promise<SignatureRecord[]> {
-  return solanaRpc<SignatureRecord[]>("getSignaturesForAddress", [
-    address,
-    { limit, commitment: "confirmed", ...(before ? { before } : {}) },
-  ]);
-}
+const SCANNER_RPC_POLICY: SolanaRpcRequestOptions = {
+  maxAttempts: 1,
+  requestTimeoutMs: 1_200,
+  deadlineMs: 2_500,
+};
+const SCANNER_TRANSACTION_CONCURRENCY = 6;
 
 export function deriveAssociatedTokenAccounts(
   wallet: string,
@@ -80,30 +74,10 @@ export function deriveAssociatedTokenAccounts(
     getAssociatedTokenAddressSync(
       mintKey,
       ownerKey,
-      false,
+      true,
       new PublicKey(programId)
     ).toBase58()
   );
-}
-
-async function fetchOwnedTokenAccounts(
-  wallet: string,
-  mint: string
-): Promise<string[]> {
-  const result = await solanaRpc<TokenAccountsResponse>(
-    "getTokenAccountsByOwner",
-    [
-      wallet,
-      { mint },
-      {
-        encoding: "jsonParsed",
-      },
-    ]
-  );
-
-  return result.value
-    .map((item) => item.pubkey)
-    .filter((pubkey): pubkey is string => Boolean(pubkey));
 }
 
 function dedupeSignatures(records: SignatureRecord[]): SignatureRecord[] {
@@ -119,6 +93,119 @@ function dedupeSignatures(records: SignatureRecord[]): SignatureRecord[] {
   return deduped.sort((a, b) => (b.blockTime || 0) - (a.blockTime || 0));
 }
 
+function scannerMode(options: ScanOptions, targetMint?: string): LeviScanMode {
+  return options.mode || (targetMint ? "token" : "creator");
+}
+
+function initialSourceCursors(input: {
+  wallet: string;
+  targetMint?: string;
+  tokenAccounts: string[];
+}): ScannerSignatureSourceCursor[] {
+  const addresses = input.targetMint ? input.tokenAccounts : [input.wallet];
+  return addresses.map((address) => ({ address }));
+}
+
+function buildSignatureRequests(input: {
+  sources: ScannerSignatureSourceCursor[];
+  transactionLimit: number;
+  pageIndex: number;
+}): Array<{
+  sourceIndex: number;
+  limit: number;
+  request: { method: string; params: unknown[] };
+}> {
+  const activeSourceIndexes = input.sources
+    .map((source, index) => ({ source, index }))
+    .filter(({ source }) => !source.done)
+    .map(({ index }) => index);
+  const limits = allocateScannerSourceLimits({
+    sourceCount: activeSourceIndexes.length,
+    transactionLimit: input.transactionLimit,
+    pageIndex: input.pageIndex,
+  });
+
+  return activeSourceIndexes.flatMap((sourceIndex, activeIndex) => {
+    const limit = limits[activeIndex] || 0;
+    if (limit === 0) return [];
+    const source = input.sources[sourceIndex];
+    return [
+      {
+        sourceIndex,
+        limit,
+        request: {
+          method: "getSignaturesForAddress",
+          params: [
+            source.address,
+            {
+              limit,
+              commitment: "confirmed",
+              ...(source.before ? { before: source.before } : {}),
+            },
+          ],
+        },
+      },
+    ];
+  });
+}
+
+async function loadParsedTransactions(
+  signatures: SignatureRecord[]
+): Promise<{
+  transactions: ParsedSolanaTransaction[];
+  skippedTransactions: number;
+  rateLimited: boolean;
+}> {
+  const transactions: ParsedSolanaTransaction[] = [];
+  const errors: unknown[] = [];
+  let missingTransactions = 0;
+
+  for (
+    let offset = 0;
+    offset < signatures.length;
+    offset += SCANNER_TRANSACTION_CONCURRENCY
+  ) {
+    const chunk = signatures.slice(
+      offset,
+      offset + SCANNER_TRANSACTION_CONCURRENCY
+    );
+    const results = await Promise.allSettled(
+      chunk.map((item) =>
+        solanaRpc<ParsedSolanaTransaction | null>(
+          "getTransaction",
+          [
+            item.signature,
+            {
+              encoding: "jsonParsed",
+              maxSupportedTransactionVersion: 0,
+              commitment: "confirmed",
+            },
+          ],
+          SCANNER_RPC_POLICY
+        )
+      )
+    );
+
+    for (const result of results) {
+      if (result.status === "fulfilled") {
+        if (result.value) transactions.push(result.value);
+        else missingTransactions += 1;
+      } else {
+        errors.push(result.reason);
+      }
+    }
+  }
+
+  if (transactions.length === 0 && errors.length === signatures.length) {
+    throw errors[0];
+  }
+  return {
+    transactions,
+    skippedTransactions: missingTransactions + errors.length,
+    rateLimited: errors.some(isSolanaRpcRateLimitError),
+  };
+}
+
 export async function scanSolanaCreatorWallet(
   inputWallet: string,
   options: ScanOptions
@@ -132,95 +219,109 @@ export async function scanSolanaCreatorWallet(
     return buildMockScanReport(wallet);
   }
 
-  const limit = getLimitForTier(options.tier);
-  if (limit === 0) {
+  const mode = scannerMode(options, targetMint);
+  if (mode === "token" && !targetMint) {
+    throw new Error("Token mode requires a token mint.");
+  }
+  const tierWindowLimit = scannerTierWindowLimit(options.tier);
+  if (tierWindowLimit === 0) {
     throw new Error("Scanner access is locked for this session.");
   }
 
-  const walletSignatureLimit = limit;
-  const walletSignatures = await fetchSignaturesForAddress(
-    wallet,
-    walletSignatureLimit,
-    options.cursor
-  );
+  let pageIndex = 0;
+  let sourceCursors: ScannerSignatureSourceCursor[] = [];
   let tokenAccounts: string[] = [];
-  let tokenAccountSignatures: SignatureRecord[] = [];
   let accountDiscoveryPartial = false;
   let rateLimited = false;
+  let snapshot;
 
-  if (targetMint) {
-    const derivedTokenAccounts = deriveAssociatedTokenAccounts(wallet, targetMint);
-    try {
-      const activeTokenAccounts = await fetchOwnedTokenAccounts(wallet, targetMint);
-      tokenAccounts = [...new Set([...activeTokenAccounts, ...derivedTokenAccounts])];
-    } catch (error) {
-      tokenAccounts = derivedTokenAccounts;
-      accountDiscoveryPartial = true;
-      rateLimited = isSolanaRpcRateLimitError(error);
-    }
-    const perAccountLimit =
-      tokenAccounts.length > 0 ? Math.max(8, Math.ceil(limit / tokenAccounts.length)) : 0;
-    const tokenSignatureResults = options.cursor
-      ? []
-      : await Promise.allSettled(
-          tokenAccounts.map((account) =>
-            fetchSignaturesForAddress(account, perAccountLimit)
-          )
-        );
-
-    tokenAccountSignatures = tokenSignatureResults.flatMap((result) =>
-      result.status === "fulfilled" ? result.value : []
+  if (options.cursor) {
+    const cursor = parseScannerCursor(options.cursor, {
+      wallet,
+      targetMint,
+      mode,
+    });
+    pageIndex = cursor.pageIndex;
+    sourceCursors = cursor.sources;
+    tokenAccounts = targetMint ? sourceCursors.map((source) => source.address) : [];
+  } else if (targetMint) {
+    const tokenContext = await getScannerTokenContext(
+      wallet,
+      targetMint,
+      SCANNER_RPC_POLICY
     );
-    for (const result of tokenSignatureResults) {
-      if (result.status !== "rejected") continue;
-      accountDiscoveryPartial = true;
-      rateLimited = rateLimited || isSolanaRpcRateLimitError(result.reason);
-    }
+    const allDerivedTokenAccounts = deriveAssociatedTokenAccounts(wallet, targetMint);
+    const derivedTokenAccounts =
+      tokenContext.snapshot.tokenProgram === TOKEN_PROGRAM_ID
+        ? allDerivedTokenAccounts.slice(0, 1)
+        : tokenContext.snapshot.tokenProgram === TOKEN_2022_PROGRAM_ID
+          ? allDerivedTokenAccounts.slice(1)
+          : allDerivedTokenAccounts;
+    tokenAccounts = [
+      ...new Set([...tokenContext.tokenAccounts, ...derivedTokenAccounts]),
+    ].slice(0, SCANNER_MAX_TOKEN_ACCOUNT_SOURCES);
+    snapshot = tokenContext.snapshot;
+    accountDiscoveryPartial = !tokenContext.accountDiscoveryComplete;
+    sourceCursors = initialSourceCursors({ wallet, targetMint, tokenAccounts });
+  } else {
+    sourceCursors = initialSourceCursors({ wallet, tokenAccounts: [] });
   }
 
-  const signatures = dedupeSignatures([
-    ...tokenAccountSignatures,
-    ...walletSignatures,
-  ]).slice(0, limit);
+  const transactionLimit = scannerBatchSizeForPage(options.tier, pageIndex);
+  if (transactionLimit === 0) {
+    throw new InvalidScannerCursorError(
+      "This continuation is outside the active LEVI access window."
+    );
+  }
+  const signatureRequests = buildSignatureRequests({
+    sources: sourceCursors,
+    transactionLimit,
+    pageIndex,
+  });
+  const signatureResults = await solanaRpcBatch<SignatureRecord[]>(
+    signatureRequests.map((item) => item.request),
+    SCANNER_RPC_POLICY
+  );
+  if (
+    signatureRequests.length > 0 &&
+    signatureResults.every((result) => result === null)
+  ) {
+    throw new SolanaRpcError(
+      "getSignaturesForAddress",
+      "Solana RPC could not return this scanner page",
+      { status: 503 }
+    );
+  }
 
-  const transactions: ParsedSolanaTransaction[] = [];
-  let skippedTransactions = 0;
-  let consecutiveRateLimits = 0;
-
-  for (const [index, item] of signatures.entries()) {
-    try {
-      const transaction = await solanaRpc<ParsedSolanaTransaction | null>(
-        "getTransaction",
-        [
-          item.signature,
-          {
-            encoding: "jsonParsed",
-            maxSupportedTransactionVersion: 0,
-            commitment: "confirmed",
-          },
-        ]
-      );
-
-      if (transaction) {
-        transactions.push(transaction);
-      }
-      consecutiveRateLimits = 0;
-    } catch (error) {
-      if (isSolanaRpcRateLimitError(error)) {
-        rateLimited = true;
-        skippedTransactions += 1;
-        consecutiveRateLimits += 1;
-        if (consecutiveRateLimits >= 3) break;
-        await sleep(PUBLIC_RPC_TRANSACTION_DELAY_MS * (consecutiveRateLimits + 2));
-        continue;
-      }
-
-      skippedTransactions += 1;
+  const nextSources = sourceCursors.map((source) => ({ ...source }));
+  const fetchedSignatures: SignatureRecord[] = [];
+  signatureRequests.forEach((item, index) => {
+    const records = signatureResults[index];
+    const nextSource = nextSources[item.sourceIndex];
+    if (!records) {
+      accountDiscoveryPartial = true;
+      return;
     }
-
-    if (index < signatures.length - 1) {
-      await sleep(PUBLIC_RPC_TRANSACTION_DELAY_MS);
+    fetchedSignatures.push(...records);
+    if (records.length === 0) {
+      nextSource.done = true;
+      return;
     }
+    nextSource.before = records[records.length - 1]?.signature;
+    nextSource.done = records.length < item.limit;
+  });
+  const signatures = dedupeSignatures(fetchedSignatures).slice(
+    0,
+    transactionLimit
+  );
+
+  let transactions: ParsedSolanaTransaction[] = [];
+  let skippedTransactions = signatures.length;
+  if (signatures.length > 0) {
+    const loaded = await loadParsedTransactions(signatures);
+    transactions = loaded.transactions;
+    skippedTransactions = loaded.skippedTransactions;
+    rateLimited = rateLimited || loaded.rateLimited;
   }
 
   const createdTokens = extractTokenCreationSignals(wallet, transactions);
@@ -239,9 +340,6 @@ export async function scanSolanaCreatorWallet(
     inspectedTransactions: transactions.length,
   });
 
-  const snapshot = targetMint
-    ? await getScannerTokenSnapshot(wallet, targetMint)
-    : undefined;
   const activityEvents = targetMint
     ? classifyTokenTransactions(wallet, targetMint, transactions, tokenAccounts)
     : undefined;
@@ -256,10 +354,30 @@ export async function scanSolanaCreatorWallet(
   const blockTimes = transactions
     .map((transaction) => transaction.blockTime)
     .filter((value): value is number => typeof value === "number");
+  const hasMoreSources = nextSources.some((source) => !source.done);
+  const initialWindowComplete = scannerInitialWindowComplete({
+    tier: options.tier,
+    pageIndex,
+    hasMoreSources,
+  });
+  const nextPageIndex = pageIndex + 1;
+  const canContinue =
+    hasMoreSources &&
+    fetchedSignatures.length > 0 &&
+    canContinueScannerPage({ tier: options.tier, nextPageIndex });
+  const nextCursor = canContinue
+    ? createScannerCursor({
+        wallet,
+        targetMint,
+        mode,
+        pageIndex: nextPageIndex,
+        sources: nextSources,
+      })
+    : null;
   const scanCoverage = {
-    source: targetMint ? ("wallet-and-token-accounts" as const) : ("wallet" as const),
-    walletSignatures: walletSignatures.length,
-    tokenAccountSignatures: tokenAccountSignatures.length,
+    source: targetMint ? ("token-accounts" as const) : ("wallet" as const),
+    walletSignatures: targetMint ? 0 : fetchedSignatures.length,
+    tokenAccountSignatures: targetMint ? fetchedSignatures.length : 0,
     tokenAccounts: tokenAccounts.length,
     accountDiscoveryPartial,
     selectedSignatures: signatures.length,
@@ -270,10 +388,12 @@ export async function scanSolanaCreatorWallet(
     partial: rateLimited || skippedTransactions > 0 || loadedRatio < 1,
     newestBlockTime: blockTimes.length > 0 ? Math.max(...blockTimes) : null,
     oldestBlockTime: blockTimes.length > 0 ? Math.min(...blockTimes) : null,
-    nextCursor:
-      options.tier === "full" && walletSignatures.length > 0
-        ? walletSignatures[walletSignatures.length - 1]?.signature || null
-        : null,
+    nextCursor,
+    pageIndex,
+    batchSize: transactionLimit,
+    tierWindowLimit,
+    loadedPageIndexes: [pageIndex],
+    initialWindowComplete,
   };
   const distributionPressure =
     targetMint && snapshot
@@ -287,7 +407,7 @@ export async function scanSolanaCreatorWallet(
 
   return {
     version: 2,
-    mode: options.mode || (targetMint ? "token" : "creator"),
+    mode,
     wallet,
     generatedAt: new Date().toISOString(),
     source: "solana-mainnet",
@@ -312,7 +432,7 @@ export async function scanSolanaCreatorWallet(
     limitations: [
       "This report is heuristic. It does not prove fraud, intent, or legal wrongdoing.",
       "A sell is counted only when token and quote-asset movements align with a known swap venue; every classification still requires human review.",
-      "The scan is limited to the most recent signatures available under the active LEVI access tier.",
+      "The initial scan window is limited by the active LEVI AI access tier and is loaded in bounded blockchain pages.",
       "Created tokens are detected only when mint initialization appears in the scanned wallet transactions.",
       ...(targetMint
         ? [
@@ -325,7 +445,7 @@ export async function scanSolanaCreatorWallet(
             "One token-account discovery source was unavailable; deterministic associated accounts were still inspected.",
           ]
         : []),
-      "Free RPC mode loads transactions sequentially to avoid paid node dependencies.",
+      "Free RPC mode reads small signature and transaction batches to keep each server request bounded.",
       ...(skippedTransactions > 0
         ? [`${skippedTransactions} transactions could not be loaded from the public RPC.`]
         : []),
@@ -358,7 +478,7 @@ export function redactScanReportForTier(
     sellSignals: [],
     limitations: [
       ...report.limitations,
-      "Basic access limits detailed activity rows. Hold 50,000+ LEVI for Full Scanner and Portfolio access.",
+      "Basic access limits detailed activity rows. Hold 50,000+ LEVI AI for Full Scanner and Portfolio access.",
     ],
   };
 }

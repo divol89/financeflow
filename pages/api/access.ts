@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const message =
       error instanceof Error && error.message.toLowerCase().includes("invalid")
         ? "Invalid Solana wallet address"
-        : "Unable to read LEVI access";
+        : "Unable to read LEVI AI access";
     return res.status(400).json({ error: message });
   }
 }

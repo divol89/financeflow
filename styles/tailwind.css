@@ -6787,6 +6787,94 @@ img.site-logo {
   margin-top: 1rem;
 }
 
+.levi-scanner-session-note {
+  margin-top: 0.85rem;
+  border-left: 1px solid rgba(233, 198, 108, 0.55);
+  padding-left: 0.75rem;
+  color: #a8a08a;
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+
+.levi-scan-progress {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(184, 243, 107, 0.18);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  padding: 0.85rem 0;
+}
+
+.levi-scan-progress > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.levi-scan-progress > div:first-child span,
+.levi-scan-progress > div:first-child strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #dfe9db;
+  font-size: 0.68rem;
+}
+
+.levi-scan-progress > div:first-child strong {
+  color: #9daa99;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 500;
+}
+
+.levi-scan-progress-track {
+  height: 0.18rem;
+  overflow: hidden;
+  background: rgba(222, 246, 220, 0.08);
+}
+
+.levi-scan-progress-track span {
+  display: block;
+  height: 100%;
+  background: var(--levi-green);
+  transition: width 240ms ease;
+}
+
+.levi-scan-progress.is-paused .levi-scan-progress-track span {
+  background: #e9c66c;
+}
+
+.levi-scan-progress small {
+  color: #738071;
+  font-size: 0.62rem;
+  line-height: 1.5;
+}
+
+.levi-programmatic-address-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  border-left: 1px solid rgba(233, 198, 108, 0.65);
+  background: rgba(233, 198, 108, 0.035);
+  padding: 0.8rem 0.9rem;
+  color: #aaa38c;
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+.levi-programmatic-address-note svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: #e9c66c;
+}
+
+.levi-programmatic-address-note strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #e8ddbd;
+}
+
 .levi-scan-result {
   overflow: hidden;
   border-radius: 0.5rem;
@@ -7528,6 +7616,7 @@ img.site-logo {
   .levi-scanner-chart-frame { height: 20rem; }
   .levi-scanner-activity-chart > footer { display: grid; }
   .levi-scanner-activity-chart > footer span::after { display: none; }
+  .levi-scan-progress > div:first-child { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -7536,7 +7625,8 @@ img.site-logo {
     animation: none;
   }
   .levi-method-toggle i::after,
-  .levi-nav-menu summary svg:last-child {
+  .levi-nav-menu summary svg:last-child,
+  .levi-scan-progress-track span {
     transition: none;
   }
 }

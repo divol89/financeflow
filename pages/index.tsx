@@ -103,13 +103,13 @@ export default function Home() {
               <div className="levi-metric-grid">
                 <MetricCard
                   label="Basic access"
-                  value="3,000 LEVI"
+                  value="3,000 LEVI AI"
                   icon={<Lock className="h-4 w-4" />}
                   tone="amber"
                 />
                 <MetricCard
                   label="Full access"
-                  value="50,000 LEVI"
+                  value="50,000 LEVI AI"
                   icon={<Radar className="h-4 w-4" />}
                   tone="green"
                 />

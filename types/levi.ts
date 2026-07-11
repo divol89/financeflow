@@ -98,6 +98,7 @@ export interface RawAmountValue {
 
 export interface ScannerTokenSnapshot {
   mint: string;
+  addressKind?: "signer-wallet" | "programmatic-address";
   name: string | null;
   symbol: string | null;
   tokenProgram: string | null;
@@ -178,7 +179,7 @@ export interface DistributionPressureResult {
 }
 
 export interface ScanCoverage {
-  source: "wallet" | "wallet-and-token-accounts";
+  source: "wallet" | "wallet-and-token-accounts" | "token-accounts";
   walletSignatures: number;
   tokenAccountSignatures: number;
   tokenAccounts: number;
@@ -192,6 +193,11 @@ export interface ScanCoverage {
   newestBlockTime?: number | null;
   oldestBlockTime?: number | null;
   nextCursor?: string | null;
+  pageIndex?: number;
+  batchSize?: number;
+  tierWindowLimit?: number;
+  loadedPageIndexes?: number[];
+  initialWindowComplete?: boolean;
 }
 
 export interface RiskScoreResult {

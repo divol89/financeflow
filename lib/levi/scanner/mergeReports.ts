@@ -6,7 +6,9 @@ import type {
   TokenCreationSignal,
 } from "@/types/levi";
 import { summarizeClassifiedActivity } from "./classification";
+import { countQuickSellSignals } from "./analyzers";
 import { calculateDistributionPressure } from "./pressure";
+import { scoreCreatorRisk } from "./score";
 
 function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {
   const seen = new Set<string>();
@@ -18,10 +20,34 @@ function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {
   });
 }
 
+function optionalMaximum(values: Array<number | null | undefined>): number | null {
+  const present = values.filter((value): value is number => typeof value === "number");
+  return present.length > 0 ? Math.max(...present) : null;
+}
+
+function optionalMinimum(values: Array<number | null | undefined>): number | null {
+  const present = values.filter((value): value is number => typeof value === "number");
+  return present.length > 0 ? Math.min(...present) : null;
+}
+
 export function mergeScanReports(
   current: LeviScanReport,
   older: LeviScanReport
 ): LeviScanReport {
+  if (
+    current.wallet !== older.wallet ||
+    current.targetMint !== older.targetMint ||
+    current.mode !== older.mode
+  ) {
+    throw new Error("Scanner reports must describe the same wallet and token.");
+  }
+  const currentPages = current.scanCoverage.loadedPageIndexes || [
+    current.scanCoverage.pageIndex || 0,
+  ];
+  const olderPages = older.scanCoverage.loadedPageIndexes || [
+    older.scanCoverage.pageIndex || 0,
+  ];
+  const pageOverlap = olderPages.some((page) => currentPages.includes(page));
   const activityEvents = uniqueBy<ClassifiedTokenActivity>(
     [...(current.activityEvents || []), ...(older.activityEvents || [])],
     (event) => event.id
@@ -38,33 +64,81 @@ export function mergeScanReports(
     [...(current.tokenActivitySignals || []), ...(older.tokenActivitySignals || [])],
     (event) => `${event.signature}:${event.mint}`
   );
-  const selectedSignatures =
-    current.scanCoverage.selectedSignatures + older.scanCoverage.selectedSignatures;
-  const loadedTransactions =
-    current.scanCoverage.loadedTransactions + older.scanCoverage.loadedTransactions;
+  const selectedSignatures = pageOverlap
+    ? Math.max(
+        current.scanCoverage.selectedSignatures,
+        older.scanCoverage.selectedSignatures
+      )
+    : current.scanCoverage.selectedSignatures + older.scanCoverage.selectedSignatures;
+  const loadedTransactions = pageOverlap
+    ? Math.max(
+        current.scanCoverage.loadedTransactions,
+        older.scanCoverage.loadedTransactions
+      )
+    : current.scanCoverage.loadedTransactions + older.scanCoverage.loadedTransactions;
+  const skippedTransactions = pageOverlap
+    ? Math.max(
+        current.scanCoverage.skippedTransactions,
+        older.scanCoverage.skippedTransactions
+      )
+    : current.scanCoverage.skippedTransactions + older.scanCoverage.skippedTransactions;
   const scanCoverage = {
     ...current.scanCoverage,
-    walletSignatures:
-      current.scanCoverage.walletSignatures + older.scanCoverage.walletSignatures,
-    tokenAccountSignatures:
-      current.scanCoverage.tokenAccountSignatures + older.scanCoverage.tokenAccountSignatures,
+    walletSignatures: pageOverlap
+      ? Math.max(
+          current.scanCoverage.walletSignatures,
+          older.scanCoverage.walletSignatures
+        )
+      : current.scanCoverage.walletSignatures + older.scanCoverage.walletSignatures,
+    tokenAccountSignatures: pageOverlap
+      ? Math.max(
+          current.scanCoverage.tokenAccountSignatures,
+          older.scanCoverage.tokenAccountSignatures
+        )
+      : current.scanCoverage.tokenAccountSignatures +
+        older.scanCoverage.tokenAccountSignatures,
+    tokenAccounts: Math.max(
+      current.scanCoverage.tokenAccounts,
+      older.scanCoverage.tokenAccounts
+    ),
+    accountDiscoveryPartial:
+      Boolean(current.scanCoverage.accountDiscoveryPartial) ||
+      Boolean(older.scanCoverage.accountDiscoveryPartial),
     selectedSignatures,
     loadedTransactions,
-    skippedTransactions:
-      current.scanCoverage.skippedTransactions + older.scanCoverage.skippedTransactions,
+    skippedTransactions,
     rateLimited:
       current.scanCoverage.rateLimited || older.scanCoverage.rateLimited,
     loadedRatio:
       selectedSignatures > 0 ? loadedTransactions / selectedSignatures : 0,
     partial:
-      Boolean(current.scanCoverage.partial) || Boolean(older.scanCoverage.partial),
-    newestBlockTime:
-      current.scanCoverage.newestBlockTime || older.scanCoverage.newestBlockTime || null,
-    oldestBlockTime:
-      older.scanCoverage.oldestBlockTime || current.scanCoverage.oldestBlockTime || null,
+      Boolean(current.scanCoverage.partial) ||
+      Boolean(older.scanCoverage.partial) ||
+      skippedTransactions > 0,
+    newestBlockTime: optionalMaximum([
+      current.scanCoverage.newestBlockTime,
+      older.scanCoverage.newestBlockTime,
+    ]),
+    oldestBlockTime: optionalMinimum([
+      current.scanCoverage.oldestBlockTime,
+      older.scanCoverage.oldestBlockTime,
+    ]),
     nextCursor: older.scanCoverage.nextCursor || null,
+    pageIndex: Math.max(
+      current.scanCoverage.pageIndex || 0,
+      older.scanCoverage.pageIndex || 0
+    ),
+    batchSize: older.scanCoverage.batchSize || current.scanCoverage.batchSize,
+    tierWindowLimit:
+      current.scanCoverage.tierWindowLimit || older.scanCoverage.tierWindowLimit,
+    loadedPageIndexes: [...new Set([...currentPages, ...olderPages])].sort(
+      (left, right) => left - right
+    ),
+    initialWindowComplete:
+      older.scanCoverage.initialWindowComplete ??
+      current.scanCoverage.initialWindowComplete,
   };
-  const snapshot = older.snapshot || current.snapshot;
+  const snapshot = current.snapshot || older.snapshot;
   const decimals =
     snapshot?.walletBalance.decimals ||
     activityEvents[0]?.targetAmount.decimals ||
@@ -73,10 +147,13 @@ export function mergeScanReports(
     activityEvents,
     decimals
   );
-  const quickSellSignalCount = Math.max(
-    current.quickSellSignalCount,
-    older.quickSellSignalCount
-  );
+  const quickSellSignalCount = countQuickSellSignals(createdTokens, sellSignals);
+  const creatorRisk = scoreCreatorRisk({
+    createdTokenCount: createdTokens.length,
+    sellSignalCount: sellSignals.length,
+    quickSellSignalCount,
+    inspectedTransactions: loadedTransactions,
+  });
 
   return {
     ...current,
@@ -90,6 +167,9 @@ export function mergeScanReports(
     activityEvents,
     tokenActivitySummaryV2,
     quickSellSignalCount,
+    score: creatorRisk.score,
+    tier: creatorRisk.tier,
+    summary: creatorRisk.summary,
     scanCoverage,
     limitations: uniqueBy(
       [...current.limitations, ...older.limitations],

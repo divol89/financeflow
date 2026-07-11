@@ -26,3 +26,5 @@ export const NONCE_TTL_MS = 1000 * 60 * 5;
 
 export const BASIC_SCAN_LIMIT = 20;
 export const FULL_SCAN_LIMIT = 40;
+export const SCANNER_TRANSACTION_BATCH_SIZE = 6;
+export const SCANNER_MAX_TOKEN_ACCOUNT_SOURCES = 6;

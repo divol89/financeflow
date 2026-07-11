@@ -22,6 +22,7 @@ export function buildMockScanReport(wallet: string): LeviScanReport {
     targetMint: "MockMint1111111111111111111111111111111111111",
     snapshot: {
       mint: "MockMint1111111111111111111111111111111111111",
+      addressKind: "signer-wallet",
       name: "Mock White Bull Token",
       symbol: "MOCK",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
@@ -143,7 +144,12 @@ export function buildMockScanReport(wallet: string): LeviScanReport {
       partial: true,
       newestBlockTime: 1_781_001_500,
       oldestBlockTime: 1_781_000_000,
-      nextCursor: "mock-next-cursor",
+      nextCursor: null,
+      pageIndex: 0,
+      batchSize: 40,
+      tierWindowLimit: 40,
+      loadedPageIndexes: [0],
+      initialWindowComplete: true,
     },
     sellSignalCount: 2,
     sellSignals: [
