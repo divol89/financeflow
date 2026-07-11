@@ -14,6 +14,11 @@ export interface BurnMetrics {
   percentageBurned: string;
 }
 
+export interface CirculationMetrics {
+  communityLockRaw: string;
+  effectiveCirculatingSupplyRaw: string;
+}
+
 function parseRawAmount(rawAmount: string): bigint {
   const value = BigInt(rawAmount);
   if (value < 0) throw new Error("Token amounts cannot be negative.");
@@ -38,6 +43,21 @@ export function calculateBurnMetrics(currentSupplyRaw: string): BurnMetrics {
       PERCENTAGE_DECIMALS,
       PERCENTAGE_DECIMALS
     ),
+  };
+}
+
+export function calculateCirculationMetrics(
+  currentSupplyRaw: string,
+  communityLockRaw: string
+): CirculationMetrics {
+  const currentSupply = parseRawAmount(currentSupplyRaw);
+  const communityLock = parseRawAmount(communityLockRaw);
+  const effectiveCirculatingSupply =
+    currentSupply > communityLock ? currentSupply - communityLock : BigInt(0);
+
+  return {
+    communityLockRaw: communityLock.toString(),
+    effectiveCirculatingSupplyRaw: effectiveCirculatingSupply.toString(),
   };
 }
 

@@ -2,12 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   calculateBurnMetrics,
+  calculateCirculationMetrics,
   formatRawTokenAmount,
   getBurnTrackerNextRefreshAt,
   isBurnTrackerRefreshLeaseActive,
   isBurnTrackerSnapshotFresh,
 } from "../lib/levi/burnTracker/calculations";
-import { extractBurnAmountRaw } from "../lib/levi/burnTracker/chain";
+import {
+  extractBurnAmountRaw,
+  sumTokenAccountBalances,
+} from "../lib/levi/burnTracker/chain";
 import { toBurnTrackerPublicSnapshot } from "../lib/levi/burnTracker/service";
 import {
   LEVI_AI_MINT_ADDRESS,
@@ -31,6 +35,35 @@ test("never reports a negative burn total when supply is above the 1B baseline",
 
   assert.equal(metrics.totalBurnedRaw, "0");
   assert.equal(metrics.percentageBurned, "0");
+});
+
+test("removes permanent community locks from effective circulating supply", () => {
+  const circulation = calculateCirculationMetrics(
+    "999999549999999",
+    "100000000"
+  );
+
+  assert.deepEqual(circulation, {
+    communityLockRaw: "100000000",
+    effectiveCirculatingSupplyRaw: "999999449999999",
+  });
+  assert.equal(
+    formatRawTokenAmount(circulation.effectiveCirculatingSupplyRaw),
+    "999,999,449.999999"
+  );
+});
+
+test("caps effective circulating supply at zero when lock data exceeds mint supply", () => {
+  const circulation = calculateCirculationMetrics("100", "101");
+
+  assert.equal(circulation.effectiveCirculatingSupplyRaw, "0");
+});
+
+test("sums every Token-2022 account owned by the community lock wallet", () => {
+  assert.equal(
+    sumTokenAccountBalances(["100000000", undefined, "25000000"]),
+    "125000000"
+  );
 });
 
 test("the two-hour tracker cache expires at the exact boundary", () => {
@@ -76,11 +109,12 @@ test("Firestore refresh leases remain active only before their stored expiry", (
 test("serves an expired cached snapshot as stale without inventing a burn transaction", () => {
   const snapshot = toBurnTrackerPublicSnapshot(
     {
-      version: 1,
+      version: 2,
       mint: LEVI_AI_MINT_ADDRESS,
       initialSupplyRaw: "1000000000000000",
       currentSupplyRaw: "999999549999999",
       totalBurnedRaw: "450000001",
+      communityLockRaw: "100000000",
       latestBurn: null,
       lastObservedMintSignature: "observedSignature",
       pendingBurnCursor: null,
@@ -96,6 +130,8 @@ test("serves an expired cached snapshot as stale without inventing a burn transa
   assert.equal(snapshot.stale, true);
   assert.equal(snapshot.latestBurn, null);
   assert.equal(snapshot.totalBurnedRaw, "450000001");
+  assert.equal(snapshot.communityLockRaw, "100000000");
+  assert.equal(snapshot.effectiveCirculatingSupplyRaw, "999999449999999");
   assert.equal(snapshot.nextRefreshAt, "2026-07-11T12:00:00.000Z");
 });
 

@@ -1347,6 +1347,15 @@ img.site-logo {
   overflow-wrap: anywhere;
 }
 
+.levi-burn-tracker-lock strong {
+  display: block;
+  margin-top: 0.28rem;
+  color: #f0d78f;
+  font-size: 0.71rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .levi-burn-tracker-note {
   margin-top: 0.85rem;
   color: #738070;

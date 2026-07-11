@@ -1,11 +1,32 @@
 import { solanaRpc } from "@/lib/levi/rpc";
-import { BURN_TRACKER_SIGNATURE_PAGE_SIZE, BURN_TRACKER_SOLSCAN_TRANSACTION_URL, LEVI_AI_MINT_ADDRESS } from "./constants";
+import {
+  BURN_TRACKER_SIGNATURE_PAGE_SIZE,
+  BURN_TRACKER_SOLSCAN_TRANSACTION_URL,
+  LEVI_AI_MINT_ADDRESS,
+  SOLANA_INCINERATOR_ADDRESS,
+} from "./constants";
 
 interface TokenSupplyResponse {
   value: {
     amount: string;
     decimals: number;
   };
+}
+
+interface TokenAccountsByOwnerResponse {
+  value: Array<{
+    account: {
+      data: {
+        parsed?: {
+          info?: {
+            tokenAmount?: {
+              amount?: string;
+            };
+          };
+        };
+      };
+    };
+  }>;
 }
 
 export interface MintSignatureRecord {
@@ -79,6 +100,25 @@ export async function fetchLeviAiMintSupply(): Promise<string> {
     { commitment: "finalized" },
   ]);
   return result.value.amount;
+}
+
+export function sumTokenAccountBalances(rawAmounts: Array<string | undefined>): string {
+  return rawAmounts.reduce((total, amount) => total + BigInt(amount || "0"), BigInt(0)).toString();
+}
+
+export async function fetchLeviAiCommunityLockBalance(): Promise<string> {
+  const result = await solanaRpc<TokenAccountsByOwnerResponse>(
+    "getTokenAccountsByOwner",
+    [
+      SOLANA_INCINERATOR_ADDRESS,
+      { mint: LEVI_AI_MINT_ADDRESS },
+      { encoding: "jsonParsed", commitment: "finalized" },
+    ]
+  );
+
+  return sumTokenAccountBalances(
+    result.value.map((account) => account.account.data.parsed?.info?.tokenAmount?.amount)
+  );
 }
 
 export async function fetchLatestLeviAiMintSignature(): Promise<string | null> {

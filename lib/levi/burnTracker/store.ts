@@ -45,7 +45,7 @@ function readLatestBurn(value: unknown): BurnTrackerLatestBurn | null {
 
 function readRecord(data: DocumentData): BurnTrackerRecord | null {
   if (
-    data.version !== 1 ||
+    data.version !== 2 ||
     !isNonEmptyString(data.mint) ||
     !isNonEmptyString(data.initialSupplyRaw) ||
     !isNonEmptyString(data.currentSupplyRaw) ||
@@ -56,11 +56,14 @@ function readRecord(data: DocumentData): BurnTrackerRecord | null {
   }
 
   return {
-    version: 1,
+    version: 2,
     mint: data.mint,
     initialSupplyRaw: data.initialSupplyRaw,
     currentSupplyRaw: data.currentSupplyRaw,
     totalBurnedRaw: data.totalBurnedRaw,
+    communityLockRaw: isNonEmptyString(data.communityLockRaw)
+      ? data.communityLockRaw
+      : "0",
     latestBurn: readLatestBurn(data.latestBurn),
     lastObservedMintSignature: isNonEmptyString(data.lastObservedMintSignature)
       ? data.lastObservedMintSignature

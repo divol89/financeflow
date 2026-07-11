@@ -6,11 +6,12 @@ export interface BurnTrackerLatestBurn {
 }
 
 export interface BurnTrackerRecord {
-  version: 1;
+  version: 2;
   mint: string;
   initialSupplyRaw: string;
   currentSupplyRaw: string;
   totalBurnedRaw: string;
+  communityLockRaw: string;
   latestBurn: BurnTrackerLatestBurn | null;
   lastObservedMintSignature: string | null;
   pendingBurnCursor: string | null;
@@ -29,6 +30,8 @@ export interface BurnTrackerPublicSnapshot {
   currentSupplyRaw: string;
   totalBurnedRaw: string;
   percentageBurned: string;
+  communityLockRaw: string;
+  effectiveCirculatingSupplyRaw: string;
   latestBurn: BurnTrackerLatestBurn | null;
   communityLockWallet: string;
   communityLockUrl: string;

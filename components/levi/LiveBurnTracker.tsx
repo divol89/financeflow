@@ -60,8 +60,8 @@ export function LiveBurnTracker() {
           </div>
           <h2 id="live-burn-tracker-title">LIVE BURN TRACKER</h2>
           <p>
-            Verified Token-2022 burns reduce LEVI AI supply. Community locks are
-            tracked separately and never added to these totals.
+            Verified Token-2022 burns reduce LEVI AI supply. Permanent community
+            locks are deducted from effective circulating supply, never counted as burns.
           </p>
         </div>
         <div
@@ -123,8 +123,10 @@ export function LiveBurnTracker() {
                     <span>📉 Current Circulating Supply</span>
                     <TrendingDown className="h-4 w-4" />
                   </div>
-                  <strong>{formatRawTokenAmount(snapshot.currentSupplyRaw)} LEVI AI</strong>
-                  <p>Current supply after burns.</p>
+                  <strong>
+                    {formatRawTokenAmount(snapshot.effectiveCirculatingSupplyRaw)} LEVI AI
+                  </strong>
+                  <p>Mint supply less permanently locked community tokens.</p>
                 </article>
 
                 <article className="levi-burn-tracker-metric">
@@ -176,8 +178,11 @@ export function LiveBurnTracker() {
                 <LockKeyhole className="h-4 w-4" />
                 <div>
                   <span>Community Lock Wallet</span>
+                  <strong>
+                    {formatRawTokenAmount(snapshot.communityLockRaw)} LEVI AI permanently locked
+                  </strong>
                   <code>{snapshot.communityLockWallet}</code>
-                  <p>Permanent lock destination. Excluded from Total Burned.</p>
+                  <p>Excluded from Total Burned, deducted from circulating supply.</p>
                 </div>
                 <a href={snapshot.communityLockUrl} target="_blank" rel="noreferrer">
                   Verify wallet <ExternalLink className="h-3.5 w-3.5" />
@@ -189,8 +194,8 @@ export function LiveBurnTracker() {
       )}
 
       <p className="levi-burn-tracker-note">
-        Automatic cache refresh every two hours. Historical total uses the 1B LEVI AI baseline;
-        transaction observation begins with this tracker.
+        Automatic cache refresh every two hours. Burns reduce mint supply; effective circulation
+        also excludes permanent community locks. Transaction observation begins with this tracker.
       </p>
     </section>
   );
