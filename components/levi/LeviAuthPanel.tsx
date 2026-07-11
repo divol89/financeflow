@@ -27,6 +27,7 @@ export function LeviAuthPanel({
     access && nextThreshold
       ? Math.min(100, Math.max(0, (access.balance / nextThreshold) * 100))
       : 100;
+  const displayWallet = session?.wallet || walletAddress;
 
   return (
     <div className={`levi-auth-panel${compact ? " is-compact" : ""}`}>
@@ -35,48 +36,59 @@ export function LeviAuthPanel({
           <div>
             <p className="text-sm font-semibold text-white">LEVI Access</p>
             <p className="mt-1 text-sm text-slate-400">
-              Connect and sign a message to prove wallet ownership.
+              {session
+                ? "Wallet ownership verified for this session."
+                : "Connect and sign a message to prove wallet ownership."}
             </p>
           </div>
           {access ? <AccessBadge tier={access.tier} /> : null}
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            onClick={() => {
-              void connectWallet()
-                .then((connected) => {
-                  if (!connected) onConnectionGuideOpened?.();
-                })
-                .catch(() => undefined);
-            }}
-            className="levi-secondary-button"
-          >
-            <PlugZap className="h-4 w-4" />
-            {walletAddress
-              ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`
-              : "Connect Solana"}
-          </button>
-          <button
-            type="button"
-            onClick={signIn}
-            disabled={isSigning || isLoading}
-            className="levi-primary-button disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <Signature className="h-4 w-4" />
-            {isSigning ? "Signing..." : "Sign Access"}
-          </button>
           {session ? (
-            <button
-              type="button"
-              onClick={logout}
-              className="levi-secondary-button"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-          ) : null}
+            <>
+              <div className="levi-secondary-button" aria-label={`Verified wallet ${session.wallet}`}>
+                <PlugZap className="h-4 w-4" />
+                {`${session.wallet.slice(0, 4)}...${session.wallet.slice(-4)}`}
+              </div>
+              <button
+                type="button"
+                onClick={logout}
+                className="levi-secondary-button"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  void connectWallet()
+                    .then((connected) => {
+                      if (!connected) onConnectionGuideOpened?.();
+                    })
+                    .catch(() => undefined);
+                }}
+                className="levi-secondary-button"
+              >
+                <PlugZap className="h-4 w-4" />
+                {displayWallet
+                  ? `${displayWallet.slice(0, 4)}...${displayWallet.slice(-4)}`
+                  : "Connect Solana"}
+              </button>
+              <button
+                type="button"
+                onClick={signIn}
+                disabled={isSigning || isLoading}
+                className="levi-primary-button disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Signature className="h-4 w-4" />
+                {isSigning ? "Signing..." : "Sign Access"}
+              </button>
+            </>
+          )}
         </div>
 
         {access ? (

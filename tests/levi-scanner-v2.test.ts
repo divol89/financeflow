@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import type { ScannerTokenSnapshot } from "@/types/levi";
+import type { ClassifiedTokenActivity, ScannerTokenSnapshot } from "@/types/levi";
 import type { ParsedSolanaTransaction } from "@/lib/levi/scanner/analyzers";
 import {
   classifyActivityEvidence,
@@ -9,6 +9,8 @@ import {
 } from "@/lib/levi/scanner/classification";
 import { rawAmountValue } from "@/lib/levi/scanner/amounts";
 import { calculateDistributionPressure } from "@/lib/levi/scanner/pressure";
+import { buildScannerActivityChart } from "@/lib/levi/scanner/activityChart";
+import { deriveAssociatedTokenAccounts } from "@/lib/levi/scanner/scanWallet";
 
 const wallet = "Creator111111111111111111111111111111111111";
 const mint = "TokenMint11111111111111111111111111111111111";
@@ -168,6 +170,93 @@ describe("Scanner V2 classification", () => {
 
     assert.equal(result.classification, "sell");
     assert.equal(result.ruleId, "known-swap-token-out-quote-in");
+  });
+
+  it("uses a known token account when older RPC balances omit the owner", () => {
+    const tokenAccount = "TokenAccount1111111111111111111111111111111";
+    const tx = transaction({
+      signature: "owner-fallback",
+      tokenBefore: "1000000000",
+      tokenAfter: "750000000",
+      instructionType: "transferChecked",
+    });
+    if (tx.meta?.preTokenBalances?.[0]) delete tx.meta.preTokenBalances[0].owner;
+    if (tx.meta?.postTokenBalances?.[0]) delete tx.meta.postTokenBalances[0].owner;
+    tx.transaction?.message?.accountKeys?.push({ pubkey: tokenAccount });
+
+    const event = classifyTokenTransaction(wallet, mint, tx, [tokenAccount]);
+    assert.equal(event?.classification, "transfer_out");
+    assert.equal(event?.targetAmount.formatted, "250");
+  });
+
+  it("derives both legacy and Token-2022 associated accounts", () => {
+    const accounts = deriveAssociatedTokenAccounts(
+      "BYCgQQpJT1odaunfvk6gtm5hVd7Xu93vYwbumFfqgHb3",
+      "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump"
+    );
+    assert.equal(accounts.length, 2);
+    assert.equal(new Set(accounts).size, 2);
+  });
+});
+
+describe("Scanner V2 activity chart", () => {
+  it("builds an accumulation timeline from verified buys and sells", () => {
+    const buy = classifyTokenTransaction(
+      wallet,
+      mint,
+      transaction({
+        signature: "chart-buy",
+        tokenBefore: "0",
+        tokenAfter: "500000000",
+        quoteBefore: "100000000",
+        quoteAfter: "50000000",
+        programId: pumpProgram,
+      })
+    );
+    const sell = classifyTokenTransaction(
+      wallet,
+      mint,
+      transaction({
+        signature: "chart-sell",
+        tokenBefore: "500000000",
+        tokenAfter: "400000000",
+        quoteBefore: "50000000",
+        quoteAfter: "70000000",
+        programId: pumpProgram,
+      })
+    );
+    if (buy) buy.blockTime = 1_700_000_000;
+    if (sell) sell.blockTime = 1_700_000_100;
+
+    const model = buildScannerActivityChart(
+      [buy, sell].filter((event): event is ClassifiedTokenActivity => Boolean(event))
+    );
+
+    assert.equal(model.points.length, 2);
+    assert.equal(model.buyCount, 1);
+    assert.equal(model.sellCount, 1);
+    assert.equal(model.points[0]?.buy, 500);
+    assert.equal(model.points[1]?.sell, -100);
+    assert.equal(model.points[1]?.cumulativeNet, 400);
+    assert.equal(model.posture.tone, "accumulating");
+  });
+
+  it("keeps outbound transfers separate from verified sales", () => {
+    const transfer = classifyTokenTransaction(
+      wallet,
+      mint,
+      transaction({
+        signature: "chart-transfer",
+        tokenBefore: "500000000",
+        tokenAfter: "300000000",
+        instructionType: "transferChecked",
+      })
+    );
+    const model = buildScannerActivityChart(transfer ? [transfer] : []);
+
+    assert.equal(model.sellCount, 0);
+    assert.equal(model.points[0]?.otherFlow, -200);
+    assert.equal(model.posture.tone, "outbound");
   });
 });
 

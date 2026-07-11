@@ -5,6 +5,7 @@ import type { ClassifiedTokenActivity, LeviScanReport } from "@/types/levi";
 const SCAN_CACHE_COLLECTION = "levi_scanner_cache";
 const OWNED_SCANS_COLLECTION = "levi_scanner_reports";
 const SCAN_CACHE_TTL_MS = 10 * 60 * 1000;
+const SCAN_CACHE_SCHEMA = "scanner-v2.1";
 
 interface CachedScanDocument {
   expiresAt?: string;
@@ -24,7 +25,14 @@ export function scannerCacheKey(input: {
 }): string {
   return createHash("sha256")
     .update(
-      [input.wallet, input.mint || "-", input.mode, input.tier, input.cursor || "latest"].join(":")
+      [
+        SCAN_CACHE_SCHEMA,
+        input.wallet,
+        input.mint || "-",
+        input.mode,
+        input.tier,
+        input.cursor || "latest",
+      ].join(":")
     )
     .digest("hex");
 }

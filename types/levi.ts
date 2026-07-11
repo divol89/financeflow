@@ -182,6 +182,7 @@ export interface ScanCoverage {
   walletSignatures: number;
   tokenAccountSignatures: number;
   tokenAccounts: number;
+  accountDiscoveryPartial?: boolean;
   selectedSignatures: number;
   loadedTransactions: number;
   skippedTransactions: number;

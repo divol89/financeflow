@@ -201,11 +201,21 @@ function collectProgramIds(tx: ParsedSolanaTransaction): string[] {
 function rawTokenBalance(
   wallet: string,
   mint: string,
-  records: TokenBalanceRecord[] = []
+  records: TokenBalanceRecord[] = [],
+  tx?: ParsedSolanaTransaction,
+  ownedTokenAccounts: Set<string> = new Set()
 ): { raw: bigint; decimals: number } {
   return records.reduce(
     (total, record) => {
-      if (record.owner !== wallet || record.mint !== mint) return total;
+      const accountKey =
+        typeof record.accountIndex === "number"
+          ? accountPubkey(
+              tx?.transaction?.message?.accountKeys?.[record.accountIndex] || ""
+            )
+          : "";
+      const belongsToWallet =
+        record.owner === wallet || ownedTokenAccounts.has(accountKey);
+      if (!belongsToWallet || record.mint !== mint) return total;
       return {
         raw: total.raw + BigInt(record.uiTokenAmount?.amount || "0"),
         decimals: record.uiTokenAmount?.decimals ?? total.decimals,
@@ -220,8 +230,8 @@ function findQuoteDelta(
   tx: ParsedSolanaTransaction
 ): { mint: string; symbol: string; decimals: number; delta: bigint } | null {
   for (const [mint, config] of Object.entries(QUOTE_ASSETS)) {
-    const before = rawTokenBalance(wallet, mint, tx.meta?.preTokenBalances);
-    const after = rawTokenBalance(wallet, mint, tx.meta?.postTokenBalances);
+    const before = rawTokenBalance(wallet, mint, tx.meta?.preTokenBalances, tx);
+    const after = rawTokenBalance(wallet, mint, tx.meta?.postTokenBalances, tx);
     const delta = after.raw - before.raw;
     if (delta !== ZERO) {
       return {
@@ -256,12 +266,26 @@ function matchesMintInstruction(
 export function classifyTokenTransaction(
   wallet: string,
   mint: string,
-  tx: ParsedSolanaTransaction
+  tx: ParsedSolanaTransaction,
+  ownedTokenAccounts: string[] = []
 ): ClassifiedTokenActivity | null {
   if (tx.meta?.err) return null;
 
-  const before = rawTokenBalance(wallet, mint, tx.meta?.preTokenBalances);
-  const after = rawTokenBalance(wallet, mint, tx.meta?.postTokenBalances);
+  const ownedAccounts = new Set(ownedTokenAccounts);
+  const before = rawTokenBalance(
+    wallet,
+    mint,
+    tx.meta?.preTokenBalances,
+    tx,
+    ownedAccounts
+  );
+  const after = rawTokenBalance(
+    wallet,
+    mint,
+    tx.meta?.postTokenBalances,
+    tx,
+    ownedAccounts
+  );
   const targetDeltaRaw = after.raw - before.raw;
   if (targetDeltaRaw === ZERO) return null;
 
@@ -327,10 +351,13 @@ export function classifyTokenTransaction(
 export function classifyTokenTransactions(
   wallet: string,
   mint: string,
-  transactions: ParsedSolanaTransaction[]
+  transactions: ParsedSolanaTransaction[],
+  ownedTokenAccounts: string[] = []
 ): ClassifiedTokenActivity[] {
   return transactions
-    .map((transaction) => classifyTokenTransaction(wallet, mint, transaction))
+    .map((transaction) =>
+      classifyTokenTransaction(wallet, mint, transaction, ownedTokenAccounts)
+    )
     .filter((event): event is ClassifiedTokenActivity => Boolean(event))
     .sort((left, right) => (right.blockTime || 0) - (left.blockTime || 0));
 }

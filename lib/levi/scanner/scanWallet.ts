@@ -1,5 +1,13 @@
 import type { LeviAccessTier, LeviScanMode, LeviScanReport } from "@/types/levi";
-import { BASIC_SCAN_LIMIT, FULL_SCAN_LIMIT, MOCK_SOLANA } from "../constants";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { PublicKey } from "@solana/web3.js";
+import {
+  BASIC_SCAN_LIMIT,
+  FULL_SCAN_LIMIT,
+  MOCK_SOLANA,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from "../constants";
 import { isSolanaRpcRateLimitError, solanaRpc } from "../rpc";
 import { normalizeSolanaAddress } from "../wallet";
 import {
@@ -58,8 +66,24 @@ async function fetchSignaturesForAddress(
 ): Promise<SignatureRecord[]> {
   return solanaRpc<SignatureRecord[]>("getSignaturesForAddress", [
     address,
-    { limit, ...(before ? { before } : {}) },
+    { limit, commitment: "confirmed", ...(before ? { before } : {}) },
   ]);
+}
+
+export function deriveAssociatedTokenAccounts(
+  wallet: string,
+  mint: string
+): string[] {
+  const ownerKey = new PublicKey(wallet);
+  const mintKey = new PublicKey(mint);
+  return [TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID].map((programId) =>
+    getAssociatedTokenAddressSync(
+      mintKey,
+      ownerKey,
+      false,
+      new PublicKey(programId)
+    ).toBase58()
+  );
 }
 
 async function fetchOwnedTokenAccounts(
@@ -113,7 +137,7 @@ export async function scanSolanaCreatorWallet(
     throw new Error("Scanner access is locked for this session.");
   }
 
-  const walletSignatureLimit = targetMint ? Math.max(10, Math.floor(limit / 2)) : limit;
+  const walletSignatureLimit = limit;
   const walletSignatures = await fetchSignaturesForAddress(
     wallet,
     walletSignatureLimit,
@@ -121,11 +145,21 @@ export async function scanSolanaCreatorWallet(
   );
   let tokenAccounts: string[] = [];
   let tokenAccountSignatures: SignatureRecord[] = [];
+  let accountDiscoveryPartial = false;
+  let rateLimited = false;
 
   if (targetMint) {
-    tokenAccounts = await fetchOwnedTokenAccounts(wallet, targetMint);
+    const derivedTokenAccounts = deriveAssociatedTokenAccounts(wallet, targetMint);
+    try {
+      const activeTokenAccounts = await fetchOwnedTokenAccounts(wallet, targetMint);
+      tokenAccounts = [...new Set([...activeTokenAccounts, ...derivedTokenAccounts])];
+    } catch (error) {
+      tokenAccounts = derivedTokenAccounts;
+      accountDiscoveryPartial = true;
+      rateLimited = isSolanaRpcRateLimitError(error);
+    }
     const perAccountLimit =
-      tokenAccounts.length > 0 ? Math.max(5, Math.ceil(limit / tokenAccounts.length)) : 0;
+      tokenAccounts.length > 0 ? Math.max(8, Math.ceil(limit / tokenAccounts.length)) : 0;
     const tokenSignatureResults = options.cursor
       ? []
       : await Promise.allSettled(
@@ -137,6 +171,11 @@ export async function scanSolanaCreatorWallet(
     tokenAccountSignatures = tokenSignatureResults.flatMap((result) =>
       result.status === "fulfilled" ? result.value : []
     );
+    for (const result of tokenSignatureResults) {
+      if (result.status !== "rejected") continue;
+      accountDiscoveryPartial = true;
+      rateLimited = rateLimited || isSolanaRpcRateLimitError(result.reason);
+    }
   }
 
   const signatures = dedupeSignatures([
@@ -146,7 +185,7 @@ export async function scanSolanaCreatorWallet(
 
   const transactions: ParsedSolanaTransaction[] = [];
   let skippedTransactions = 0;
-  let rateLimited = false;
+  let consecutiveRateLimits = 0;
 
   for (const [index, item] of signatures.entries()) {
     try {
@@ -157,6 +196,7 @@ export async function scanSolanaCreatorWallet(
           {
             encoding: "jsonParsed",
             maxSupportedTransactionVersion: 0,
+            commitment: "confirmed",
           },
         ]
       );
@@ -164,10 +204,15 @@ export async function scanSolanaCreatorWallet(
       if (transaction) {
         transactions.push(transaction);
       }
+      consecutiveRateLimits = 0;
     } catch (error) {
       if (isSolanaRpcRateLimitError(error)) {
         rateLimited = true;
-        break;
+        skippedTransactions += 1;
+        consecutiveRateLimits += 1;
+        if (consecutiveRateLimits >= 3) break;
+        await sleep(PUBLIC_RPC_TRANSACTION_DELAY_MS * (consecutiveRateLimits + 2));
+        continue;
       }
 
       skippedTransactions += 1;
@@ -198,7 +243,7 @@ export async function scanSolanaCreatorWallet(
     ? await getScannerTokenSnapshot(wallet, targetMint)
     : undefined;
   const activityEvents = targetMint
-    ? classifyTokenTransactions(wallet, targetMint, transactions)
+    ? classifyTokenTransactions(wallet, targetMint, transactions, tokenAccounts)
     : undefined;
   const tokenDecimals = snapshot?.walletBalance.decimals ||
     activityEvents?.[0]?.targetAmount.decimals ||
@@ -216,6 +261,7 @@ export async function scanSolanaCreatorWallet(
     walletSignatures: walletSignatures.length,
     tokenAccountSignatures: tokenAccountSignatures.length,
     tokenAccounts: tokenAccounts.length,
+    accountDiscoveryPartial,
     selectedSignatures: signatures.length,
     loadedTransactions: transactions.length,
     skippedTransactions,
@@ -270,8 +316,13 @@ export async function scanSolanaCreatorWallet(
       "Created tokens are detected only when mint initialization appears in the scanned wallet transactions.",
       ...(targetMint
         ? [
-            "Specific token activity uses the creator wallet and owned token accounts for the target mint when available.",
+            "Specific token activity uses the wallet plus active and deterministic token accounts for the target mint.",
             "Specific token activity covers the displayed observed window, not a complete historical index.",
+          ]
+        : []),
+      ...(accountDiscoveryPartial
+        ? [
+            "One token-account discovery source was unavailable; deterministic associated accounts were still inspected.",
           ]
         : []),
       "Free RPC mode loads transactions sequentially to avoid paid node dependencies.",

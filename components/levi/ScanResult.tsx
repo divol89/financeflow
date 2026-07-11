@@ -22,6 +22,7 @@ import type {
   LeviScanReport,
 } from "@/types/levi";
 import { CLASSIFICATION_LABELS, PRESSURE_FACTOR_MAXIMUMS } from "@/lib/levi/scanner/methodology";
+import { ScannerActivityChart } from "./ScannerActivityChart";
 
 interface ScanResultProps {
   report: LeviScanReport;
@@ -52,6 +53,23 @@ function compactAddress(value: string): string {
 
 function formatTime(value: number | null): string {
   return value ? new Date(value * 1000).toLocaleString() : "Time unavailable";
+}
+
+function pressureHeading(report: LeviScanReport): string {
+  const pressure = report.distributionPressure;
+  if (pressure?.score !== null && pressure?.score !== undefined) {
+    return `${pressure.score}/100 distribution pressure`;
+  }
+  if (report.scanCoverage.selectedSignatures === 0) {
+    return "No on-chain activity found for this pair";
+  }
+  if (report.scanCoverage.loadedTransactions === 0) {
+    return "On-chain activity could not be loaded";
+  }
+  if (report.scanCoverage.rateLimited || (report.scanCoverage.loadedRatio || 0) < 0.5) {
+    return "Partial blockchain coverage";
+  }
+  return "Limited on-chain evidence";
 }
 
 function EventIcon({ event }: { event: ClassifiedTokenActivity }) {
@@ -125,6 +143,7 @@ export function ScanResult({
   const pressure = report.distributionPressure;
   const snapshot = report.snapshot;
   const summary = report.tokenActivitySummaryV2;
+  const hasLoadedTransactions = report.scanCoverage.loadedTransactions > 0;
 
   const saveInvestigation = async () => {
     if (!report.targetMint) return;
@@ -187,7 +206,7 @@ export function ScanResult({
             <ShieldAlert className="h-4 w-4" />
             {pressure.level === "insufficient" ? "Insufficient data" : `${pressure.level} pressure`}
           </div>
-          <h2>{pressure.score === null ? "Evidence needs a larger window" : `${pressure.score}/100 distribution pressure`}</h2>
+          <h2>{pressureHeading(report)}</h2>
           <p>{pressure.summary}</p>
         </div>
         <div className="levi-scan-subject">
@@ -198,11 +217,18 @@ export function ScanResult({
       </header>
 
       <div className="levi-snapshot-grid">
-        <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{groupDigits(snapshot.walletBalance.formatted)}</strong><small>{snapshot.symbol || "tokens"}</small></div>
+        <div><WalletCards className="h-4 w-4" /><span>Current holding</span><strong>{snapshot.complete ? groupDigits(snapshot.walletBalance.formatted) : "Unavailable"}</strong><small>{snapshot.complete ? snapshot.symbol || "tokens" : "Snapshot could not be completed"}</small></div>
         <div><Gauge className="h-4 w-4" /><span>Current supply share</span><strong>{snapshot.walletSharePercent === null ? "Unknown" : `${snapshot.walletSharePercent.toFixed(4)}%`}</strong><small>{snapshot.authoritiesRevoked ? "Authorities revoked" : "Authority review required"}</small></div>
-        <div><ArrowUpRight className="h-4 w-4" /><span>Observed sold</span><strong>{groupDigits(summary.totalSold.formatted)}</strong><small>{summary.observedSellCount} high-confidence swap(s)</small></div>
-        <div><Clock3 className="h-4 w-4" /><span>Latest observed sell</span><strong>{summary.latestSellAt ? new Date(summary.latestSellAt * 1000).toLocaleDateString() : "None found"}</strong><small>{snapshot.walletSol ? `${groupDigits(snapshot.walletSol)} SOL in wallet` : "SOL balance unavailable"}</small></div>
+        <div><ArrowUpRight className="h-4 w-4" /><span>Observed sold</span><strong>{hasLoadedTransactions ? groupDigits(summary.totalSold.formatted) : "Not established"}</strong><small>{hasLoadedTransactions ? `${summary.observedSellCount} high-confidence swap(s)` : "No transaction coverage"}</small></div>
+        <div><Clock3 className="h-4 w-4" /><span>Latest observed sell</span><strong>{summary.latestSellAt ? new Date(summary.latestSellAt * 1000).toLocaleDateString() : hasLoadedTransactions ? "None found" : "Not established"}</strong><small>{snapshot.walletSol ? `${groupDigits(snapshot.walletSol)} SOL in wallet` : "SOL balance unavailable"}</small></div>
       </div>
+
+      <ScannerActivityChart
+        events={report.activityEvents || []}
+        summary={summary}
+        coverage={report.scanCoverage}
+        symbol={snapshot.symbol || "tokens"}
+      />
 
       <div className="levi-pressure-layout">
         <section className="levi-pressure-factors" aria-labelledby="pressure-factors-title">
@@ -247,6 +273,7 @@ export function ScanResult({
           <span>{report.scanCoverage.loadedTransactions}/{report.scanCoverage.selectedSignatures} transactions loaded</span>
           <span>{Math.round((report.scanCoverage.loadedRatio || 0) * 100)}% coverage</span>
           <span>{report.scanCoverage.rateLimited ? "RPC rate limited" : "No rate limit observed"}</span>
+          {report.scanCoverage.accountDiscoveryPartial ? <span>Token-account discovery partial</span> : null}
         </div>
         {canExtend && report.scanCoverage.nextCursor && onExtend ? (
           <button type="button" className="levi-inline-action" onClick={onExtend} disabled={isExtending}>
