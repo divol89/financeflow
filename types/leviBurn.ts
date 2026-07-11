@@ -13,8 +13,20 @@ export interface LeviBurnQuote {
   solBalanceLamports: string;
 }
 
+export interface LeviBurnSigningContext {
+  blockhash: string;
+}
+
+export type LeviBurnTransactionState = "pending" | "confirmed" | "failed";
+
+export interface LeviBurnTransactionStatus {
+  signature: string;
+  state: LeviBurnTransactionState;
+}
+
 export interface LeviBurnSubmission {
   signature: string;
   solscanUrl: string;
   amountRaw: string;
+  state: "submitted" | "confirmed";
 }

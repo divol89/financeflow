@@ -286,10 +286,15 @@ export function LeviBurnPortal() {
           <div className="levi-burn-success" role="status">
             <CheckCircle2 className="h-5 w-5" />
             <div>
-              <strong>Burn transaction confirmed.</strong>
+              <strong>
+                {submission.state === "confirmed"
+                  ? "Burn transaction confirmed."
+                  : "Burn transaction submitted."}
+              </strong>
               <p>
-                {formatRawTokenAmount(submission.amountRaw)} LEVI AI was submitted to
-                the Token-2022 burn instruction.
+                {submission.state === "confirmed"
+                  ? `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was confirmed by Solana.`
+                  : `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was sent by your wallet. Verify final status on Solscan.`}
               </p>
               <div>
                 <a href={submission.solscanUrl} target="_blank" rel="noreferrer">
@@ -305,7 +310,7 @@ export function LeviBurnPortal() {
 
         <p className="levi-burn-tool-footnote">
           The tracker records finalized supply changes on its next scheduled cache refresh.
-          Your confirmed Solscan transaction is the immediate proof of a burn.
+          Your Solscan transaction is the immediate proof while confirmation completes.
         </p>
       </form>
     </section>

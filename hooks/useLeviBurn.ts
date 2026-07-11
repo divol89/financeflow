@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { submitLeviBurn } from "@/lib/levi/burn/client";
+import {
+  requestLeviBurnSigningContext,
+  waitForLeviBurnConfirmation,
+} from "@/lib/levi/burn/gateway";
 import { parseLeviBurnAmount } from "@/lib/levi/burn/validation";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
@@ -97,15 +101,26 @@ export function useLeviBurn() {
         setIsBurning(true);
         setError(null);
         setSubmission(null);
+        const signingContext = await requestLeviBurnSigningContext();
         const result = await submitLeviBurn({
           provider: wallet.provider,
           wallet: wallet.address,
           tokenAccounts: quote.tokenAccounts,
           amountRaw,
+          signingContext,
         });
-        setSubmission(result);
+        const status = await waitForLeviBurnConfirmation(result.signature);
+        if (status.state === "failed") {
+          throw new Error("The burn transaction failed on Solana.");
+        }
+
+        const completedResult: LeviBurnSubmission = {
+          ...result,
+          state: status.state === "confirmed" ? "confirmed" : "submitted",
+        };
+        setSubmission(completedResult);
         await refreshQuote(wallet.address);
-        return result;
+        return completedResult;
       } catch (reason) {
         const message =
           reason instanceof Error ? reason.message : "The burn transaction could not be completed.";

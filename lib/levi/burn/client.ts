@@ -1,4 +1,4 @@
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import {
   createBurnCheckedInstruction,
   TOKEN_2022_PROGRAM_ID,
@@ -7,9 +7,9 @@ import type { InjectedSolanaProvider } from "@/hooks/useInjectedSolanaWallet";
 import {
   LEVI_AI_MINT_ADDRESS,
 } from "@/lib/levi/communityBurn";
-import { SOLANA_RPC_URL } from "@/lib/levi/constants";
 import { LEVI_AI_DECIMALS } from "@/lib/levi/burnTracker/constants";
 import type {
+  LeviBurnSigningContext,
   LeviBurnSubmission,
   LeviBurnTokenAccount,
 } from "@/types/leviBurn";
@@ -92,52 +92,28 @@ export async function submitLeviBurn(input: {
   wallet: string;
   tokenAccounts: LeviBurnTokenAccount[];
   amountRaw: bigint;
+  signingContext: LeviBurnSigningContext;
 }): Promise<LeviBurnSubmission> {
-  if (!input.provider.signAndSendTransaction && !input.provider.signTransaction) {
+  if (!input.provider.signAndSendTransaction) {
     throw new LeviBurnClientError(
-      "This wallet does not support signing a Solana burn transaction."
+      "This wallet must support sign-and-send to submit a LEVI AI burn."
     );
   }
 
-  const connection = new Connection(SOLANA_RPC_URL, "confirmed");
-  const latestBlockhash = await connection.getLatestBlockhash("confirmed");
   const transaction = createLeviBurnTransaction({
     wallet: input.wallet,
     tokenAccounts: input.tokenAccounts,
     amountRaw: input.amountRaw,
-    blockhash: latestBlockhash.blockhash,
+    blockhash: input.signingContext.blockhash,
   });
-
-  let signature: string;
-  if (input.provider.signAndSendTransaction) {
-    signature = getSignature(
-      await input.provider.signAndSendTransaction(transaction)
-    );
-  } else if (input.provider.signTransaction) {
-    const signedTransaction = await input.provider.signTransaction(transaction);
-    signature = await connection.sendRawTransaction(signedTransaction.serialize(), {
-      maxRetries: 3,
-      skipPreflight: false,
-    });
-  } else {
-    throw new LeviBurnClientError("Unable to sign the burn transaction.");
-  }
-
-  const confirmation = await connection.confirmTransaction(
-    {
-      signature,
-      blockhash: latestBlockhash.blockhash,
-      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-    },
-    "confirmed"
+  const signature = getSignature(
+    await input.provider.signAndSendTransaction(transaction)
   );
-  if (confirmation.value.err) {
-    throw new LeviBurnClientError("The burn transaction was not confirmed by Solana.");
-  }
 
   return {
     signature,
     solscanUrl: `https://solscan.io/tx/${signature}`,
     amountRaw: input.amountRaw.toString(),
+    state: "submitted",
   };
 }
