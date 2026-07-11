@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import type { Transaction } from "@solana/web3.js";
+import { useCallback, useEffect, useState } from "react";
 
 export interface InjectedSolanaProvider {
   publicKey?: { toBase58(): string };
@@ -8,6 +9,10 @@ export interface InjectedSolanaProvider {
     message: Uint8Array,
     encoding?: string
   ): Promise<Uint8Array | { signature: Uint8Array }>;
+  signTransaction?(transaction: Transaction): Promise<Transaction>;
+  signAndSendTransaction?(
+    transaction: Transaction
+  ): Promise<string | { signature: string }>;
 }
 
 declare global {
@@ -27,6 +32,15 @@ export function useInjectedSolanaWallet() {
   const [provider, setProvider] = useState<InjectedSolanaProvider | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const injected = getInjectedSolanaProvider();
+    const connectedAddress = injected?.publicKey?.toBase58() || null;
+    if (!injected || !connectedAddress) return;
+
+    setProvider(injected);
+    setAddress(connectedAddress);
+  }, []);
 
   const connect = useCallback(async () => {
     setError(null);

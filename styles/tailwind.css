@@ -45,6 +45,492 @@
   }
 }
 
+/* Holder-signed Token-2022 burn surface. No project wallet or custody is involved. */
+.levi-burn-page {
+  position: relative;
+  min-width: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 8.5rem 0 5.5rem;
+  background:
+    radial-gradient(ellipse 72% 48% at 88% 10%, rgba(54, 111, 55, 0.22), transparent 70%),
+    radial-gradient(ellipse 52% 42% at 5% 78%, rgba(165, 110, 42, 0.08), transparent 72%),
+    linear-gradient(135deg, #070906 0%, #0a1009 52%, #050805 100%);
+}
+
+.levi-burn-page-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(199, 236, 182, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199, 236, 182, 0.038) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem;
+  mask-image: linear-gradient(to bottom, black, transparent 84%);
+  pointer-events: none;
+}
+
+.levi-burn-portal {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 0.92fr) minmax(22rem, 0.78fr);
+  align-items: start;
+  gap: clamp(2rem, 7vw, 6rem);
+}
+
+.levi-burn-portal-copy,
+.levi-burn-tool,
+.levi-burn-tool > * {
+  min-width: 0;
+}
+
+.levi-burn-portal-copy {
+  padding-top: clamp(0.75rem, 6vh, 5rem);
+}
+
+.levi-burn-portal h1 {
+  max-width: 43rem;
+  margin-top: 1.4rem;
+  color: var(--levi-warm) !important;
+  font-size: clamp(3.2rem, 7vw, 6.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.97;
+}
+
+.levi-burn-portal h1 span {
+  display: block;
+  color: var(--levi-green);
+}
+
+.levi-burn-portal-lede {
+  max-width: 39rem;
+  margin-top: 1.5rem;
+  color: #aab6a8;
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+.levi-burn-portal-lede code {
+  color: #d6efa9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.levi-burn-principles {
+  display: grid;
+  gap: 0;
+  max-width: 38rem;
+  margin-top: 2.2rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.13);
+}
+
+.levi-burn-principles > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  padding: 1rem 0;
+}
+
+.levi-burn-principles > div > svg {
+  margin-top: 0.1rem;
+  color: #b8f36b;
+}
+
+.levi-burn-principles strong {
+  display: block;
+  color: #edf5e7;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.levi-burn-principles p {
+  margin-top: 0.25rem;
+  color: #819080;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.levi-burn-portal-note {
+  display: flex;
+  max-width: 38rem;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.4rem;
+  border-left: 1px solid rgba(245, 213, 138, 0.5);
+  padding: 0.25rem 0 0.25rem 0.85rem;
+  color: #d7bd77;
+}
+
+.levi-burn-portal-note svg {
+  flex: none;
+  margin-top: 0.1rem;
+}
+
+.levi-burn-portal-note p {
+  color: #aa9f7f;
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+.levi-burn-tool {
+  border-top: 1px solid rgba(184, 243, 107, 0.48);
+  border-bottom: 1px solid rgba(222, 246, 220, 0.14);
+  background: rgba(5, 8, 5, 0.64);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.15);
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.levi-burn-tool-heading,
+.levi-burn-wallet-row,
+.levi-burn-balance-row,
+.levi-burn-success,
+.levi-burn-success > div > div {
+  display: flex;
+  align-items: center;
+}
+
+.levi-burn-tool-heading {
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.3rem;
+}
+
+.levi-burn-tool-heading > svg {
+  flex: none;
+  color: #b8f36b;
+}
+
+.levi-burn-tool-heading span,
+.levi-burn-wallet-row span,
+.levi-burn-balance-row span,
+.levi-burn-amount-field > span {
+  color: #7f8d80;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.levi-burn-tool h2 {
+  max-width: 26rem;
+  margin-top: 0.55rem;
+  color: #f3f7ec !important;
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 750;
+  line-height: 1.12;
+}
+
+.levi-burn-connect-state {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding: 1.3rem 0 0.25rem;
+}
+
+.levi-burn-connect-state p {
+  max-width: 29rem;
+  color: #9aa69a;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.levi-burn-connect-state .levi-primary-button,
+.levi-burn-connect-state .levi-secondary-button {
+  width: fit-content;
+}
+
+.levi-burn-wallet-row {
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1.25rem;
+}
+
+.levi-burn-wallet-row strong {
+  display: block;
+  margin-top: 0.28rem;
+  color: #d6efa9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.levi-burn-refresh {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.38rem;
+  border: 0;
+  background: transparent;
+  color: #b8f36b;
+  padding: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.levi-burn-refresh:hover:not(:disabled) { color: #edffd5; }
+.levi-burn-refresh:disabled { cursor: wait; opacity: 0.55; }
+
+.levi-burn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  color: #9ba79a;
+  padding: 1.4rem 0 0.2rem;
+  font-size: 0.76rem;
+}
+
+.levi-burn-balance-row {
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.4rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1.15rem;
+}
+
+.levi-burn-balance-row strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: #f4f8ed;
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.levi-burn-balance-row > span:last-child {
+  flex: none;
+  max-width: 10rem;
+  color: #879486;
+  font-family: inherit;
+  font-size: 0.67rem;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-align: right;
+  text-transform: none;
+}
+
+.levi-burn-amount-field {
+  display: block;
+  margin-top: 1.5rem;
+}
+
+.levi-burn-amount-field > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(222, 246, 220, 0.17);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.35rem 0.45rem 0.35rem 0.9rem;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.levi-burn-amount-field > div:focus-within {
+  border-color: rgba(184, 243, 107, 0.52);
+  background: rgba(184, 243, 107, 0.045);
+}
+
+.levi-burn-amount-field input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f4f8ed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+}
+
+.levi-burn-amount-field input::placeholder { color: #5f6b5e; }
+
+.levi-burn-amount-field > div button {
+  flex: none;
+  border: 1px solid rgba(184, 243, 107, 0.28);
+  border-radius: 0.3rem;
+  background: rgba(184, 243, 107, 0.08);
+  color: #d7f4b4;
+  padding: 0.45rem 0.58rem;
+  font-size: 0.66rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.levi-burn-amount-field > div button:hover:not(:disabled) {
+  border-color: rgba(184, 243, 107, 0.56);
+  background: rgba(184, 243, 107, 0.16);
+}
+
+.levi-burn-amount-field > div button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.levi-burn-amount-field small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #7e8b7d;
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.levi-burn-inline-error,
+.levi-burn-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #f0ad9b;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.levi-burn-inline-error {
+  margin-top: 0.75rem;
+}
+
+.levi-burn-inline-error svg,
+.levi-burn-error svg { flex: none; margin-top: 0.05rem; }
+
+.levi-burn-acknowledgement {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1.1rem;
+  color: #b7c3b4;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.levi-burn-acknowledgement input {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  margin-top: 0.06rem;
+  accent-color: #b8f36b;
+}
+
+.levi-burn-submit {
+  display: inline-flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
+  border: 1px solid rgba(245, 213, 138, 0.52);
+  border-radius: 0.42rem;
+  background: #d8ee7a;
+  color: #102109;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.levi-burn-submit:hover:not(:disabled) {
+  background: #e9fca7;
+  box-shadow: 0 0.7rem 1.7rem rgba(184, 243, 107, 0.16);
+  transform: translateY(-1px);
+}
+
+.levi-burn-submit:disabled {
+  border-color: rgba(222, 246, 220, 0.15);
+  background: rgba(222, 246, 220, 0.1);
+  color: #738070;
+  cursor: not-allowed;
+}
+
+.levi-burn-error {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(245, 135, 115, 0.3);
+  border-bottom: 1px solid rgba(245, 135, 115, 0.18);
+  background: rgba(120, 28, 20, 0.16);
+  padding: 0.75rem;
+}
+
+.levi-burn-success {
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(184, 243, 107, 0.34);
+  border-bottom: 1px solid rgba(184, 243, 107, 0.18);
+  background: rgba(184, 243, 107, 0.07);
+  color: #c7f18f;
+  padding: 0.9rem;
+}
+
+.levi-burn-success > svg { flex: none; margin-top: 0.08rem; }
+.levi-burn-success strong { display: block; color: #e7fbd1; font-size: 0.76rem; }
+.levi-burn-success p { margin-top: 0.25rem; color: #a7c08d; font-size: 0.69rem; line-height: 1.5; }
+.levi-burn-success > div > div { flex-wrap: wrap; gap: 0.85rem; margin-top: 0.7rem; }
+.levi-burn-success a { display: inline-flex; align-items: center; gap: 0.35rem; color: #e5ffc2; font-size: 0.68rem; font-weight: 750; text-decoration: none; }
+.levi-burn-success a:hover { color: #fff; }
+
+.levi-burn-tool-footnote {
+  margin-top: 1rem;
+  color: #6f7d6e;
+  font-size: 0.62rem;
+  line-height: 1.55;
+}
+
+.levi-burn-tool button:focus-visible,
+.levi-burn-tool input:focus-visible,
+.levi-burn-tracker-action:focus-visible {
+  outline: 2px solid #d8ee7a;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .levi-burn-portal {
+    grid-template-columns: minmax(0, 0.88fr) minmax(20rem, 0.82fr);
+    gap: 2rem;
+  }
+
+  .levi-burn-portal-copy { padding-top: 0.5rem; }
+}
+
+@media (max-width: 767px) {
+  .levi-burn-page { padding-top: 7.3rem; padding-bottom: 4rem; }
+
+  .levi-burn-portal {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.8rem;
+  }
+
+  .levi-burn-portal h1 { font-size: clamp(3rem, 14vw, 4.6rem); }
+  .levi-burn-portal-copy { padding-top: 0; }
+  .levi-burn-tool { padding: 1.15rem; }
+  .levi-burn-balance-row { align-items: flex-start; flex-direction: column; }
+  .levi-burn-balance-row > span:last-child { max-width: none; text-align: left; }
+  .levi-burn-tracker-action { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .levi-burn-page *,
+  .levi-burn-page *::before,
+  .levi-burn-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 
 @layer components {
   .bg-flow-gradient {
@@ -484,7 +970,8 @@ img.site-logo {
   --levi-warm: #f4f1e8;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   background: var(--levi-bg);
   color: var(--levi-warm);
 }
@@ -1142,6 +1629,7 @@ img.site-logo {
 
 .levi-burn-tracker-header {
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1.5rem;
   padding-bottom: 1.35rem;
 }
@@ -1150,6 +1638,10 @@ img.site-logo {
 .levi-burn-tracker-lock > div,
 .levi-burn-tracker-transaction > div {
   min-width: 0;
+}
+
+.levi-burn-tracker-header > div:first-child {
+  flex: 1 1 30rem;
 }
 
 .levi-burn-tracker h2 {
@@ -1200,6 +1692,29 @@ img.site-logo {
 
 .levi-burn-tracker-status button:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+
+.levi-burn-tracker-action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(184, 243, 107, 0.28);
+  border-radius: 0.45rem;
+  background: rgba(184, 243, 107, 0.08);
+  color: #d8f7b4;
+  padding: 0.58rem 0.72rem;
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.levi-burn-tracker-action:hover {
+  border-color: rgba(184, 243, 107, 0.58);
+  background: rgba(184, 243, 107, 0.14);
+  color: #f0ffdd;
 }
 
 .levi-burn-tracker-grid {

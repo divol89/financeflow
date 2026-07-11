@@ -1,4 +1,6 @@
+import Link from "next/link";
 import {
+  ArrowUpRight,
   Clock3,
   ExternalLink,
   Flame,
@@ -87,6 +89,9 @@ export function LiveBurnTracker() {
             <RefreshCw className="h-3.5 w-3.5" />
           </button>
         </div>
+        <Link href="/burn" className="levi-burn-tracker-action">
+          Burn LEVI AI <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
 
       {error && !snapshot ? (

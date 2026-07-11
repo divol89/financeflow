@@ -15,6 +15,7 @@ interface TokenSupplyResponse {
 
 interface TokenAccountsByOwnerResponse {
   value: Array<{
+    pubkey: string;
     account: {
       data: {
         parsed?: {
@@ -27,6 +28,11 @@ interface TokenAccountsByOwnerResponse {
       };
     };
   }>;
+}
+
+export interface LeviAiTokenAccountBalance {
+  address: string;
+  amountRaw: string;
 }
 
 export interface MintSignatureRecord {
@@ -106,19 +112,30 @@ export function sumTokenAccountBalances(rawAmounts: Array<string | undefined>): 
   return rawAmounts.reduce((total, amount) => total + BigInt(amount || "0"), BigInt(0)).toString();
 }
 
-export async function fetchLeviAiCommunityLockBalance(): Promise<string> {
+export async function fetchLeviAiTokenAccountsByOwner(
+  owner: string,
+  commitment: "confirmed" | "finalized" = "finalized"
+): Promise<LeviAiTokenAccountBalance[]> {
   const result = await solanaRpc<TokenAccountsByOwnerResponse>(
     "getTokenAccountsByOwner",
     [
-      SOLANA_INCINERATOR_ADDRESS,
+      owner,
       { mint: LEVI_AI_MINT_ADDRESS },
-      { encoding: "jsonParsed", commitment: "finalized" },
+      { encoding: "jsonParsed", commitment },
     ]
   );
 
-  return sumTokenAccountBalances(
-    result.value.map((account) => account.account.data.parsed?.info?.tokenAmount?.amount)
-  );
+  return result.value.flatMap((account) => {
+    const amountRaw = account.account.data.parsed?.info?.tokenAmount?.amount;
+    if (!account.pubkey || typeof amountRaw !== "string") return [];
+
+    return [{ address: account.pubkey, amountRaw }];
+  });
+}
+
+export async function fetchLeviAiCommunityLockBalance(): Promise<string> {
+  const accounts = await fetchLeviAiTokenAccountsByOwner(SOLANA_INCINERATOR_ADDRESS);
+  return sumTokenAccountBalances(accounts.map((account) => account.amountRaw));
 }
 
 export async function fetchLatestLeviAiMintSignature(): Promise<string | null> {
