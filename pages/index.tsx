@@ -17,7 +17,7 @@ import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { LiveBurnTracker } from "@/components/levi/LiveBurnTracker";
 import { MetricCard } from "@/components/levi/MetricCard";
-import { ScannerPanel } from "@/components/levi/ScannerPanel";
+import { HomeScannerPreview } from "@/components/levi/HomeScannerPreview";
 
 export default function Home() {
   return (
@@ -102,13 +102,13 @@ export default function Home() {
             <LeviReveal>
               <div className="levi-metric-grid">
                 <MetricCard
-                  label="Basic gate"
+                  label="Basic access"
                   value="3,000 LEVI"
                   icon={<Lock className="h-4 w-4" />}
                   tone="amber"
                 />
                 <MetricCard
-                  label="Full gate"
+                  label="Full access"
                   value="50,000 LEVI"
                   icon={<Radar className="h-4 w-4" />}
                   tone="green"
@@ -135,7 +135,7 @@ export default function Home() {
             </LeviReveal>
 
             <LeviReveal>
-              <ScannerPanel />
+              <HomeScannerPreview />
             </LeviReveal>
           </div>
         </div>

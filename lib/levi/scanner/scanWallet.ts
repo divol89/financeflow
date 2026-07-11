@@ -1,4 +1,4 @@
-import type { LeviAccessTier, LeviScanReport } from "@/types/levi";
+import type { LeviAccessTier, LeviScanMode, LeviScanReport } from "@/types/levi";
 import { BASIC_SCAN_LIMIT, FULL_SCAN_LIMIT, MOCK_SOLANA } from "../constants";
 import { isSolanaRpcRateLimitError, solanaRpc } from "../rpc";
 import { normalizeSolanaAddress } from "../wallet";
@@ -12,6 +12,9 @@ import {
 } from "./analyzers";
 import { buildMockScanReport } from "./mock";
 import { scoreCreatorRisk } from "./score";
+import { classifyTokenTransactions, summarizeClassifiedActivity } from "./classification";
+import { calculateDistributionPressure } from "./pressure";
+import { getScannerTokenSnapshot } from "./snapshot";
 
 interface SignatureRecord {
   signature: string;
@@ -27,9 +30,11 @@ interface TokenAccountsResponse {
   }>;
 }
 
-interface ScanOptions {
+export interface ScanOptions {
   tier: LeviAccessTier;
+  mode?: LeviScanMode;
   targetMint?: string;
+  cursor?: string;
 }
 
 const PUBLIC_RPC_TRANSACTION_DELAY_MS = 180;
@@ -48,11 +53,12 @@ function getLimitForTier(tier: LeviAccessTier): number {
 
 async function fetchSignaturesForAddress(
   address: string,
-  limit: number
+  limit: number,
+  before?: string
 ): Promise<SignatureRecord[]> {
   return solanaRpc<SignatureRecord[]>("getSignaturesForAddress", [
     address,
-    { limit },
+    { limit, ...(before ? { before } : {}) },
   ]);
 }
 
@@ -108,7 +114,11 @@ export async function scanSolanaCreatorWallet(
   }
 
   const walletSignatureLimit = targetMint ? Math.max(10, Math.floor(limit / 2)) : limit;
-  const walletSignatures = await fetchSignaturesForAddress(wallet, walletSignatureLimit);
+  const walletSignatures = await fetchSignaturesForAddress(
+    wallet,
+    walletSignatureLimit,
+    options.cursor
+  );
   let tokenAccounts: string[] = [];
   let tokenAccountSignatures: SignatureRecord[] = [];
 
@@ -116,11 +126,13 @@ export async function scanSolanaCreatorWallet(
     tokenAccounts = await fetchOwnedTokenAccounts(wallet, targetMint);
     const perAccountLimit =
       tokenAccounts.length > 0 ? Math.max(5, Math.ceil(limit / tokenAccounts.length)) : 0;
-    const tokenSignatureResults = await Promise.allSettled(
-      tokenAccounts.map((account) =>
-        fetchSignaturesForAddress(account, perAccountLimit)
-      )
-    );
+    const tokenSignatureResults = options.cursor
+      ? []
+      : await Promise.allSettled(
+          tokenAccounts.map((account) =>
+            fetchSignaturesForAddress(account, perAccountLimit)
+          )
+        );
 
     tokenAccountSignatures = tokenSignatureResults.flatMap((result) =>
       result.status === "fulfilled" ? result.value : []
@@ -182,7 +194,54 @@ export async function scanSolanaCreatorWallet(
     inspectedTransactions: transactions.length,
   });
 
+  const snapshot = targetMint
+    ? await getScannerTokenSnapshot(wallet, targetMint)
+    : undefined;
+  const activityEvents = targetMint
+    ? classifyTokenTransactions(wallet, targetMint, transactions)
+    : undefined;
+  const tokenDecimals = snapshot?.walletBalance.decimals ||
+    activityEvents?.[0]?.targetAmount.decimals ||
+    0;
+  const tokenActivitySummaryV2 = targetMint
+    ? summarizeClassifiedActivity(activityEvents || [], tokenDecimals)
+    : undefined;
+  const loadedRatio =
+    signatures.length > 0 ? transactions.length / signatures.length : 0;
+  const blockTimes = transactions
+    .map((transaction) => transaction.blockTime)
+    .filter((value): value is number => typeof value === "number");
+  const scanCoverage = {
+    source: targetMint ? ("wallet-and-token-accounts" as const) : ("wallet" as const),
+    walletSignatures: walletSignatures.length,
+    tokenAccountSignatures: tokenAccountSignatures.length,
+    tokenAccounts: tokenAccounts.length,
+    selectedSignatures: signatures.length,
+    loadedTransactions: transactions.length,
+    skippedTransactions,
+    rateLimited,
+    loadedRatio,
+    partial: rateLimited || skippedTransactions > 0 || loadedRatio < 1,
+    newestBlockTime: blockTimes.length > 0 ? Math.max(...blockTimes) : null,
+    oldestBlockTime: blockTimes.length > 0 ? Math.min(...blockTimes) : null,
+    nextCursor:
+      options.tier === "full" && walletSignatures.length > 0
+        ? walletSignatures[walletSignatures.length - 1]?.signature || null
+        : null,
+  };
+  const distributionPressure =
+    targetMint && snapshot
+      ? calculateDistributionPressure({
+          snapshot,
+          events: activityEvents || [],
+          coverage: scanCoverage,
+          quickSellSignalCount,
+        })
+      : undefined;
+
   return {
+    version: 2,
+    mode: options.mode || (targetMint ? "token" : "creator"),
     wallet,
     generatedAt: new Date().toISOString(),
     source: "solana-mainnet",
@@ -191,18 +250,13 @@ export async function scanSolanaCreatorWallet(
     createdTokenCount: createdTokens.length,
     createdTokens,
     targetMint,
+    snapshot,
     tokenActivitySummary,
     tokenActivitySignals,
-    scanCoverage: {
-      source: targetMint ? "wallet-and-token-accounts" : "wallet",
-      walletSignatures: walletSignatures.length,
-      tokenAccountSignatures: tokenAccountSignatures.length,
-      tokenAccounts: tokenAccounts.length,
-      selectedSignatures: signatures.length,
-      loadedTransactions: transactions.length,
-      skippedTransactions,
-      rateLimited,
-    },
+    tokenActivitySummaryV2,
+    activityEvents,
+    distributionPressure,
+    scanCoverage,
     sellSignalCount: sellSignals.length,
     sellSignals,
     quickSellSignalCount,
@@ -211,13 +265,13 @@ export async function scanSolanaCreatorWallet(
     summary: scored.summary,
     limitations: [
       "This report is heuristic. It does not prove fraud, intent, or legal wrongdoing.",
-      "Creator sells are inferred from token/SOL balance deltas and require manual transaction review.",
+      "A sell is counted only when token and quote-asset movements align with a known swap venue; every classification still requires human review.",
       "The scan is limited to the most recent signatures available under the active LEVI access tier.",
       "Created tokens are detected only when mint initialization appears in the scanned wallet transactions.",
       ...(targetMint
         ? [
             "Specific token activity uses the creator wallet and owned token accounts for the target mint when available.",
-            "Specific token activity is ranked by token balance delta in the scanned transactions, not by a full historical index.",
+            "Specific token activity covers the displayed observed window, not a complete historical index.",
           ]
         : []),
       "Free RPC mode loads transactions sequentially to avoid paid node dependencies.",
@@ -249,10 +303,11 @@ export function redactScanReportForTier(
       ...signal,
       signature: `${signal.signature.slice(0, 10)}...`,
     })),
+    activityEvents: report.activityEvents?.slice(0, 10),
     sellSignals: [],
     limitations: [
       ...report.limitations,
-      "Basic access hides detailed sell-event rows. Hold 50,000+ LEVI for the full dashboard.",
+      "Basic access limits detailed activity rows. Hold 50,000+ LEVI for Full Scanner and Portfolio access.",
     ],
   };
 }

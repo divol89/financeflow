@@ -28,10 +28,10 @@ const productCards = [
     body: "Review recent wallet activity, token movement, creator-side sell signals and risk patterns that still require human judgment.",
   },
   {
-    title: "Token Gate",
+    title: "Holder Access",
     icon: LockKeyhole,
     label: "Holder access",
-    body: "LEVI holders can connect and sign wallet ownership to unlock deeper scanner limits and dashboard access without transferring tokens.",
+    body: "LEVI holders can prove wallet ownership with a message signature and unlock deeper Scanner and Portfolio limits without transferring tokens or granting approvals.",
   },
   {
     title: "LEVI Social",
@@ -66,12 +66,12 @@ export default function DocsPage() {
   return (
     <LeviShell>
       <Head>
-        <title>White Bull Agent | LEVI AI Whitepaper</title>
+        <title>Docs | White Bull Agent and LEVI AI</title>
         <meta
           name="description"
           content="White Bull Agent is an AI-assisted intelligence platform for understanding Solana activity through LEVI AI."
         />
-        <meta property="og:title" content="White Bull Agent | LEVI AI Whitepaper" />
+        <meta property="og:title" content="Docs | White Bull Agent and LEVI AI" />
         <meta property="og:description" content="Community-led intelligence for the Solana ecosystem." />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-32x32.png" type="image/png" />
@@ -85,13 +85,13 @@ export default function DocsPage() {
         <section className="levi-container levi-docs-hero">
           <LeviReveal>
             <div className="levi-docs-hero-copy">
-              <p className="levi-eyebrow"><Bot className="h-3.5 w-3.5" /> White Bull Agent / Whitepaper v1.0</p>
+              <p className="levi-eyebrow"><Bot className="h-3.5 w-3.5" /> White Bull Agent / Docs v1.0</p>
               <h1>Where community ideas become <span>real Web3 products.</span></h1>
               <p className="levi-docs-hero-lede">
                 White Bull Agent is an AI-assisted intelligence platform built for the Solana ecosystem. It helps traders, investors and communities understand public blockchain activity with more context and less noise.
               </p>
               <div className="levi-docs-hero-actions">
-                <a className="levi-primary-button" href="#introduction">Read the whitepaper <ArrowUpRight className="h-4 w-4" /></a>
+                <a className="levi-primary-button" href="#introduction">Read the docs <ArrowUpRight className="h-4 w-4" /></a>
                 <a className="levi-secondary-button" href="#token">View token identity</a>
               </div>
               <p className="levi-docs-hero-note">Data-assisted education and intelligence. Not financial advice or a promise of results.</p>

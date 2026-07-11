@@ -27,6 +27,11 @@ export function getAccessLimits(tier: LeviAccessTier): LeviAccessLimits {
       scanLimit: FULL_SCAN_LIMIT,
       fullDashboard: true,
       details: "full",
+      portfolioHistoryDays: null,
+      portfolioActivityLimit: 50,
+      watchlistLimit: 25,
+      journalLimit: 200,
+      canExtendScanHistory: true,
     };
   }
 
@@ -35,6 +40,11 @@ export function getAccessLimits(tier: LeviAccessTier): LeviAccessLimits {
       scanLimit: BASIC_SCAN_LIMIT,
       fullDashboard: false,
       details: "summary",
+      portfolioHistoryDays: 7,
+      portfolioActivityLimit: 10,
+      watchlistLimit: 3,
+      journalLimit: 10,
+      canExtendScanHistory: false,
     };
   }
 
@@ -42,11 +52,16 @@ export function getAccessLimits(tier: LeviAccessTier): LeviAccessLimits {
     scanLimit: 0,
     fullDashboard: false,
     details: "none",
+    portfolioHistoryDays: 0,
+    portfolioActivityLimit: 0,
+    watchlistLimit: 0,
+    journalLimit: 0,
+    canExtendScanHistory: false,
   };
 }
 
 export function getAccessReason(tier: LeviAccessTier): string {
-  if (tier === "full") return "Full dashboard unlocked with 50,000+ LEVI.";
+  if (tier === "full") return "Full Scanner and Portfolio access unlocked with 50,000+ LEVI.";
   if (tier === "basic") return "Basic scanner unlocked with 3,000+ LEVI.";
   return "Hold at least 3,000 LEVI to unlock scanner access.";
 }

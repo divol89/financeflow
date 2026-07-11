@@ -11,6 +11,8 @@ export interface ParsedSolanaTransaction {
   blockTime?: number | null;
   meta?: {
     err?: unknown;
+    fee?: number;
+    logMessages?: string[] | null;
     preBalances?: number[];
     postBalances?: number[];
     preTokenBalances?: TokenBalanceRecord[];
@@ -26,7 +28,7 @@ export interface ParsedSolanaTransaction {
   };
 }
 
-interface ParsedInstruction {
+export interface ParsedInstruction {
   program?: string;
   programId?: string;
   parsed?: {
@@ -35,7 +37,7 @@ interface ParsedInstruction {
   };
 }
 
-interface TokenBalanceRecord {
+export interface TokenBalanceRecord {
   accountIndex?: number;
   mint?: string;
   owner?: string;
@@ -47,7 +49,7 @@ interface TokenBalanceRecord {
   };
 }
 
-type AccountKeyRecord =
+export type AccountKeyRecord =
   | string
   | {
       pubkey?: string;

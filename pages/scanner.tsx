@@ -14,10 +14,10 @@ export default function ScannerPage() {
             Scanner
           </p>
           <h1 className="mt-3 text-4xl font-semibold text-white">
-            Creator wallet risk scan
+            Wallet and token evidence scan
           </h1>
           <p className="mt-3 max-w-3xl text-slate-400">
-            Connect a Solana wallet that holds LEVI, sign access, and scan a creator address.
+            Compare current holdings with classified swaps, transfers and the exact coverage of the observed window.
           </p>
         </div>
         <ScannerPanel />

@@ -1,8 +1,14 @@
-import { LogOut, PlugZap, ShieldCheck, Signature } from "lucide-react";
+import { KeyRound, LogOut, PlugZap, ShieldCheck, Signature } from "lucide-react";
 import { AccessBadge } from "./AccessBadge";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
 
-export function LeviAuthPanel() {
+export function LeviAuthPanel({
+  compact = false,
+  onConnectionGuideOpened,
+}: {
+  compact?: boolean;
+  onConnectionGuideOpened?: () => void;
+}) {
   const {
     access,
     connectWallet,
@@ -15,14 +21,21 @@ export function LeviAuthPanel() {
     walletAddress,
   } = useLeviAuth();
 
+  const nextThreshold =
+    access?.tier === "blocked" ? 3_000 : access?.tier === "basic" ? 50_000 : null;
+  const progress =
+    access && nextThreshold
+      ? Math.min(100, Math.max(0, (access.balance / nextThreshold) * 100))
+      : 100;
+
   return (
-    <div className="levi-auth-panel">
+    <div className={`levi-auth-panel${compact ? " is-compact" : ""}`}>
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-white">LEVI Access</p>
             <p className="mt-1 text-sm text-slate-400">
-              Sign once to unlock the scanner with your token balance.
+              Connect and sign a message to prove wallet ownership.
             </p>
           </div>
           {access ? <AccessBadge tier={access.tier} /> : null}
@@ -32,7 +45,11 @@ export function LeviAuthPanel() {
           <button
             type="button"
             onClick={() => {
-              void connectWallet().catch(() => undefined);
+              void connectWallet()
+                .then((connected) => {
+                  if (!connected) onConnectionGuideOpened?.();
+                })
+                .catch(() => undefined);
             }}
             className="levi-secondary-button"
           >
@@ -54,7 +71,7 @@ export function LeviAuthPanel() {
             <button
               type="button"
               onClick={logout}
-            className="levi-secondary-button"
+              className="levi-secondary-button"
             >
               <LogOut className="h-4 w-4" />
               Logout
@@ -63,7 +80,7 @@ export function LeviAuthPanel() {
         </div>
 
         {access ? (
-          <div className="grid gap-3 border-t border-white/10 pt-4 sm:grid-cols-3">
+          <div className="levi-access-summary grid gap-3 border-t border-white/10 pt-4 sm:grid-cols-3">
             <div>
               <p className="text-xs uppercase text-slate-500">Balance</p>
               <p className="mt-1 text-lg font-semibold text-white">
@@ -80,7 +97,7 @@ export function LeviAuthPanel() {
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase text-slate-500">Dashboard</p>
+              <p className="text-xs uppercase text-slate-500">Portfolio</p>
               <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-white">
                 <ShieldCheck className="h-4 w-4 text-emerald-300" />
                 {access.limits.fullDashboard ? "Full" : "Basic"}
@@ -88,6 +105,21 @@ export function LeviAuthPanel() {
             </div>
           </div>
         ) : null}
+
+        {access && nextThreshold ? (
+          <div className="levi-access-progress">
+            <div>
+              <span>Progress to {access.tier === "blocked" ? "Basic" : "Full"}</span>
+              <strong>{Math.max(0, nextThreshold - access.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} LEVI remaining</strong>
+            </div>
+            <div className="levi-access-progress-track"><span style={{ width: `${progress}%` }} /></div>
+          </div>
+        ) : null}
+
+        <p className="levi-access-safety">
+          <KeyRound className="h-4 w-4" />
+          Message signing only. No token transfer, approval, custody or transaction.
+        </p>
 
         {error ? (
           <p className="border-l border-red-400/60 bg-red-950/30 px-3 py-2 text-sm text-red-100">
