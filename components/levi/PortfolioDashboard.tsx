@@ -15,6 +15,7 @@ import { PortfolioBalanceChart } from "./PortfolioBalanceChart";
 import { PortfolioActivityFeed } from "./PortfolioActivityFeed";
 import { PortfolioWatchlist } from "./PortfolioWatchlist";
 import { DecisionJournal } from "./DecisionJournal";
+import { PortfolioDataCoverage } from "./PortfolioDataCoverage";
 
 function groupDigits(value: string): string {
   const [whole, fraction] = value.split(".");
@@ -93,10 +94,12 @@ export function PortfolioDashboard() {
         ))}
       </div>
 
+      <PortfolioDataCoverage coverage={data.coverage} />
+
       <PortfolioBalanceChart current={data.current} history={data.history} allowedHistoryDays={data.access.limits.portfolioHistoryDays} />
 
       <div className="levi-portfolio-columns">
-        <PortfolioActivityFeed activity={data.activity} />
+        <PortfolioActivityFeed activity={data.activity} coverage={data.coverage} />
         <PortfolioWatchlist items={data.watchlist} limit={data.access.limits.watchlistLimit} onRemove={portfolio.removeWatchItem} />
       </div>
 

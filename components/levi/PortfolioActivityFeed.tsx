@@ -1,5 +1,8 @@
 import { ArrowDownLeft, ArrowUpRight, ExternalLink, Radar } from "lucide-react";
-import type { PortfolioActivity } from "@/types/portfolio";
+import type {
+  PortfolioActivity,
+  PortfolioDataCoverage,
+} from "@/types/portfolio";
 import { CLASSIFICATION_LABELS } from "@/lib/levi/scanner/methodology";
 
 function labelFor(event: PortfolioActivity): string {
@@ -8,13 +11,31 @@ function labelFor(event: PortfolioActivity): string {
   return CLASSIFICATION_LABELS[event.classification].label;
 }
 
-export function PortfolioActivityFeed({ activity }: { activity: PortfolioActivity[] }) {
+function emptyMessage(status: PortfolioDataCoverage["activityStatus"]): string {
+  if (status === "locked") return "Recent activity unlocks with Basic LEVI AI access.";
+  if (status === "unavailable") return "Live balances arrived, but recent activity is temporarily unavailable.";
+  if (status === "partial") return "No classified project movement was found in the transactions that loaded.";
+  return "No LEVI, LEVI AI or material SOL movement has been tracked yet.";
+}
+
+export function PortfolioActivityFeed({
+  activity,
+  coverage,
+}: {
+  activity: PortfolioActivity[];
+  coverage: PortfolioDataCoverage;
+}) {
   return (
     <section className="levi-portfolio-section" aria-labelledby="portfolio-activity-title">
       <div className="levi-result-section-heading">
         <div><p className="levi-section-label">On-chain movements</p><h2 id="portfolio-activity-title">Recent project activity</h2></div>
-        <span>{activity.length} tracked event{activity.length === 1 ? "" : "s"}</span>
+        <span>{activity.length} event{activity.length === 1 ? "" : "s"} / {coverage.activityStatus}</span>
       </div>
+      {coverage.activityStatus === "cached" || coverage.activityStatus === "partial" ? (
+        <p className={`levi-portfolio-activity-note is-${coverage.activityStatus}`}>
+          {coverage.activityMessage}
+        </p>
+      ) : null}
       <div className="levi-portfolio-activity-list">
         {activity.length ? activity.map((event) => {
           const incoming = event.classification === "buy" || event.classification === "transfer_in" || event.classification === "mint" || event.classification === "sol_in";
@@ -29,7 +50,7 @@ export function PortfolioActivityFeed({ activity }: { activity: PortfolioActivit
               <a href={event.solscanUrl} target="_blank" rel="noreferrer" title="Open on Solscan"><ExternalLink className="h-4 w-4" /></a>
             </article>
           );
-        }) : <div className="levi-empty-state">No LEVI, LEVI AI or material SOL movement has been tracked yet.</div>}
+        }) : <div className="levi-empty-state">{emptyMessage(coverage.activityStatus)}</div>}
       </div>
     </section>
   );

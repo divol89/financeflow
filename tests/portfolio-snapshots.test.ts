@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import type { PortfolioSnapshot } from "@/types/portfolio";
 import { shouldStorePortfolioSnapshot } from "@/lib/portfolio/snapshots";
 import { getAccessLimits } from "@/lib/levi/access";
+import { buildPortfolioCoverage } from "@/lib/portfolio/coverage";
 
 function snapshot(capturedAt: string, leviRaw = "1000000"): PortfolioSnapshot {
   return {
@@ -65,5 +66,53 @@ describe("Portfolio tier limits", () => {
     assert.equal(getAccessLimits("basic").canExtendScanHistory, false);
     assert.equal(getAccessLimits("full").canExtendScanHistory, true);
     assert.equal(getAccessLimits("full").portfolioActivityLimit, 50);
+  });
+});
+
+describe("Portfolio data coverage", () => {
+  const base = {
+    activityEnabled: true,
+    activityFailed: false,
+    activityPartial: false,
+    storedActivityCount: 0,
+    selectedSignatures: 8,
+    loadedTransactions: 8,
+    historyPoints: 3,
+    refreshedAt: "2026-07-13T10:00:00.000Z",
+  };
+
+  it("reports live balances independently from partial activity", () => {
+    const coverage = buildPortfolioCoverage({
+      ...base,
+      activityPartial: true,
+      loadedTransactions: 5,
+    });
+
+    assert.equal(coverage.balanceStatus, "live");
+    assert.equal(coverage.activityStatus, "partial");
+    assert.match(coverage.activityMessage, /5\/8/);
+  });
+
+  it("keeps stored activity visible when the live RPC read fails", () => {
+    const coverage = buildPortfolioCoverage({
+      ...base,
+      activityFailed: true,
+      storedActivityCount: 4,
+      loadedTransactions: 0,
+    });
+
+    assert.equal(coverage.activityStatus, "cached");
+    assert.match(coverage.activityMessage, /stored events/i);
+  });
+
+  it("distinguishes unavailable activity from a locked tier", () => {
+    assert.equal(
+      buildPortfolioCoverage({ ...base, activityFailed: true }).activityStatus,
+      "unavailable"
+    );
+    assert.equal(
+      buildPortfolioCoverage({ ...base, activityEnabled: false }).activityStatus,
+      "locked"
+    );
   });
 });

@@ -13,6 +13,7 @@ import {
 import { Activity, ArrowDownLeft, ArrowUpRight, MoveRight, Repeat2 } from "lucide-react";
 import type { ClassifiedTokenActivity, ScanCoverage, TokenActivitySummaryV2 } from "@/types/levi";
 import { buildScannerActivityChart } from "@/lib/levi/scanner/activityChart";
+import { ScannerChartGuide } from "./ScannerChartGuide";
 
 function compactNumber(value: number): string {
   return Number(value).toLocaleString(undefined, {
@@ -119,6 +120,12 @@ export function ScannerActivityChart({
           </ResponsiveContainer>
         )}
       </div>
+
+      <ScannerChartGuide
+        routed={hasRoutedFlow}
+        loadedTransactions={coverage.loadedTransactions}
+        selectedSignatures={coverage.selectedSignatures}
+      />
 
       <footer>
         <span>{coverage.loadedTransactions}/{coverage.selectedSignatures} transactions loaded</span>

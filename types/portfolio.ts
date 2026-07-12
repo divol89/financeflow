@@ -7,6 +7,12 @@ import type {
 
 export type PortfolioAssetId = "sol" | "levi" | "levi-ai";
 export type JournalDecision = "watch" | "entered" | "trimmed" | "exited" | "avoided";
+export type PortfolioActivityStatus =
+  | "live"
+  | "partial"
+  | "cached"
+  | "unavailable"
+  | "locked";
 
 export interface PortfolioAssetBalance {
   id: PortfolioAssetId;
@@ -63,6 +69,16 @@ export interface PortfolioJournalEntry {
   updatedAt: string;
 }
 
+export interface PortfolioDataCoverage {
+  balanceStatus: "live";
+  activityStatus: PortfolioActivityStatus;
+  activityMessage: string;
+  selectedSignatures: number;
+  loadedTransactions: number;
+  historyPoints: number;
+  refreshedAt: string;
+}
+
 export interface PortfolioPayload {
   access: LeviAccessState;
   current: PortfolioSnapshot;
@@ -70,6 +86,7 @@ export interface PortfolioPayload {
   activity: PortfolioActivity[];
   watchlist: PortfolioWatchItem[];
   journal: PortfolioJournalEntry[];
+  coverage: PortfolioDataCoverage;
   persistenceAvailable: boolean;
   persistenceMessage?: string;
 }

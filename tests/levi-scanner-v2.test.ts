@@ -10,6 +10,7 @@ import {
 import { rawAmountValue } from "@/lib/levi/scanner/amounts";
 import { calculateDistributionPressure } from "@/lib/levi/scanner/pressure";
 import { buildScannerActivityChart } from "@/lib/levi/scanner/activityChart";
+import { buildScannerChartGuide } from "@/lib/levi/scanner/chartGuide";
 import { deriveAssociatedTokenAccounts } from "@/lib/levi/scanner/scanWallet";
 
 const wallet = "Creator111111111111111111111111111111111111";
@@ -340,6 +341,27 @@ describe("Scanner V2 classification", () => {
     );
     assert.equal(accounts.length, 2);
     assert.equal(new Set(accounts).size, 2);
+  });
+});
+
+describe("Scanner chart guide", () => {
+  it("explains wallet trades without presenting flow as profit", () => {
+    const guide = buildScannerChartGuide(false);
+
+    assert.deepEqual(
+      guide.items.map((item) => item.label),
+      ["Verified buy", "Verified sell", "Transfer / burn", "Cumulative net flow"]
+    );
+    assert.match(guide.items[3].meaning, /not USD profit and loss/i);
+    assert.match(guide.limitation, /not financial advice/i);
+  });
+
+  it("explains program routes separately from wallet ownership", () => {
+    const guide = buildScannerChartGuide(true);
+
+    assert.equal(guide.items[0].label, "Buy-side route");
+    assert.match(guide.items[0].meaning, /does not mean the program address bought/i);
+    assert.match(guide.items[3].meaning, /neither wallet balance nor profit/i);
   });
 });
 
