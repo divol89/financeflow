@@ -12,6 +12,7 @@ import {
   Megaphone,
   Menu,
   Radar,
+  Search,
   ShieldCheck,
   Users,
   WalletCards,
@@ -23,6 +24,7 @@ import { WalletAccessSheet } from "@/components/levi/WalletAccessSheet";
 
 const directNavItems = [
   { href: "/scanner", label: "Scanner", icon: Radar },
+  { href: "/token-sniffer", label: "Token Sniffer", icon: Search },
   { href: "/portfolio", label: "Portfolio", icon: BarChart3 },
 ];
 
