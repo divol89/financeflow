@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
-import { getLeviBurnQuote } from "@/lib/levi/burn/quote";
+import { getBurnWalletInventory } from "@/lib/levi/burn/inventory";
 import { isValidSolanaAddress } from "@/lib/levi/wallet";
-import type { LeviBurnQuote } from "@/types/leviBurn";
+import type { BurnWalletInventory } from "@/types/leviBurn";
 
 function getWalletQueryValue(request: NextApiRequest): string | null {
   const value = request.query.wallet;
@@ -12,17 +12,16 @@ function getWalletQueryValue(request: NextApiRequest): string | null {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<LeviBurnQuote | { error: string }>
+  res: NextApiResponse<BurnWalletInventory | { error: string }>
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   res.setHeader("Cache-Control", "no-store, max-age=0");
-
-  const limited = checkRateLimit(`burn-quote:${getClientKey(req)}`, 30, 60_000);
+  const limited = checkRateLimit(`burn-inventory:${getClientKey(req)}`, 20, 60_000);
   if (!limited.allowed) {
-    return res.status(429).json({ error: "Too many wallet balance checks" });
+    return res.status(429).json({ error: "Too many wallet token checks" });
   }
 
   const wallet = getWalletQueryValue(req);
@@ -31,12 +30,11 @@ export default async function handler(
   }
 
   try {
-    const quote = await getLeviBurnQuote(wallet);
-    return res.status(200).json(quote);
+    return res.status(200).json(await getBurnWalletInventory(wallet));
   } catch (error) {
-    console.error("LEVI AI burn quote failed", error);
+    console.error("Universal burn inventory failed", error);
     return res.status(503).json({
-      error: "Unable to read your LEVI AI balance right now. Please try again shortly.",
+      error: "Unable to read your Solana token balances right now. Please try again shortly.",
     });
   }
 }

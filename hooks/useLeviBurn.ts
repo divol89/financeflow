@@ -1,29 +1,50 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { submitLeviBurn } from "@/lib/levi/burn/client";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { submitPreparedBurn } from "@/lib/levi/burn/client";
 import {
-  requestLeviBurnSigningContext,
   synchronizeBurnTrackerAfterBurn,
   waitForLeviBurnConfirmation,
 } from "@/lib/levi/burn/gateway";
 import { publishBurnTrackerSnapshot } from "@/lib/levi/burnTracker/clientEvents";
-import { parseLeviBurnAmount } from "@/lib/levi/burn/validation";
+import { parseBurnAmount } from "@/lib/levi/burn/validation";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
+import { useLeviAuth } from "@/hooks/useLeviAuth";
 import type {
-  LeviBurnQuote,
+  BurnPreparation,
+  BurnTokenOption,
+  BurnWalletInventory,
   LeviBurnSubmission,
   LeviBurnTrackerSyncState,
   LeviBurnTransactionState,
 } from "@/types/leviBurn";
 
-interface BurnQuoteResponse extends Partial<LeviBurnQuote> {
+interface BurnInventoryResponse extends Partial<BurnWalletInventory> {
   error?: string;
 }
 
-export function useLeviBurn() {
+interface BurnPreparationResponse extends Partial<BurnPreparation> {
+  error?: string;
+}
+
+function preferredToken(
+  tokens: BurnTokenOption[],
+  currentMint: string | null
+): BurnTokenOption | null {
+  return (
+    tokens.find((token) => token.mint === currentMint) ||
+    tokens.find((token) => token.isLeviAi && token.burnable) ||
+    tokens.find((token) => token.burnable) ||
+    tokens[0] ||
+    null
+  );
+}
+
+export function useUniversalBurn() {
   const wallet = useInjectedSolanaWallet();
-  const [quote, setQuote] = useState<LeviBurnQuote | null>(null);
-  const [isLoadingQuote, setIsLoadingQuote] = useState(false);
+  const auth = useLeviAuth();
+  const [inventory, setInventory] = useState<BurnWalletInventory | null>(null);
+  const [selectedMint, setSelectedMint] = useState<string | null>(null);
+  const [isLoadingInventory, setIsLoadingInventory] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submission, setSubmission] = useState<LeviBurnSubmission | null>(null);
@@ -31,6 +52,14 @@ export function useLeviBurn() {
     useState<LeviBurnTrackerSyncState>("idle");
   const activeTrackerSignatureRef = useRef<string | null>(null);
   const isMountedRef = useRef(true);
+
+  const selectedToken = useMemo(
+    () => inventory?.tokens.find((token) => token.mint === selectedMint) || null,
+    [inventory, selectedMint]
+  );
+  const hasExternalAccessSession = Boolean(
+    wallet.address && auth.session?.wallet === wallet.address
+  );
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -69,16 +98,6 @@ export function useLeviBurn() {
 
         updateTrackerSyncState(signature, "refreshing");
         publishBurnTrackerSnapshot(result.snapshot);
-        if (
-          isMountedRef.current &&
-          activeTrackerSignatureRef.current === signature
-        ) {
-          setSubmission((current) =>
-            current?.signature === signature
-              ? { ...current, state: "confirmed" }
-              : current
-          );
-        }
         updateTrackerSyncState(signature, "updated");
         return result.snapshot;
       } catch {
@@ -89,40 +108,47 @@ export function useLeviBurn() {
     [updateTrackerSyncState]
   );
 
-  const refreshQuote = useCallback(
+  const refreshInventory = useCallback(
     async (walletAddress = wallet.address) => {
       if (!walletAddress) {
-        setQuote(null);
+        setInventory(null);
+        setSelectedMint(null);
         return null;
       }
 
-      setIsLoadingQuote(true);
+      setIsLoadingInventory(true);
       setError(null);
       try {
         const response = await fetch(
           `/api/burn/quote?wallet=${encodeURIComponent(walletAddress)}`
         );
-        const data = await readJsonResponse<BurnQuoteResponse>(
+        const data = await readJsonResponse<BurnInventoryResponse>(
           response,
-          "Unable to read your LEVI AI balance right now."
+          "Unable to read your Solana token balances right now."
         );
-        if (!response.ok || !data.wallet || !data.availableRaw || !data.tokenAccounts) {
-          throw new Error(data.error || "Unable to read your LEVI AI balance right now.");
+        if (!response.ok || !data.wallet || !Array.isArray(data.tokens)) {
+          throw new Error(
+            data.error || "Unable to read your Solana token balances right now."
+          );
         }
 
-        const nextQuote = data as LeviBurnQuote;
-        setQuote(nextQuote);
-        return nextQuote;
+        const nextInventory = data as BurnWalletInventory;
+        setInventory(nextInventory);
+        setSelectedMint((current) =>
+          preferredToken(nextInventory.tokens, current)?.mint || null
+        );
+        return nextInventory;
       } catch (reason) {
-        setQuote(null);
+        setInventory(null);
+        setSelectedMint(null);
         setError(
           reason instanceof Error
             ? reason.message
-            : "Unable to read your LEVI AI balance right now."
+            : "Unable to read your Solana token balances right now."
         );
         return null;
       } finally {
-        setIsLoadingQuote(false);
+        setIsLoadingInventory(false);
       }
     },
     [wallet.address]
@@ -130,22 +156,23 @@ export function useLeviBurn() {
 
   useEffect(() => {
     if (!wallet.address) {
-      setQuote(null);
+      setInventory(null);
+      setSelectedMint(null);
       setSubmission(null);
       setTrackerSyncState("idle");
       activeTrackerSignatureRef.current = null;
       return;
     }
 
-    void refreshQuote(wallet.address);
-  }, [refreshQuote, wallet.address]);
+    void refreshInventory(wallet.address);
+  }, [refreshInventory, wallet.address]);
 
   const connectWallet = useCallback(async () => {
     setError(null);
     try {
       const connected = await wallet.connect();
       if (!connected) return null;
-      await refreshQuote(connected.address);
+      await refreshInventory(connected.address);
       return connected.address;
     } catch (reason) {
       setError(
@@ -153,20 +180,55 @@ export function useLeviBurn() {
       );
       throw reason;
     }
-  }, [refreshQuote, wallet]);
+  }, [refreshInventory, wallet]);
+
+  const selectToken = useCallback((mint: string) => {
+    setSelectedMint(mint);
+    setSubmission(null);
+    setTrackerSyncState("idle");
+    activeTrackerSignatureRef.current = null;
+    setError(null);
+  }, []);
+
+  const signExternalAccess = useCallback(async () => {
+    await auth.signIn();
+  }, [auth]);
 
   const burn = useCallback(
     async (amount: string) => {
-      if (!wallet.provider || !wallet.address || !quote) {
-        const message = "Connect your Solana wallet and load your LEVI AI balance first.";
+      if (!wallet.provider || !wallet.address || !inventory || !selectedToken) {
+        const message = "Connect your Solana wallet and select a token first.";
+        setError(message);
+        throw new Error(message);
+      }
+      if (!selectedToken.burnable) {
+        const message = selectedToken.blockedReason || "This token cannot be burned.";
+        setError(message);
+        throw new Error(message);
+      }
+      if (!selectedToken.isLeviAi && !hasExternalAccessSession) {
+        const message =
+          "Sign access to verify the 1,000,000 LEVI AI holder requirement.";
+        setError(message);
+        throw new Error(message);
+      }
+      if (!selectedToken.isLeviAi && !inventory.externalBurnEligible) {
+        const message = "Hold at least 1,000,000 LEVI AI to burn another token.";
         setError(message);
         throw new Error(message);
       }
 
       try {
-        const amountRaw = parseLeviBurnAmount(amount, quote.decimals);
-        if (amountRaw > BigInt(quote.availableRaw)) {
-          throw new Error("The requested burn amount exceeds your available LEVI AI balance.");
+        const displaySymbol = selectedToken.symbol || "selected token";
+        const amountRaw = parseBurnAmount(
+          amount,
+          selectedToken.decimals,
+          displaySymbol
+        );
+        if (amountRaw > BigInt(selectedToken.availableRaw)) {
+          throw new Error(
+            "The requested burn amount exceeds the selected token balance."
+          );
         }
 
         setIsBurning(true);
@@ -174,20 +236,34 @@ export function useLeviBurn() {
         setSubmission(null);
         setTrackerSyncState("idle");
         activeTrackerSignatureRef.current = null;
-        const signingContext = await requestLeviBurnSigningContext();
-        const result = await submitLeviBurn({
+        const response = await fetch("/api/burn/prepare", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            wallet: wallet.address,
+            mint: selectedToken.mint,
+            amountRaw: amountRaw.toString(),
+          }),
+        });
+        const data = await readJsonResponse<BurnPreparationResponse>(
+          response,
+          "Unable to prepare the burn transaction right now."
+        );
+        if (!response.ok || !data.transactionBase64 || !data.mint) {
+          throw new Error(
+            data.error || "Unable to prepare the burn transaction right now."
+          );
+        }
+
+        const result = await submitPreparedBurn({
           provider: wallet.provider,
-          wallet: wallet.address,
-          tokenAccounts: quote.tokenAccounts,
-          amountRaw,
-          signingContext,
+          preparation: data as BurnPreparation,
         });
         const status = await waitForLeviBurnConfirmation(result.signature);
         if (status.state === "failed") {
           throw new Error("The burn transaction failed on Solana.");
         }
 
-        activeTrackerSignatureRef.current = result.signature;
         const completedResult: LeviBurnSubmission = {
           ...result,
           state:
@@ -196,27 +272,40 @@ export function useLeviBurn() {
               : "submitted",
         };
         setSubmission(completedResult);
-        if (status.state === "finalized") {
-          await synchronizeTracker(result.signature, status.state);
-        } else {
-          void synchronizeTracker(result.signature, status.state);
+        if (result.isLeviAi) {
+          activeTrackerSignatureRef.current = result.signature;
+          if (status.state === "finalized") {
+            await synchronizeTracker(result.signature, status.state);
+          } else {
+            void synchronizeTracker(result.signature, status.state);
+          }
         }
-        await refreshQuote(wallet.address);
+        await refreshInventory(wallet.address);
         return completedResult;
       } catch (reason) {
         const message =
-          reason instanceof Error ? reason.message : "The burn transaction could not be completed.";
+          reason instanceof Error
+            ? reason.message
+            : "The burn transaction could not be completed.";
         setError(message);
         throw reason;
       } finally {
         setIsBurning(false);
       }
     },
-    [quote, refreshQuote, synchronizeTracker, wallet.address, wallet.provider]
+    [
+      hasExternalAccessSession,
+      inventory,
+      refreshInventory,
+      selectedToken,
+      synchronizeTracker,
+      wallet.address,
+      wallet.provider,
+    ]
   );
 
   const retryTrackerSync = useCallback(async () => {
-    if (!submission) return null;
+    if (!submission?.isLeviAi) return null;
     activeTrackerSignatureRef.current = submission.signature;
     return synchronizeTracker(
       submission.signature,
@@ -226,15 +315,21 @@ export function useLeviBurn() {
 
   return {
     ...wallet,
-    quote,
-    isLoadingQuote,
+    inventory,
+    selectedToken,
+    selectedMint,
+    hasExternalAccessSession,
+    isLoadingInventory,
     isBurning,
-    error,
+    isSigningAccess: auth.isSigning,
+    error: error || auth.error,
     submission,
     trackerSyncState,
     connectWallet,
-    refreshQuote,
+    refreshInventory,
     retryTrackerSync,
+    selectToken,
+    signExternalAccess,
     burn,
   };
 }

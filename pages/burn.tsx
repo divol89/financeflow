@@ -6,10 +6,10 @@ export default function BurnPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Burn LEVI AI | White Bull Agent</title>
+        <title>Universal Solana Token Burner | White Bull Agent</title>
         <meta
           name="description"
-          content="Burn LEVI AI directly from a Solana wallet with a holder-signed Token-2022 transaction."
+          content="Choose and permanently burn supported SPL or Token-2022 assets from your Solana wallet with a holder-signed transaction."
         />
       </Head>
 

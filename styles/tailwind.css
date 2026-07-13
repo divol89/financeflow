@@ -283,7 +283,7 @@
   }
 }
 
-/* Holder-signed Token-2022 burn surface. No project wallet or custody is involved. */
+/* Holder-signed universal Solana burn surface. No project wallet or custody is involved. */
 .levi-burn-page {
   position: relative;
   min-width: 0;
@@ -334,7 +334,7 @@
   color: var(--levi-warm) !important;
   font-size: clamp(3.2rem, 7vw, 6.25rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 0.97;
 }
 
@@ -445,6 +445,7 @@
 .levi-burn-tool-heading span,
 .levi-burn-wallet-row span,
 .levi-burn-balance-row span,
+.levi-burn-token-selector > span,
 .levi-burn-amount-field > span {
   color: #7f8d80;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -557,6 +558,211 @@
   text-transform: none;
 }
 
+.levi-burn-token-selector {
+  display: block;
+  margin-top: 1.35rem;
+  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  padding-top: 1.2rem;
+}
+
+.levi-burn-token-selector select {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  margin-top: 0.55rem;
+  border: 1px solid rgba(222, 246, 220, 0.18);
+  border-radius: 0.35rem;
+  outline: 0;
+  background: #10150f;
+  color: #f2f7eb;
+  padding: 0.65rem 2.4rem 0.65rem 0.8rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.levi-burn-token-selector select:focus {
+  border-color: rgba(184, 243, 107, 0.56);
+  background: #121a10;
+}
+
+.levi-burn-token-selector select:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.levi-burn-token-selector small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #758273;
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+
+.levi-burn-token-review {
+  min-width: 0;
+  margin-top: 0.9rem;
+  border: 1px solid rgba(222, 246, 220, 0.11);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.85rem;
+}
+
+.levi-burn-token-review-topline,
+.levi-burn-token-review-topline > div,
+.levi-burn-token-review a,
+.levi-burn-token-warning,
+.levi-burn-access-gate > div:first-child,
+.levi-burn-access-gate > div:first-child > div,
+.levi-burn-access-gate button {
+  display: flex;
+  align-items: center;
+}
+
+.levi-burn-token-review-topline {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.levi-burn-token-review-topline > div {
+  min-width: 0;
+  gap: 0.45rem;
+  color: #d8ee7a;
+}
+
+.levi-burn-token-review-topline > div span {
+  overflow: hidden;
+  color: #eff7e5;
+  font-size: 0.76rem;
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.levi-burn-token-review-topline strong {
+  flex: none;
+  color: #93a28f;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.levi-burn-token-review code {
+  display: block;
+  max-width: 100%;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  color: #9dac98;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  scrollbar-width: thin;
+  white-space: nowrap;
+}
+
+.levi-burn-token-review a {
+  width: fit-content;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+  color: #c6ef91;
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.levi-burn-token-review a:hover { color: #fff; }
+
+.levi-burn-token-warning {
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+  border-left: 1px solid rgba(245, 213, 138, 0.55);
+  color: #c8b986;
+  padding-left: 0.55rem;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.levi-burn-token-warning svg { flex: none; margin-top: 0.05rem; }
+.levi-burn-token-warning.is-blocked { border-color: rgba(245, 135, 115, 0.65); color: #efb0a0; }
+
+.levi-burn-access-gate {
+  margin-top: 0.9rem;
+  border-left: 2px solid rgba(245, 213, 138, 0.52);
+  background: rgba(245, 213, 138, 0.045);
+  padding: 0.85rem;
+}
+
+.levi-burn-access-gate.is-unlocked {
+  border-left-color: rgba(184, 243, 107, 0.6);
+  background: rgba(184, 243, 107, 0.045);
+}
+
+.levi-burn-access-gate > div:first-child {
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.levi-burn-access-gate > div:first-child > svg {
+  flex: none;
+  margin-top: 0.08rem;
+  color: #d7bd77;
+}
+
+.levi-burn-access-gate.is-unlocked > div:first-child > svg { color: #b8f36b; }
+
+.levi-burn-access-gate > div:first-child > div {
+  min-width: 0;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.levi-burn-access-gate span {
+  color: #899684;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.levi-burn-access-gate strong {
+  color: #edf6e3;
+  font-size: 0.7rem;
+  text-align: right;
+}
+
+.levi-burn-access-gate p {
+  margin-top: 0.55rem;
+  color: #928e78;
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+
+.levi-burn-access-gate.is-unlocked p { color: #91a18a; }
+
+.levi-burn-access-gate button {
+  width: fit-content;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  border: 1px solid rgba(184, 243, 107, 0.3);
+  border-radius: 0.3rem;
+  background: rgba(184, 243, 107, 0.1);
+  color: #dff8bc;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.66rem;
+  font-weight: 780;
+  cursor: pointer;
+}
+
+.levi-burn-access-gate button:hover:not(:disabled) {
+  border-color: rgba(184, 243, 107, 0.58);
+  background: rgba(184, 243, 107, 0.16);
+}
+
+.levi-burn-access-gate button:disabled { cursor: wait; opacity: 0.58; }
+
 .levi-burn-amount-field {
   display: block;
   margin-top: 1.5rem;
@@ -661,6 +867,12 @@
   accent-color: #b8f36b;
 }
 
+.levi-burn-acknowledgement code {
+  color: #d8ee7a;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+}
+
 .levi-burn-submit {
   display: inline-flex;
   width: 100%;
@@ -755,6 +967,7 @@
 
 .levi-burn-tool button:focus-visible,
 .levi-burn-tool input:focus-visible,
+.levi-burn-tool select:focus-visible,
 .levi-burn-tracker-action:focus-visible {
   outline: 2px solid #d8ee7a;
   outline-offset: 3px;
@@ -782,6 +995,8 @@
   .levi-burn-tool { padding: 1.15rem; }
   .levi-burn-balance-row { align-items: flex-start; flex-direction: column; }
   .levi-burn-balance-row > span:last-child { max-width: none; text-align: left; }
+  .levi-burn-access-gate > div:first-child > div { align-items: flex-start; flex-direction: column; }
+  .levi-burn-access-gate strong { text-align: left; }
   .levi-burn-tracker-action { width: 100%; justify-content: center; }
 }
 

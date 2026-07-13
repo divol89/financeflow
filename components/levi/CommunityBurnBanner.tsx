@@ -74,6 +74,8 @@ export function CommunityBurnBanner() {
     }
   }
 
+  if (router.pathname === "/burn") return null;
+
   if (!isOpen) {
     return (
       <button

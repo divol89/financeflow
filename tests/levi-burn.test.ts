@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { Keypair } from "@solana/web3.js";
-import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
+import { Keypair, type Transaction } from "@solana/web3.js";
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import {
-  createLeviBurnTransaction,
-  submitLeviBurn,
+  parseAndValidatePreparedBurn,
+  submitPreparedBurn,
 } from "../lib/levi/burn/client";
+import { createBurnTransaction } from "../lib/levi/burn/transactionFactory";
+import { prepareBurnTransaction } from "../lib/levi/burn/prepare";
 import {
   refreshBurnTrackerAfterBurn,
   synchronizeBurnTrackerAfterBurn,
@@ -16,59 +18,66 @@ import {
   getLeviBurnSigningContext,
 } from "../lib/levi/burn/transaction";
 import {
-  formatLeviBurnAmount,
-  LeviBurnValidationError,
-  parseLeviBurnAmount,
+  BurnValidationError,
+  formatBurnAmount,
+  parseBurnAmount,
 } from "../lib/levi/burn/validation";
 import { LEVI_AI_MINT_ADDRESS } from "../lib/levi/communityBurn";
+import type { BurnPreparation } from "../types/leviBurn";
 
 const originalFetch = globalThis.fetch;
 
-test("parses LEVI AI burn input without floating point rounding", () => {
-  assert.equal(parseLeviBurnAmount("100", 6), BigInt(100_000_000));
-  assert.equal(parseLeviBurnAmount("0.000001", 6), BigInt(1));
-  assert.equal(formatLeviBurnAmount("100000001", 6), "100.000001");
+test("parses arbitrary token burn input without floating point rounding", () => {
+  assert.equal(parseBurnAmount("100", 6, "TOKEN"), BigInt(100_000_000));
+  assert.equal(parseBurnAmount("0.000000001", 9, "TOKEN"), BigInt(1));
+  assert.equal(formatBurnAmount("100000001", 6), "100.000001");
 });
 
 test("rejects zero, negative, malformed and over-precise burn amounts", () => {
   for (const input of ["0", "-1", "1e2", "1.0000001", " "]) {
     assert.throws(
-      () => parseLeviBurnAmount(input, 6),
-      LeviBurnValidationError,
+      () => parseBurnAmount(input, 6, "TOKEN"),
+      BurnValidationError,
       `expected ${input || "empty"} to be rejected`
     );
   }
 });
 
-test("creates Token-2022 BurnChecked instructions that allocate exact amounts", () => {
+test("creates SPL and Token-2022 BurnChecked instructions with exact allocations", () => {
   const owner = Keypair.generate().publicKey;
+  const mint = Keypair.generate().publicKey;
   const firstAccount = Keypair.generate().publicKey;
   const secondAccount = Keypair.generate().publicKey;
-  const transaction = createLeviBurnTransaction({
-    wallet: owner.toBase58(),
-    tokenAccounts: [
-      { address: firstAccount.toBase58(), amountRaw: "750000" },
-      { address: secondAccount.toBase58(), amountRaw: "500000" },
-    ],
-    amountRaw: BigInt(1_000_000),
-    blockhash: "11111111111111111111111111111111",
-  });
 
-  assert.equal(transaction.feePayer?.toBase58(), owner.toBase58());
-  assert.equal(transaction.instructions.length, 2);
+  for (const programId of [TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID]) {
+    const transaction = createBurnTransaction({
+      wallet: owner.toBase58(),
+      mint: mint.toBase58(),
+      programId: programId.toBase58(),
+      decimals: 6,
+      tokenAccounts: [
+        { address: firstAccount.toBase58(), amountRaw: "750000" },
+        { address: secondAccount.toBase58(), amountRaw: "500000" },
+      ],
+      amountRaw: BigInt(1_000_000),
+      blockhash: "11111111111111111111111111111111",
+    });
 
-  const [firstInstruction, secondInstruction] = transaction.instructions;
-  assert.equal(firstInstruction.programId.toBase58(), TOKEN_2022_PROGRAM_ID.toBase58());
-  assert.equal(secondInstruction.programId.toBase58(), TOKEN_2022_PROGRAM_ID.toBase58());
-  assert.equal(firstInstruction.keys[0].pubkey.toBase58(), firstAccount.toBase58());
-  assert.equal(secondInstruction.keys[0].pubkey.toBase58(), secondAccount.toBase58());
-  assert.equal(firstInstruction.keys[1].pubkey.toBase58(), LEVI_AI_MINT_ADDRESS);
-  assert.equal(firstInstruction.keys[2].pubkey.toBase58(), owner.toBase58());
-  assert.equal(firstInstruction.data[0], 15);
-  assert.equal(secondInstruction.data[0], 15);
-  assert.equal(firstInstruction.data.readBigUInt64LE(1), BigInt(750_000));
-  assert.equal(secondInstruction.data.readBigUInt64LE(1), BigInt(250_000));
-  assert.equal(firstInstruction.data[9], 6);
+    assert.equal(transaction.feePayer?.toBase58(), owner.toBase58());
+    assert.equal(transaction.instructions.length, 2);
+    const [firstInstruction, secondInstruction] = transaction.instructions;
+    assert.equal(firstInstruction.programId.toBase58(), programId.toBase58());
+    assert.equal(secondInstruction.programId.toBase58(), programId.toBase58());
+    assert.equal(firstInstruction.keys[0].pubkey.toBase58(), firstAccount.toBase58());
+    assert.equal(secondInstruction.keys[0].pubkey.toBase58(), secondAccount.toBase58());
+    assert.equal(firstInstruction.keys[1].pubkey.toBase58(), mint.toBase58());
+    assert.equal(firstInstruction.keys[2].pubkey.toBase58(), owner.toBase58());
+    assert.equal(firstInstruction.data[0], 15);
+    assert.equal(secondInstruction.data[0], 15);
+    assert.equal(firstInstruction.data.readBigUInt64LE(1), BigInt(750_000));
+    assert.equal(secondInstruction.data.readBigUInt64LE(1), BigInt(250_000));
+    assert.equal(firstInstruction.data[9], 6);
+  }
 });
 
 test("refuses a BurnChecked transaction when quoted token accounts cannot cover the amount", () => {
@@ -77,42 +86,185 @@ test("refuses a BurnChecked transaction when quoted token accounts cannot cover 
 
   assert.throws(
     () =>
-      createLeviBurnTransaction({
+      createBurnTransaction({
         wallet: owner.toBase58(),
+        mint: Keypair.generate().publicKey.toBase58(),
+        programId: TOKEN_PROGRAM_ID.toBase58(),
+        decimals: 6,
         tokenAccounts: [{ address: tokenAccount.toBase58(), amountRaw: "1" }],
         amountRaw: BigInt(2),
         blockhash: "11111111111111111111111111111111",
       }),
-    /exceeds your LEVI AI balance/
+    /exceeds the selected token balance/
   );
 });
 
-test("uses a server-provided blockhash and delegates submission to the wallet", async () => {
+test("validates the prepared transaction before delegating submission to the wallet", async () => {
   const owner = Keypair.generate().publicKey;
+  const mint = Keypair.generate().publicKey;
   const tokenAccount = Keypair.generate().publicKey;
   let capturedBlockhash = "";
   let capturedInstructionCount = 0;
+  const transaction = createBurnTransaction({
+    wallet: owner.toBase58(),
+    mint: mint.toBase58(),
+    programId: TOKEN_PROGRAM_ID.toBase58(),
+    decimals: 6,
+    tokenAccounts: [{ address: tokenAccount.toBase58(), amountRaw: "1000000000" }],
+    amountRaw: BigInt(1_000_000_000),
+    blockhash: "11111111111111111111111111111111",
+  });
+  const preparation: BurnPreparation = {
+    wallet: owner.toBase58(),
+    mint: mint.toBase58(),
+    programId: TOKEN_PROGRAM_ID.toBase58(),
+    decimals: 6,
+    symbol: "TEST",
+    amountRaw: "1000000000",
+    isLeviAi: false,
+    transactionBase64: transaction
+      .serialize({ requireAllSignatures: false, verifySignatures: false })
+      .toString("base64"),
+  };
 
-  const submission = await submitLeviBurn({
+  assert.equal(parseAndValidatePreparedBurn(preparation).instructions.length, 1);
+  const submission = await submitPreparedBurn({
     provider: {
       connect: async () => ({ publicKey: owner }),
       signMessage: async () => new Uint8Array(),
-      signAndSendTransaction: async (transaction) => {
-        capturedBlockhash = transaction.recentBlockhash || "";
-        capturedInstructionCount = transaction.instructions.length;
+      signAndSendTransaction: async (prepared: Transaction) => {
+        capturedBlockhash = prepared.recentBlockhash || "";
+        capturedInstructionCount = prepared.instructions.length;
         return { signature: "walletSubmittedSignature" };
       },
     },
-    wallet: owner.toBase58(),
-    tokenAccounts: [{ address: tokenAccount.toBase58(), amountRaw: "1000000000" }],
-    amountRaw: BigInt(1_000_000_000),
-    signingContext: { blockhash: "11111111111111111111111111111111" },
+    preparation,
   });
 
   assert.equal(submission.signature, "walletSubmittedSignature");
   assert.equal(submission.state, "submitted");
   assert.equal(capturedBlockhash, "11111111111111111111111111111111");
   assert.equal(capturedInstructionCount, 1);
+});
+
+test("enforces a signed 1,000,000 LEVI AI gate only for external token burns", async () => {
+  const owner = Keypair.generate().publicKey.toBase58();
+  const externalMint = Keypair.generate().publicKey.toBase58();
+  const externalAccount = Keypair.generate().publicKey.toBase58();
+  const leviAccount = Keypair.generate().publicKey.toBase58();
+  let leviBalanceRaw = "1000000000000";
+
+  globalThis.fetch = (async (_input, init) => {
+    const request = JSON.parse(String(init?.body)) as {
+      method: string;
+      params: Array<Record<string, string>>;
+    };
+    let result: unknown;
+
+    if (request.method === "getTokenAccountsByOwner") {
+      const programId = request.params[1]?.programId;
+      result = {
+        value:
+          programId === TOKEN_PROGRAM_ID.toBase58()
+            ? [
+                {
+                  pubkey: externalAccount,
+                  account: {
+                    owner: TOKEN_PROGRAM_ID.toBase58(),
+                    data: {
+                      parsed: {
+                        info: {
+                          mint: externalMint,
+                          state: "initialized",
+                          tokenAmount: { amount: "5000000000", decimals: 6 },
+                        },
+                      },
+                    },
+                  },
+                },
+              ]
+            : [
+                {
+                  pubkey: leviAccount,
+                  account: {
+                    owner: TOKEN_2022_PROGRAM_ID.toBase58(),
+                    data: {
+                      parsed: {
+                        info: {
+                          mint: LEVI_AI_MINT_ADDRESS,
+                          state: "initialized",
+                          tokenAmount: { amount: leviBalanceRaw, decimals: 6 },
+                        },
+                      },
+                    },
+                  },
+                },
+              ],
+      };
+    } else if (request.method === "getBalance") {
+      result = { value: 10_000_000 };
+    } else if (request.method === "getLatestBlockhash") {
+      result = { value: { blockhash: "11111111111111111111111111111111" } };
+    } else {
+      throw new Error(`Unexpected RPC method ${request.method}`);
+    }
+
+    return new Response(
+      JSON.stringify({ jsonrpc: "2.0", id: 1, result }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  }) as typeof fetch;
+
+  try {
+    await assert.rejects(
+      () =>
+        prepareBurnTransaction({
+          wallet: owner,
+          mint: externalMint,
+          amountRaw: "1000000",
+          sessionWallet: null,
+        }),
+      /Sign access/
+    );
+
+    leviBalanceRaw = "999999999999";
+    await assert.rejects(
+      () =>
+        prepareBurnTransaction({
+          wallet: owner,
+          mint: externalMint,
+          amountRaw: "1000000",
+          sessionWallet: owner,
+        }),
+      /Hold at least 1,000,000 LEVI AI/
+    );
+
+    leviBalanceRaw = "1000000000000";
+    const externalPreparation = await prepareBurnTransaction({
+      wallet: owner,
+      mint: externalMint,
+      amountRaw: "1000000",
+      sessionWallet: owner,
+    });
+    assert.equal(externalPreparation.programId, TOKEN_PROGRAM_ID.toBase58());
+    assert.equal(externalPreparation.isLeviAi, false);
+    assert.equal(
+      parseAndValidatePreparedBurn(externalPreparation).instructions.length,
+      1
+    );
+
+    leviBalanceRaw = "100";
+    const leviPreparation = await prepareBurnTransaction({
+      wallet: owner,
+      mint: LEVI_AI_MINT_ADDRESS,
+      amountRaw: "1",
+      sessionWallet: null,
+    });
+    assert.equal(leviPreparation.programId, TOKEN_2022_PROGRAM_ID.toBase58());
+    assert.equal(leviPreparation.isLeviAi, true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("distinguishes confirmed from finalized burn transaction states", () => {

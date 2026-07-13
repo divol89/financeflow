@@ -1,92 +1,106 @@
-import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   AlertTriangle,
-  ArrowUpRight,
-  CheckCircle2,
-  ExternalLink,
   Flame,
   Loader2,
   RefreshCw,
-  ShieldCheck,
   WalletCards,
 } from "lucide-react";
-import { useLeviBurn } from "@/hooks/useLeviBurn";
-import { formatRawTokenAmount } from "@/lib/levi/burnTracker/calculations";
-import {
-  formatLeviBurnAmount,
-  parseLeviBurnAmount,
-} from "@/lib/levi/burn/validation";
+import { BurnAccessGate } from "@/components/levi/burn/BurnAccessGate";
+import { BurnAmountControls } from "@/components/levi/burn/BurnAmountControls";
+import { BurnPortalIntro } from "@/components/levi/burn/BurnPortalIntro";
+import { BurnSubmissionResult } from "@/components/levi/burn/BurnSubmissionResult";
+import { BurnTokenSelector } from "@/components/levi/burn/BurnTokenSelector";
+import { useUniversalBurn } from "@/hooks/useLeviBurn";
+import { getBurnTokenName } from "@/lib/levi/burn/presentation";
+import { formatBurnAmount, parseBurnAmount } from "@/lib/levi/burn/validation";
 import { truncateSolanaAddress } from "@/lib/levi/wallet";
-
-function formatSolBalance(lamports: string): string {
-  const raw = BigInt(lamports);
-  const divisor = BigInt(1_000_000_000);
-  const whole = raw / divisor;
-  const fraction = (raw % divisor)
-    .toString()
-    .padStart(9, "0")
-    .replace(/0+$/, "");
-
-  return fraction ? `${whole}.${fraction}` : whole.toString();
-}
 
 export function LeviBurnPortal() {
   const {
     address,
     isConnected,
     isConnecting,
-    quote,
-    isLoadingQuote,
+    inventory,
+    selectedToken,
+    selectedMint,
+    hasExternalAccessSession,
+    isLoadingInventory,
     isBurning,
+    isSigningAccess,
     error,
     submission,
     trackerSyncState,
     connectWallet,
-    refreshQuote,
+    refreshInventory,
     retryTrackerSync,
+    selectToken,
+    signExternalAccess,
     burn,
-  } = useLeviBurn();
+  } = useUniversalBurn();
   const [amount, setAmount] = useState("");
   const [acknowledged, setAcknowledged] = useState(false);
 
+  useEffect(() => {
+    setAmount("");
+    setAcknowledged(false);
+  }, [selectedMint]);
+
   const amountState = useMemo(() => {
-    if (!amount.trim() || !quote) return { amountRaw: null, error: null };
+    if (!amount.trim() || !selectedToken) return { amountRaw: null, error: null };
 
     try {
       return {
-        amountRaw: parseLeviBurnAmount(amount, quote.decimals),
+        amountRaw: parseBurnAmount(
+          amount,
+          selectedToken.decimals,
+          getBurnTokenName(selectedToken)
+        ),
         error: null,
       };
     } catch (reason) {
       return {
         amountRaw: null,
-        error:
-          reason instanceof Error ? reason.message : "Enter a valid LEVI AI amount.",
+        error: reason instanceof Error ? reason.message : "Enter a valid amount.",
       };
     }
-  }, [amount, quote]);
+  }, [amount, selectedToken]);
 
   const exceedsBalance = Boolean(
-    amountState.amountRaw && quote && amountState.amountRaw > BigInt(quote.availableRaw)
+    amountState.amountRaw &&
+      selectedToken &&
+      amountState.amountRaw > BigInt(selectedToken.availableRaw)
   );
   const amountError = exceedsBalance
-    ? "The requested burn amount exceeds your available LEVI AI balance."
+    ? "The requested burn amount exceeds the selected token balance."
     : amountState.error;
+  const externalGateSatisfied = Boolean(
+    selectedToken?.isLeviAi ||
+      (inventory?.externalBurnEligible && hasExternalAccessSession)
+  );
   const canBurn = Boolean(
-    quote &&
+    selectedToken?.burnable &&
       amountState.amountRaw &&
       !amountError &&
       acknowledged &&
+      externalGateSatisfied &&
       !isBurning &&
-      !isLoadingQuote
+      !isLoadingInventory
   );
 
   async function handleConnect() {
     try {
       await connectWallet();
     } catch {
-      // The hook retains the wallet error for the inline status region.
+      // The hook exposes the actionable wallet error below the form.
+    }
+  }
+
+  async function handleSignAccess() {
+    try {
+      await signExternalAccess();
+    } catch {
+      // The authentication hook exposes the signing error below the form.
     }
   }
 
@@ -101,84 +115,42 @@ export function LeviBurnPortal() {
         setAcknowledged(false);
       }
     } catch {
-      // The hook retains the transaction error for the inline status region.
+      // The hook exposes the transaction error below the form.
     }
   }
 
   function useMaximumBalance() {
-    if (!quote) return;
-    setAmount(formatLeviBurnAmount(quote.availableRaw, quote.decimals));
+    if (!selectedToken) return;
+    setAmount(formatBurnAmount(selectedToken.availableRaw, selectedToken.decimals));
   }
 
   return (
     <section className="levi-burn-portal" aria-labelledby="levi-burn-title">
-      <div className="levi-burn-portal-copy">
-        <div className="levi-section-label">
-          <Flame className="h-4 w-4" />
-          LEVI AI / Token-2022
-        </div>
-        <h1 id="levi-burn-title">
-          Burn supply.
-          <span>Keep control.</span>
-        </h1>
-        <p className="levi-burn-portal-lede">
-          A real burn removes LEVI AI from the selected token account and reduces the
-          mint supply through a wallet-signed <code>BurnChecked</code> instruction.
-          Nothing is sent to a project wallet.
-        </p>
-
-        <div className="levi-burn-principles">
-          <div>
-            <ShieldCheck className="h-4 w-4" />
-            <div>
-              <strong>Holder-signed</strong>
-              <p>Your wallet reviews and signs the exact transaction.</p>
-            </div>
-          </div>
-          <div>
-            <Flame className="h-4 w-4" />
-            <div>
-              <strong>Supply-reducing</strong>
-              <p>The Token-2022 mint supply falls by the confirmed amount.</p>
-            </div>
-          </div>
-          <div>
-            <WalletCards className="h-4 w-4" />
-            <div>
-              <strong>Non-custodial</strong>
-              <p>This site never receives your tokens, seed phrase, or private key.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="levi-burn-portal-note">
-          <AlertTriangle className="h-4 w-4" />
-          <p>
-            This action is permanent. The 100 LEVI AI already sent to the community
-            lock remain locked and cannot be converted into a token-program burn.
-          </p>
-        </div>
-      </div>
+      <BurnPortalIntro />
 
       <form className="levi-burn-tool" onSubmit={handleSubmit}>
         <div className="levi-burn-tool-heading">
           <div>
             <span>Burn from your wallet</span>
-            <h2>Confirm the amount in Phantom or Solflare.</h2>
+            <h2>Select, review, then confirm in your wallet.</h2>
           </div>
           <Flame className="h-5 w-5" />
         </div>
 
         {!isConnected ? (
           <div className="levi-burn-connect-state">
-            <p>Connect a Solana wallet to read the LEVI AI accounts you control.</p>
+            <p>Connect a Solana wallet to load the supported tokens you control.</p>
             <button
               type="button"
               className="levi-primary-button"
               onClick={() => void handleConnect()}
               disabled={isConnecting}
             >
-              {isConnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <WalletCards className="h-4 w-4" />}
+              {isConnecting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <WalletCards className="h-4 w-4" />
+              )}
               {isConnecting ? "Connecting" : "Connect wallet"}
             </button>
           </div>
@@ -192,89 +164,66 @@ export function LeviBurnPortal() {
               <button
                 type="button"
                 className="levi-burn-refresh"
-                onClick={() => void refreshQuote()}
-                disabled={isLoadingQuote}
+                onClick={() => void refreshInventory()}
+                disabled={isLoadingInventory}
               >
-                <RefreshCw className={`h-3.5 w-3.5${isLoadingQuote ? " animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`h-3.5 w-3.5${isLoadingInventory ? " animate-spin" : ""}`}
+                />
                 Refresh
               </button>
             </div>
 
-            {isLoadingQuote && !quote ? (
+            {isLoadingInventory && !inventory ? (
               <div className="levi-burn-loading" role="status">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Reading your LEVI AI balance.
+                Reading SPL and Token-2022 balances.
               </div>
-            ) : quote ? (
+            ) : inventory && inventory.tokens.length > 0 ? (
               <>
-                <div className="levi-burn-balance-row">
-                  <div>
-                    <span>Available to burn</span>
-                    <strong>{formatRawTokenAmount(quote.availableRaw)} LEVI AI</strong>
-                  </div>
-                  <span>{formatSolBalance(quote.solBalanceLamports)} SOL for network fees</span>
-                </div>
+                <BurnTokenSelector
+                  inventory={inventory}
+                  selectedMint={selectedMint}
+                  selectedToken={selectedToken}
+                  disabled={isBurning}
+                  onSelect={selectToken}
+                />
 
-                <label className="levi-burn-amount-field">
-                  <span>LEVI AI amount</span>
-                  <div>
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      autoComplete="off"
-                      value={amount}
-                      onChange={(event) => setAmount(event.target.value)}
-                      placeholder="0.00"
-                      aria-describedby="levi-burn-amount-help"
-                      aria-invalid={Boolean(amountError)}
+                {selectedToken ? (
+                  <>
+                    <BurnAccessGate
+                      inventory={inventory}
+                      selectedToken={selectedToken}
+                      hasExternalAccessSession={hasExternalAccessSession}
+                      isSigningAccess={isSigningAccess}
+                      onSignAccess={() => void handleSignAccess()}
                     />
-                    <button
-                      type="button"
-                      onClick={useMaximumBalance}
-                      disabled={quote.availableRaw === "0"}
-                    >
-                      Max
-                    </button>
-                  </div>
-                  <small id="levi-burn-amount-help">
-                    Your wallet will display the final transaction before it is submitted.
-                  </small>
-                </label>
-
-                {amountError ? (
-                  <p className="levi-burn-inline-error" role="alert">
-                    <AlertTriangle className="h-4 w-4" />
-                    {amountError}
-                  </p>
+                    <BurnAmountControls
+                      selectedToken={selectedToken}
+                      solBalanceLamports={inventory.solBalanceLamports}
+                      amount={amount}
+                      amountError={amountError}
+                      acknowledged={acknowledged}
+                      canBurn={canBurn}
+                      isBurning={isBurning}
+                      trackerSyncState={trackerSyncState}
+                      onAmountChange={setAmount}
+                      onUseMaximum={useMaximumBalance}
+                      onAcknowledgedChange={setAcknowledged}
+                    />
+                  </>
                 ) : null}
-
-                <label className="levi-burn-acknowledgement">
-                  <input
-                    type="checkbox"
-                    checked={acknowledged}
-                    onChange={(event) => setAcknowledged(event.target.checked)}
-                  />
-                  <span>
-                    I understand that this permanently reduces my LEVI AI balance and
-                    the LEVI AI mint supply. This cannot be reversed.
-                  </span>
-                </label>
-
-                <button type="submit" className="levi-burn-submit" disabled={!canBurn}>
-                  {isBurning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Flame className="h-4 w-4" />}
-                  {isBurning
-                    ? trackerSyncState === "refreshing"
-                      ? "Updating tracker"
-                      : "Waiting for confirmation"
-                    : "Burn LEVI AI"}
-                </button>
               </>
             ) : (
               <div className="levi-burn-connect-state">
-                <p>We could not load your token accounts. Refresh to try the free Solana RPC again.</p>
-                <button type="button" className="levi-secondary-button" onClick={() => void refreshQuote()}>
+                <p>No positive SPL or Token-2022 balances were found in this wallet.</p>
+                <button
+                  type="button"
+                  className="levi-secondary-button"
+                  onClick={() => void refreshInventory()}
+                >
                   <RefreshCw className="h-4 w-4" />
-                  Refresh balance
+                  Refresh tokens
                 </button>
               </div>
             )}
@@ -289,54 +238,16 @@ export function LeviBurnPortal() {
         ) : null}
 
         {submission ? (
-          <div className="levi-burn-success" role="status">
-            <CheckCircle2 className="h-5 w-5" />
-            <div>
-              <strong>
-                {submission.state === "confirmed"
-                  ? "Burn transaction confirmed."
-                  : "Burn transaction submitted."}
-              </strong>
-              <p>
-                {submission.state === "confirmed"
-                  ? `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was confirmed by Solana.`
-                  : `${formatRawTokenAmount(submission.amountRaw)} LEVI AI was sent by your wallet. Verify final status on Solscan.`}
-              </p>
-              {trackerSyncState !== "idle" ? (
-                <p
-                  className={`levi-burn-sync-status is-${trackerSyncState}`}
-                  aria-live="polite"
-                >
-                  {trackerSyncState === "updated"
-                    ? "Live Burn Tracker updated automatically."
-                    : trackerSyncState === "refreshing"
-                      ? "Finalized on Solana. Updating the Live Burn Tracker now."
-                      : trackerSyncState === "waiting"
-                        ? "Waiting for Solana finalization. The tracker will update automatically."
-                        : "Automatic tracker sync was delayed. The burn remains valid on-chain."}
-                </p>
-              ) : null}
-              <div>
-                <a href={submission.solscanUrl} target="_blank" rel="noreferrer">
-                  View transaction <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-                <Link href="/#live-burn-tracker">
-                  Open tracker <ArrowUpRight className="h-3.5 w-3.5" />
-                </Link>
-                {trackerSyncState === "deferred" ? (
-                  <button type="button" onClick={() => void retryTrackerSync()}>
-                    <RefreshCw className="h-3.5 w-3.5" />
-                    Retry tracker update
-                  </button>
-                ) : null}
-              </div>
-            </div>
-          </div>
+          <BurnSubmissionResult
+            submission={submission}
+            trackerSyncState={trackerSyncState}
+            onRetryTrackerSync={() => void retryTrackerSync()}
+          />
         ) : null}
 
         <p className="levi-burn-tool-footnote">
-          Burns made here update the tracker automatically after Solana finalization. The
-          two-hour verification remains only as a fallback for burns made elsewhere.
+          Only LEVI AI burns update the public Live Burn Tracker. External-token burns remain
+          verifiable through their Solscan transaction and the selected mint supply.
         </p>
       </form>
     </section>
