@@ -1,7 +1,7 @@
 import { AlertTriangle, Coins, ExternalLink } from "lucide-react";
 import {
   formatBurnTokenBalance,
-  getBurnTokenName,
+  getBurnTokenDisplayName,
 } from "@/lib/levi/burn/presentation";
 import { truncateSolanaAddress } from "@/lib/levi/wallet";
 import type { BurnTokenOption, BurnWalletInventory } from "@/types/leviBurn";
@@ -32,7 +32,7 @@ export function BurnTokenSelector({
         >
           {inventory.tokens.map((token) => (
             <option key={`${token.programId}:${token.mint}`} value={token.mint}>
-              {getBurnTokenName(token)} · {formatBurnTokenBalance(token)} ·{" "}
+              {getBurnTokenDisplayName(token)} · {formatBurnTokenBalance(token)} ·{" "}
               {truncateSolanaAddress(token.mint, 4)}
             </option>
           ))}
@@ -40,7 +40,8 @@ export function BurnTokenSelector({
         <small>
           {inventory.truncated
             ? `Showing the first ${inventory.tokens.length} of ${inventory.totalTokenCount} positive token balances.`
-            : `${inventory.totalTokenCount} positive token balance${inventory.totalTokenCount === 1 ? "" : "s"} found.`}
+            : `${inventory.totalTokenCount} positive token balance${inventory.totalTokenCount === 1 ? "" : "s"} found.`}{" "}
+          Names are on-chain labels and can be duplicated. Verify the complete mint before burning.
         </small>
       </label>
 
@@ -49,7 +50,7 @@ export function BurnTokenSelector({
           <div className="levi-burn-token-review-topline">
             <div>
               <Coins className="h-4 w-4" />
-              <span>{getBurnTokenName(selectedToken)}</span>
+              <span>{getBurnTokenDisplayName(selectedToken)}</span>
             </div>
             <strong>
               {selectedToken.program === "token-2022" ? "Token-2022" : "SPL Token"}

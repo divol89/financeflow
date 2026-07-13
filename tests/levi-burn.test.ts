@@ -23,9 +23,22 @@ import {
   parseBurnAmount,
 } from "../lib/levi/burn/validation";
 import { LEVI_AI_MINT_ADDRESS } from "../lib/levi/communityBurn";
-import type { BurnPreparation } from "../types/leviBurn";
+import {
+  parseMetaplexBurnMetadata,
+  parseToken2022BurnMetadataExtension,
+  sanitizeBurnMetadataText,
+} from "../lib/levi/burn/metadata";
+import { getBurnTokenDisplayName } from "../lib/levi/burn/presentation";
+import type { BurnPreparation, BurnTokenOption } from "../types/leviBurn";
 
 const originalFetch = globalThis.fetch;
+
+function encodeMetadataString(value: string): Buffer {
+  const encoded = Buffer.from(value, "utf8");
+  const length = Buffer.alloc(4);
+  length.writeUInt32LE(encoded.length);
+  return Buffer.concat([length, encoded]);
+}
 
 test("parses arbitrary token burn input without floating point rounding", () => {
   assert.equal(parseBurnAmount("100", 6, "TOKEN"), BigInt(100_000_000));
@@ -41,6 +54,67 @@ test("rejects zero, negative, malformed and over-precise burn amounts", () => {
       `expected ${input || "empty"} to be rejected`
     );
   }
+});
+
+test("parses and sanitizes Metaplex token names and symbols", () => {
+  const mint = Keypair.generate().publicKey;
+  const accountData = Buffer.concat([
+    Buffer.from([4]),
+    Buffer.alloc(32),
+    mint.toBuffer(),
+    encodeMetadataString("  USD Coin  "),
+    encodeMetadataString("USDC"),
+  ]);
+
+  assert.deepEqual(parseMetaplexBurnMetadata(accountData, mint), {
+    name: "USD Coin",
+    symbol: "USDC",
+  });
+  assert.equal(
+    parseMetaplexBurnMetadata(accountData, Keypair.generate().publicKey),
+    null
+  );
+});
+
+test("parses Token-2022 inline metadata and bounds untrusted labels", () => {
+  const mint = Keypair.generate().publicKey;
+  const extensionData = Buffer.concat([
+    Buffer.alloc(32),
+    mint.toBuffer(),
+    encodeMetadataString(`Cashia\u202E cat ${"x".repeat(80)}`),
+    encodeMetadataString("cashiacat"),
+  ]);
+  const metadata = parseToken2022BurnMetadataExtension(extensionData, mint);
+
+  assert.ok(metadata?.name);
+  assert.equal(metadata.symbol, "cashiacat");
+  assert.equal(metadata.name.includes("\u202E"), false);
+  assert.equal(Array.from(metadata.name).length, 48);
+  assert.equal(metadata.name.endsWith("..."), true);
+  assert.equal(sanitizeBurnMetadataText("\u0000   ", 16), null);
+});
+
+test("presents the on-chain token name and symbol together", () => {
+  const token: BurnTokenOption = {
+    mint: Keypair.generate().publicKey.toBase58(),
+    name: "Cashia cat",
+    symbol: "cashiacat",
+    program: "token-2022",
+    programId: TOKEN_2022_PROGRAM_ID.toBase58(),
+    decimals: 6,
+    availableRaw: "1000000",
+    accountCount: 1,
+    isLeviAi: false,
+    burnable: true,
+    blockedReason: null,
+    warning: null,
+  };
+
+  assert.equal(getBurnTokenDisplayName(token), "Cashia cat (cashiacat)");
+  assert.equal(
+    getBurnTokenDisplayName({ ...token, name: "USDC", symbol: "usdc" }),
+    "USDC"
+  );
 });
 
 test("creates SPL and Token-2022 BurnChecked instructions with exact allocations", () => {

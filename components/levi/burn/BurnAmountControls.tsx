@@ -2,7 +2,7 @@ import { AlertTriangle, Flame, Loader2 } from "lucide-react";
 import {
   formatBurnSolBalance,
   formatBurnTokenBalance,
-  getBurnTokenName,
+  getBurnTokenUnit,
 } from "@/lib/levi/burn/presentation";
 import { truncateSolanaAddress } from "@/lib/levi/wallet";
 import type { BurnTokenOption, LeviBurnTrackerSyncState } from "@/types/leviBurn";
@@ -34,7 +34,7 @@ export function BurnAmountControls({
   onUseMaximum,
   onAcknowledgedChange,
 }: BurnAmountControlsProps) {
-  const selectedLabel = getBurnTokenName(selectedToken);
+  const selectedLabel = getBurnTokenUnit(selectedToken);
 
   return (
     <>

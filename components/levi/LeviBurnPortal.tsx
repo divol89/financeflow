@@ -12,7 +12,7 @@ import { BurnPortalIntro } from "@/components/levi/burn/BurnPortalIntro";
 import { BurnSubmissionResult } from "@/components/levi/burn/BurnSubmissionResult";
 import { BurnTokenSelector } from "@/components/levi/burn/BurnTokenSelector";
 import { useUniversalBurn } from "@/hooks/useLeviBurn";
-import { getBurnTokenName } from "@/lib/levi/burn/presentation";
+import { getBurnTokenUnit } from "@/lib/levi/burn/presentation";
 import { formatBurnAmount, parseBurnAmount } from "@/lib/levi/burn/validation";
 import { truncateSolanaAddress } from "@/lib/levi/wallet";
 
@@ -54,7 +54,7 @@ export function LeviBurnPortal() {
         amountRaw: parseBurnAmount(
           amount,
           selectedToken.decimals,
-          getBurnTokenName(selectedToken)
+          getBurnTokenUnit(selectedToken)
         ),
         error: null,
       };

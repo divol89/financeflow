@@ -2,8 +2,21 @@ import { formatRawTokenAmount } from "@/lib/levi/burnTracker/calculations";
 import { truncateSolanaAddress } from "@/lib/levi/wallet";
 import type { BurnTokenOption } from "@/types/leviBurn";
 
-export function getBurnTokenName(token: BurnTokenOption): string {
-  return token.symbol || token.name || `Token ${truncateSolanaAddress(token.mint, 4)}`;
+function fallbackTokenName(token: BurnTokenOption): string {
+  return `Token ${truncateSolanaAddress(token.mint, 4)}`;
+}
+
+export function getBurnTokenDisplayName(token: BurnTokenOption): string {
+  const name = token.name?.trim() || null;
+  const symbol = token.symbol?.trim() || null;
+  if (name && symbol && name.localeCompare(symbol, undefined, { sensitivity: "base" }) !== 0) {
+    return `${name} (${symbol})`;
+  }
+  return name || symbol || fallbackTokenName(token);
+}
+
+export function getBurnTokenUnit(token: BurnTokenOption): string {
+  return token.symbol?.trim() || token.name?.trim() || fallbackTokenName(token);
 }
 
 export function formatBurnTokenBalance(token: BurnTokenOption): string {

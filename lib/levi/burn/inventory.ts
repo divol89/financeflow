@@ -15,6 +15,7 @@ import {
   getBurnTokenProgram,
   isLeviAiMint,
 } from "./constants";
+import { resolveBurnTokenMetadata } from "./metadata";
 import type {
   BurnTokenOption,
   BurnWalletInventory,
@@ -250,5 +251,26 @@ export async function loadBurnWalletState(
 export async function getBurnWalletInventory(
   wallet: string
 ): Promise<BurnWalletInventory> {
-  return (await loadBurnWalletState(wallet)).inventory;
+  const { inventory } = await loadBurnWalletState(wallet);
+  const metadata = await resolveBurnTokenMetadata(
+    inventory.tokens.map((token) => ({
+      mint: token.mint,
+      programId: token.programId,
+    }))
+  );
+
+  return {
+    ...inventory,
+    tokens: inventory.tokens.map((token) => {
+      if (token.isLeviAi) return token;
+      const identity = metadata.get(token.mint);
+      return identity
+        ? {
+            ...token,
+            name: identity.name,
+            symbol: identity.symbol,
+          }
+        : token;
+    }),
+  };
 }
