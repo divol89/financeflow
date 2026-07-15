@@ -1919,6 +1919,115 @@ img.site-logo {
   background: linear-gradient(90deg, rgba(184, 243, 107, 0.45), transparent);
 }
 
+.levi-community-invite {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 1.15rem;
+  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  padding: 1.65rem 0 2rem;
+}
+
+.levi-community-invite > .levi-community-links {
+  justify-content: flex-start;
+}
+
+.levi-community-invite-copy {
+  min-width: 0;
+}
+
+.levi-community-invite-copy h2 {
+  margin-top: 0.55rem;
+  color: var(--levi-warm) !important;
+  font-size: clamp(1.45rem, 2.5vw, 2.2rem);
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+.levi-community-invite-copy p {
+  max-width: 38rem;
+  margin-top: 0.55rem;
+  color: #8f9c8e;
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.levi-community-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.levi-community-link {
+  display: grid;
+  min-width: 14.5rem;
+  min-height: 4rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(222, 246, 220, 0.14);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0.7rem 0.8rem;
+  color: #edf3e7;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.levi-community-link:hover {
+  border-color: rgba(184, 243, 107, 0.42);
+  background: rgba(184, 243, 107, 0.075);
+  transform: translateY(-2px);
+}
+
+.levi-community-link-icon {
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border: 1px solid rgba(184, 243, 107, 0.2);
+  border-radius: 0.45rem;
+  background: rgba(184, 243, 107, 0.08);
+  color: var(--levi-green);
+}
+
+.levi-community-link.is-x .levi-community-link-icon {
+  border-color: rgba(244, 241, 232, 0.17);
+  background: rgba(244, 241, 232, 0.055);
+  color: var(--levi-warm);
+}
+
+.levi-community-link-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.18rem;
+}
+
+.levi-community-link-copy small {
+  color: #71806f;
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.levi-community-link-copy strong {
+  overflow: hidden;
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.levi-community-link-arrow {
+  color: #667365;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.levi-community-link:hover .levi-community-link-arrow {
+  color: var(--levi-green);
+  transform: translate(1px, -1px);
+}
+
 .levi-home-narrative {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -2607,6 +2716,99 @@ img.site-logo {
   color: #829084;
 }
 
+.levi-footer-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.levi-footer-note,
+.levi-footer-note > div,
+.levi-footer-community {
+  display: flex;
+  align-items: center;
+}
+
+.levi-footer-note {
+  flex-wrap: wrap;
+  gap: 0.55rem 1.25rem;
+  font-size: 0.74rem;
+}
+
+.levi-footer-note > div {
+  gap: 0.5rem;
+}
+
+.levi-footer-community {
+  gap: 0.75rem;
+}
+
+.levi-footer-community > span {
+  color: #657164;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.levi-community-links.is-compact {
+  flex-wrap: nowrap;
+}
+
+.levi-community-links.is-compact .levi-community-link {
+  min-width: 0;
+  min-height: 2.65rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  padding: 0.4rem 0.55rem;
+}
+
+.levi-community-links.is-compact .levi-community-link-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.levi-community-links.is-compact .levi-community-link-copy small {
+  display: none;
+}
+
+.levi-community-links.is-compact .levi-community-link-copy strong {
+  max-width: 8.5rem;
+  font-size: 0.68rem;
+}
+
+.levi-community-links.is-mobile {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: stretch;
+  gap: 0.55rem;
+  padding: 0.3rem 0.75rem 0;
+}
+
+.levi-community-links.is-mobile .levi-community-link {
+  min-width: 0;
+  min-height: 3.3rem;
+  gap: 0.55rem;
+  padding: 0.55rem;
+}
+
+.levi-community-links.is-mobile .levi-community-link-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.levi-community-links.is-mobile .levi-community-link-copy strong {
+  font-size: 0.69rem;
+}
+
+.levi-community-links.is-mobile .levi-community-link-arrow {
+  display: none;
+}
+
 .levi-footer-link {
   color: var(--levi-green);
   transition: color 180ms ease;
@@ -2704,6 +2906,39 @@ img.site-logo {
 
   .levi-hero-rail-line {
     display: none;
+  }
+
+  .levi-community-invite {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1.35rem 0 1.6rem;
+  }
+
+  .levi-community-links.is-prominent {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+
+  .levi-community-links.is-prominent .levi-community-link {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .levi-footer-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .levi-footer-community {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .levi-community-links.is-compact {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .levi-home-narrative {

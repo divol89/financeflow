@@ -12,6 +12,7 @@ import {
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
 import { BullChargeProposal } from "@/components/levi/BullChargeProposal";
 import { LeviEntranceImage } from "@/components/levi/LeviEntranceImage";
+import { LeviCommunityLinks } from "@/components/levi/LeviCommunityLinks";
 import { HomeNarrativeFlow } from "@/components/levi/HomeNarrativeFlow";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
@@ -82,6 +83,17 @@ export default function Home() {
             <span className="levi-hero-rail-line" />
             <ArrowRight className="h-4 w-4" />
           </div>
+
+          <LeviReveal>
+            <section className="levi-community-invite" aria-labelledby="levi-community-title">
+              <div className="levi-community-invite-copy">
+                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> Official channels</div>
+                <h2 id="levi-community-title">Join the White Bull Agent community.</h2>
+                <p>Follow product releases, community proposals and the next utilities built around LEVI AI.</p>
+              </div>
+              <LeviCommunityLinks />
+            </section>
+          </LeviReveal>
 
           <LeviReveal>
             <section className="levi-home-narrative" aria-labelledby="home-narrative-title">

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
 import { CommunityBurnBanner } from "@/components/levi/CommunityBurnBanner";
+import { LeviCommunityLinks } from "@/components/levi/LeviCommunityLinks";
 import { WalletAccessSheet } from "@/components/levi/WalletAccessSheet";
 
 const directNavItems = [
@@ -131,6 +132,7 @@ export function LeviShell({ children }: { children: ReactNode }) {
             <div className="levi-container py-4">
               <div className="levi-mobile-group"><span>Tools</span>{directNavItems.map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`levi-mobile-item ${pathActive(router.pathname, item.href) ? "is-active" : ""}`}><Icon className="h-4 w-4" />{item.label}</Link>; })}</div>
               <div className="levi-mobile-group"><span>Community</span>{communityItems.map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`levi-mobile-item ${pathActive(router.pathname, item.href) ? "is-active" : ""}`}><Icon className="h-4 w-4" />{item.label}</Link>; })}</div>
+              <div className="levi-mobile-group"><span>Official channels</span><LeviCommunityLinks variant="mobile" onNavigate={() => setOpen(false)} /></div>
               <div className="levi-mobile-group"><span>Learn</span>{learningItems.map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`levi-mobile-item ${pathActive(router.pathname, item.href) ? "is-active" : ""}`}><Icon className="h-4 w-4" />{item.label}</Link>; })}</div>
               {auth.session || auth.walletAddress ? <button type="button" onClick={() => void handleLogout()} className="levi-shell-cta mt-3 flex w-full justify-center"><LogOut className="h-4 w-4" />Logout</button> : <button type="button" onClick={() => { setOpen(false); setAccessOpen(true); }} className="levi-shell-cta mt-3 flex w-full justify-center"><WalletCards className="h-4 w-4" />Connect LEVI AI</button>}
             </div>
@@ -140,7 +142,18 @@ export function LeviShell({ children }: { children: ReactNode }) {
 
       <main>{children}</main>
       <CommunityBurnBanner />
-      <footer className="levi-footer"><div className="levi-container flex flex-col gap-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-emerald-300" /><span>Signals are heuristic and require human review.</span></div><Link href="/methodology" className="levi-footer-link">Read the live methodology</Link></div></footer>
+      <footer className="levi-footer">
+        <div className="levi-container levi-footer-layout">
+          <div className="levi-footer-note">
+            <div><BookOpen className="h-4 w-4 text-emerald-300" /><span>Signals are heuristic and require human review.</span></div>
+            <Link href="/methodology" className="levi-footer-link">Read the live methodology</Link>
+          </div>
+          <div className="levi-footer-community">
+            <span>Official community</span>
+            <LeviCommunityLinks variant="compact" />
+          </div>
+        </div>
+      </footer>
       <WalletAccessSheet isOpen={accessOpen} onClose={() => setAccessOpen(false)} />
     </div>
   );
