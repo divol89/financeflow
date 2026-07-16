@@ -12,7 +12,6 @@ const ValidationPage: NextPage = () => {
           name="description"
           content="Validate your project and gain community trust through our comprehensive verification process"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <ProjectValidation />
     </>

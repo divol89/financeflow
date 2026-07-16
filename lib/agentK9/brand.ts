@@ -7,6 +7,9 @@ export const AGENT_K9_INITIAL_SUPPLY_RAW = "1000000000000000";
 export const AGENT_K9_INITIAL_SUPPLY_TOKENS = 1_000_000_000;
 
 export const AGENT_K9_IMAGE_PATH = "/agent-k9-brand.png";
+export const AGENT_K9_FAVICON_PATH = "/agent-k9-favicon.ico";
+export const AGENT_K9_FAVICON_PNG_PATH = "/agent-k9-favicon-32.png";
+export const AGENT_K9_APPLE_TOUCH_ICON_PATH = "/agent-k9-apple-touch-icon.png";
 export const AGENT_K9_WEBSITE_URL = "https://flow-finance.xyz/";
 export const AGENT_K9_TELEGRAM_URL = "https://t.me/FinanceFlowx";
 export const AGENT_K9_TELEGRAM_HANDLE = "FinanceFlowx";

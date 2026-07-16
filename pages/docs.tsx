@@ -84,9 +84,6 @@ export default function DocsPage() {
         <meta property="og:title" content="Docs | Agent K9" />
         <meta property="og:description" content="Community-led intelligence for the Solana ecosystem." />
         <meta property="og:image" content={AGENT_K9_IMAGE_PATH} />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
 
       <div className="levi-docs-page">

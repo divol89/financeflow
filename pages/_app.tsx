@@ -9,6 +9,11 @@ import { Analytics } from "@vercel/analytics/react";
 import CookieConsent from "react-cookie-consent";
 import { SolanaWalletProvider } from "../context/SolanaWalletProvider";
 import {
+  AGENT_K9_APPLE_TOUCH_ICON_PATH,
+  AGENT_K9_FAVICON_PATH,
+  AGENT_K9_FAVICON_PNG_PATH,
+} from "../lib/agentK9/brand";
+import {
   focusManager,
   QueryClient,
   QueryClientProvider,
@@ -60,9 +65,26 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link
+          key="agent-k9-favicon"
+          rel="icon"
+          href={AGENT_K9_FAVICON_PATH}
+          sizes="any"
+          type="image/x-icon"
+        />
+        <link
+          key="agent-k9-favicon-png"
+          rel="icon"
+          href={AGENT_K9_FAVICON_PNG_PATH}
+          sizes="32x32"
+          type="image/png"
+        />
+        <link
+          key="agent-k9-apple-touch-icon"
+          rel="apple-touch-icon"
+          href={AGENT_K9_APPLE_TOUCH_ICON_PATH}
+          sizes="180x180"
+        />
       </Head>
       {cookiesAccepted ? (
         <QueryClientProvider client={queryClient}>

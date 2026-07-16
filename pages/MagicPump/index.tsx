@@ -575,7 +575,6 @@ const PumpMeSirPage = () => {
       <div className="stars"></div>
       <Head>
         <title>IOTA Pump Arena</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Header */}

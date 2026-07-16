@@ -32,9 +32,6 @@ export default function Home() {
         />
         <meta property="og:title" content="Agent K9 | Solana Intelligence" />
         <meta property="og:image" content={AGENT_K9_IMAGE_PATH} />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
 
       <section className="levi-home">
