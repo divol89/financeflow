@@ -246,7 +246,7 @@ export function LeviBurnPortal() {
         ) : null}
 
         <p className="levi-burn-tool-footnote">
-          Only LEVI AI burns update the public Live Burn Tracker. External-token burns remain
+          Only K9 burns update the public Live Burn Tracker. External-token burns remain
           verifiable through their Solscan transaction and the selected mint supply.
         </p>
       </form>

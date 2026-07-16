@@ -41,7 +41,7 @@ export default async function handler(
 
       const verifiedBurn = await fetchLeviAiBurnBySignature(signature);
       if (!verifiedBurn) {
-        return res.status(400).json({ error: "The signature is not a finalized LEVI AI burn." });
+        return res.status(400).json({ error: "The signature is not a finalized K9 burn." });
       }
 
       const snapshot = await getLiveBurnTrackerSnapshot(new Date(), {
@@ -54,7 +54,7 @@ export default async function handler(
     const snapshot = await getLiveBurnTrackerSnapshot();
     return res.status(200).json(snapshot);
   } catch (error) {
-    console.error("LEVI AI burn tracker read failed", error);
+    console.error("K9 burn tracker read failed", error);
     return res.status(503).json({
       error: "The live burn tracker is temporarily unavailable. Please try again shortly.",
     });

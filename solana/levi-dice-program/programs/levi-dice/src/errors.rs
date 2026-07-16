@@ -2,9 +2,9 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum LeviDiceError {
-    #[msg("Only the existing LEVI Token-2022 mint is accepted")]
-    InvalidLeviMint,
-    #[msg("Treasury token account must be for the LEVI mint")]
+    #[msg("Only the existing K9 Token-2022 mint is accepted")]
+    InvalidK9Mint,
+    #[msg("Treasury token account must be for the K9 mint")]
     InvalidTreasury,
     #[msg("Protocol fee must be exactly 5%")]
     InvalidProtocolFee,

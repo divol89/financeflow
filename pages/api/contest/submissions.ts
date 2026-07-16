@@ -38,7 +38,7 @@ export default async function handler(
     const eligibility = await getContestEligibility(session.wallet);
     if (!eligibility.eligible) {
       return res.status(403).json({
-        error: "Hold at least 500 LEVI or 500 LEVI AI to enter this campaign.",
+        error: "Hold at least 500 K9 to enter this campaign.",
         eligibility,
       });
     }
@@ -73,7 +73,7 @@ export default async function handler(
     try {
       totalEntries = await countCampaignSubmissions(campaign.id);
     } catch (countError) {
-      console.error("LEVI Social contest count refresh failed", countError);
+      console.error("K9 Social contest count refresh failed", countError);
     }
 
     return res.status(201).json({
@@ -86,7 +86,7 @@ export default async function handler(
       totalEntries,
     });
   } catch (error) {
-    console.error("LEVI Social contest submission failed", error);
+    console.error("K9 Social contest submission failed", error);
     if (error instanceof Error && error.message.includes("already exists")) {
       return res.status(409).json({ error: error.message });
     }

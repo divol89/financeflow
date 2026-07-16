@@ -14,7 +14,7 @@ interface LauncherItem {
 const launcherItems: LauncherItem[] = [
   {
     name: "Docs",
-    path: "/whitepaper",
+    path: "/docs",
     icon: FaBook,
   },
   {
@@ -33,13 +33,8 @@ const launcherItems: LauncherItem[] = [
     path: "/MagicPump",
   },
   {
-    name: "Crazy Dice",
-    img: "/levi-ban-system.png",
-    path: "/games",
-  },
-  {
-    name: "LEVI Dice",
-    img: "/levi-ban-system.png",
+    name: "K9 Dice",
+    img: "/agent-k9-brand.png",
     path: "/games/levi-dice",
   },
 ];
@@ -71,7 +66,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative z-[60] w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-cyan-300/20 bg-[#121c38]/95 p-5 shadow-[0_0_30px_rgba(34,211,238,0.18)] lg:max-w-6xl lg:p-8"
+            className="relative z-[60] w-[calc(100%-1.5rem)] max-w-md rounded-lg border border-amber-300/25 bg-[#120503]/95 p-5 shadow-[0_0_30px_rgba(211,35,15,0.22)] lg:max-w-6xl lg:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -101,13 +96,13 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             <div className="pt-8 lg:pt-4">
               <button
                 onClick={() => handleNavigate("/matrix")}
-                className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-[#00e47a]/70 bg-[#00e47a] px-4 py-4 font-mono text-base font-black uppercase tracking-wide text-black shadow-[0_0_28px_rgba(0,228,122,0.38)] transition-all hover:bg-[#63ff9b] active:scale-[0.98]"
+                className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-[#ffb000]/70 bg-[#ffb000] px-4 py-4 font-mono text-base font-black uppercase tracking-wide text-black shadow-[0_0_28px_rgba(255,91,0,0.34)] transition-all hover:bg-[#ffc247] active:scale-[0.98]"
               >
                 <FaTerminal className="text-xl" />
                 Matrix Tracker
               </button>
 
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-6 lg:gap-5">
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-5 lg:gap-5">
                 {launcherItems.map((item) => {
                   const Icon = item.icon;
 
@@ -115,7 +110,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                     <button
                       key={item.name}
                       onClick={() => handleNavigate(item.path)}
-                      className="group relative flex h-24 w-full items-center justify-center overflow-hidden rounded-xl border border-cyan-300/20 bg-white/10 text-center text-lg font-semibold text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.12)] transition-all hover:border-cyan-300/60 hover:bg-white/15 active:scale-[0.98] lg:h-36"
+                      className="group relative flex h-24 w-full items-center justify-center overflow-hidden rounded-lg border border-amber-300/20 bg-white/10 text-center text-lg font-semibold text-amber-200 shadow-[0_0_18px_rgba(255,91,0,0.12)] transition-all hover:border-amber-300/60 hover:bg-white/15 active:scale-[0.98] lg:h-36"
                       aria-label={item.name}
                     >
                       {item.img ? (
@@ -127,9 +122,9 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                           className="opacity-35 transition-transform duration-300 group-hover:scale-110"
                         />
                       ) : Icon ? (
-                        <Icon className="absolute top-3 text-xl text-cyan-300/50" />
+                        <Icon className="absolute top-3 text-xl text-amber-300/50" />
                       ) : null}
-                      <span className="relative z-10 px-2 drop-shadow-[0_0_8px_rgba(34,211,238,0.65)]">
+                      <span className="relative z-10 px-2 drop-shadow-[0_0_8px_rgba(255,176,0,0.58)]">
                         {item.name}
                       </span>
                     </button>

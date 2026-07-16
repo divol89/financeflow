@@ -6,7 +6,7 @@ export default function BurnPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Universal Solana Token Burner | White Bull Agent</title>
+        <title>Universal Solana Token Burner | Agent K9</title>
         <meta
           name="description"
           content="Choose and permanently burn supported SPL or Token-2022 assets from your Solana wallet with a holder-signed transaction."

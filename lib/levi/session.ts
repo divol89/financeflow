@@ -76,7 +76,7 @@ export function buildSignInMessage(
     "flow-finance.xyz wants you to sign in with your Solana wallet:",
     wallet,
     "",
-    "Purpose: LEVI Sentinel token-gated access.",
+    "Purpose: Agent K9 token-gated access.",
     `Nonce: ${nonce}`,
     `Expires: ${new Date(expiresAt).toISOString()}`,
   ].join("\n");

@@ -13,11 +13,11 @@ export default function MethodologyPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Methodology | LEVI Sentinel</title>
+        <title>Methodology | Agent K9</title>
       </Head>
       <section className="min-h-screen bg-[#050705] px-4 pb-16 pt-28 sm:px-6">
         <div className="mx-auto max-w-5xl">
-          <p className="text-sm font-semibold uppercase text-emerald-300">
+          <p className="text-sm font-semibold uppercase text-amber-300">
             Methodology
           </p>
           <h1 className="mt-3 text-4xl font-semibold text-white">
@@ -26,7 +26,7 @@ export default function MethodologyPage() {
           <div className="mt-8 grid gap-4">
             {methods.map((method) => (
               <div key={method} className="flex gap-4 rounded-lg border border-white/10 bg-black/65 p-5">
-                <ListChecks className="mt-1 h-5 w-5 shrink-0 text-emerald-300" />
+                <ListChecks className="mt-1 h-5 w-5 shrink-0 text-amber-300" />
                 <p className="text-slate-300">{method}</p>
               </div>
             ))}
@@ -40,7 +40,7 @@ export default function MethodologyPage() {
               A high score means the inspected window contains patterns worth reviewing. It does not prove a scam, rug pull, fraud or malicious intent.
             </p>
           </div>
-          <div className="mt-8 flex items-center gap-3 rounded-lg border border-cyan-400/25 bg-cyan-950/30 p-5 text-cyan-100">
+          <div className="mt-8 flex items-center gap-3 rounded-lg border border-orange-400/25 bg-orange-950/30 p-5 text-orange-100">
             <Radar className="h-5 w-5" />
             <span>Full access expands the transaction window from 50 to 200 signatures.</span>
           </div>

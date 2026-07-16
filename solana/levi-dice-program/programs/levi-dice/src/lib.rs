@@ -13,7 +13,7 @@ pub use state::*;
 
 declare_id!("CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM");
 
-pub const LEVI_MINT: Pubkey = pubkey!("6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump");
+pub const K9_MINT: Pubkey = pubkey!("6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump");
 
 #[program]
 pub mod levi_dice {

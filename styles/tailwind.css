@@ -62,9 +62,9 @@
   position: relative;
   width: min(100%, 29rem);
   overflow: hidden;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 0.5rem;
-  background: #0b0f0a;
+  background: #150604;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
   padding: 1.4rem;
   color: #f4f1e8;
@@ -76,7 +76,7 @@
   position: absolute;
   inset: 0 0 auto;
   height: 1px;
-  background: rgba(184, 243, 107, 0.72);
+  background: rgba(255, 176, 0, 0.72);
 }
 
 .levi-wallet-connect-close {
@@ -87,7 +87,7 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid rgba(222, 246, 220, 0.14);
+  border: 1px solid rgba(255, 226, 178, 0.14);
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.035);
   color: #a7b0a4;
@@ -95,8 +95,8 @@
 }
 
 .levi-wallet-connect-close:hover {
-  border-color: rgba(184, 243, 107, 0.42);
-  background: rgba(184, 243, 107, 0.08);
+  border-color: rgba(255, 176, 0, 0.42);
+  background: rgba(255, 176, 0, 0.08);
   color: #f4f1e8;
 }
 
@@ -105,15 +105,15 @@
   width: 3.25rem;
   height: 3.25rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.3);
+  border: 1px solid rgba(255, 176, 0, 0.3);
   border-radius: 0.5rem;
-  background: rgba(184, 243, 107, 0.1);
-  color: #b8f36b;
+  background: rgba(255, 176, 0, 0.1);
+  color: #ffb000;
 }
 
 .levi-wallet-connect-eyebrow {
   margin-top: 1.3rem;
-  color: #b8f36b;
+  color: #ffb000;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -166,26 +166,26 @@
 }
 
 .levi-wallet-connect-primary {
-  border: 1px solid #b8f36b;
-  background: #b8f36b;
+  border: 1px solid #ffb000;
+  background: #ffb000;
   color: #071006;
 }
 
 .levi-wallet-connect-primary:hover {
-  background: #cdfb91;
+  background: #ffd27a;
   color: #071006;
   transform: translateY(-1px);
 }
 
 .levi-wallet-connect-secondary {
-  border: 1px solid rgba(222, 246, 220, 0.18);
+  border: 1px solid rgba(255, 226, 178, 0.18);
   background: rgba(255, 255, 255, 0.035);
   color: #f4f1e8;
 }
 
 .levi-wallet-connect-secondary:hover:not(:disabled) {
-  border-color: rgba(184, 243, 107, 0.44);
-  background: rgba(184, 243, 107, 0.08);
+  border-color: rgba(255, 176, 0, 0.44);
+  background: rgba(255, 176, 0, 0.08);
 }
 
 .levi-wallet-connect-secondary:disabled {
@@ -195,7 +195,7 @@
 
 .levi-wallet-connect-status {
   margin-top: 0.8rem;
-  border-left: 2px solid rgba(184, 243, 107, 0.72);
+  border-left: 2px solid rgba(255, 176, 0, 0.72);
   padding: 0.15rem 0 0.15rem 0.7rem;
   color: #c8cec5;
   font-size: 0.76rem;
@@ -214,7 +214,7 @@
 }
 
 .levi-wallet-connect-download:hover {
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-wallet-connect-safety {
@@ -222,7 +222,7 @@
   align-items: flex-start;
   gap: 0.55rem;
   margin-top: 1.15rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1rem;
   color: #8f9a8c;
   font-size: 0.73rem;
@@ -232,11 +232,11 @@
 .levi-wallet-connect-safety svg {
   flex: 0 0 auto;
   margin-top: 0.1rem;
-  color: #36d399;
+  color: #ff3d16;
 }
 
 .levi-wallet-connect-sheet :where(a, button):focus-visible {
-  outline: 2px solid #b8f36b;
+  outline: 2px solid #ffb000;
   outline-offset: 3px;
 }
 
@@ -292,17 +292,17 @@
   overflow-y: visible;
   padding: 8.5rem 0 5.5rem;
   background:
-    radial-gradient(ellipse 72% 48% at 88% 10%, rgba(54, 111, 55, 0.22), transparent 70%),
+    radial-gradient(ellipse 72% 48% at 88% 10%, rgba(187, 27, 9, 0.22), transparent 70%),
     radial-gradient(ellipse 52% 42% at 5% 78%, rgba(165, 110, 42, 0.08), transparent 72%),
-    linear-gradient(135deg, #070906 0%, #0a1009 52%, #050805 100%);
+    linear-gradient(135deg, #090302 0%, #160604 52%, #070302 100%);
 }
 
 .levi-burn-page-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(199, 236, 182, 0.038) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 236, 182, 0.038) 1px, transparent 1px);
+    linear-gradient(rgba(255, 190, 78, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 190, 78, 0.038) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 84%);
   pointer-events: none;
@@ -352,7 +352,7 @@
 }
 
 .levi-burn-portal-lede code {
-  color: #d6efa9;
+  color: #ffd27a;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.9em;
 }
@@ -362,20 +362,20 @@
   gap: 0;
   max-width: 38rem;
   margin-top: 2.2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.13);
+  border-top: 1px solid rgba(255, 226, 178, 0.13);
 }
 
 .levi-burn-principles > div {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.75rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 1rem 0;
 }
 
 .levi-burn-principles > div > svg {
   margin-top: 0.1rem;
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-burn-principles strong {
@@ -415,8 +415,8 @@
 }
 
 .levi-burn-tool {
-  border-top: 1px solid rgba(184, 243, 107, 0.48);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.14);
+  border-top: 1px solid rgba(255, 176, 0, 0.48);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.14);
   background: rgba(5, 8, 5, 0.64);
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.15);
   padding: clamp(1.25rem, 3vw, 2rem);
@@ -439,7 +439,7 @@
 
 .levi-burn-tool-heading > svg {
   flex: none;
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-burn-tool-heading span,
@@ -467,7 +467,7 @@
 .levi-burn-connect-state {
   display: grid;
   gap: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding: 1.3rem 0 0.25rem;
 }
 
@@ -486,14 +486,14 @@
 .levi-burn-wallet-row {
   justify-content: space-between;
   gap: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1.25rem;
 }
 
 .levi-burn-wallet-row strong {
   display: block;
   margin-top: 0.28rem;
-  color: #d6efa9;
+  color: #ffd27a;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.78rem;
   font-weight: 700;
@@ -506,21 +506,21 @@
   gap: 0.38rem;
   border: 0;
   background: transparent;
-  color: #b8f36b;
+  color: #ffb000;
   padding: 0.35rem;
   font-size: 0.7rem;
   font-weight: 750;
   cursor: pointer;
 }
 
-.levi-burn-refresh:hover:not(:disabled) { color: #edffd5; }
+.levi-burn-refresh:hover:not(:disabled) { color: #fff2d5; }
 .levi-burn-refresh:disabled { cursor: wait; opacity: 0.55; }
 
 .levi-burn-loading {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   color: #9ba79a;
   padding: 1.4rem 0 0.2rem;
   font-size: 0.76rem;
@@ -531,7 +531,7 @@
   justify-content: space-between;
   gap: 1rem;
   margin-top: 1.4rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1.15rem;
 }
 
@@ -561,7 +561,7 @@
 .levi-burn-token-selector {
   display: block;
   margin-top: 1.35rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1.2rem;
 }
 
@@ -570,10 +570,10 @@
   min-width: 0;
   min-height: 3rem;
   margin-top: 0.55rem;
-  border: 1px solid rgba(222, 246, 220, 0.18);
+  border: 1px solid rgba(255, 226, 178, 0.18);
   border-radius: 0.35rem;
   outline: 0;
-  background: #10150f;
+  background: #130907;
   color: #f2f7eb;
   padding: 0.65rem 2.4rem 0.65rem 0.8rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -586,8 +586,8 @@
 }
 
 .levi-burn-token-selector select:focus {
-  border-color: rgba(184, 243, 107, 0.56);
-  background: #121a10;
+  border-color: rgba(255, 176, 0, 0.56);
+  background: #190806;
 }
 
 .levi-burn-token-selector select:disabled {
@@ -606,7 +606,7 @@
 .levi-burn-token-review {
   min-width: 0;
   margin-top: 0.9rem;
-  border: 1px solid rgba(222, 246, 220, 0.11);
+  border: 1px solid rgba(255, 226, 178, 0.11);
   background: rgba(255, 255, 255, 0.025);
   padding: 0.85rem;
 }
@@ -630,7 +630,7 @@
 .levi-burn-token-review-topline > div {
   min-width: 0;
   gap: 0.45rem;
-  color: #d8ee7a;
+  color: #ffc247;
 }
 
 .levi-burn-token-review-topline > div span {
@@ -666,7 +666,7 @@
   width: fit-content;
   gap: 0.35rem;
   margin-top: 0.65rem;
-  color: #c6ef91;
+  color: #ffd06a;
   font-size: 0.65rem;
   font-weight: 750;
   text-decoration: none;
@@ -696,8 +696,8 @@
 }
 
 .levi-burn-access-gate.is-unlocked {
-  border-left-color: rgba(184, 243, 107, 0.6);
-  background: rgba(184, 243, 107, 0.045);
+  border-left-color: rgba(255, 176, 0, 0.6);
+  background: rgba(255, 176, 0, 0.045);
 }
 
 .levi-burn-access-gate > div:first-child {
@@ -711,7 +711,7 @@
   color: #d7bd77;
 }
 
-.levi-burn-access-gate.is-unlocked > div:first-child > svg { color: #b8f36b; }
+.levi-burn-access-gate.is-unlocked > div:first-child > svg { color: #ffb000; }
 
 .levi-burn-access-gate > div:first-child > div {
   min-width: 0;
@@ -746,10 +746,10 @@
   width: fit-content;
   gap: 0.35rem;
   margin-top: 0.7rem;
-  border: 1px solid rgba(184, 243, 107, 0.3);
+  border: 1px solid rgba(255, 176, 0, 0.3);
   border-radius: 0.3rem;
-  background: rgba(184, 243, 107, 0.1);
-  color: #dff8bc;
+  background: rgba(255, 176, 0, 0.1);
+  color: #ffe2a6;
   padding: 0.5rem 0.65rem;
   font-size: 0.66rem;
   font-weight: 780;
@@ -757,8 +757,8 @@
 }
 
 .levi-burn-access-gate button:hover:not(:disabled) {
-  border-color: rgba(184, 243, 107, 0.58);
-  background: rgba(184, 243, 107, 0.16);
+  border-color: rgba(255, 176, 0, 0.58);
+  background: rgba(255, 176, 0, 0.16);
 }
 
 .levi-burn-access-gate button:disabled { cursor: wait; opacity: 0.58; }
@@ -773,15 +773,15 @@
   align-items: center;
   gap: 0.75rem;
   margin-top: 0.5rem;
-  border: 1px solid rgba(222, 246, 220, 0.17);
+  border: 1px solid rgba(255, 226, 178, 0.17);
   background: rgba(255, 255, 255, 0.04);
   padding: 0.35rem 0.45rem 0.35rem 0.9rem;
   transition: border-color 180ms ease, background-color 180ms ease;
 }
 
 .levi-burn-amount-field > div:focus-within {
-  border-color: rgba(184, 243, 107, 0.52);
-  background: rgba(184, 243, 107, 0.045);
+  border-color: rgba(255, 176, 0, 0.52);
+  background: rgba(255, 176, 0, 0.045);
 }
 
 .levi-burn-amount-field input {
@@ -801,10 +801,10 @@
 
 .levi-burn-amount-field > div button {
   flex: none;
-  border: 1px solid rgba(184, 243, 107, 0.28);
+  border: 1px solid rgba(255, 176, 0, 0.28);
   border-radius: 0.3rem;
-  background: rgba(184, 243, 107, 0.08);
-  color: #d7f4b4;
+  background: rgba(255, 176, 0, 0.08);
+  color: #ffdda0;
   padding: 0.45rem 0.58rem;
   font-size: 0.66rem;
   font-weight: 750;
@@ -812,8 +812,8 @@
 }
 
 .levi-burn-amount-field > div button:hover:not(:disabled) {
-  border-color: rgba(184, 243, 107, 0.56);
-  background: rgba(184, 243, 107, 0.16);
+  border-color: rgba(255, 176, 0, 0.56);
+  background: rgba(255, 176, 0, 0.16);
 }
 
 .levi-burn-amount-field > div button:disabled {
@@ -851,7 +851,7 @@
   align-items: flex-start;
   gap: 0.65rem;
   margin-top: 1.25rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1.1rem;
   color: #b7c3b4;
   font-size: 0.72rem;
@@ -864,11 +864,11 @@
   height: 1rem;
   flex: none;
   margin-top: 0.06rem;
-  accent-color: #b8f36b;
+  accent-color: #ffb000;
 }
 
 .levi-burn-acknowledgement code {
-  color: #d8ee7a;
+  color: #ffc247;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.92em;
 }
@@ -883,8 +883,8 @@
   margin-top: 1.25rem;
   border: 1px solid rgba(245, 213, 138, 0.52);
   border-radius: 0.42rem;
-  background: #d8ee7a;
-  color: #102109;
+  background: #ffc247;
+  color: #221008;
   padding: 0.75rem 1rem;
   font-size: 0.8rem;
   font-weight: 800;
@@ -893,14 +893,14 @@
 }
 
 .levi-burn-submit:hover:not(:disabled) {
-  background: #e9fca7;
-  box-shadow: 0 0.7rem 1.7rem rgba(184, 243, 107, 0.16);
+  background: #ffd76f;
+  box-shadow: 0 0.7rem 1.7rem rgba(255, 176, 0, 0.16);
   transform: translateY(-1px);
 }
 
 .levi-burn-submit:disabled {
-  border-color: rgba(222, 246, 220, 0.15);
-  background: rgba(222, 246, 220, 0.1);
+  border-color: rgba(255, 226, 178, 0.15);
+  background: rgba(255, 226, 178, 0.1);
   color: #738070;
   cursor: not-allowed;
 }
@@ -917,18 +917,18 @@
   align-items: flex-start;
   gap: 0.7rem;
   margin-top: 1rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.34);
-  border-bottom: 1px solid rgba(184, 243, 107, 0.18);
-  background: rgba(184, 243, 107, 0.07);
-  color: #c7f18f;
+  border-top: 1px solid rgba(255, 176, 0, 0.34);
+  border-bottom: 1px solid rgba(255, 176, 0, 0.18);
+  background: rgba(255, 176, 0, 0.07);
+  color: #ffce5f;
   padding: 0.9rem;
 }
 
 .levi-burn-success > svg { flex: none; margin-top: 0.08rem; }
-.levi-burn-success strong { display: block; color: #e7fbd1; font-size: 0.76rem; }
-.levi-burn-success p { margin-top: 0.25rem; color: #a7c08d; font-size: 0.69rem; line-height: 1.5; }
+.levi-burn-success strong { display: block; color: #fff0cf; font-size: 0.76rem; }
+.levi-burn-success p { margin-top: 0.25rem; color: #cbb293; font-size: 0.69rem; line-height: 1.5; }
 .levi-burn-success > div > div { flex-wrap: wrap; gap: 0.85rem; margin-top: 0.7rem; }
-.levi-burn-success a { display: inline-flex; align-items: center; gap: 0.35rem; color: #e5ffc2; font-size: 0.68rem; font-weight: 750; text-decoration: none; }
+.levi-burn-success a { display: inline-flex; align-items: center; gap: 0.35rem; color: #ffe2a6; font-size: 0.68rem; font-weight: 750; text-decoration: none; }
 .levi-burn-success a:hover { color: #fff; }
 
 .levi-burn-success button {
@@ -937,7 +937,7 @@
   gap: 0.35rem;
   border: 0;
   background: transparent;
-  color: #e5ffc2;
+  color: #ffe2a6;
   padding: 0;
   font-size: 0.68rem;
   font-weight: 750;
@@ -948,7 +948,7 @@
 
 .levi-burn-success .levi-burn-sync-status {
   margin-top: 0.65rem;
-  border-left: 2px solid rgba(184, 243, 107, 0.5);
+  border-left: 2px solid rgba(255, 176, 0, 0.5);
   padding-left: 0.6rem;
   color: #c8d6bb;
 }
@@ -969,7 +969,7 @@
 .levi-burn-tool input:focus-visible,
 .levi-burn-tool select:focus-visible,
 .levi-burn-tracker-action:focus-visible {
-  outline: 2px solid #d8ee7a;
+  outline: 2px solid #ffc247;
   outline-offset: 3px;
 }
 
@@ -1438,16 +1438,16 @@ img.site-logo {
   }
 }
 
-/* LEVI Sentinel visual system. Keep this scope isolated from legacy routes. */
+/* Agent K9 visual system. Keep this scope isolated from legacy routes. */
 .levi-site {
-  --levi-bg: #070906;
-  --levi-panel: rgba(14, 18, 13, 0.72);
-  --levi-panel-strong: rgba(10, 13, 10, 0.9);
-  --levi-line: rgba(222, 246, 220, 0.14);
-  --levi-muted: #a7b0a4;
-  --levi-green: #b8f36b;
-  --levi-green-strong: #36d399;
-  --levi-warm: #f4f1e8;
+  --levi-bg: #090302;
+  --levi-panel: rgba(28, 8, 4, 0.74);
+  --levi-panel-strong: rgba(18, 5, 3, 0.92);
+  --levi-line: rgba(255, 226, 178, 0.14);
+  --levi-muted: #b9aa9c;
+  --levi-green: #ffb000;
+  --levi-green-strong: #ff3d16;
+  --levi-warm: #fff3dc;
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
@@ -1477,15 +1477,15 @@ img.site-logo {
   inset: 0 0 auto;
   z-index: 50;
   isolation: isolate;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
-  background: rgba(7, 9, 6, 0.68);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
+  background: rgba(9, 3, 2, 0.68);
   backdrop-filter: blur(20px) saturate(130%);
   transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .levi-header.is-scrolled {
-  border-color: rgba(184, 243, 107, 0.16);
-  background: rgba(7, 9, 6, 0.9);
+  border-color: rgba(255, 176, 0, 0.16);
+  background: rgba(9, 3, 2, 0.9);
   box-shadow: 0 14px 45px rgba(0, 0, 0, 0.22);
 }
 
@@ -1503,31 +1503,37 @@ img.site-logo {
   height: 2.5rem;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(184, 243, 107, 0.45);
+  border: 1px solid rgba(255, 176, 0, 0.45);
   border-radius: 0.6rem;
-  background: #071007;
-  box-shadow: 0 0 0 4px rgba(184, 243, 107, 0.05), 0 0 28px rgba(54, 211, 153, 0.18);
+  background: #160502;
+  box-shadow: 0 0 0 4px rgba(255, 176, 0, 0.05), 0 0 28px rgba(255, 61, 22, 0.18);
 }
 
 .levi-brand-mark img {
   position: absolute;
-  width: 160%;
-  height: 160%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  opacity: 0.5;
-  mix-blend-mode: screen;
+  opacity: 1;
 }
 
-.levi-brand-mark svg {
-  position: relative;
-  z-index: 1;
+.levi-brand-eyebrow {
+  display: block;
+  color: rgba(255, 194, 71, 0.82);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.levi-brand-accent {
   color: var(--levi-green);
 }
 
 .levi-nav-shell {
   align-items: center;
   gap: 0.35rem;
-  border: 1px solid rgba(222, 246, 220, 0.14);
+  border: 1px solid rgba(255, 226, 178, 0.14);
   border-radius: 0.65rem;
   background: rgba(255, 255, 255, 0.045);
   padding: 0.28rem;
@@ -1554,7 +1560,7 @@ img.site-logo {
 .levi-nav-divider {
   width: 1px;
   height: 1.45rem;
-  background: rgba(222, 246, 220, 0.16);
+  background: rgba(255, 226, 178, 0.16);
 }
 
 .levi-nav-item {
@@ -1615,26 +1621,26 @@ img.site-logo {
 .levi-shell-cta,
 .levi-primary-button {
   background: var(--levi-green);
-  color: #10170d;
-  box-shadow: 0 8px 25px rgba(184, 243, 107, 0.16);
+  color: #1a0906;
+  box-shadow: 0 8px 25px rgba(255, 176, 0, 0.16);
 }
 
 .levi-shell-cta:hover,
 .levi-primary-button:hover {
-  background: #d1ff91;
-  box-shadow: 0 12px 30px rgba(184, 243, 107, 0.24);
+  background: #ffca47;
+  box-shadow: 0 12px 30px rgba(255, 176, 0, 0.24);
   transform: translateY(-2px);
 }
 
 .levi-secondary-button {
-  border: 1px solid rgba(222, 246, 220, 0.2);
+  border: 1px solid rgba(255, 226, 178, 0.2);
   background: rgba(255, 255, 255, 0.035);
   color: #f3f6ed;
 }
 
 .levi-secondary-button:hover {
-  border-color: rgba(184, 243, 107, 0.45);
-  background: rgba(184, 243, 107, 0.08);
+  border-color: rgba(255, 176, 0, 0.45);
+  background: rgba(255, 176, 0, 0.08);
   transform: translateY(-2px);
 }
 
@@ -1649,7 +1655,7 @@ img.site-logo {
   width: 3.25rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(222, 246, 220, 0.18);
+  border: 1px solid rgba(255, 226, 178, 0.18);
   border-radius: 0.55rem;
   background: rgba(255, 255, 255, 0.04);
   color: #f3f6ed;
@@ -1696,8 +1702,8 @@ img.site-logo {
   z-index: 1;
   max-height: calc(100svh - 4.75rem);
   overflow-y: auto;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  background: rgba(7, 9, 6, 0.96);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  background: rgba(9, 3, 2, 0.96);
   box-shadow: 0 24px 40px rgba(0, 0, 0, 0.35);
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -1729,16 +1735,16 @@ img.site-logo {
   min-height: 100vh;
   padding-top: 4.75rem;
   background:
-    radial-gradient(ellipse 72% 58% at 78% 17%, rgba(35, 105, 63, 0.26), transparent 70%),
-    radial-gradient(ellipse 64% 48% at 14% 82%, rgba(165, 110, 42, 0.1), transparent 72%),
-    linear-gradient(135deg, #070906 0%, #0b110a 54%, #06100a 100%);
+    radial-gradient(ellipse 72% 58% at 78% 17%, rgba(153, 15, 8, 0.34), transparent 70%),
+    radial-gradient(ellipse 64% 48% at 14% 82%, rgba(255, 157, 0, 0.12), transparent 72%),
+    linear-gradient(135deg, #090302 0%, #1a0703 54%, #180503 100%);
 }
 
 .levi-home::after {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(7, 9, 6, 0.04), rgba(7, 9, 6, 0.88) 78%, #070906 100%);
+  background: linear-gradient(180deg, rgba(9, 3, 2, 0.04), rgba(9, 3, 2, 0.88) 78%, #090302 100%);
   content: "";
   pointer-events: none;
 }
@@ -1747,7 +1753,7 @@ img.site-logo {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: linear-gradient(rgba(199, 236, 182, 0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(199, 236, 182, 0.055) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255, 190, 78, 0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 190, 78, 0.055) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 80%);
   opacity: 0.36;
@@ -1760,7 +1766,7 @@ img.site-logo {
   z-index: -1;
   width: 45rem;
   height: 32rem;
-  background: radial-gradient(ellipse, rgba(184, 243, 107, 0.12), transparent 68%);
+  background: radial-gradient(ellipse, rgba(255, 176, 0, 0.12), transparent 68%);
   filter: blur(30px);
   pointer-events: none;
 }
@@ -1785,11 +1791,11 @@ img.site-logo {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid rgba(184, 243, 107, 0.27);
+  border: 1px solid rgba(255, 176, 0, 0.27);
   border-radius: 999px;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   padding: 0.45rem 0.72rem;
-  color: #d0efaa;
+  color: #ffd27a;
   font-size: 0.69rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -1816,7 +1822,7 @@ img.site-logo {
 .levi-hero-lede {
   max-width: 34rem;
   margin-top: 1.5rem;
-  color: #b4beb1;
+  color: #c7b9ab;
   font-size: 1.06rem;
   line-height: 1.8;
 }
@@ -1833,7 +1839,7 @@ img.site-logo {
   flex-wrap: wrap;
   gap: 0.75rem 1.2rem;
   margin-top: 2rem;
-  color: #849183;
+  color: #9d8d80;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -1847,7 +1853,7 @@ img.site-logo {
 }
 
 .levi-hero-proof svg {
-  color: var(--levi-green-strong);
+  color: var(--levi-green);
 }
 
 .levi-hero-art {
@@ -1862,7 +1868,7 @@ img.site-logo {
   position: absolute;
   width: 23rem;
   height: 23rem;
-  border: 1px solid rgba(184, 243, 107, 0.2);
+  border: 1px solid rgba(255, 176, 0, 0.2);
   border-radius: 50%;
   content: "";
   opacity: 0.75;
@@ -1873,7 +1879,7 @@ img.site-logo {
   position: absolute;
   width: 28rem;
   height: 28rem;
-  border: 1px solid rgba(199, 236, 182, 0.09);
+  border: 1px solid rgba(255, 190, 78, 0.09);
   border-radius: 50%;
   transform: rotate(18deg) scaleX(1.28);
 }
@@ -1882,11 +1888,18 @@ img.site-logo {
   position: relative;
   z-index: 1;
   width: min(100%, 31rem);
-  height: auto;
-  object-fit: contain;
-  filter: saturate(0.94) contrast(1.06) drop-shadow(0 30px 48px rgba(0, 0, 0, 0.48));
-  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 86%, transparent 100%);
-  mix-blend-mode: screen;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.45rem;
+  filter: saturate(0.96) contrast(1.02) drop-shadow(0 30px 48px rgba(0, 0, 0, 0.58));
+  mask-image: linear-gradient(to bottom, black 0%, black 88%, transparent 100%);
+}
+
+.levi-hero-art-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .levi-hero-art-caption {
@@ -1894,7 +1907,7 @@ img.site-logo {
   right: 0;
   bottom: 1.25rem;
   z-index: 2;
-  color: rgba(184, 243, 107, 0.58);
+  color: rgba(255, 176, 0, 0.58);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.63rem;
   letter-spacing: 0.18em;
@@ -1905,7 +1918,7 @@ img.site-logo {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.14);
+  border-top: 1px solid rgba(255, 226, 178, 0.14);
   padding: 0.8rem 0 1.2rem;
   color: #7c8b7a;
   font-size: 0.63rem;
@@ -1916,7 +1929,7 @@ img.site-logo {
 .levi-hero-rail-line {
   height: 1px;
   flex: 1;
-  background: linear-gradient(90deg, rgba(184, 243, 107, 0.45), transparent);
+  background: linear-gradient(90deg, rgba(255, 176, 0, 0.45), transparent);
 }
 
 .levi-community-invite {
@@ -1924,7 +1937,7 @@ img.site-logo {
   grid-template-columns: 1fr;
   align-items: center;
   gap: 1.15rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 1.65rem 0 2rem;
 }
 
@@ -1966,7 +1979,7 @@ img.site-logo {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.75rem;
-  border: 1px solid rgba(222, 246, 220, 0.14);
+  border: 1px solid rgba(255, 226, 178, 0.14);
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.035);
   padding: 0.7rem 0.8rem;
@@ -1975,8 +1988,8 @@ img.site-logo {
 }
 
 .levi-community-link:hover {
-  border-color: rgba(184, 243, 107, 0.42);
-  background: rgba(184, 243, 107, 0.075);
+  border-color: rgba(255, 176, 0, 0.42);
+  background: rgba(255, 176, 0, 0.075);
   transform: translateY(-2px);
 }
 
@@ -1985,9 +1998,9 @@ img.site-logo {
   width: 2.3rem;
   height: 2.3rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.2);
+  border: 1px solid rgba(255, 176, 0, 0.2);
   border-radius: 0.45rem;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: var(--levi-green);
 }
 
@@ -2032,8 +2045,8 @@ img.site-logo {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: 2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   padding: 2rem 0;
 }
 
@@ -2075,15 +2088,15 @@ img.site-logo {
   display: flex;
   min-height: 13.25rem;
   flex-direction: column;
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
   background: rgba(255, 255, 255, 0.025);
   padding: 0.85rem;
   transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .levi-home-narrative-flow > li:hover {
-  border-top-color: rgba(184, 243, 107, 0.55);
-  background: rgba(184, 243, 107, 0.055);
+  border-top-color: rgba(255, 176, 0, 0.55);
+  background: rgba(255, 176, 0, 0.055);
   transform: translateY(-2px);
 }
 
@@ -2113,16 +2126,16 @@ img.site-logo {
   height: 2.75rem;
   margin-top: auto;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.18);
+  border: 1px solid rgba(255, 176, 0, 0.18);
   border-radius: 0.5rem;
-  background: linear-gradient(145deg, rgba(184, 243, 107, 0.1), rgba(184, 243, 107, 0.025));
+  background: linear-gradient(145deg, rgba(255, 176, 0, 0.1), rgba(255, 176, 0, 0.025));
   box-shadow: inset 0 1px 0 rgba(239, 246, 235, 0.08), 0 12px 28px rgba(0, 0, 0, 0.14);
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-home-narrative-flow > li:hover .levi-home-narrative-icon {
-  border-color: rgba(184, 243, 107, 0.38);
-  color: #e6ffbf;
+  border-color: rgba(255, 176, 0, 0.38);
+  color: #ffe8bc;
 }
 
 .levi-flow {
@@ -2141,7 +2154,7 @@ img.site-logo {
   position: relative;
   overflow: hidden;
   border-top: 1px solid var(--levi-line);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.07);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.07);
   background: linear-gradient(115deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
   padding: 1.1rem 1.15rem 1.2rem;
 }
@@ -2171,14 +2184,14 @@ img.site-logo {
   line-height: 1.1;
 }
 
-/* Live LEVI AI supply burns. Community locks remain visually and semantically separate. */
+/* Live Agent K9 supply burns. Community locks remain visually and semantically separate. */
 .levi-burn-tracker {
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(184, 243, 107, 0.5);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.13);
+  border-top: 1px solid rgba(255, 176, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.13);
   background:
-    linear-gradient(115deg, rgba(184, 243, 107, 0.075), transparent 42%),
+    linear-gradient(115deg, rgba(255, 176, 0, 0.075), transparent 42%),
     rgba(8, 11, 7, 0.7);
   padding: clamp(1.25rem, 3vw, 2rem);
 }
@@ -2187,8 +2200,8 @@ img.site-logo {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(184, 243, 107, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184, 243, 107, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 176, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 176, 0, 0.04) 1px, transparent 1px);
   background-size: 2rem 2rem;
   content: "";
   -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 78%);
@@ -2252,11 +2265,11 @@ img.site-logo {
 .levi-burn-tracker-status {
   flex: none;
   gap: 0.45rem;
-  border: 1px solid rgba(184, 243, 107, 0.28);
+  border: 1px solid rgba(255, 176, 0, 0.28);
   border-radius: 999px;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   padding: 0.45rem 0.5rem 0.45rem 0.65rem;
-  color: #c9f68a;
+  color: #ffcc59;
   font-size: 0.66rem;
   font-weight: 700;
   line-height: 1.2;
@@ -2288,10 +2301,10 @@ img.site-logo {
   flex: none;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgba(184, 243, 107, 0.28);
+  border: 1px solid rgba(255, 176, 0, 0.28);
   border-radius: 0.45rem;
-  background: rgba(184, 243, 107, 0.08);
-  color: #d8f7b4;
+  background: rgba(255, 176, 0, 0.08);
+  color: #ffe0a3;
   padding: 0.58rem 0.72rem;
   font-size: 0.68rem;
   font-weight: 750;
@@ -2301,16 +2314,16 @@ img.site-logo {
 }
 
 .levi-burn-tracker-action:hover {
-  border-color: rgba(184, 243, 107, 0.58);
-  background: rgba(184, 243, 107, 0.14);
+  border-color: rgba(255, 176, 0, 0.58);
+  background: rgba(255, 176, 0, 0.14);
   color: #f0ffdd;
 }
 
 .levi-burn-tracker-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
-  border-left: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
+  border-left: 1px solid rgba(255, 226, 178, 0.12);
 }
 
 .levi-burn-tracker-metric {
@@ -2318,15 +2331,15 @@ img.site-logo {
   min-width: 0;
   min-height: 11.25rem;
   flex-direction: column;
-  border-right: 1px solid rgba(222, 246, 220, 0.12);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  border-right: 1px solid rgba(255, 226, 178, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.12);
   background: rgba(255, 255, 255, 0.018);
   padding: 1rem;
   transition: background-color 180ms ease, transform 180ms ease;
 }
 
 .levi-burn-tracker-metric:hover {
-  background: rgba(184, 243, 107, 0.052);
+  background: rgba(255, 176, 0, 0.052);
   transform: translateY(-2px);
 }
 
@@ -2344,7 +2357,7 @@ img.site-logo {
 
 .levi-burn-tracker-metric-topline svg {
   flex: none;
-  color: #9fdf5b;
+  color: #f2a000;
 }
 
 .levi-burn-tracker-metric-burned .levi-burn-tracker-metric-topline svg {
@@ -2376,7 +2389,7 @@ img.site-logo {
 .levi-burn-tracker-footer {
   justify-content: space-between;
   gap: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.12);
   padding: 1rem 0;
 }
 
@@ -2412,7 +2425,7 @@ img.site-logo {
 .levi-burn-tracker-lock a {
   flex: none;
   gap: 0.35rem;
-  color: #b8f36b;
+  color: #ffb000;
   font-size: 0.66rem;
   font-weight: 700;
   text-decoration: none;
@@ -2420,7 +2433,7 @@ img.site-logo {
 
 .levi-burn-tracker-transaction a:hover,
 .levi-burn-tracker-lock a:hover {
-  color: #ddffae;
+  color: #ffdd94;
 }
 
 .levi-burn-tracker-transaction .is-disabled {
@@ -2432,7 +2445,7 @@ img.site-logo {
 
 .levi-burn-tracker-lock {
   flex: 1 1 24rem;
-  border-left: 1px solid rgba(222, 246, 220, 0.12);
+  border-left: 1px solid rgba(255, 226, 178, 0.12);
   padding-left: 1.25rem;
 }
 
@@ -2498,7 +2511,7 @@ img.site-logo {
   display: block;
   height: 0.5rem;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(222, 246, 220, 0.06), rgba(222, 246, 220, 0.16), rgba(222, 246, 220, 0.06));
+  background: linear-gradient(90deg, rgba(255, 226, 178, 0.06), rgba(255, 226, 178, 0.16), rgba(255, 226, 178, 0.06));
   background-size: 200% 100%;
   animation: levi-burn-tracker-shimmer 1.6s ease-in-out infinite;
 }
@@ -2512,16 +2525,16 @@ img.site-logo {
   to { background-position: -100% 0; }
 }
 
-.levi-tone-green { color: #b8f36b; }
+.levi-tone-green { color: #ffb000; }
 .levi-tone-red { color: #ff9b91; }
-.levi-tone-cyan { color: #8ee9dc; }
+.levi-tone-cyan { color: #ff7a1a; }
 .levi-tone-amber { color: #f5d58a; }
 .levi-tone-neutral { color: #e4ebe1; }
 
 .levi-panel,
 .levi-scanner-shell,
 .levi-scan-result {
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   background: var(--levi-panel);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(18px);
@@ -2566,7 +2579,7 @@ img.site-logo {
 
 .levi-wallet-panel {
   width: min(100%, 25rem);
-  border-left: 1px solid rgba(184, 243, 107, 0.28);
+  border-left: 1px solid rgba(255, 176, 0, 0.28);
   padding-left: 1rem;
 }
 
@@ -2594,9 +2607,9 @@ img.site-logo {
   align-items: flex-start;
   gap: 0.75rem;
   margin-top: 1.75rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.2);
+  border-top: 1px solid rgba(255, 176, 0, 0.2);
   padding-top: 1rem;
-  color: #c9e6c0;
+  color: #e8d4bf;
   font-size: 0.82rem;
   line-height: 1.7;
 }
@@ -2614,7 +2627,7 @@ img.site-logo {
 }
 
 .levi-list-column {
-  border-top: 1px solid rgba(222, 246, 220, 0.13);
+  border-top: 1px solid rgba(255, 226, 178, 0.13);
   padding-top: 1rem;
 }
 
@@ -2651,7 +2664,7 @@ img.site-logo {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: 1px;
   overflow: hidden;
-  background: rgba(222, 246, 220, 0.12);
+  background: rgba(255, 226, 178, 0.12);
 }
 
 .levi-auth-panel,
@@ -2661,7 +2674,7 @@ img.site-logo {
 }
 
 .levi-scanner-form {
-  background: rgba(8, 11, 8, 0.86);
+  background: rgba(18, 6, 3, 0.86);
 }
 
 .levi-scanner-icon {
@@ -2670,9 +2683,9 @@ img.site-logo {
   height: 2.6rem;
   flex: none;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.28);
+  border: 1px solid rgba(255, 176, 0, 0.28);
   border-radius: 0.55rem;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: var(--levi-green);
 }
 
@@ -2692,18 +2705,18 @@ img.site-logo {
 .levi-form-input {
   min-height: 3.05rem;
   width: 100%;
-  border: 1px solid rgba(222, 246, 220, 0.15);
+  border: 1px solid rgba(255, 226, 178, 0.15);
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.96);
   padding: 0.8rem 0.95rem;
-  color: #101510;
+  color: #120807;
   outline: none;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .levi-form-input:focus {
   border-color: var(--levi-green-strong);
-  box-shadow: 0 0 0 3px rgba(54, 211, 153, 0.13);
+  box-shadow: 0 0 0 3px rgba(255, 61, 22, 0.13);
 }
 
 .levi-form-input::placeholder {
@@ -2711,8 +2724,8 @@ img.site-logo {
 }
 
 .levi-footer {
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  background: #050704;
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  background: #050201;
   color: #829084;
 }
 
@@ -2815,7 +2828,7 @@ img.site-logo {
 }
 
 .levi-footer-link:hover {
-  color: #dcffac;
+  color: #ffdc8c;
 }
 
 @media (min-width: 768px) {
@@ -2969,7 +2982,7 @@ img.site-logo {
 
   .levi-burn-tracker-lock {
     width: 100%;
-    border-top: 1px solid rgba(222, 246, 220, 0.12);
+    border-top: 1px solid rgba(255, 226, 178, 0.12);
     border-left: 0;
     padding-top: 1rem;
     padding-left: 0;
@@ -2981,14 +2994,14 @@ img.site-logo {
 
   .levi-wallet-panel {
     width: 100%;
-    border-top: 1px solid rgba(184, 243, 107, 0.22);
+    border-top: 1px solid rgba(255, 176, 0, 0.22);
     border-left: 0;
     padding-top: 1rem;
     padding-left: 0;
   }
 }
 
-/* LEVI Learn: interactive Bitcoin field guide */
+/* Agent K9 Learn: interactive Bitcoin field guide */
 .levi-bitcoin-link-section {
   position: relative;
   z-index: 1;
@@ -3000,7 +3013,7 @@ img.site-logo {
   grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
   gap: clamp(1.5rem, 5vw, 4rem);
   border-top: 1px solid rgba(245, 213, 138, 0.5);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.12);
   background: rgba(8, 11, 7, 0.58);
   padding: clamp(1.5rem, 4vw, 3rem);
 }
@@ -3034,7 +3047,7 @@ img.site-logo {
   display: grid;
   align-content: center;
   gap: 0;
-  border-left: 1px solid rgba(222, 246, 220, 0.12);
+  border-left: 1px solid rgba(255, 226, 178, 0.12);
   padding-left: clamp(1rem, 3vw, 2rem);
 }
 
@@ -3043,14 +3056,14 @@ img.site-logo {
   align-items: center;
   gap: 0.8rem;
   min-height: 3.8rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   color: #dcead9;
   font-size: 0.8rem;
   line-height: 1.45;
 }
 
 .levi-bitcoin-link-map > div:last-child {
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
 }
 
 .levi-bitcoin-link-map svg {
@@ -3064,15 +3077,15 @@ img.site-logo {
   min-height: 100vh;
   overflow: hidden;
   padding: 9rem 0 6rem;
-  background: #070906;
+  background: #090302;
 }
 
 .levi-bitcoin-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(222, 246, 220, 0.038) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(222, 246, 220, 0.038) 1px, transparent 1px);
+    linear-gradient(rgba(255, 226, 178, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 226, 178, 0.038) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 62%);
   opacity: 0.45;
@@ -3160,7 +3173,7 @@ img.site-logo {
   display: grid;
   min-height: 25rem;
   align-content: space-between;
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   background: rgba(5, 8, 5, 0.72);
   padding: clamp(1rem, 3vw, 1.75rem);
 }
@@ -3205,7 +3218,7 @@ img.site-logo {
   min-height: 4.2rem;
   place-items: center;
   gap: 0.3rem;
-  border: 1px solid rgba(222, 246, 220, 0.16);
+  border: 1px solid rgba(255, 226, 178, 0.16);
   border-radius: 0.45rem;
   background: #0b100a;
   color: #95a793;
@@ -3216,7 +3229,7 @@ img.site-logo {
 .levi-bitcoin-map-node:hover,
 .levi-bitcoin-map-node.is-active {
   border-color: rgba(245, 213, 138, 0.72);
-  background: #14160d;
+  background: #180b08;
   color: #f5d58a;
   transform: translateY(-2px);
 }
@@ -3228,7 +3241,7 @@ img.site-logo {
 
 .levi-bitcoin-map-readout {
   align-items: flex-start;
-  border-top: 1px solid rgba(222, 246, 220, 0.11);
+  border-top: 1px solid rgba(255, 226, 178, 0.11);
   padding-top: 1rem;
 }
 
@@ -3294,13 +3307,13 @@ img.site-logo {
 .levi-bitcoin-explorer {
   display: grid;
   grid-template-columns: minmax(13rem, 0.52fr) minmax(0, 1fr);
-  border-top: 1px solid rgba(222, 246, 220, 0.15);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.15);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   background: rgba(255, 255, 255, 0.02);
 }
 
 .levi-bitcoin-chapter-list {
-  border-right: 1px solid rgba(222, 246, 220, 0.1);
+  border-right: 1px solid rgba(255, 226, 178, 0.1);
 }
 
 .levi-bitcoin-chapter-button {
@@ -3311,7 +3324,7 @@ img.site-logo {
   align-items: center;
   gap: 0.6rem;
   border: 0;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   background: transparent;
   padding: 0.9rem 1rem;
   color: #889787;
@@ -3326,8 +3339,8 @@ img.site-logo {
 
 .levi-bitcoin-chapter-button:hover,
 .levi-bitcoin-chapter-button.is-active {
-  background: rgba(184, 243, 107, 0.065);
-  box-shadow: inset 2px 0 0 #b8f36b;
+  background: rgba(255, 176, 0, 0.065);
+  box-shadow: inset 2px 0 0 #ffb000;
   color: #edf5e8;
 }
 
@@ -3338,7 +3351,7 @@ img.site-logo {
 }
 
 .levi-bitcoin-chapter-button svg {
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-bitcoin-chapter-button strong {
@@ -3356,7 +3369,7 @@ img.site-logo {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  color: #b8f36b;
+  color: #ffb000;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.68rem;
   letter-spacing: 0;
@@ -3401,7 +3414,7 @@ img.site-logo {
 
 .levi-bitcoin-chapter-panel li svg {
   margin-top: 0.15rem;
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-bitcoin-chapter-signal {
@@ -3427,8 +3440,8 @@ img.site-logo {
   z-index: 1;
   width: 100%;
   margin-top: 5.5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   background: rgba(4, 6, 4, 0.5);
   padding-bottom: 5.5rem;
 }
@@ -3439,7 +3452,7 @@ img.site-logo {
 
 .levi-bitcoin-payment {
   border-top: 1px solid rgba(245, 213, 138, 0.35);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   background: rgba(255, 255, 255, 0.025);
   padding: clamp(1rem, 3vw, 2rem);
 }
@@ -3455,7 +3468,7 @@ img.site-logo {
   min-height: 8.5rem;
   align-content: start;
   gap: 0.7rem;
-  border: 1px solid rgba(222, 246, 220, 0.1);
+  border: 1px solid rgba(255, 226, 178, 0.1);
   border-radius: 0.45rem;
   background: #0a0e09;
   padding: 1rem;
@@ -3468,7 +3481,7 @@ img.site-logo {
 .levi-bitcoin-payment-step:hover,
 .levi-bitcoin-payment-step.is-active {
   border-color: rgba(245, 213, 138, 0.63);
-  background: #15160d;
+  background: #1a0b08;
   color: #f4f1dc;
   transform: translateY(-2px);
 }
@@ -3494,12 +3507,12 @@ img.site-logo {
   grid-template-columns: 2.75rem minmax(0, 1fr);
   gap: 1rem;
   margin-top: 1.25rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1.25rem;
 }
 
 .levi-bitcoin-payment-readout > svg {
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-bitcoin-payment-readout span {
@@ -3535,7 +3548,7 @@ img.site-logo {
 
 .levi-bitcoin-reality-grid article {
   min-height: 15rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.34);
+  border-top: 1px solid rgba(255, 176, 0, 0.34);
   background: rgba(255, 255, 255, 0.028);
   padding: 1.35rem;
 }
@@ -3545,7 +3558,7 @@ img.site-logo {
 }
 
 .levi-bitcoin-reality-grid article:nth-child(3) {
-  border-top-color: rgba(142, 233, 220, 0.42);
+  border-top-color: rgba(255, 176, 0, 0.42);
 }
 
 .levi-bitcoin-reality-grid article > span {
@@ -3593,7 +3606,7 @@ img.site-logo {
   gap: 1rem;
   width: 100%;
   min-height: 4.2rem;
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   border-radius: 0.4rem;
   background: rgba(255, 255, 255, 0.025);
   padding: 0.9rem 1rem;
@@ -3613,13 +3626,13 @@ img.site-logo {
 }
 
 .levi-bitcoin-quiz-option.is-correct {
-  border-color: rgba(184, 243, 107, 0.68);
-  background: rgba(184, 243, 107, 0.09);
+  border-color: rgba(255, 176, 0, 0.68);
+  background: rgba(255, 176, 0, 0.09);
 }
 
 .levi-bitcoin-quiz-option svg {
   flex: none;
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-bitcoin-quiz-feedback {
@@ -3630,7 +3643,7 @@ img.site-logo {
 }
 
 .levi-bitcoin-quiz-feedback.is-correct {
-  border-left-color: #b8f36b;
+  border-left-color: #ffb000;
   color: #e2f2d5;
 }
 
@@ -3687,7 +3700,7 @@ img.site-logo {
   }
 
   .levi-bitcoin-link-map {
-    border-top: 1px solid rgba(222, 246, 220, 0.12);
+    border-top: 1px solid rgba(255, 226, 178, 0.12);
     border-left: 0;
     padding-top: 1.25rem;
     padding-left: 0;
@@ -3772,7 +3785,7 @@ img.site-logo {
 
   .levi-bitcoin-chapter-list {
     border-right: 0;
-    border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+    border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   }
 
   .levi-bitcoin-chapter-button {
@@ -3845,7 +3858,7 @@ img.site-logo {
   }
 }
 
-/* LEVI AI community burn information */
+/* Agent K9 community burn information */
 .levi-burn-fab,
 .levi-burn-banner {
   position: fixed;
@@ -3913,7 +3926,7 @@ img.site-logo {
   width: 2.5rem;
   height: 2.5rem;
   flex: none;
-  border: 1px solid rgba(184, 243, 107, 0.38);
+  border: 1px solid rgba(255, 176, 0, 0.38);
   border-radius: 0.5rem;
   object-fit: cover;
 }
@@ -3946,7 +3959,7 @@ img.site-logo {
   height: 2rem;
   flex: none;
   place-items: center;
-  border: 1px solid rgba(222, 246, 220, 0.13);
+  border: 1px solid rgba(255, 226, 178, 0.13);
   border-radius: 0.45rem;
   background: transparent;
   color: #93a192;
@@ -3954,7 +3967,7 @@ img.site-logo {
 }
 
 .levi-burn-close:hover {
-  border-color: rgba(222, 246, 220, 0.35);
+  border-color: rgba(255, 226, 178, 0.35);
   color: #eff5eb;
 }
 
@@ -3963,7 +3976,7 @@ img.site-logo {
   gap: 0.45rem;
   margin-top: 0.9rem;
   border-top: 1px solid rgba(245, 213, 138, 0.34);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 0.8rem 0;
 }
 
@@ -3991,7 +4004,7 @@ img.site-logo {
 }
 
 .levi-burn-steps span {
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
   padding-top: 0.35rem;
   color: #93a292;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -4004,7 +4017,7 @@ img.site-logo {
   display: grid;
   gap: 0.45rem;
   margin-top: 0.85rem;
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   border-radius: 0.45rem;
   background: rgba(255, 255, 255, 0.025);
   padding: 0.7rem;
@@ -4043,14 +4056,14 @@ img.site-logo {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.45rem 0.6rem;
   margin-top: 0.75rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding-bottom: 0.75rem;
 }
 
 .levi-burn-token svg {
   grid-row: span 2;
   align-self: center;
-  color: #b8f36b;
+  color: #ffb000;
 }
 
 .levi-burn-notice {
@@ -4104,14 +4117,14 @@ img.site-logo {
 .levi-burn-solscan-link {
   display: inline-flex;
   margin-top: 0.85rem;
-  color: #b8f36b;
+  color: #ffb000;
   font-size: 0.7rem;
   font-weight: 700;
   text-decoration: none;
 }
 
 .levi-burn-solscan-link:hover {
-  color: #d8f9a9;
+  color: #ffdc88;
 }
 
 .levi-burn-tracker-link {
@@ -4179,24 +4192,24 @@ img.site-logo {
   }
 }
 
-/* LEVI Social contest surface. Keep campaign styling inside the LEVI shell. */
+/* Agent K9 social contest surface. Keep campaign styling inside the product shell. */
 .levi-contest-page {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
   padding: 9rem 0 4rem;
   background:
-    radial-gradient(ellipse 58% 52% at 78% 5%, rgba(39, 104, 67, 0.22), transparent 72%),
+    radial-gradient(ellipse 58% 52% at 78% 5%, rgba(153, 15, 8, 0.26), transparent 72%),
     radial-gradient(ellipse 52% 40% at 8% 38%, rgba(171, 121, 44, 0.08), transparent 74%),
-    linear-gradient(145deg, #070906 0%, #0a100a 58%, #050805 100%);
+    linear-gradient(145deg, #090302 0%, #0a100a 58%, #070302 100%);
 }
 
 .levi-contest-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(199, 236, 182, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 236, 182, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(255, 190, 78, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 190, 78, 0.045) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
   opacity: 0.42;
@@ -4209,7 +4222,7 @@ img.site-logo {
   right: -12rem;
   width: 42rem;
   height: 30rem;
-  background: radial-gradient(ellipse, rgba(184, 243, 107, 0.1), transparent 68%);
+  background: radial-gradient(ellipse, rgba(255, 176, 0, 0.1), transparent 68%);
   filter: blur(32px);
   pointer-events: none;
 }
@@ -4281,8 +4294,8 @@ img.site-logo {
 
 .levi-contest-signal {
   position: relative;
-  border-top: 1px solid rgba(184, 243, 107, 0.48);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 176, 0, 0.48);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.12);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
   padding: 1.6rem;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.25);
@@ -4294,9 +4307,9 @@ img.site-logo {
   height: 3rem;
   margin-bottom: 2.2rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.32);
+  border: 1px solid rgba(255, 176, 0, 0.32);
   border-radius: 0.65rem;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: var(--levi-green);
 }
 
@@ -4312,7 +4325,7 @@ img.site-logo {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   margin-top: 1.15rem;
   padding-top: 1rem;
   color: #819083;
@@ -4340,9 +4353,9 @@ img.site-logo {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin-top: 5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.14);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
-  background: rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.14);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
+  background: rgba(255, 226, 178, 0.1);
 }
 
 .levi-contest-stat {
@@ -4384,11 +4397,11 @@ img.site-logo {
   flex: none;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 999px;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   padding: 0.55rem 0.75rem;
-  color: #d3efa9;
+  color: #ffdca0;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -4396,7 +4409,7 @@ img.site-logo {
 
 .levi-contest-form-area {
   margin-top: 2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
   padding-top: 1.4rem;
 }
 
@@ -4455,7 +4468,7 @@ img.site-logo {
 }
 
 .levi-contest-feedback.is-success {
-  color: #b9ef9b;
+  color: #ffc96c;
 }
 
 .levi-contest-feedback.is-error {
@@ -4490,9 +4503,9 @@ img.site-logo {
   height: 2.7rem;
   flex: none;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.3);
+  border: 1px solid rgba(255, 176, 0, 0.3);
   border-radius: 0.55rem;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: var(--levi-green);
 }
 
@@ -4512,7 +4525,7 @@ img.site-logo {
   width: 1rem;
   height: 1rem;
   margin-top: 0.3rem;
-  border: 2px solid rgba(184, 243, 107, 0.25);
+  border: 2px solid rgba(255, 176, 0, 0.25);
   border-top-color: var(--levi-green);
   border-radius: 50%;
   animation: levi-contest-spin 0.8s linear infinite;
@@ -4556,7 +4569,7 @@ img.site-logo {
 
 .levi-contest-disclaimer {
   margin-top: 1.8rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
   padding-top: 1rem;
   color: #7c8a7b;
   font-size: 0.72rem;
@@ -4572,7 +4585,7 @@ img.site-logo {
   align-items: end;
   justify-content: space-between;
   gap: 2rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.12);
   padding-bottom: 1.25rem;
 }
 
@@ -4593,7 +4606,7 @@ img.site-logo {
   height: 0.45rem;
   border-radius: 50%;
   background: var(--levi-green-strong);
-  box-shadow: 0 0 12px rgba(54, 211, 153, 0.65);
+  box-shadow: 0 0 12px rgba(255, 61, 22, 0.65);
 }
 
 .levi-contest-feed {
@@ -4607,7 +4620,7 @@ img.site-logo {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
   background: rgba(255, 255, 255, 0.025);
   padding: 1rem;
   color: #8e9c8e;
@@ -4615,8 +4628,8 @@ img.site-logo {
 }
 
 .levi-contest-entry:hover {
-  border-color: rgba(184, 243, 107, 0.38);
-  background: rgba(184, 243, 107, 0.055);
+  border-color: rgba(255, 176, 0, 0.38);
+  background: rgba(255, 176, 0, 0.055);
   color: var(--levi-green);
   transform: translateY(-2px);
 }
@@ -4627,9 +4640,9 @@ img.site-logo {
   height: 2.2rem;
   flex: none;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.2);
+  border: 1px solid rgba(255, 176, 0, 0.2);
   border-radius: 0.5rem;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   color: var(--levi-green);
 }
 
@@ -4656,7 +4669,7 @@ img.site-logo {
   align-items: center;
   gap: 0.65rem;
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding: 1.25rem 0;
   color: #859285;
   font-size: 0.8rem;
@@ -4681,7 +4694,7 @@ img.site-logo {
 .levi-contest-footer-rail div {
   height: 1px;
   flex: 1;
-  background: linear-gradient(90deg, rgba(184, 243, 107, 0.42), transparent);
+  background: linear-gradient(90deg, rgba(255, 176, 0, 0.42), transparent);
 }
 
 @media (max-width: 1023px) {
@@ -4725,7 +4738,7 @@ img.site-logo {
 
   .levi-contest-stat {
     min-height: auto;
-    border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+    border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   }
 
   .levi-contest-stat:last-child {
@@ -4762,7 +4775,7 @@ img.site-logo {
   }
 }
 
-/* LEVI Learn guide. Educational visuals stay local, scoped and data-agnostic. */
+/* Agent K9 Learn guide. Educational visuals stay local, scoped and data-agnostic. */
 .levi-learn-page {
   position: relative;
   min-width: 0;
@@ -4770,17 +4783,17 @@ img.site-logo {
   overflow: hidden;
   padding: 9rem 0 5rem;
   background:
-    radial-gradient(ellipse 60% 42% at 84% 2%, rgba(49, 111, 78, 0.2), transparent 72%),
+    radial-gradient(ellipse 60% 42% at 84% 2%, rgba(187, 27, 9, 0.24), transparent 72%),
     radial-gradient(ellipse 50% 34% at 5% 34%, rgba(178, 125, 43, 0.07), transparent 72%),
-    linear-gradient(150deg, #070906 0%, #0b100a 58%, #050705 100%);
+    linear-gradient(150deg, #090302 0%, #0b100a 58%, #050705 100%);
 }
 
 .levi-learn-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(199, 236, 182, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 236, 182, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(255, 190, 78, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 190, 78, 0.045) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 72%);
   opacity: 0.4;
@@ -4793,7 +4806,7 @@ img.site-logo {
   left: 35%;
   width: 38rem;
   height: 28rem;
-  background: radial-gradient(ellipse, rgba(184, 243, 107, 0.09), transparent 68%);
+  background: radial-gradient(ellipse, rgba(255, 176, 0, 0.09), transparent 68%);
   filter: blur(34px);
   pointer-events: none;
 }
@@ -4879,7 +4892,7 @@ img.site-logo {
   position: absolute;
   width: 22rem;
   height: 22rem;
-  border: 1px solid rgba(184, 243, 107, 0.22);
+  border: 1px solid rgba(255, 176, 0, 0.22);
   border-radius: 50%;
   content: "";
   transform: rotate(-18deg) scaleX(1.28);
@@ -4898,7 +4911,7 @@ img.site-logo {
 
 .levi-learn-orbit {
   position: absolute;
-  border: 1px solid rgba(222, 246, 220, 0.1);
+  border: 1px solid rgba(255, 226, 178, 0.1);
   border-radius: 50%;
   transform: rotate(20deg) scaleX(1.28);
 }
@@ -4923,7 +4936,7 @@ img.site-logo {
   z-index: 2;
   display: grid;
   gap: 0.28rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.4);
+  border-left: 1px solid rgba(255, 176, 0, 0.4);
   padding-left: 0.8rem;
   color: #829082;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -4933,7 +4946,7 @@ img.site-logo {
 }
 
 .levi-learn-art-label strong {
-  color: #d5efa9;
+  color: #ffd27a;
   font-size: 0.66rem;
   font-weight: 600;
 }
@@ -4945,8 +4958,8 @@ img.site-logo {
 .levi-learn-section-dark {
   width: 100%;
   margin-top: 5.5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   background: rgba(5, 7, 5, 0.46);
   padding: 5.5rem max(1rem, calc((100vw - 78rem) / 2)) 5.5rem;
 }
@@ -4990,7 +5003,7 @@ img.site-logo {
   flex: none;
   min-width: 0;
   max-width: 100%;
-  border-left: 1px solid rgba(184, 243, 107, 0.34);
+  border-left: 1px solid rgba(255, 176, 0, 0.34);
   padding: 0.25rem 0 0.25rem 1rem;
 }
 
@@ -5006,7 +5019,7 @@ img.site-logo {
 }
 
 .levi-learn-formula strong {
-  color: #d8efa9;
+  color: #ffda8a;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -5018,7 +5031,7 @@ img.site-logo {
   align-items: flex-start;
   gap: 0.55rem;
   max-width: 18rem;
-  color: #d6efa9;
+  color: #ffd27a;
   font-size: 0.76rem;
   line-height: 1.55;
 }
@@ -5050,7 +5063,7 @@ img.site-logo {
 .levi-learn-mechanic {
   position: relative;
   min-height: 16rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.3);
+  border-top: 1px solid rgba(255, 176, 0, 0.3);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.35rem;
 }
@@ -5095,8 +5108,8 @@ img.site-logo {
   min-width: 0;
   overflow: hidden;
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.15);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.15);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   background: rgba(7, 10, 7, 0.8);
   padding: 1.2rem;
 }
@@ -5125,8 +5138,8 @@ img.site-logo {
   height: 21rem;
   margin-top: 1.35rem;
   overflow: hidden;
-  border-left: 1px solid rgba(222, 246, 220, 0.15);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.15);
+  border-left: 1px solid rgba(255, 226, 178, 0.15);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.15);
 }
 
 .levi-learning-chart-y-axis {
@@ -5151,8 +5164,8 @@ img.site-logo {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(222, 246, 220, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(222, 246, 220, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(255, 226, 178, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 226, 178, 0.05) 1px, transparent 1px);
   background-size: 100% 25%, 12.5% 100%;
 }
 
@@ -5167,7 +5180,7 @@ img.site-logo {
 
 .levi-learning-cycle-area {
   top: 0;
-  background: linear-gradient(180deg, rgba(184, 243, 107, 0.22), rgba(184, 243, 107, 0.015));
+  background: linear-gradient(180deg, rgba(255, 176, 0, 0.22), rgba(255, 176, 0, 0.015));
 }
 
 .levi-learning-cycle-line {
@@ -5238,7 +5251,7 @@ img.site-logo {
 }
 
 .levi-learning-profit-column {
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
   padding-top: 1rem;
 }
 
@@ -5257,9 +5270,9 @@ img.site-logo {
   align-items: end;
   gap: 0.55rem;
   margin-top: 0.8rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.16);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.16);
   padding: 0 0.5rem;
-  background: repeating-linear-gradient(to top, rgba(222, 246, 220, 0.055) 0 1px, transparent 1px 25%);
+  background: repeating-linear-gradient(to top, rgba(255, 226, 178, 0.055) 0 1px, transparent 1px 25%);
 }
 
 .levi-learning-bars span {
@@ -5273,7 +5286,7 @@ img.site-logo {
 }
 
 .bars-realized span {
-  background: linear-gradient(to top, rgba(54, 211, 153, 0.18), #b8f36b);
+  background: linear-gradient(to top, rgba(255, 61, 22, 0.18), #ffb000);
 }
 
 .levi-learning-profit-column p {
@@ -5294,7 +5307,7 @@ img.site-logo {
 .levi-learning-loop-step {
   position: relative;
   min-height: 12.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.34);
+  border-top: 1px solid rgba(255, 176, 0, 0.34);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.1rem;
 }
@@ -5311,9 +5324,9 @@ img.site-logo {
   height: 2.25rem;
   margin-top: 1.25rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 0.5rem;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   color: var(--levi-green);
 }
 
@@ -5335,7 +5348,7 @@ img.site-logo {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  color: rgba(184, 243, 107, 0.2);
+  color: rgba(255, 176, 0, 0.2);
 }
 
 .levi-learn-phases-grid {
@@ -5345,7 +5358,7 @@ img.site-logo {
 
 .levi-learn-phase {
   min-height: 15rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.3);
+  border-top: 1px solid rgba(255, 176, 0, 0.3);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.35rem;
 }
@@ -5355,11 +5368,11 @@ img.site-logo {
 }
 
 .phase-compound {
-  border-top-color: rgba(142, 233, 220, 0.4);
+  border-top-color: rgba(255, 122, 0, 0.4);
 }
 
 .phase-protect .levi-learn-phase-number { color: #f5d58a; }
-.phase-compound .levi-learn-phase-number { color: #8ee9dc; }
+.phase-compound .levi-learn-phase-number { color: #ff7a1a; }
 
 .levi-learn-checklist {
   display: grid;
@@ -5371,7 +5384,7 @@ img.site-logo {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.11);
+  border-top: 1px solid rgba(255, 226, 178, 0.11);
   padding-top: 1rem;
 }
 
@@ -5381,9 +5394,9 @@ img.site-logo {
   height: 1.5rem;
   flex: none;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.28);
+  border: 1px solid rgba(255, 176, 0, 0.28);
   border-radius: 50%;
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: var(--levi-green);
 }
 
@@ -5420,7 +5433,7 @@ img.site-logo {
 .levi-learn-disclaimer {
   max-width: 68rem;
   margin-top: 5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.13);
+  border-top: 1px solid rgba(255, 226, 178, 0.13);
   padding-top: 1.5rem;
 }
 
@@ -5602,7 +5615,7 @@ img.site-logo {
   }
 }
 
-/* White Bull Agent whitepaper. Scoped to /docs and intentionally data-light. */
+/* Agent K9 docs. Scoped to /docs and intentionally data-light. */
 .levi-docs-page {
   position: relative;
   min-width: 0;
@@ -5610,17 +5623,17 @@ img.site-logo {
   overflow: hidden;
   padding: 8.5rem 0 5rem;
   background:
-    radial-gradient(ellipse 70% 42% at 82% 8%, rgba(35, 105, 63, 0.24), transparent 72%),
+    radial-gradient(ellipse 70% 42% at 82% 8%, rgba(153, 15, 8, 0.24), transparent 72%),
     radial-gradient(ellipse 64% 42% at 10% 42%, rgba(165, 110, 42, 0.08), transparent 72%),
-    linear-gradient(135deg, #070906 0%, #0b110a 54%, #06100a 100%);
+    linear-gradient(135deg, #090302 0%, #1a0703 54%, #180503 100%);
 }
 
 .levi-docs-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(199, 236, 182, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 236, 182, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 190, 78, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 190, 78, 0.04) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 86%);
   pointer-events: none;
@@ -5633,7 +5646,7 @@ img.site-logo {
   width: 28rem;
   height: 28rem;
   border-radius: 50%;
-  background: rgba(184, 243, 107, 0.06);
+  background: rgba(255, 176, 0, 0.06);
   filter: blur(70px);
   pointer-events: none;
 }
@@ -5709,7 +5722,7 @@ img.site-logo {
 .levi-docs-hero-mark::before,
 .levi-docs-hero-mark::after {
   position: absolute;
-  border: 1px solid rgba(184, 243, 107, 0.2);
+  border: 1px solid rgba(255, 176, 0, 0.2);
   border-radius: 50%;
   content: "";
   transform: rotate(18deg) scaleX(1.25);
@@ -5724,7 +5737,7 @@ img.site-logo {
   width: min(100%, 25rem);
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 0 2rem rgba(184, 243, 107, 0.16));
+  filter: drop-shadow(0 0 2rem rgba(255, 176, 0, 0.16));
 }
 
 .levi-docs-hero-mark > div {
@@ -5734,7 +5747,7 @@ img.site-logo {
   z-index: 2;
   display: grid;
   gap: 0.25rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.42);
+  border-left: 1px solid rgba(255, 176, 0, 0.42);
   padding-left: 0.8rem;
 }
 
@@ -5751,7 +5764,7 @@ img.site-logo {
   text-transform: uppercase;
 }
 
-.levi-docs-hero-mark strong { color: #d5efa9; font-size: 0.72rem; letter-spacing: 0.12em; }
+.levi-docs-hero-mark strong { color: #ffd27a; font-size: 0.72rem; letter-spacing: 0.12em; }
 
 .levi-docs-section { padding-top: 5.5rem; }
 
@@ -5759,8 +5772,8 @@ img.site-logo {
   width: 100%;
   box-sizing: border-box;
   margin-top: 5.5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   background: rgba(5, 7, 5, 0.46);
   padding-bottom: 5.5rem;
 }
@@ -5800,9 +5813,9 @@ img.site-logo {
   max-width: 15rem;
   align-items: center;
   gap: 0.6rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.35);
+  border-left: 1px solid rgba(255, 176, 0, 0.35);
   padding: 0.4rem 0 0.4rem 1rem;
-  color: #d6efa9;
+  color: #ffd27a;
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -5821,7 +5834,7 @@ img.site-logo {
 .levi-docs-roadmap article {
   position: relative;
   min-width: 0;
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.25rem;
 }
@@ -5835,9 +5848,9 @@ img.site-logo {
   height: 2.25rem;
   margin-top: 1.2rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 0.5rem;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   color: var(--levi-green);
 }
 
@@ -5847,7 +5860,7 @@ img.site-logo {
 .levi-docs-copy-block p,
 .levi-docs-ai-grid p,
 .levi-docs-product-grid p { margin-top: 0.5rem; color: #89978a; font-size: 0.76rem; line-height: 1.65; }
-.levi-docs-flow-arrow { position: absolute; top: 1.5rem; right: -1.15rem; z-index: 2; color: rgba(184, 243, 107, 0.55); }
+.levi-docs-flow-arrow { position: absolute; top: 1.5rem; right: -1.15rem; z-index: 2; color: rgba(255, 176, 0, 0.55); }
 
 .levi-docs-two-column { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
 .levi-docs-copy-block { min-height: 15rem; }
@@ -5861,33 +5874,33 @@ img.site-logo {
 .levi-docs-roadmap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
 .levi-docs-ai-grid article { min-height: 12rem; }
 .levi-docs-ai-grid article:nth-child(2) { border-top-color: rgba(245, 213, 138, 0.4); }
-.levi-docs-ai-grid article:nth-child(3) { border-top-color: rgba(142, 233, 220, 0.4); }
+.levi-docs-ai-grid article:nth-child(3) { border-top-color: rgba(255, 122, 0, 0.4); }
 
 .levi-docs-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .levi-docs-product-grid article { min-height: 14rem; }
 .levi-docs-product-grid article > span { display: block; margin-top: 1.1rem; }
 .levi-docs-product-grid h3 { margin-top: 0.5rem; color: #eff6eb !important; font-size: 1.05rem; }
 
-.levi-docs-token-panel { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 0.75rem; border-top: 1px solid rgba(184, 243, 107, 0.3); background: rgba(255, 255, 255, 0.035); padding: 1.35rem; }
+.levi-docs-token-panel { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 0.75rem; border-top: 1px solid rgba(255, 176, 0, 0.3); background: rgba(255, 255, 255, 0.035); padding: 1.35rem; }
 .levi-docs-token-facts { display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 0.45rem 1rem; }
 .levi-docs-token-facts strong { color: #edf5e7; font-size: 0.9rem; }
-.levi-docs-contract { display: grid; align-content: center; gap: 0.6rem; border-left: 1px solid rgba(222, 246, 220, 0.12); padding-left: 1.25rem; }
-.levi-docs-contract code { display: block; overflow-wrap: anywhere; color: #d5efa9; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: clamp(0.68rem, 1.2vw, 0.82rem); line-height: 1.6; }
+.levi-docs-contract { display: grid; align-content: center; gap: 0.6rem; border-left: 1px solid rgba(255, 226, 178, 0.12); padding-left: 1.25rem; }
+.levi-docs-contract code { display: block; overflow-wrap: anywhere; color: #ffd27a; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: clamp(0.68rem, 1.2vw, 0.82rem); line-height: 1.6; }
 .levi-docs-contract a,
-.levi-docs-links a { display: inline-flex; width: fit-content; align-items: center; gap: 0.4rem; color: #b8f36b; font-size: 0.78rem; font-weight: 700; }
+.levi-docs-links a { display: inline-flex; width: fit-content; align-items: center; gap: 0.4rem; color: #ffb000; font-size: 0.78rem; font-weight: 700; }
 .levi-docs-contract a:hover,
-.levi-docs-links a:hover { color: #efffcd; }
+.levi-docs-links a:hover { color: #fff0cc; }
 
 .levi-docs-roadmap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .levi-docs-roadmap article { min-height: 14rem; border-top-color: rgba(245, 213, 138, 0.32); }
 .levi-docs-roadmap h3 { margin-top: 0.7rem; color: #eff6eb !important; font-size: 1.05rem; }
 .levi-docs-roadmap ul { display: grid; gap: 0.55rem; margin-top: 1rem; color: #9da99d; font-size: 0.76rem; line-height: 1.5; }
-.levi-docs-roadmap li::before { margin-right: 0.45rem; color: #d5efa9; content: "•"; }
+.levi-docs-roadmap li::before { margin-right: 0.45rem; color: #ffd27a; content: "•"; }
 
 .levi-docs-community-heading { max-width: 56rem; }
 .levi-docs-links { margin-top: 1.5rem; }
-.levi-docs-links a { border-bottom: 1px solid rgba(184, 243, 107, 0.3); padding-bottom: 0.35rem; }
-.levi-docs-disclaimer { max-width: 70rem; margin-top: 5.5rem; border-top: 1px solid rgba(222, 246, 220, 0.13); padding-top: 1.5rem; }
+.levi-docs-links a { border-bottom: 1px solid rgba(255, 176, 0, 0.3); padding-bottom: 0.35rem; }
+.levi-docs-disclaimer { max-width: 70rem; margin-top: 5.5rem; border-top: 1px solid rgba(255, 226, 178, 0.13); padding-top: 1.5rem; }
 .levi-docs-disclaimer h2 { max-width: 52rem; }
 .levi-docs-disclaimer > p:last-child { max-width: 58rem; margin-top: 1rem; color: #839083; font-size: 0.78rem; line-height: 1.7; }
 
@@ -5923,11 +5936,11 @@ img.site-logo {
   .levi-docs-token-panel { grid-template-columns: 1fr; }
   .levi-docs-flow-step { min-height: auto; }
   .levi-docs-token-facts { grid-template-columns: 1fr 1fr; }
-  .levi-docs-contract { border-top: 1px solid rgba(222, 246, 220, 0.12); border-left: 0; padding-top: 1.25rem; padding-left: 0; }
+  .levi-docs-contract { border-top: 1px solid rgba(255, 226, 178, 0.12); border-left: 0; padding-top: 1.25rem; padding-left: 0; }
   .levi-docs-disclaimer { margin-top: 4rem; }
 }
 
-/* White Bull Agent whitepaper. Scoped to /docs and aligned with LEVI Learn. */
+/* Agent K9 docs. Scoped to /docs and aligned with Agent K9 Learn. */
 .levi-docs-page {
   position: relative;
   min-width: 0;
@@ -5935,9 +5948,9 @@ img.site-logo {
   overflow: hidden;
   padding: 8.75rem 0 5rem;
   background:
-    radial-gradient(ellipse 58% 40% at 82% 4%, rgba(47, 117, 75, 0.22), transparent 72%),
+    radial-gradient(ellipse 58% 40% at 82% 4%, rgba(153, 15, 8, 0.24), transparent 72%),
     radial-gradient(ellipse 50% 34% at 2% 48%, rgba(181, 130, 42, 0.065), transparent 72%),
-    linear-gradient(150deg, #070906 0%, #0a1009 56%, #050705 100%);
+    linear-gradient(150deg, #090302 0%, #160604 56%, #050705 100%);
 }
 
 .levi-docs-page :where(h1, h2, h3, p, strong, span, dd, li) {
@@ -5948,8 +5961,8 @@ img.site-logo {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(199, 236, 182, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(199, 236, 182, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 190, 78, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 190, 78, 0.04) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 68%);
   opacity: 0.38;
@@ -5962,7 +5975,7 @@ img.site-logo {
   left: 42%;
   width: 38rem;
   height: 28rem;
-  background: radial-gradient(ellipse, rgba(184, 243, 107, 0.1), transparent 68%);
+  background: radial-gradient(ellipse, rgba(255, 176, 0, 0.1), transparent 68%);
   filter: blur(36px);
   pointer-events: none;
 }
@@ -6010,7 +6023,7 @@ img.site-logo {
 
 .levi-docs-hero-kicker {
   margin-top: 1.3rem;
-  color: #d9efa9;
+  color: #ffd98a;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -6064,9 +6077,9 @@ img.site-logo {
   position: absolute;
   width: 22rem;
   height: 22rem;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(184, 243, 107, 0.08), transparent 66%);
+  background: radial-gradient(circle, rgba(255, 176, 0, 0.08), transparent 66%);
   content: "";
 }
 
@@ -6081,7 +6094,7 @@ img.site-logo {
 
 .levi-docs-hero-ring {
   position: absolute;
-  border: 1px solid rgba(222, 246, 220, 0.1);
+  border: 1px solid rgba(255, 226, 178, 0.1);
   border-radius: 50%;
 }
 
@@ -6106,7 +6119,7 @@ img.site-logo {
   display: grid;
   max-width: calc(100% - 1rem);
   gap: 0.28rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.42);
+  border-left: 1px solid rgba(255, 176, 0, 0.42);
   padding-left: 0.8rem;
   color: #738173;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -6116,7 +6129,7 @@ img.site-logo {
 }
 
 .levi-docs-hero-signal strong {
-  color: #d5efa9;
+  color: #ffd27a;
   font-size: 0.64rem;
   font-weight: 600;
 }
@@ -6160,7 +6173,7 @@ img.site-logo {
 
 .levi-docs-thesis {
   min-height: 21rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.32);
+  border-top: 1px solid rgba(255, 176, 0, 0.32);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.5rem;
 }
@@ -6200,8 +6213,8 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   margin-top: 0.75rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
 }
 
 .levi-docs-capability-list > div {
@@ -6210,7 +6223,7 @@ img.site-logo {
 }
 
 .levi-docs-capability-list > div + div {
-  border-left: 1px solid rgba(222, 246, 220, 0.1);
+  border-left: 1px solid rgba(255, 226, 178, 0.1);
 }
 
 .levi-docs-capability-list span {
@@ -6231,8 +6244,8 @@ img.site-logo {
   z-index: 1;
   width: 100%;
   margin-top: 5.5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   background: rgba(5, 7, 5, 0.48);
 }
 
@@ -6251,7 +6264,7 @@ img.site-logo {
   position: relative;
   min-width: 0;
   min-height: 15.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.3);
+  border-top: 1px solid rgba(255, 176, 0, 0.3);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.25rem;
 }
@@ -6263,7 +6276,7 @@ img.site-logo {
   z-index: 2;
   width: 0.5rem;
   height: 1px;
-  background: rgba(184, 243, 107, 0.46);
+  background: rgba(255, 176, 0, 0.46);
   content: "";
 }
 
@@ -6279,9 +6292,9 @@ img.site-logo {
   height: 2.6rem;
   margin-top: 1.4rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 0.5rem;
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   color: var(--levi-green);
 }
 
@@ -6328,7 +6341,7 @@ img.site-logo {
 
 .levi-docs-principles > div {
   min-width: 0;
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
   background: rgba(255, 255, 255, 0.03);
   padding: 1.35rem;
 }
@@ -6349,9 +6362,9 @@ img.site-logo {
   display: grid;
   grid-template-columns: minmax(17rem, 0.68fr) minmax(0, 1fr);
   gap: clamp(2rem, 6vw, 5rem);
-  border-top: 1px solid rgba(184, 243, 107, 0.4);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.11);
-  background: rgba(184, 243, 107, 0.045);
+  border-top: 1px solid rgba(255, 176, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.11);
+  background: rgba(255, 176, 0, 0.045);
   padding: clamp(1.5rem, 4vw, 3rem);
 }
 
@@ -6370,7 +6383,7 @@ img.site-logo {
 
 .levi-docs-token-facts > div {
   min-width: 0;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
   padding-top: 0.8rem;
 }
 
@@ -6394,7 +6407,7 @@ img.site-logo {
 }
 
 .levi-docs-token-facts .is-contract dd {
-  color: #d9efa9;
+  color: #ffd98a;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.75rem;
   font-weight: 500;
@@ -6407,7 +6420,7 @@ img.site-logo {
   width: fit-content;
   align-items: center;
   gap: 0.45rem;
-  border-bottom: 1px solid rgba(184, 243, 107, 0.35);
+  border-bottom: 1px solid rgba(255, 176, 0, 0.35);
   padding-bottom: 0.25rem;
   color: var(--levi-green);
   font-size: 0.74rem;
@@ -6423,7 +6436,7 @@ img.site-logo {
 .levi-docs-roadmap-phase {
   min-width: 0;
   min-height: 22rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.18);
+  border-top: 1px solid rgba(255, 226, 178, 0.18);
   background: rgba(255, 255, 255, 0.03);
   padding: 1.25rem;
 }
@@ -6488,7 +6501,7 @@ img.site-logo {
   width: 0.25rem;
   height: 0.25rem;
   border-radius: 50%;
-  background: rgba(184, 243, 107, 0.6);
+  background: rgba(255, 176, 0, 0.6);
   content: "";
 }
 
@@ -6502,14 +6515,14 @@ img.site-logo {
   position: relative;
   min-width: 0;
   min-height: 16.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.3);
+  border-top: 1px solid rgba(255, 176, 0, 0.3);
   background: rgba(255, 255, 255, 0.035);
   padding: 1.25rem;
   transition: background 180ms ease, transform 180ms ease;
 }
 
 .levi-docs-product:hover {
-  background: rgba(184, 243, 107, 0.075);
+  background: rgba(255, 176, 0, 0.075);
   transform: translateY(-2px);
 }
 
@@ -6547,7 +6560,7 @@ img.site-logo {
   position: absolute;
   right: 1.25rem;
   bottom: 1.25rem;
-  color: rgba(184, 243, 107, 0.55);
+  color: rgba(255, 176, 0, 0.55);
 }
 
 .levi-docs-agentic {
@@ -6566,14 +6579,14 @@ img.site-logo {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.85rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
   background: rgba(255, 255, 255, 0.03);
   padding: 1.15rem;
   transition: background 180ms ease, transform 180ms ease;
 }
 
 .levi-docs-community-links a:hover {
-  background: rgba(184, 243, 107, 0.07);
+  background: rgba(255, 176, 0, 0.07);
   transform: translateY(-2px);
 }
 
@@ -6606,7 +6619,7 @@ img.site-logo {
 .levi-docs-disclaimer {
   max-width: 68rem;
   margin-top: 6rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.14);
+  border-top: 1px solid rgba(255, 226, 178, 0.14);
   padding-top: 1.6rem;
 }
 
@@ -6647,7 +6660,7 @@ img.site-logo {
   }
 
   .levi-docs-capability-list > div:nth-child(n + 4) {
-    border-top: 1px solid rgba(222, 246, 220, 0.1);
+    border-top: 1px solid rgba(255, 226, 178, 0.1);
   }
 
   .levi-docs-flow,
@@ -6756,7 +6769,7 @@ img.site-logo {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     gap: 1rem;
-    border-top: 1px solid rgba(222, 246, 220, 0.1);
+    border-top: 1px solid rgba(255, 226, 178, 0.1);
   }
 
   .levi-docs-capability-list p {
@@ -6798,7 +6811,7 @@ img.site-logo {
   }
 }
 
-/* LEVI product information architecture and Scanner V2. */
+/* Agent K9 product information architecture and Scanner V2. */
 .levi-nav-menu {
   position: relative;
 }
@@ -6848,7 +6861,7 @@ img.site-logo {
   display: grid;
   width: 17rem;
   gap: 0.2rem;
-  border: 1px solid rgba(222, 246, 220, 0.15);
+  border: 1px solid rgba(255, 226, 178, 0.15);
   border-radius: 0.5rem;
   background: rgba(9, 12, 8, 0.98);
   padding: 0.4rem;
@@ -6870,7 +6883,7 @@ img.site-logo {
 
 .levi-nav-popover a:hover,
 .levi-nav-popover a.is-active {
-  background: rgba(184, 243, 107, 0.08);
+  background: rgba(255, 176, 0, 0.08);
   color: #eff5e9;
 }
 
@@ -6894,7 +6907,7 @@ img.site-logo {
 
 .levi-mobile-group + .levi-mobile-group {
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.09);
+  border-top: 1px solid rgba(255, 226, 178, 0.09);
   padding-top: 1rem;
 }
 
@@ -6923,7 +6936,7 @@ img.site-logo {
   width: min(100%, 44rem);
   max-height: calc(100svh - 2rem);
   overflow-y: auto;
-  border: 1px solid rgba(184, 243, 107, 0.24);
+  border: 1px solid rgba(255, 176, 0, 0.24);
   border-radius: 0.5rem;
   background: #0a0e09;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
@@ -6951,15 +6964,15 @@ img.site-logo {
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid rgba(222, 246, 220, 0.15);
+  border: 1px solid rgba(255, 226, 178, 0.15);
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.04);
   color: #aab4a8;
 }
 
 .levi-access-sheet-mark {
-  border-color: rgba(184, 243, 107, 0.3);
-  background: rgba(184, 243, 107, 0.09);
+  border-color: rgba(255, 176, 0, 0.3);
+  background: rgba(255, 176, 0, 0.09);
   color: var(--levi-green);
 }
 
@@ -6971,7 +6984,7 @@ img.site-logo {
 }
 
 .levi-access-sheet .levi-auth-panel {
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   border-radius: 0.5rem;
 }
 
@@ -7009,7 +7022,7 @@ img.site-logo {
   min-height: 3rem;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(222, 246, 220, 0.15);
+  border-top: 1px solid rgba(255, 226, 178, 0.15);
   color: #e9f0e4;
   font-size: 0.8rem;
   font-weight: 700;
@@ -7018,7 +7031,7 @@ img.site-logo {
 .levi-access-progress {
   display: grid;
   gap: 0.6rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1rem;
 }
 
@@ -7062,8 +7075,8 @@ img.site-logo {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: clamp(2rem, 5vw, 5rem);
-  border-top: 1px solid rgba(222, 246, 220, 0.15);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.15);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: clamp(2rem, 6vw, 5rem) 0;
 }
 
@@ -7090,7 +7103,7 @@ img.site-logo {
 .levi-home-scanner-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid rgba(184, 243, 107, 0.28);
+  border-top: 1px solid rgba(255, 176, 0, 0.28);
 }
 
 .levi-home-scanner-steps article {
@@ -7098,7 +7111,7 @@ img.site-logo {
   min-height: 15rem;
   flex-direction: column;
   align-items: flex-start;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   background: rgba(255, 255, 255, 0.018);
   padding: 1rem;
 }
@@ -7131,8 +7144,8 @@ img.site-logo {
   min-height: 100vh;
   padding: 8.5rem 0 6rem;
   background:
-    radial-gradient(circle at 75% 5%, rgba(54, 211, 153, 0.11), transparent 31rem),
-    #070906;
+    radial-gradient(circle at 75% 5%, rgba(255, 61, 22, 0.11), transparent 31rem),
+    #090302;
 }
 
 .levi-product-hero,
@@ -7141,7 +7154,7 @@ img.site-logo {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 2rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.13);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.13);
   padding-bottom: 2rem;
 }
 
@@ -7168,7 +7181,7 @@ img.site-logo {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.3);
+  border-left: 1px solid rgba(255, 176, 0, 0.3);
   padding-left: 1rem;
   color: #b8c3b4;
   font-size: 0.72rem;
@@ -7183,7 +7196,7 @@ img.site-logo {
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: 0.2rem;
-  border: 1px solid rgba(222, 246, 220, 0.13);
+  border: 1px solid rgba(255, 226, 178, 0.13);
   border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.025);
   padding: 0.22rem;
@@ -7204,9 +7217,9 @@ img.site-logo {
 }
 
 .levi-segmented-control button.is-active {
-  background: rgba(184, 243, 107, 0.12);
-  color: #edffd8;
-  box-shadow: inset 0 0 0 1px rgba(184, 243, 107, 0.2);
+  background: rgba(255, 176, 0, 0.12);
+  color: #fff1d6;
+  box-shadow: inset 0 0 0 1px rgba(255, 176, 0, 0.2);
 }
 
 .levi-segmented-control button:disabled {
@@ -7250,8 +7263,8 @@ img.site-logo {
   display: grid;
   gap: 0.55rem;
   margin-top: 1rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.18);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 176, 0, 0.18);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   padding: 0.85rem 0;
 }
 
@@ -7280,7 +7293,7 @@ img.site-logo {
 .levi-scan-progress-track {
   height: 0.18rem;
   overflow: hidden;
-  background: rgba(222, 246, 220, 0.08);
+  background: rgba(255, 226, 178, 0.08);
 }
 
 .levi-scan-progress-track span {
@@ -7368,7 +7381,7 @@ img.site-logo {
 
 .levi-pressure-badge.is-lower,
 .levi-confidence.is-high,
-.levi-watch-pressure.is-lower { color: #9debd0; background: rgba(54, 211, 153, 0.08); }
+.levi-watch-pressure.is-lower { color: #ffc247; background: rgba(255, 61, 22, 0.08); }
 .levi-pressure-badge.is-watch,
 .levi-confidence.is-medium,
 .levi-watch-pressure.is-watch { color: #f0d58d; background: rgba(245, 193, 80, 0.08); }
@@ -7384,7 +7397,7 @@ img.site-logo {
   display: grid;
   min-width: 14rem;
   gap: 0.35rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.25);
+  border-left: 1px solid rgba(255, 176, 0, 0.25);
   padding-left: 1rem;
   text-align: right;
 }
@@ -7398,15 +7411,15 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.09);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.09);
 }
 
 .levi-snapshot-grid > div {
   display: grid;
   min-width: 0;
   gap: 0.35rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1rem;
 }
 
@@ -7421,14 +7434,14 @@ img.site-logo {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   margin-top: 2rem;
-  background: rgba(222, 246, 220, 0.1);
+  background: rgba(255, 226, 178, 0.1);
 }
 
 .levi-pressure-factors,
 .levi-evidence-panel,
 .levi-portfolio-section,
 .levi-portfolio-chart {
-  background: rgba(8, 11, 8, 0.88);
+  background: rgba(18, 6, 3, 0.88);
   padding: clamp(1rem, 3vw, 1.4rem);
 }
 
@@ -7482,13 +7495,13 @@ img.site-logo {
   line-height: 1.55;
 }
 
-.levi-evidence-panel li svg { flex: none; color: #78dcae; }
+.levi-evidence-panel li svg { flex: none; color: #ff8a4c; }
 .levi-evidence-panel li.is-unknown svg { color: #e9c66c; }
 
 .levi-program-context {
   margin-top: 2rem;
   border-top: 1px solid rgba(105, 215, 223, 0.3);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.09);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1.4rem 0;
 }
 
@@ -7504,14 +7517,14 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   margin-top: 1.2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.09);
+  border-top: 1px solid rgba(255, 226, 178, 0.09);
 }
 
 .levi-program-context-grid > div {
   display: grid;
   min-width: 0;
   gap: 0.35rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1rem;
 }
 
@@ -7535,7 +7548,7 @@ img.site-logo {
   line-height: 1.55;
 }
 
-.levi-program-context-evidence li svg { flex: none; color: #69d7df; }
+.levi-program-context-evidence li svg { flex: none; color: #ff7a1a; }
 .levi-program-context-evidence li.is-unknown svg { color: #e9c66c; }
 
 .levi-activity-section {
@@ -7548,7 +7561,7 @@ img.site-logo {
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border: 1px solid rgba(222, 246, 220, 0.16);
+  border: 1px solid rgba(255, 226, 178, 0.16);
   border-radius: 0.4rem;
   background: rgba(255, 255, 255, 0.035);
   padding: 0.55rem 0.75rem;
@@ -7557,12 +7570,12 @@ img.site-logo {
   font-weight: 700;
 }
 
-.levi-inline-action:hover { border-color: rgba(184, 243, 107, 0.42); }
+.levi-inline-action:hover { border-color: rgba(255, 176, 0, 0.42); }
 .levi-inline-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .levi-activity-list {
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.12);
+  border-top: 1px solid rgba(255, 226, 178, 0.12);
 }
 
 .levi-activity-row {
@@ -7571,7 +7584,7 @@ img.site-logo {
   align-items: center;
   gap: 1rem;
   min-height: 5.5rem;
-  border-bottom: 1px solid rgba(222, 246, 220, 0.08);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.08);
   padding: 0.8rem 0;
 }
 
@@ -7588,10 +7601,10 @@ img.site-logo {
 .levi-activity-kind.is-transfer_out { color: #ffaaa2; }
 .levi-activity-kind.is-buy,
 .levi-activity-kind.is-transfer_in,
-.levi-activity-kind.is-mint { color: #99e8c9; }
-.levi-activity-kind.is-liquidity { color: #8ee9dc; }
-.levi-activity-kind.is-routed { color: #69d7df; }
-.levi-activity-kind.is-routed.is-route-buy { color: #99e8c9; }
+.levi-activity-kind.is-mint { color: #ffc247; }
+.levi-activity-kind.is-liquidity { color: #ff7a1a; }
+.levi-activity-kind.is-routed { color: #ff7a1a; }
+.levi-activity-kind.is-routed.is-route-buy { color: #ffc247; }
 .levi-activity-kind.is-routed.is-route-sell { color: #ffaaa2; }
 .levi-activity-kind.is-burn { color: #f2cf74; }
 
@@ -7622,7 +7635,7 @@ img.site-logo {
   min-height: 2.2rem;
   align-items: center;
   gap: 0.3rem;
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   border-radius: 0.35rem;
   padding: 0.45rem;
   color: #9ba79a;
@@ -7635,7 +7648,7 @@ img.site-logo {
   justify-content: space-between;
   gap: 1rem;
   margin-top: 1.5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
   padding-top: 1rem;
 }
 
@@ -7649,12 +7662,12 @@ img.site-logo {
 }
 
 .levi-coverage-footer svg { color: var(--levi-green); }
-.levi-empty-state { border-top: 1px solid rgba(222, 246, 220, 0.09); padding: 1.2rem 0; color: #798678; font-size: 0.76rem; line-height: 1.6; }
+.levi-empty-state { border-top: 1px solid rgba(255, 226, 178, 0.09); padding: 1.2rem 0; color: #798678; font-size: 0.76rem; line-height: 1.6; }
 
 .levi-creator-list { display: grid; gap: 0.4rem; margin-top: 1.5rem; }
-.levi-creator-list a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 0.75rem; border-top: 1px solid rgba(222, 246, 220, 0.1); padding: 0.9rem 0; color: #dce5d8; }
+.levi-creator-list a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 0.75rem; border-top: 1px solid rgba(255, 226, 178, 0.1); padding: 0.9rem 0; color: #dce5d8; }
 .levi-creator-list small { color: #778376; }
-.levi-legacy-score { border-left: 1px solid rgba(222, 246, 220, 0.15); padding-left: 1rem; color: #9da89b; font-size: 0.75rem; }
+.levi-legacy-score { border-left: 1px solid rgba(255, 226, 178, 0.15); padding-left: 1rem; color: #9da89b; font-size: 0.75rem; }
 
 .levi-portfolio-dashboard {
   margin-top: 2rem;
@@ -7668,7 +7681,7 @@ img.site-logo {
   justify-content: center;
   gap: 0.8rem;
   margin-top: 2rem;
-  border: 1px solid rgba(222, 246, 220, 0.12);
+  border: 1px solid rgba(255, 226, 178, 0.12);
   background: rgba(10, 14, 9, 0.72);
   padding: 1.5rem;
   color: #aab4a8;
@@ -7704,7 +7717,7 @@ img.site-logo {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 0.8rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1.2rem;
 }
 
@@ -7713,7 +7726,7 @@ img.site-logo {
   width: 2.7rem;
   height: 2.7rem;
   place-items: center;
-  border: 1px solid rgba(184, 243, 107, 0.25);
+  border: 1px solid rgba(255, 176, 0, 0.25);
   border-radius: 0.5rem;
   color: var(--levi-green);
 }
@@ -7725,8 +7738,8 @@ img.site-logo {
 
 .levi-portfolio-coverage {
   margin-top: 1px;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 1.5rem 0;
 }
 
@@ -7747,7 +7760,7 @@ img.site-logo {
 
 .levi-portfolio-coverage > header > span,
 .levi-chart-guide > header > span {
-  border: 1px solid rgba(222, 246, 220, 0.15);
+  border: 1px solid rgba(255, 226, 178, 0.15);
   border-radius: 999px;
   padding: 0.35rem 0.6rem;
   color: #aab6a7;
@@ -7755,7 +7768,7 @@ img.site-logo {
   text-transform: uppercase;
 }
 
-.levi-portfolio-coverage > header > span.is-live { border-color: rgba(126, 227, 184, 0.32); color: #7ee3b8; }
+.levi-portfolio-coverage > header > span.is-live { border-color: rgba(255, 176, 0, 0.32); color: #ffc247; }
 .levi-portfolio-coverage > header > span.is-partial,
 .levi-portfolio-coverage > header > span.is-cached { border-color: rgba(233, 198, 108, 0.32); color: #e9c66c; }
 .levi-portfolio-coverage > header > span.is-unavailable { border-color: rgba(255, 117, 105, 0.32); color: #ff938a; }
@@ -7764,14 +7777,14 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.08);
 }
 
 .levi-portfolio-coverage article {
   display: grid;
   min-width: 0;
   gap: 0.3rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.08);
+  border-right: 1px solid rgba(255, 226, 178, 0.08);
   padding: 0.9rem;
 }
 
@@ -7816,7 +7829,7 @@ img.site-logo {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border: 1px dashed rgba(222, 246, 220, 0.14);
+  border: 1px dashed rgba(255, 226, 178, 0.14);
   color: #7b877a;
   text-align: center;
 }
@@ -7825,9 +7838,9 @@ img.site-logo {
 .levi-chart-empty span { font-size: 0.75rem; }
 
 .levi-portfolio-activity-list { margin-top: 1rem; }
-.levi-portfolio-activity-list article { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(5rem, auto) minmax(8rem, auto) auto; align-items: center; gap: 0.75rem; border-top: 1px solid rgba(222, 246, 220, 0.09); padding: 0.8rem 0; }
-.levi-portfolio-activity-icon { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid rgba(222, 246, 220, 0.13); border-radius: 0.4rem; color: #f1b2a9; }
-.levi-portfolio-activity-icon.is-in { color: #8be0bd; }
+.levi-portfolio-activity-list article { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(5rem, auto) minmax(8rem, auto) auto; align-items: center; gap: 0.75rem; border-top: 1px solid rgba(255, 226, 178, 0.09); padding: 0.8rem 0; }
+.levi-portfolio-activity-icon { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid rgba(255, 226, 178, 0.13); border-radius: 0.4rem; color: #f1b2a9; }
+.levi-portfolio-activity-icon.is-in { color: #ffad66; }
 .levi-portfolio-activity-list article > div { display: grid; gap: 0.15rem; min-width: 0; }
 .levi-portfolio-activity-list strong { color: #dfe7db; font-size: 0.75rem; }
 .levi-portfolio-activity-list small,
@@ -7844,14 +7857,14 @@ img.site-logo {
 
 .levi-watchlist-grid article,
 .levi-journal-list article {
-  border: 1px solid rgba(222, 246, 220, 0.1);
+  border: 1px solid rgba(255, 226, 178, 0.1);
   border-radius: 0.45rem;
   background: rgba(255, 255, 255, 0.02);
   padding: 0.9rem;
 }
 
 .levi-watchlist-heading { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.65rem; }
-.levi-watchlist-heading > span:first-child { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid rgba(184, 243, 107, 0.2); border-radius: 0.4rem; color: var(--levi-green); }
+.levi-watchlist-heading > span:first-child { display: grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid rgba(255, 176, 0, 0.2); border-radius: 0.4rem; color: var(--levi-green); }
 .levi-watchlist-heading > div { display: grid; min-width: 0; }
 .levi-watchlist-heading strong { color: #e8eee4; font-size: 0.78rem; }
 .levi-watchlist-heading small { color: #778376; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.62rem; }
@@ -7859,7 +7872,7 @@ img.site-logo {
 .levi-watchlist-grid dl div { display: grid; gap: 0.2rem; }
 .levi-watchlist-grid dt { color: #6f7a6e; font-size: 0.58rem; text-transform: uppercase; }
 .levi-watchlist-grid dd { overflow-wrap: anywhere; color: #bdc7b9; font-size: 0.7rem; }
-.levi-watchlist-actions { display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 0.8rem; border-top: 1px solid rgba(222, 246, 220, 0.08); padding-top: 0.65rem; }
+.levi-watchlist-actions { display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 0.8rem; border-top: 1px solid rgba(255, 226, 178, 0.08); padding-top: 0.65rem; }
 .levi-watchlist-actions a,
 .levi-watchlist-actions button,
 .levi-journal-entry-actions button { display: inline-flex; min-height: 2rem; align-items: center; gap: 0.35rem; color: #9eaa9c; font-size: 0.67rem; }
@@ -7872,7 +7885,7 @@ img.site-logo {
   display: grid;
   gap: 0.8rem;
   margin-top: 1rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.2);
+  border-top: 1px solid rgba(255, 176, 0, 0.2);
   padding-top: 1rem;
 }
 
@@ -7885,13 +7898,13 @@ img.site-logo {
 }
 
 .levi-journal-entry-head { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; }
-.levi-journal-entry-head span { border: 1px solid rgba(184, 243, 107, 0.25); border-radius: 0.3rem; padding: 0.25rem 0.4rem; color: #b8f36b; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; }
+.levi-journal-entry-head span { border: 1px solid rgba(255, 176, 0, 0.25); border-radius: 0.3rem; padding: 0.25rem 0.4rem; color: #ffb000; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; }
 .levi-journal-entry-head time { color: #6f7b6e; font-size: 0.62rem; }
 .levi-journal-list code { display: block; margin-top: 0.7rem; overflow: hidden; color: #6f7b6e; font-size: 0.6rem; text-overflow: ellipsis; white-space: nowrap; }
 .levi-journal-list h3 { margin-top: 0.6rem; color: #e4ebe0 !important; font-size: 0.9rem; line-height: 1.5; }
 .levi-journal-list p { margin-top: 0.55rem; color: #889486; font-size: 0.7rem; line-height: 1.55; }
 .levi-journal-list p strong { color: #b8c3b5; }
-.levi-journal-entry-actions { display: flex; gap: 1rem; margin-top: 0.8rem; border-top: 1px solid rgba(222, 246, 220, 0.08); padding-top: 0.55rem; }
+.levi-journal-entry-actions { display: flex; gap: 1rem; margin-top: 0.8rem; border-top: 1px solid rgba(255, 226, 178, 0.08); padding-top: 0.55rem; }
 
 .levi-method-hero {
   align-items: center;
@@ -7911,13 +7924,13 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   margin-top: 4rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.25);
+  border-top: 1px solid rgba(255, 176, 0, 0.25);
 }
 
 .levi-method-pipeline article {
   position: relative;
   min-height: 15rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1rem;
 }
 
@@ -7936,8 +7949,8 @@ img.site-logo {
 
 .levi-method-factors > div:first-child h2 { margin-top: 0.8rem; color: #f2f6ef !important; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.05; }
 .levi-method-factors > div:first-child > p:last-child { margin-top: 1rem; color: #879386; line-height: 1.75; }
-.levi-method-factors > div:last-child { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid rgba(184, 243, 107, 0.24); }
-.levi-method-factors article { min-height: 10rem; border-right: 1px solid rgba(222, 246, 220, 0.09); border-bottom: 1px solid rgba(222, 246, 220, 0.09); padding: 1rem; }
+.levi-method-factors > div:last-child { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid rgba(255, 176, 0, 0.24); }
+.levi-method-factors article { min-height: 10rem; border-right: 1px solid rgba(255, 226, 178, 0.09); border-bottom: 1px solid rgba(255, 226, 178, 0.09); padding: 1rem; }
 .levi-method-factors article > span { color: var(--levi-green); font-size: 0.62rem; text-transform: uppercase; }
 .levi-method-factors h3 { margin-top: 2rem; color: #e7ede3 !important; font-size: 0.9rem; }
 .levi-method-factors article p { margin-top: 0.4rem; color: #778376; font-size: 0.7rem; line-height: 1.55; }
@@ -7948,8 +7961,8 @@ img.site-logo {
   align-items: center;
   gap: 1.5rem;
   margin-top: 5rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.13);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.13);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 3rem 0;
 }
 
@@ -7957,16 +7970,16 @@ img.site-logo {
 .levi-method-explorer-copy > p:last-child { margin-top: 0.8rem; color: #859184; font-size: 0.78rem; line-height: 1.65; }
 .levi-method-controls { display: grid; gap: 0.65rem; }
 .levi-method-controls label { display: grid; gap: 0.35rem; color: #7d897c; font-size: 0.65rem; }
-.levi-method-controls select { min-height: 2.7rem; border: 1px solid rgba(222, 246, 220, 0.14); border-radius: 0.4rem; background: #10150f; padding: 0.5rem 0.7rem; color: #e2e9de; }
-.levi-method-toggle { grid-template-columns: minmax(0, 1fr) auto !important; align-items: center; min-height: 2.7rem; border: 1px solid rgba(222, 246, 220, 0.14); border-radius: 0.4rem; padding: 0.5rem 0.7rem; }
+.levi-method-controls select { min-height: 2.7rem; border: 1px solid rgba(255, 226, 178, 0.14); border-radius: 0.4rem; background: #130907; padding: 0.5rem 0.7rem; color: #e2e9de; }
+.levi-method-toggle { grid-template-columns: minmax(0, 1fr) auto !important; align-items: center; min-height: 2.7rem; border: 1px solid rgba(255, 226, 178, 0.14); border-radius: 0.4rem; padding: 0.5rem 0.7rem; }
 .levi-method-toggle input { position: absolute; opacity: 0; }
-.levi-method-toggle i { width: 2.2rem; height: 1.25rem; border-radius: 999px; background: #283027; padding: 0.16rem; }
+.levi-method-toggle i { width: 2.2rem; height: 1.25rem; border-radius: 999px; background: #2d1710; padding: 0.16rem; }
 .levi-method-toggle i::after { display: block; width: 0.93rem; height: 0.93rem; border-radius: 50%; background: #7b877a; content: ""; transition: transform 160ms ease, background 160ms ease; }
-.levi-method-toggle input:checked + i { background: rgba(184, 243, 107, 0.25); }
+.levi-method-toggle input:checked + i { background: rgba(255, 176, 0, 0.25); }
 .levi-method-toggle input:checked + i::after { background: var(--levi-green); transform: translateX(0.93rem); }
 .levi-method-arrow { color: var(--levi-green); }
-.levi-method-output { min-height: 16rem; border-left: 1px solid rgba(184, 243, 107, 0.3); background: rgba(255, 255, 255, 0.02); padding: 1.1rem; }
-.levi-method-output > span { display: inline-flex; align-items: center; gap: 0.4rem; color: #8fdcbf; font-size: 0.62rem; text-transform: uppercase; }
+.levi-method-output { min-height: 16rem; border-left: 1px solid rgba(255, 176, 0, 0.3); background: rgba(255, 255, 255, 0.02); padding: 1.1rem; }
+.levi-method-output > span { display: inline-flex; align-items: center; gap: 0.4rem; color: #ff8f5b; font-size: 0.62rem; text-transform: uppercase; }
 .levi-method-output h3 { margin-top: 1.5rem; color: #f0f5ec !important; font-size: 1.35rem; }
 .levi-method-output p { margin-top: 0.6rem; color: #8a9689; font-size: 0.75rem; line-height: 1.6; }
 .levi-method-output code { display: block; margin-top: 0.8rem; color: var(--levi-green); font-size: 0.62rem; overflow-wrap: anywhere; }
@@ -7977,8 +7990,8 @@ img.site-logo {
   align-items: flex-start;
   gap: 0.8rem;
   margin-top: 2rem;
-  border: 1px solid rgba(184, 243, 107, 0.2);
-  background: rgba(184, 243, 107, 0.04);
+  border: 1px solid rgba(255, 176, 0, 0.2);
+  background: rgba(255, 176, 0, 0.04);
   padding: 1.2rem;
 }
 
@@ -7988,8 +8001,8 @@ img.site-logo {
 .levi-signal-explanation header p:last-child { margin-top: 0.45rem; color: #8b978a; font-size: 0.76rem; }
 .levi-signal-explanation header a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--levi-green); font-size: 0.7rem; }
 .levi-signal-explanation:has(.levi-explanation-grid) { display: block; }
-.levi-explanation-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 1rem; border-top: 1px solid rgba(222, 246, 220, 0.1); }
-.levi-explanation-grid > div { display: grid; gap: 0.3rem; border-right: 1px solid rgba(222, 246, 220, 0.09); padding: 0.8rem; }
+.levi-explanation-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 1rem; border-top: 1px solid rgba(255, 226, 178, 0.1); }
+.levi-explanation-grid > div { display: grid; gap: 0.3rem; border-right: 1px solid rgba(255, 226, 178, 0.09); padding: 0.8rem; }
 .levi-explanation-grid span { color: #6f7b6e; font-size: 0.6rem; text-transform: uppercase; }
 .levi-explanation-grid strong { overflow-wrap: anywhere; color: #dce5d8; font-size: 0.7rem; }
 .levi-explanation-grid small { color: #758174; font-size: 0.62rem; }
@@ -7998,8 +8011,8 @@ img.site-logo {
 .levi-scanner-activity-chart {
   min-width: 0;
   margin-top: 2.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.24);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 176, 0, 0.24);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 2rem 0;
 }
 
@@ -8028,7 +8041,7 @@ img.site-logo {
 .levi-scanner-posture {
   display: grid;
   gap: 0.3rem;
-  border-left: 1px solid rgba(222, 246, 220, 0.16);
+  border-left: 1px solid rgba(255, 226, 178, 0.16);
   padding-left: 1rem;
 }
 
@@ -8041,11 +8054,11 @@ img.site-logo {
 .levi-scanner-posture strong { color: #dce7d8; font-size: 1rem; }
 .levi-scanner-posture small { color: #839081; font-size: 0.68rem; line-height: 1.55; }
 .levi-scanner-posture.is-accumulating strong,
-.levi-scanner-posture.is-inbound strong { color: #7ee3b8; }
+.levi-scanner-posture.is-inbound strong { color: #ffc247; }
 .levi-scanner-posture.is-distributing strong,
 .levi-scanner-posture.is-outbound strong { color: #ff938a; }
 .levi-scanner-posture.is-mixed strong { color: #e9c66c; }
-.levi-scanner-posture.is-routing strong { color: #69d7df; }
+.levi-scanner-posture.is-routing strong { color: #ff7a1a; }
 
 .levi-scan-result-anchor {
   scroll-margin-top: 7rem;
@@ -8059,14 +8072,14 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.09);
+  border-top: 1px solid rgba(255, 226, 178, 0.09);
 }
 
 .levi-scanner-chart-stats > div {
   display: grid;
   min-width: 0;
   gap: 0.35rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1rem;
 }
 
@@ -8086,18 +8099,18 @@ img.site-logo {
 
 .levi-chart-guide {
   margin-top: 1.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.2);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.09);
+  border-top: 1px solid rgba(255, 176, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1.4rem 0;
 }
 
-.levi-chart-guide > header > span { border-color: rgba(184, 243, 107, 0.24); color: var(--levi-green); }
+.levi-chart-guide > header > span { border-color: rgba(255, 176, 0, 0.24); color: var(--levi-green); }
 
 .levi-chart-guide-definitions {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 1rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.08);
+  border-top: 1px solid rgba(255, 226, 178, 0.08);
 }
 
 .levi-chart-guide-definitions article {
@@ -8105,13 +8118,13 @@ img.site-logo {
   grid-template-columns: auto minmax(0, 1fr);
   align-content: start;
   gap: 0.6rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.08);
+  border-right: 1px solid rgba(255, 226, 178, 0.08);
   padding: 0.9rem;
 }
 
 .levi-chart-guide-definitions article:last-child { border-right: 0; }
 .levi-chart-guide-definitions article svg { margin-top: 0.1rem; color: #829080; }
-.levi-chart-guide-definitions article.is-positive svg { color: #7ee3b8; }
+.levi-chart-guide-definitions article.is-positive svg { color: #ffc247; }
 .levi-chart-guide-definitions article.is-negative svg { color: #ff938a; }
 .levi-chart-guide-definitions article.is-cumulative svg { color: var(--levi-green); }
 .levi-chart-guide-definitions article div { display: grid; gap: 0.35rem; }
@@ -8129,7 +8142,7 @@ img.site-logo {
 .levi-chart-guide-usage > strong { color: #b8c3b5; font-size: 0.7rem; }
 .levi-chart-guide-usage ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; counter-reset: none; }
 .levi-chart-guide-usage li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 0.5rem; color: #849181; font-size: 0.67rem; line-height: 1.55; }
-.levi-chart-guide-usage li span { display: grid; width: 1.35rem; height: 1.35rem; place-items: center; border: 1px solid rgba(184, 243, 107, 0.25); border-radius: 50%; color: var(--levi-green); font-size: 0.58rem; }
+.levi-chart-guide-usage li span { display: grid; width: 1.35rem; height: 1.35rem; place-items: center; border: 1px solid rgba(255, 176, 0, 0.25); border-radius: 50%; color: var(--levi-green); font-size: 0.58rem; }
 .levi-chart-guide-limit { display: flex; align-items: flex-start; gap: 0.55rem; margin-top: 1rem; color: #718070; font-size: 0.65rem; line-height: 1.55; }
 .levi-chart-guide-limit svg { flex: none; color: #81917f; }
 
@@ -8144,7 +8157,7 @@ img.site-logo {
 
 .levi-scanner-activity-chart > footer span:not(:last-child)::after {
   margin-left: 1rem;
-  color: rgba(222, 246, 220, 0.2);
+  color: rgba(255, 226, 178, 0.2);
   content: "/";
 }
 
@@ -8164,10 +8177,10 @@ img.site-logo {
 /* Beginner-facing Solana token intelligence. */
 .levi-sniffer-page {
   background:
-    linear-gradient(rgba(184, 243, 107, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(184, 243, 107, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 78% 8%, rgba(54, 211, 153, 0.1), transparent 28rem),
-    #070906;
+    linear-gradient(rgba(255, 176, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 176, 0, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 78% 8%, rgba(255, 61, 22, 0.1), transparent 28rem),
+    #090302;
   background-size: 3.5rem 3.5rem, 3.5rem 3.5rem, auto, auto;
 }
 
@@ -8177,8 +8190,8 @@ img.site-logo {
 .levi-sniffer-intro {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
 }
 
 .levi-sniffer-intro article {
@@ -8186,7 +8199,7 @@ img.site-logo {
   min-height: 12rem;
   align-content: start;
   gap: 0.4rem;
-  border-right: 1px solid rgba(222, 246, 220, 0.09);
+  border-right: 1px solid rgba(255, 226, 178, 0.09);
   padding: 1.15rem;
 }
 
@@ -8201,7 +8214,7 @@ img.site-logo {
   grid-template-columns: minmax(15rem, 0.55fr) minmax(0, 1fr);
   gap: 2rem;
   margin-top: 2.5rem;
-  border: 1px solid rgba(184, 243, 107, 0.2);
+  border: 1px solid rgba(255, 176, 0, 0.2);
   border-radius: 0.5rem;
   background: rgba(9, 13, 8, 0.86);
   padding: clamp(1.1rem, 3vw, 2rem);
@@ -8220,18 +8233,18 @@ img.site-logo {
 
 .levi-sniffer-input-row input {
   min-width: 0;
-  border: 1px solid rgba(222, 246, 220, 0.16);
+  border: 1px solid rgba(255, 226, 178, 0.16);
   border-radius: 0.5rem;
   background: #f3f5f1;
   padding: 0.85rem 0.95rem;
-  color: #121611;
+  color: #150a08;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.72rem;
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
-.levi-sniffer-input-row input:focus { border-color: var(--levi-green); box-shadow: 0 0 0 3px rgba(184, 243, 107, 0.12); }
+.levi-sniffer-input-row input:focus { border-color: var(--levi-green); box-shadow: 0 0 0 3px rgba(255, 176, 0, 0.12); }
 .levi-sniffer-input-row .levi-primary-button { min-height: 3.1rem; white-space: nowrap; }
 .levi-sniffer-form label > small { color: #667264; font-size: 0.62rem; font-weight: 400; }
 .levi-sniffer-form label code { color: #9eaa9b; }
@@ -8245,7 +8258,7 @@ img.site-logo {
   font-weight: 700;
 }
 
-.levi-sniffer-sample:hover { color: #d4ff9a; }
+.levi-sniffer-sample:hover { color: #ffd36a; }
 .levi-sniffer-sample:disabled { opacity: 0.45; }
 
 .levi-sniffer-loading,
@@ -8254,8 +8267,8 @@ img.site-logo {
   align-items: center;
   gap: 1rem;
   margin-top: 1.5rem;
-  border-left: 1px solid rgba(184, 243, 107, 0.55);
-  background: rgba(184, 243, 107, 0.04);
+  border-left: 1px solid rgba(255, 176, 0, 0.55);
+  background: rgba(255, 176, 0, 0.04);
   padding: 1rem;
 }
 
@@ -8272,7 +8285,7 @@ img.site-logo {
 .levi-sniffer-loading > div i {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(184, 243, 107, 0.3);
+  border: 1px solid rgba(255, 176, 0, 0.3);
   border-radius: 50%;
   animation: levi-sniffer-pulse 1.4s ease-out infinite;
 }
@@ -8287,8 +8300,8 @@ img.site-logo {
 
 .levi-sniffer-result {
   margin-top: 2.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.3);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 176, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
   padding: 2rem 0;
 }
 
@@ -8304,7 +8317,7 @@ img.site-logo {
 .levi-sniffer-result header code { display: block; max-width: 48rem; margin-top: 0.8rem; overflow-wrap: anywhere; color: #71806f; font-size: 0.66rem; }
 
 .levi-sniffer-score {
-  --sniffer-tone: #b8f36b;
+  --sniffer-tone: #ffb000;
   position: relative;
   display: grid;
   width: 9.5rem;
@@ -8312,11 +8325,11 @@ img.site-logo {
   flex: none;
   place-content: center;
   border-radius: 50%;
-  background: conic-gradient(var(--sniffer-tone) calc(var(--sniffer-score) * 1%), rgba(222, 246, 220, 0.08) 0);
+  background: conic-gradient(var(--sniffer-tone) calc(var(--sniffer-score) * 1%), rgba(255, 226, 178, 0.08) 0);
   text-align: center;
 }
 
-.levi-sniffer-score::after { position: absolute; inset: 0.55rem; border-radius: 50%; background: #080b07; content: ""; }
+.levi-sniffer-score::after { position: absolute; inset: 0.55rem; border-radius: 50%; background: #120503; content: ""; }
 .levi-sniffer-score > * { position: relative; z-index: 1; }
 .levi-sniffer-score strong { color: #f3f7ef; font-size: 2.35rem; line-height: 1; }
 .levi-sniffer-score span { margin-top: 0.2rem; color: #94a091; font-size: 0.66rem; }
@@ -8329,11 +8342,11 @@ img.site-logo {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 2rem;
-  border-top: 1px solid rgba(222, 246, 220, 0.1);
-  border-bottom: 1px solid rgba(222, 246, 220, 0.1);
+  border-top: 1px solid rgba(255, 226, 178, 0.1);
+  border-bottom: 1px solid rgba(255, 226, 178, 0.1);
 }
 
-.levi-sniffer-metrics article { display: grid; min-width: 0; gap: 0.3rem; border-right: 1px solid rgba(222, 246, 220, 0.09); padding: 1.1rem; }
+.levi-sniffer-metrics article { display: grid; min-width: 0; gap: 0.3rem; border-right: 1px solid rgba(255, 226, 178, 0.09); padding: 1.1rem; }
 .levi-sniffer-metrics article:last-child { border-right: 0; }
 .levi-sniffer-metrics svg { color: var(--levi-green); }
 .levi-sniffer-metrics span { color: #707d6f; font-size: 0.62rem; text-transform: uppercase; }
@@ -8350,8 +8363,8 @@ img.site-logo {
 .levi-sniffer-explanation h3,
 .levi-sniffer-next-steps h3 { margin-top: 0.5rem; color: #edf3e9 !important; font-size: 1.25rem; }
 .levi-sniffer-explanation > div:first-child > p:last-child { margin-top: 0.6rem; color: #7d897b; font-size: 0.72rem; line-height: 1.65; }
-.levi-sniffer-risk-list { border-top: 1px solid rgba(222, 246, 220, 0.1); }
-.levi-sniffer-risk-list article { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem; border-bottom: 1px solid rgba(222, 246, 220, 0.09); padding: 1rem 0; }
+.levi-sniffer-risk-list { border-top: 1px solid rgba(255, 226, 178, 0.1); }
+.levi-sniffer-risk-list article { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem; border-bottom: 1px solid rgba(255, 226, 178, 0.09); padding: 1rem 0; }
 .levi-sniffer-risk-list article > svg { color: #879485; }
 .levi-sniffer-risk-list article.is-warn > svg { color: #e9c66c; }
 .levi-sniffer-risk-list article.is-danger > svg { color: #ff7569; }
@@ -8364,17 +8377,17 @@ img.site-logo {
   grid-template-columns: minmax(13rem, 0.3fr) minmax(0, 0.7fr);
   gap: 2rem;
   margin-top: 2.5rem;
-  border-top: 1px solid rgba(184, 243, 107, 0.2);
+  border-top: 1px solid rgba(255, 176, 0, 0.2);
   padding-top: 1.5rem;
 }
 
 .levi-sniffer-next-steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .levi-sniffer-next-steps li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; gap: 0.65rem; }
-.levi-sniffer-next-steps li > span { display: grid; width: 1.45rem; height: 1.45rem; place-items: center; border: 1px solid rgba(184, 243, 107, 0.3); border-radius: 50%; color: var(--levi-green); font-size: 0.58rem; }
+.levi-sniffer-next-steps li > span { display: grid; width: 1.45rem; height: 1.45rem; place-items: center; border: 1px solid rgba(255, 176, 0, 0.3); border-radius: 50%; color: var(--levi-green); font-size: 0.58rem; }
 .levi-sniffer-next-steps strong { color: #dce6d9; font-size: 0.72rem; }
 .levi-sniffer-next-steps li p { margin-top: 0.3rem; color: #778476; font-size: 0.66rem; line-height: 1.55; }
 
-.levi-sniffer-result > footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; border-top: 1px solid rgba(222, 246, 220, 0.09); padding-top: 1rem; }
+.levi-sniffer-result > footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; border-top: 1px solid rgba(255, 226, 178, 0.09); padding-top: 1rem; }
 .levi-sniffer-result > footer > div { display: flex; align-items: center; gap: 0.65rem; color: #738071; font-size: 0.65rem; }
 .levi-sniffer-result > footer svg { flex: none; }
 .levi-sniffer-result > footer a { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--levi-green); font-size: 0.68rem; font-weight: 700; }
@@ -8402,7 +8415,7 @@ img.site-logo {
   }
   .levi-snapshot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .levi-snapshot-grid > div:nth-child(2) { border-right: 0; }
-  .levi-snapshot-grid > div:nth-child(n + 3) { border-top: 1px solid rgba(222, 246, 220, 0.09); }
+  .levi-snapshot-grid > div:nth-child(n + 3) { border-top: 1px solid rgba(255, 226, 178, 0.09); }
   .levi-pressure-layout,
   .levi-portfolio-columns { grid-template-columns: 1fr; }
   .levi-method-pipeline { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -8414,12 +8427,12 @@ img.site-logo {
   .levi-chart-guide-definitions article:nth-child(2n),
   .levi-portfolio-coverage article:nth-child(2n) { border-right: 0; }
   .levi-chart-guide-definitions article:nth-child(n + 3),
-  .levi-portfolio-coverage article:nth-child(n + 3) { border-top: 1px solid rgba(222, 246, 220, 0.08); }
+  .levi-portfolio-coverage article:nth-child(n + 3) { border-top: 1px solid rgba(255, 226, 178, 0.08); }
   .levi-chart-guide-usage { grid-template-columns: 1fr; }
   .levi-program-context-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .levi-program-context-grid > div:nth-child(2n) { border-right: 0; }
-  .levi-program-context-grid > div:nth-child(n + 3) { border-top: 1px solid rgba(222, 246, 220, 0.09); }
-  .levi-scanner-posture { border-top: 1px solid rgba(222, 246, 220, 0.12); border-left: 0; padding-top: 0.8rem; padding-left: 0; }
+  .levi-program-context-grid > div:nth-child(n + 3) { border-top: 1px solid rgba(255, 226, 178, 0.09); }
+  .levi-scanner-posture { border-top: 1px solid rgba(255, 226, 178, 0.12); border-left: 0; padding-top: 0.8rem; padding-left: 0; }
   .levi-sniffer-form,
   .levi-sniffer-explanation,
   .levi-sniffer-next-steps { grid-template-columns: 1fr; }
@@ -8443,11 +8456,11 @@ img.site-logo {
   }
   .levi-access-progress > div:first-child { flex-direction: column; gap: 0.2rem; }
   .levi-auth-panel.is-compact .levi-access-summary { grid-template-columns: 1fr; }
-  .levi-home-scanner-steps article { min-height: 10rem; border-bottom: 1px solid rgba(222, 246, 220, 0.09); }
+  .levi-home-scanner-steps article { min-height: 10rem; border-bottom: 1px solid rgba(255, 226, 178, 0.09); }
   .levi-home-scanner-steps svg { margin-top: 2rem; }
   .levi-product-page { padding-top: 7rem; }
   .levi-product-hero-proof,
-  .levi-method-version { border-top: 1px solid rgba(184, 243, 107, 0.2); border-left: 0; padding-top: 0.8rem; padding-left: 0; }
+  .levi-method-version { border-top: 1px solid rgba(255, 176, 0, 0.2); border-left: 0; padding-top: 0.8rem; padding-left: 0; }
   .levi-scan-result-header,
   .levi-result-section-heading,
   .levi-portfolio-overview,
@@ -8455,11 +8468,11 @@ img.site-logo {
     flex-direction: column;
     align-items: stretch;
   }
-  .levi-scan-subject { min-width: 0; border-top: 1px solid rgba(184, 243, 107, 0.2); border-left: 0; padding-top: 0.8rem; padding-left: 0; text-align: left; }
+  .levi-scan-subject { min-width: 0; border-top: 1px solid rgba(255, 176, 0, 0.2); border-left: 0; padding-top: 0.8rem; padding-left: 0; text-align: left; }
   .levi-snapshot-grid,
   .levi-portfolio-balance-grid { grid-template-columns: 1fr; }
   .levi-snapshot-grid > div,
-  .levi-portfolio-balance-grid article { border-top: 1px solid rgba(222, 246, 220, 0.09); border-right: 0; }
+  .levi-portfolio-balance-grid article { border-top: 1px solid rgba(255, 226, 178, 0.09); border-right: 0; }
   .levi-activity-row { grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem; padding: 1rem 0; }
   .levi-activity-kind,
   .levi-activity-context { grid-column: 1; }
@@ -8489,23 +8502,23 @@ img.site-logo {
   .levi-chart-guide-usage ol,
   .levi-portfolio-coverage > div { grid-template-columns: 1fr; }
   .levi-chart-guide-definitions article,
-  .levi-portfolio-coverage article { border-top: 1px solid rgba(222, 246, 220, 0.08); border-right: 0; }
+  .levi-portfolio-coverage article { border-top: 1px solid rgba(255, 226, 178, 0.08); border-right: 0; }
   .levi-program-context-grid { grid-template-columns: 1fr; }
-  .levi-program-context-grid > div { border-top: 1px solid rgba(222, 246, 220, 0.09); border-right: 0; }
-  .levi-scanner-chart-stats > div { border-top: 1px solid rgba(222, 246, 220, 0.08); border-right: 0; }
+  .levi-program-context-grid > div { border-top: 1px solid rgba(255, 226, 178, 0.09); border-right: 0; }
+  .levi-scanner-chart-stats > div { border-top: 1px solid rgba(255, 226, 178, 0.08); border-right: 0; }
   .levi-scanner-chart-frame { height: 20rem; }
   .levi-scanner-activity-chart > footer { display: grid; }
   .levi-scanner-activity-chart > footer span::after { display: none; }
   .levi-scan-progress > div:first-child { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
   .levi-sniffer-intro,
   .levi-sniffer-metrics { grid-template-columns: 1fr; }
-  .levi-sniffer-intro article { min-height: 10rem; border-right: 0; border-bottom: 1px solid rgba(222, 246, 220, 0.09); }
+  .levi-sniffer-intro article { min-height: 10rem; border-right: 0; border-bottom: 1px solid rgba(255, 226, 178, 0.09); }
   .levi-sniffer-intro article:last-child { border-bottom: 0; }
   .levi-sniffer-input-row { grid-template-columns: 1fr; }
   .levi-sniffer-input-row .levi-primary-button { width: 100%; }
   .levi-sniffer-result > header { grid-template-columns: 1fr; }
   .levi-sniffer-score { width: 8rem; height: 8rem; }
-  .levi-sniffer-metrics article { border-right: 0; border-bottom: 1px solid rgba(222, 246, 220, 0.09); }
+  .levi-sniffer-metrics article { border-right: 0; border-bottom: 1px solid rgba(255, 226, 178, 0.09); }
   .levi-sniffer-metrics article:last-child { border-bottom: 0; }
   .levi-sniffer-result > footer { align-items: flex-start; flex-direction: column; }
   .levi-sniffer-result > footer > div:last-child { flex-wrap: wrap; }

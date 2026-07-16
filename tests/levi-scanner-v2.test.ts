@@ -328,7 +328,7 @@ describe("Scanner V2 classification", () => {
   it("derives both legacy and Token-2022 associated accounts", () => {
     const accounts = deriveAssociatedTokenAccounts(
       "BYCgQQpJT1odaunfvk6gtm5hVd7Xu93vYwbumFfqgHb3",
-      "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump"
+      "6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump"
     );
     assert.equal(accounts.length, 2);
     assert.equal(new Set(accounts).size, 2);

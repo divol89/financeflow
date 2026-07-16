@@ -35,10 +35,10 @@ export function BurnPortalIntro() {
         <div>
           <ShieldCheck className="h-4 w-4" />
           <div>
-            <strong>LEVI AI holder utility</strong>
+            <strong>K9 holder utility</strong>
             <p>
-              LEVI AI burns have no access threshold. Other tokens require at least
-              1,000,000 LEVI AI in the signing wallet.
+              K9 burns have no access threshold. Other tokens require at least
+              1,000,000 K9 in the signing wallet.
             </p>
           </div>
         </div>

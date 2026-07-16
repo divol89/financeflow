@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Check, Copy, Flame, LockKeyhole, ShieldAlert, X } from "lucide-react";
 import {
-  LEVI_AI_MINT_ADDRESS,
+  AGENT_K9_MINT_ADDRESS,
   SOLANA_INCINERATOR_ADDRESS,
   SOLANA_INCINERATOR_URL,
 } from "@/lib/levi/communityBurn";
+import { AGENT_K9_IMAGE_PATH } from "@/lib/agentK9/brand";
 
-const BANNER_SESSION_KEY = "levi-ai-community-lock-banner-dismissed";
+const BANNER_SESSION_KEY = "agent-k9-community-lock-banner-dismissed";
 
 function getPageScrollY() {
   return Math.max(
@@ -82,29 +83,29 @@ export function CommunityBurnBanner() {
         type="button"
         className="levi-burn-fab"
         onClick={() => setIsOpen(true)}
-        aria-label="Open LEVI AI community lock information"
+        aria-label="Open K9 community lock information"
       >
         <Flame className="h-4 w-4" />
-        <span>LEVI AI lock</span>
+        <span>K9 lock</span>
       </button>
     );
   }
 
   return (
-    <aside className="levi-burn-banner" aria-label="LEVI AI community lock information">
+    <aside className="levi-burn-banner" aria-label="K9 community lock information">
       <div className="levi-burn-banner-topline">
         <div className="levi-burn-brand">
-          <Image src="/levi-avatar.png" alt="White Bull Agent" width={42} height={42} />
+          <Image src={AGENT_K9_IMAGE_PATH} alt="Agent K9" width={42} height={42} />
           <div>
-            <span>White Bull Agent</span>
-            <strong>LEVI AI community lock</strong>
+            <span>Agent K9</span>
+            <strong>K9 community lock</strong>
           </div>
         </div>
         <button
           type="button"
           className="levi-burn-close"
           onClick={closeBanner}
-          aria-label="Dismiss LEVI AI community lock information"
+          aria-label="Dismiss K9 community lock information"
         >
           <X className="h-4 w-4" />
         </button>
@@ -135,8 +136,8 @@ export function CommunityBurnBanner() {
 
       <div className="levi-burn-token">
         <LockKeyhole className="h-4 w-4" />
-        <span>LEVI AI mint</span>
-        <code>{LEVI_AI_MINT_ADDRESS}</code>
+        <span>K9 mint</span>
+        <code>{AGENT_K9_MINT_ADDRESS}</code>
       </div>
 
       <div className="levi-burn-notice">
@@ -146,7 +147,7 @@ export function CommunityBurnBanner() {
           <details>
             <summary>Read the permanent transfer warning</summary>
             <p>
-              Sending LEVI AI to this destination is an irreversible community lock,
+              Sending K9 to this destination is an irreversible community lock,
               but it does not reduce the mint&apos;s recorded on-chain supply. A true
               supply burn requires a Token-2022 <code>BurnChecked</code> transaction
               signed by the holder.

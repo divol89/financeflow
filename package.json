@@ -9,6 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
+    "scan:k9": "tsx scripts/levi-scan.ts",
     "scan:levi": "tsx scripts/levi-scan.ts"
   },
   "dependencies": {

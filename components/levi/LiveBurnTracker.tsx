@@ -58,11 +58,11 @@ export function LiveBurnTracker() {
         <div>
           <div className="levi-section-label">
             <Flame className="h-4 w-4" />
-            Live data / LEVI AI
+            Live data / K9
           </div>
           <h2 id="live-burn-tracker-title">LIVE BURN TRACKER</h2>
           <p>
-            Verified Token-2022 burns reduce LEVI AI supply. Permanent community
+            Verified Token-2022 burns reduce K9 supply. Permanent community
             locks are deducted from effective circulating supply, never counted as burns.
           </p>
         </div>
@@ -90,7 +90,7 @@ export function LiveBurnTracker() {
           </button>
         </div>
         <Link href="/burn" className="levi-burn-tracker-action">
-          Burn LEVI AI <ArrowUpRight className="h-3.5 w-3.5" />
+          Burn K9 <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
       </div>
 
@@ -119,7 +119,7 @@ export function LiveBurnTracker() {
                     <span>🔥 Total Burned</span>
                     <Flame className="h-4 w-4" />
                   </div>
-                  <strong>{formatRawTokenAmount(snapshot.totalBurnedRaw)} LEVI AI</strong>
+                  <strong>{formatRawTokenAmount(snapshot.totalBurnedRaw)} K9</strong>
                   <p>Permanently removed from the mint supply.</p>
                 </article>
 
@@ -129,7 +129,7 @@ export function LiveBurnTracker() {
                     <TrendingDown className="h-4 w-4" />
                   </div>
                   <strong>
-                    {formatRawTokenAmount(snapshot.effectiveCirculatingSupplyRaw)} LEVI AI
+                    {formatRawTokenAmount(snapshot.effectiveCirculatingSupplyRaw)} K9
                   </strong>
                   <p>Mint supply less permanently locked community tokens.</p>
                 </article>
@@ -140,7 +140,7 @@ export function LiveBurnTracker() {
                     <Percent className="h-4 w-4" />
                   </div>
                   <strong>{snapshot.percentageBurned}%</strong>
-                  <p>Of the total 1B LEVI AI baseline.</p>
+                  <p>Of the total 1B K9 baseline.</p>
                 </article>
 
                 <article className="levi-burn-tracker-metric levi-burn-tracker-metric-latest">
@@ -151,7 +151,7 @@ export function LiveBurnTracker() {
                   <strong>{latestBurnLabel}</strong>
                   <p>
                     {latestBurn?.amountRaw
-                      ? `${formatRawTokenAmount(latestBurn.amountRaw)} LEVI AI verified.`
+                      ? `${formatRawTokenAmount(latestBurn.amountRaw)} K9 verified.`
                       : "Transaction monitoring began when this tracker launched."}
                   </p>
                 </article>
@@ -184,7 +184,7 @@ export function LiveBurnTracker() {
                 <div>
                   <span>Community Lock Wallet</span>
                   <strong>
-                    {formatRawTokenAmount(snapshot.communityLockRaw)} LEVI AI permanently locked
+                    {formatRawTokenAmount(snapshot.communityLockRaw)} K9 permanently locked
                   </strong>
                   <code>{snapshot.communityLockWallet}</code>
                   <p>Excluded from Total Burned, deducted from circulating supply.</p>

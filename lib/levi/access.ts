@@ -61,7 +61,7 @@ export function getAccessLimits(tier: LeviAccessTier): LeviAccessLimits {
 }
 
 export function getAccessReason(tier: LeviAccessTier): string {
-  if (tier === "full") return "Full Scanner and Portfolio access unlocked with 50,000+ LEVI AI.";
-  if (tier === "basic") return "Basic scanner unlocked with 3,000+ LEVI AI.";
-  return "Hold at least 3,000 LEVI AI to unlock scanner access.";
+  if (tier === "full") return "Full Scanner and Portfolio access unlocked with 50,000+ K9.";
+  if (tier === "basic") return "Basic scanner unlocked with 3,000+ K9.";
+  return "Hold at least 3,000 K9 to unlock scanner access.";
 }

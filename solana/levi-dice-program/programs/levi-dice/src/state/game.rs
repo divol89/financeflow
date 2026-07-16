@@ -16,7 +16,7 @@ pub enum GameState {
 pub struct Game {
     pub config: Pubkey,
     pub creator: Pubkey,
-    pub levi_mint: Pubkey,
+    pub k9_mint: Pubkey,
     pub escrow: Pubkey,
     pub treasury_token_account: Pubkey,
     pub entry_fee: u64,
@@ -150,7 +150,7 @@ mod tests {
         let mut game = Game {
             config: Pubkey::default(),
             creator: Pubkey::default(),
-            levi_mint: Pubkey::default(),
+            k9_mint: Pubkey::default(),
             escrow: Pubkey::default(),
             treasury_token_account: Pubkey::default(),
             entry_fee: 1_000_000,
@@ -185,7 +185,7 @@ mod tests {
         let mut game = Game {
             config: Pubkey::default(),
             creator: Pubkey::default(),
-            levi_mint: Pubkey::default(),
+            k9_mint: Pubkey::default(),
             escrow: Pubkey::default(),
             treasury_token_account: Pubkey::default(),
             entry_fee: 10,

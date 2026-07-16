@@ -9,7 +9,7 @@ DEPLOY_WALLET="$(echo "$DEPLOY_WALLET" | xargs)"
 
 cd "$ROOT_DIR"
 
-echo "== LEVI Dice mainnet preflight =="
+echo "== K9 Dice mainnet preflight =="
 echo "Root: $ROOT_DIR"
 echo "Cluster: mainnet-beta"
 

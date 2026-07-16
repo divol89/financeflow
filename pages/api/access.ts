@@ -28,11 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const access = await getLeviAccessForWallet(wallet);
     return res.status(200).json({ access });
   } catch (error) {
-    console.error("LEVI access check failed", error);
+    console.error("K9 access check failed", error);
     const message =
       error instanceof Error && error.message.toLowerCase().includes("invalid")
         ? "Invalid Solana wallet address"
-        : "Unable to read LEVI AI access";
+        : "Unable to read K9 access";
     return res.status(400).json({ error: message });
   }
 }

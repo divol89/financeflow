@@ -3,7 +3,7 @@ use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 use crate::{
     instructions::token_helpers, Config, Game, GameState, LeviDiceError, ESCROW_SEED, GAME_SEED,
-    LEVI_MINT, MAX_DURATION_SECONDS, MAX_PLAYERS, MIN_DURATION_SECONDS, MIN_PLAYERS,
+    K9_MINT, MAX_DURATION_SECONDS, MAX_PLAYERS, MIN_DURATION_SECONDS, MIN_PLAYERS,
 };
 
 #[derive(Accounts)]
@@ -12,7 +12,7 @@ pub struct CreateGame<'info> {
     #[account(mut)]
     pub creator: Signer<'info>,
     #[account(
-        has_one = levi_mint @ LeviDiceError::InvalidLeviMint,
+        has_one = k9_mint @ LeviDiceError::InvalidK9Mint,
         constraint = config.treasury_token_account == treasury_token_account.key() @ LeviDiceError::InvalidTreasury
     )]
     pub config: Account<'info, Config>,
@@ -27,7 +27,7 @@ pub struct CreateGame<'info> {
     #[account(
         init,
         payer = creator,
-        token::mint = levi_mint,
+        token::mint = k9_mint,
         token::authority = game,
         token::token_program = token_program,
         seeds = [ESCROW_SEED, game.key().as_ref()],
@@ -37,14 +37,14 @@ pub struct CreateGame<'info> {
     #[account(
         mut,
         constraint = creator_token_account.owner == creator.key() @ LeviDiceError::PlayerNotFound,
-        constraint = creator_token_account.mint == levi_mint.key() @ LeviDiceError::InvalidLeviMint
+        constraint = creator_token_account.mint == k9_mint.key() @ LeviDiceError::InvalidK9Mint
     )]
     pub creator_token_account: InterfaceAccount<'info, TokenAccount>,
     #[account(
-        constraint = treasury_token_account.mint == levi_mint.key() @ LeviDiceError::InvalidTreasury
+        constraint = treasury_token_account.mint == k9_mint.key() @ LeviDiceError::InvalidTreasury
     )]
     pub treasury_token_account: InterfaceAccount<'info, TokenAccount>,
-    pub levi_mint: InterfaceAccount<'info, Mint>,
+    pub k9_mint: InterfaceAccount<'info, Mint>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
 }
@@ -58,9 +58,9 @@ pub fn create_game(
     reveal_duration: i64,
 ) -> Result<()> {
     require_keys_eq!(
-        ctx.accounts.levi_mint.key(),
-        LEVI_MINT,
-        LeviDiceError::InvalidLeviMint
+        ctx.accounts.k9_mint.key(),
+        K9_MINT,
+        LeviDiceError::InvalidK9Mint
     );
     require!(entry_fee > 0, LeviDiceError::InvalidEntryFee);
     require!(
@@ -78,7 +78,7 @@ pub fn create_game(
 
     token_helpers::transfer_checked(
         ctx.accounts.creator_token_account.to_account_info(),
-        ctx.accounts.levi_mint.to_account_info(),
+        ctx.accounts.k9_mint.to_account_info(),
         ctx.accounts.escrow.to_account_info(),
         ctx.accounts.creator.to_account_info(),
         ctx.accounts.token_program.to_account_info(),
@@ -90,7 +90,7 @@ pub fn create_game(
     let game = &mut ctx.accounts.game;
     game.config = ctx.accounts.config.key();
     game.creator = ctx.accounts.creator.key();
-    game.levi_mint = ctx.accounts.levi_mint.key();
+    game.k9_mint = ctx.accounts.k9_mint.key();
     game.escrow = ctx.accounts.escrow.key();
     game.treasury_token_account = ctx.accounts.treasury_token_account.key();
     game.entry_fee = entry_fee;

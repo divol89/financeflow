@@ -38,4 +38,4 @@ solana program deploy \
   "$PROGRAM_SO"
 
 echo "Deploy complete. Set frontend env:"
-echo "NEXT_PUBLIC_LEVI_DICE_PROGRAM_ID=$(solana-keygen pubkey "$PROGRAM_KEYPAIR")"
+echo "NEXT_PUBLIC_AGENT_K9_DICE_PROGRAM_ID=$(solana-keygen pubkey "$PROGRAM_KEYPAIR")"

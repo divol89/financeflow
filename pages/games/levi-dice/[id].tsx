@@ -74,7 +74,7 @@ function LeviDiceRoom() {
         players: [...game.players, address],
       };
       persistGame(nextGame);
-      toast.success("Joined LEVI Dice preview room.");
+      toast.success("Joined K9 Dice preview room.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unable to join room");
     }
@@ -134,13 +134,13 @@ function LeviDiceRoom() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black text-white">
         <div className="text-center">
-          <Dice5 className="mx-auto mb-4 h-12 w-12 text-emerald-300" />
-          <p className="text-slate-400">LEVI Dice room not found.</p>
+          <Dice5 className="mx-auto mb-4 h-12 w-12 text-amber-300" />
+          <p className="text-slate-400">K9 Dice room not found.</p>
           <Button
             onClick={() => router.push("/games/levi-dice")}
-            className="mt-5 bg-emerald-400 text-black hover:bg-emerald-300"
+            className="mt-5 bg-amber-400 text-black hover:bg-amber-300"
           >
-            Back to LEVI Dice
+            Back to K9 Dice
           </Button>
         </div>
       </div>
@@ -161,7 +161,7 @@ function LeviDiceRoom() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#071007] via-black to-black p-4 pt-24 text-white">
       <Head>
-        <title>LEVI Dice Room | Solana Preview</title>
+        <title>K9 Dice Room | Solana Preview</title>
       </Head>
       <ToastContainer position="bottom-right" theme="dark" />
 
@@ -172,7 +172,7 @@ function LeviDiceRoom() {
           className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to LEVI Dice
+          Back to K9 Dice
         </button>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
@@ -181,12 +181,12 @@ function LeviDiceRoom() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-black text-white">
-                    LEVI Dice Room
+                    K9 Dice Room
                   </h1>
                   <span className="rounded-md border border-amber-400/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-200">
                     Preview
                   </span>
-                  <span className="rounded-md border border-emerald-400/30 bg-emerald-950/40 px-3 py-1 text-xs font-semibold text-emerald-200">
+                  <span className="rounded-md border border-amber-400/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-200">
                     {game.status}
                   </span>
                 </div>
@@ -197,8 +197,8 @@ function LeviDiceRoom() {
 
               <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-right">
                 <p className="text-xs uppercase text-slate-500">Prize</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-200">
-                  {formatLeviAmount(prize)} LEVI
+                <p className="mt-1 text-2xl font-bold text-amber-200">
+                  {formatLeviAmount(prize)} K9
                 </p>
                 <p className="mt-1 text-xs text-slate-500">95% of preview pot</p>
               </div>
@@ -208,7 +208,7 @@ function LeviDiceRoom() {
               <div className="rounded-lg border border-white/10 bg-white/5 p-4">
                 <p className="text-xs uppercase text-slate-500">Entry</p>
                 <p className="mt-1 text-xl font-semibold text-white">
-                  {formatLeviAmount(game.entryFee)} LEVI
+                  {formatLeviAmount(game.entryFee)} K9
                 </p>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -238,7 +238,7 @@ function LeviDiceRoom() {
                       isWinner
                         ? "border-yellow-300 bg-yellow-950/30"
                         : player === connectedAddress
-                        ? "border-emerald-300 bg-emerald-950/30"
+                        ? "border-amber-300 bg-amber-950/30"
                         : "border-white/10 bg-white/[0.03]"
                     }`}
                   >
@@ -279,7 +279,7 @@ function LeviDiceRoom() {
                   onClick={() => {
                     void wallet.connect().catch(() => undefined);
                   }}
-                  className="bg-emerald-400 font-bold text-black hover:bg-emerald-300"
+                  className="bg-amber-400 font-bold text-black hover:bg-amber-300"
                 >
                   Connect Solana
                 </Button>
@@ -288,7 +288,7 @@ function LeviDiceRoom() {
               {game.status === "WAITING" && !isPlayer ? (
                 <Button
                   onClick={() => void joinPreview()}
-                  className="bg-white font-bold text-black hover:bg-emerald-100"
+                  className="bg-white font-bold text-black hover:bg-amber-100"
                 >
                   Join Preview Room
                 </Button>
@@ -297,7 +297,7 @@ function LeviDiceRoom() {
               {canStart ? (
                 <Button
                   onClick={startPreview}
-                  className="bg-cyan-400 font-bold text-black hover:bg-cyan-300"
+                  className="bg-orange-400 font-bold text-black hover:bg-orange-300"
                 >
                   Start Preview Game
                 </Button>
@@ -330,7 +330,7 @@ function LeviDiceRoom() {
               <div className="flex gap-3">
                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
                 <p>
-                  Preview mode never transfers LEVI. The production Solana
+                  Preview mode never transfers K9. The production Solana
                   version must use a deployed escrow program before real wagers.
                 </p>
               </div>
@@ -349,7 +349,7 @@ function LeviDiceRoom() {
                 </p>
                 <p className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-500" />
-                  Settlement instruction transfers LEVI pot.
+                  Settlement instruction transfers K9 pot.
                 </p>
               </div>
             </div>

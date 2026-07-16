@@ -36,7 +36,7 @@ const narrativeSteps: NarrativeStep[] = [
 
 export function HomeNarrativeFlow() {
   return (
-    <ol className="levi-home-narrative-flow" aria-label="White Bull Agent development flow">
+    <ol className="levi-home-narrative-flow" aria-label="Agent K9 development flow">
       {narrativeSteps.map(({ index, title, description, icon: Icon }) => (
         <li key={index}>
           <span>{index}</span>

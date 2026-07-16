@@ -9,17 +9,17 @@ import {
 
 const gameLoop = [
   "Connect a Solana wallet.",
-  "Hold the required LEVI balance to play.",
+  "Hold the required K9 balance to play.",
   "Tap or click to charge through obstacles.",
   "Collect green candles and avoid red bears.",
   "Compete on a daily leaderboard.",
 ];
 
 const rewards = [
-  "Top 10 players split the daily LEVI prize pool.",
-  "One random holder can receive a Lucky Bull reward.",
-  "Holding more LEVI can unlock extra lives, skins, or perks.",
-  "A tiny LEVI burn can be used as the entry mechanic after contracts are ready.",
+  "Top 10 players split the daily K9 prize pool.",
+  "One random holder can receive a Lucky K9 reward.",
+  "Holding more K9 can unlock extra lives, skins, or perks.",
+  "A tiny K9 burn can be used as the entry mechanic after contracts are ready.",
 ];
 
 export function BullChargeProposal() {
@@ -31,9 +31,9 @@ export function BullChargeProposal() {
             <Gamepad2 className="h-4 w-4" />
             Proposed game
           </div>
-          <h2 className="levi-panel-title">Bull Charge</h2>
+          <h2 className="levi-panel-title">K9 Pursuit</h2>
           <p className="levi-panel-copy">
-            A viral LEVI mini-game concept where holders charge through market
+            A viral K9 mini-game concept where holders charge through market
             obstacles, collect green candles, and compete for daily rewards.
           </p>
         </div>
@@ -41,13 +41,13 @@ export function BullChargeProposal() {
         <div className="levi-list-columns">
           <div className="levi-list-column">
             <div className="levi-list-heading">
-              <CandlestickChart className="h-5 w-5 text-emerald-300" />
+              <CandlestickChart className="h-5 w-5 text-amber-300" />
               Gameplay
             </div>
             <ul className="levi-list">
               {gameLoop.map((item) => (
                 <li key={item}>
-                  <ShieldCheck className="mt-1 h-4 w-4 flex-none text-emerald-300" />
+                  <ShieldCheck className="mt-1 h-4 w-4 flex-none text-amber-300" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -72,11 +72,11 @@ export function BullChargeProposal() {
       </div>
 
       <div className="levi-proposal-note">
-        <HeartHandshake className="mt-0.5 h-5 w-5 flex-none text-emerald-300" />
+        <HeartHandshake className="mt-0.5 h-5 w-5 flex-none text-amber-300" />
         <p>
           This is a proposal stage feature. The community can fund the agent
           wallet with SOL for contract deployment and request next steps in the
-          LEVI chat; once the approved funding threshold is reached, the
+          K9 chat; once the approved funding threshold is reached, the
           autonomous agent can continue implementation with Fable and GPT-5.6
           Sol under Magneto supervision.
         </p>

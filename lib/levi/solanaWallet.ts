@@ -124,7 +124,7 @@ function isAllowedFlowFinanceSource(url: URL): boolean {
 export function buildPhantomBrowseUrl(currentUrl: string): string {
   const source = new URL(currentUrl, FLOW_FINANCE_ORIGIN);
   if (!isAllowedFlowFinanceSource(source)) {
-    throw new Error("Phantom browse targets must stay on Flow Finance.");
+    throw new Error("Phantom browse targets must stay on the Agent K9 website.");
   }
 
   const target = new URL(

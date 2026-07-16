@@ -1,4 +1,7 @@
-import { LEVI_MINT_ADDRESS } from "@/lib/levi/constants";
+import {
+  AGENT_K9_MINT_ADDRESS,
+  AGENT_K9_SYMBOL,
+} from "@/lib/agentK9/brand";
 import type {
   ContestCampaignStatus,
   ContestHolderTier,
@@ -6,20 +9,15 @@ import type {
   LeviSocialContestCampaign,
 } from "@/types/contest";
 
-export const LEVI_SOCIAL_CONTEST_ID = "levi-social-2026-01";
-export const CONTEST_SUBMISSIONS_COLLECTION = "leviSocialContestSubmissions";
-export const CONTEST_CAMPAIGNS_COLLECTION = "leviSocialContests";
-export const LEVI_AI_HOLDER_MINT =
-  "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
+export const LEVI_SOCIAL_CONTEST_ID = "agent-k9-social-2026-01";
+export const CONTEST_SUBMISSIONS_COLLECTION = "agentK9SocialContestSubmissions";
+export const CONTEST_CAMPAIGNS_COLLECTION = "agentK9SocialContests";
+export const AGENT_K9_HOLDER_MINT = AGENT_K9_MINT_ADDRESS;
 
 export const CONTEST_HOLDER_TOKENS: ContestHolderToken[] = [
   {
-    symbol: "LEVI",
-    mint: LEVI_MINT_ADDRESS,
-  },
-  {
-    symbol: "LEVI AI",
-    mint: LEVI_AI_HOLDER_MINT,
+    symbol: AGENT_K9_SYMBOL,
+    mint: AGENT_K9_HOLDER_MINT,
   },
 ];
 
@@ -32,7 +30,7 @@ export const CONTEST_HOLDER_TIERS: ContestHolderTier[] = [
 const DEFAULT_CLOSE_DATE = "2026-08-31T23:59:59.000Z";
 
 function getConfiguredStatus(): ContestCampaignStatus | null {
-  const status = process.env.LEVI_CONTEST_STATUS;
+  const status = process.env.AGENT_K9_CONTEST_STATUS;
   if (status === "open" || status === "closed" || status === "revealed") {
     return status;
   }
@@ -40,7 +38,7 @@ function getConfiguredStatus(): ContestCampaignStatus | null {
 }
 
 export function getDefaultContestCampaign(): LeviSocialContestCampaign {
-  const closesAt = process.env.LEVI_CONTEST_ENDS_AT || DEFAULT_CLOSE_DATE;
+  const closesAt = process.env.AGENT_K9_CONTEST_ENDS_AT || DEFAULT_CLOSE_DATE;
   const configuredStatus = getConfiguredStatus();
   const status =
     configuredStatus ||
@@ -48,9 +46,9 @@ export function getDefaultContestCampaign(): LeviSocialContestCampaign {
 
   return {
     id: LEVI_SOCIAL_CONTEST_ID,
-    title: "LEVI Social Contest",
+    title: "Agent K9 Social Contest",
     description:
-      "Share a thoughtful post about LEVI on X, submit the link, and unlock a surprise reward tier through either a LEVI or LEVI AI holding.",
+      "Share a thoughtful post about Agent K9 on X, submit the link, and unlock a surprise reward tier through your K9 holding.",
     status,
     closesAt,
     eligibleTokens: CONTEST_HOLDER_TOKENS,

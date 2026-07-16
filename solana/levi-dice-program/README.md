@@ -1,10 +1,10 @@
-# LEVI Dice Solana Program
+# K9 Dice Solana Program
 
-Anchor-style Solana program for the LEVI Dice version of Crazy Dice.
+Anchor-style Solana program for the K9 Dice version of Crazy Dice.
 
 ## Scope
 
-- Uses the existing LEVI Token-2022 mint only: `6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump`.
+- Uses the existing K9 Token-2022 mint only: `6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump`.
 - Does **not** create a new token.
 - Does **not** include custodial backend keys, hot wallets, seed phrases, or paid RPC requirements.
 - Does **not** deploy automatically. Deployment must be explicitly approved and signed by the user's wallet.
@@ -20,7 +20,7 @@ CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM
 After an approved deploy, set the frontend variable to the deployed program ID:
 
 ```bash
-NEXT_PUBLIC_LEVI_DICE_PROGRAM_ID=CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM
+NEXT_PUBLIC_AGENT_K9_DICE_PROGRAM_ID=CvQidDgoUvQdY81LGUmS4tyG1UeY6Hxj3M6ie3yExyrM
 ```
 
 If you deploy with a different keypair, update `declare_id!`, `Anchor.toml`, and the frontend variable together.
@@ -31,7 +31,7 @@ PDAs/accounts:
 
 | Account | Seeds / role |
 | --- | --- |
-| `config` | `['config']`; stores authority, LEVI mint, treasury token account, 5% fee. |
+| `config` | `['config']`; stores authority, K9 mint, treasury token account, 5% fee. |
 | `game` | `['game', creator, game_nonce, config]`; stores room, player, commit/reveal, deadline, and settlement state. |
 | `escrow` | `['escrow', game]`; Token-2022 token account owned by the `game` PDA. |
 
@@ -57,7 +57,7 @@ Instructions:
 ## Game rules
 
 - 2 to 5 players.
-- Each player deposits `entry_fee` in LEVI Token-2022 into the escrow PDA.
+- Each player deposits `entry_fee` in K9 Token-2022 into the escrow PDA.
 - Protocol fee is fixed at `500` basis points = 5%.
 - Winner receives 95% of the pot.
 - Treasury token account receives 5% of the pot.
@@ -90,7 +90,7 @@ This avoids the unsafe `Math.random()`/single-transaction randomness pattern for
   - if nobody revealed, it cancels and refunds;
   - if at least one player revealed, unrevealed players forfeit and settlement pays the best revealed roll.
 
-For refund paths, the instruction expects five refund token accounts (`refund_0` through `refund_4`) and uses only the first `player_count` accounts. Pass the joined players' LEVI token accounts in player order.
+For refund paths, the instruction expects five refund token accounts (`refund_0` through `refund_4`) and uses only the first `player_count` accounts. Pass the joined players' K9 token accounts in player order.
 
 ## Local commands
 
@@ -138,7 +138,7 @@ SOLANA_DEPLOY_WALLET=/path/to/funded/mainnet-keypair.json \
 
 Current blocker observed on this machine: no approved funded deployment keypair is configured, and Anchor CLI is not installed. Install/repair Anchor/SBF tooling and choose a user-approved deploy wallet before any production deploy.
 
-Do not send community development funding to a deploy wallet. Public SOL funding for LEVI agentic development goes only to the agent wallet `Cdij4T6EXdz1MFGChuqBNo7kZ8E5unTSLyeP8SGvazZ4`. When approved funding thresholds are reached, the autonomous agent can continue scoped work with Fable and GPT-5.6 Sol, under Magneto supervision.
+Do not send community development funding to a deploy wallet. Public SOL funding for K9 agentic development goes only to the agent wallet `Cdij4T6EXdz1MFGChuqBNo7kZ8E5unTSLyeP8SGvazZ4`. When approved funding thresholds are reached, the autonomous agent can continue scoped work with Fable and GPT-5.6 Sol, under Magneto supervision.
 
 Production frontend env template added at repo root:
 
@@ -149,7 +149,7 @@ Production frontend env template added at repo root:
 ## Deployment checklist
 
 1. Review/audit program logic and accounts.
-2. Confirm treasury LEVI Token-2022 token account.
+2. Confirm treasury K9 Token-2022 token account.
 3. Confirm deploy keypair and program ID.
 4. Run `cargo +1.96 test` and, if available, `anchor test`.
 5. Obtain explicit user approval for deploy.
@@ -157,12 +157,12 @@ Production frontend env template added at repo root:
 7. Set frontend env:
 
 ```bash
-NEXT_PUBLIC_LEVI_DICE_PROGRAM_ID=<program_id>
+NEXT_PUBLIC_AGENT_K9_DICE_PROGRAM_ID=<program_id>
 ```
 
 ## Security notes
 
-- `LEVI_MINT` is hard-coded to `6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump`.
+- `K9_MINT` is hard-coded to `6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump`.
 - Token transfers use `anchor_spl::token_interface` for Token-2022 compatibility.
 - No backend settlement signer is required.
 - No paid RPC/node dependency is required by the program.

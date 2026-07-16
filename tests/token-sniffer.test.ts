@@ -11,7 +11,7 @@ import {
   TOKEN_SNIFFER_MIN_REQUEST_INTERVAL_MS,
 } from "@/lib/tokenSniffer/provider";
 
-const mint = "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
+const mint = "6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump";
 
 describe("Token Sniffer report model", () => {
   it("normalizes the provider summary for beginner-facing display", () => {

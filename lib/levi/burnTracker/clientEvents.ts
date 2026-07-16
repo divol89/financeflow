@@ -1,8 +1,8 @@
 import type { BurnTrackerPublicSnapshot } from "@/types/burnTracker";
 import { isBurnTrackerPublicSnapshot } from "./validation";
 
-const BURN_TRACKER_UPDATED_EVENT = "levi:burn-tracker-updated";
-const BURN_TRACKER_STORAGE_KEY = "levi:burn-tracker:snapshot";
+const BURN_TRACKER_UPDATED_EVENT = "agent-k9:burn-tracker-updated";
+const BURN_TRACKER_STORAGE_KEY = "agent-k9:burn-tracker:snapshot";
 
 let latestSnapshot: BurnTrackerPublicSnapshot | null = null;
 

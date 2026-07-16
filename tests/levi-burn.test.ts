@@ -22,7 +22,7 @@ import {
   formatBurnAmount,
   parseBurnAmount,
 } from "../lib/levi/burn/validation";
-import { LEVI_AI_MINT_ADDRESS } from "../lib/levi/communityBurn";
+import { AGENT_K9_MINT_ADDRESS } from "../lib/levi/communityBurn";
 import {
   parseMetaplexBurnMetadata,
   parseToken2022BurnMetadataExtension,
@@ -221,7 +221,7 @@ test("validates the prepared transaction before delegating submission to the wal
   assert.equal(capturedInstructionCount, 1);
 });
 
-test("enforces a signed 1,000,000 LEVI AI gate only for external token burns", async () => {
+test("enforces a signed 1,000,000 K9 gate only for external token burns", async () => {
   const owner = Keypair.generate().publicKey.toBase58();
   const externalMint = Keypair.generate().publicKey.toBase58();
   const externalAccount = Keypair.generate().publicKey.toBase58();
@@ -265,7 +265,7 @@ test("enforces a signed 1,000,000 LEVI AI gate only for external token burns", a
                     data: {
                       parsed: {
                         info: {
-                          mint: LEVI_AI_MINT_ADDRESS,
+                          mint: AGENT_K9_MINT_ADDRESS,
                           state: "initialized",
                           tokenAmount: { amount: leviBalanceRaw, decimals: 6 },
                         },
@@ -310,7 +310,7 @@ test("enforces a signed 1,000,000 LEVI AI gate only for external token burns", a
           amountRaw: "1000000",
           sessionWallet: owner,
         }),
-      /Hold at least 1,000,000 LEVI AI/
+      /Hold at least 1,000,000 K9/
     );
 
     leviBalanceRaw = "1000000000000";
@@ -330,7 +330,7 @@ test("enforces a signed 1,000,000 LEVI AI gate only for external token burns", a
     leviBalanceRaw = "100";
     const leviPreparation = await prepareBurnTransaction({
       wallet: owner,
-      mint: LEVI_AI_MINT_ADDRESS,
+      mint: AGENT_K9_MINT_ADDRESS,
       amountRaw: "1",
       sessionWallet: null,
     });
@@ -376,8 +376,8 @@ test("waits for finalization before forcing one tracker refresh", async () => {
   let statusReads = 0;
   let trackerPosts = 0;
   const snapshot = {
-    mint: LEVI_AI_MINT_ADDRESS,
-    symbol: "LEVI AI",
+    mint: AGENT_K9_MINT_ADDRESS,
+    symbol: "K9",
     decimals: 6,
     initialSupplyRaw: "1000000000000000",
     currentSupplyRaw: "999996549999999",

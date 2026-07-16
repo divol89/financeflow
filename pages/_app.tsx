@@ -35,8 +35,8 @@ focusManager.setEventListener(() => () => undefined);
 focusManager.setFocused(true);
 
 export const metadata = {
-  title: "FlowFinance",
-  description: "FlowFinance",
+  title: "Agent K9",
+  description: "Agent K9 on-chain intelligence for Solana.",
 };
 
 function MyApp({ Component, pageProps, router }: AppProps) {
@@ -81,9 +81,9 @@ function MyApp({ Component, pageProps, router }: AppProps) {
               onDecline={handleReject}
               cookieName="flowfinance_cookie_consent"
               style={{
-                background: "rgba(15, 15, 20, 0.95)",
+                background: "rgba(16, 3, 2, 0.96)",
                 backdropFilter: "blur(20px)",
-                borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+                borderTop: "1px solid rgba(255, 176, 0, 0.22)",
                 padding: "20px 24px",
                 alignItems: "center",
                 boxShadow: "0 -4px 30px rgba(0, 0, 0, 0.3)",
@@ -97,25 +97,25 @@ function MyApp({ Component, pageProps, router }: AppProps) {
                 color: "rgba(255, 255, 255, 0.85)",
               }}
               buttonStyle={{
-                background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
-                color: "#ffffff",
+                background: "linear-gradient(135deg, #ffb000 0%, #ff7a00 100%)",
+                color: "#160502",
                 fontSize: "14px",
                 fontWeight: "600",
-                borderRadius: "12px",
+                borderRadius: "8px",
                 padding: "12px 28px",
                 border: "none",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
-                boxShadow: "0 4px 15px rgba(139, 92, 246, 0.4)",
+                boxShadow: "0 4px 18px rgba(255, 91, 0, 0.28)",
               }}
               declineButtonStyle={{
                 background: "transparent",
                 color: "rgba(255, 255, 255, 0.7)",
                 fontSize: "14px",
                 fontWeight: "500",
-                borderRadius: "12px",
+                borderRadius: "8px",
                 padding: "12px 28px",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 176, 0, 0.3)",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 marginRight: "12px",
@@ -132,7 +132,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
               <a
                 href="/privacy"
                 style={{
-                  color: "#A78BFA",
+                  color: "#ffb000",
                   textDecoration: "underline",
                   fontWeight: "500",
                 }}
@@ -145,10 +145,10 @@ function MyApp({ Component, pageProps, router }: AppProps) {
         </QueryClientProvider>
       ) : (
         <QueryClientProvider client={queryClient}>
-          <div className="flex  flex-col items-center justify-center min-h-screen  bg-cover bg-no-repeat bg-center bg-gradient-to-b from-gray-900 via-purple-900 to-black dark:text-gray-100">
+          <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-black via-red-950 to-black bg-cover bg-center bg-no-repeat text-gray-100">
             <div className="stars absolute inset-0"></div>
-            <div className="max-w-md w-full space-y-8 p-10 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-              <h1 className="text-2xl font-bold text-center text-purple-500 ">
+            <div className="w-full max-w-md space-y-8 rounded-lg border border-amber-400/20 bg-[#160502] p-10 shadow-md">
+              <h1 className="text-center text-2xl font-bold text-amber-300">
                 Cookies are required
               </h1>
               <p className="text-center">
@@ -158,13 +158,13 @@ function MyApp({ Component, pageProps, router }: AppProps) {
               <div className="flex flex-col space-y-4">
                 <button
                   onClick={handleAccept}
-                  className="w-full flex justify-center py-2 px-4 border  rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="flex w-full justify-center rounded-md border border-amber-300/30 bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-2 text-sm font-bold text-black shadow-sm hover:from-amber-300 hover:to-orange-400 focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
                 >
                   Accept Cookies and Enter
                 </button>
                 <a
                   href="https://www.google.com"
-                  className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500  hover:from-purple-600 hover:to-pink-600   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="flex w-full justify-center rounded-md border border-red-400/30 bg-gradient-to-r from-red-700 to-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-red-600 hover:to-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 >
                   Leave Site
                 </a>

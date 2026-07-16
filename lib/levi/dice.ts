@@ -1,4 +1,4 @@
-import { LEVI_MINT_ADDRESS } from "./constants";
+import { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
 
 export type LeviDiceStatus = "WAITING" | "PLAYING" | "ENDED" | "CANCELLED";
 
@@ -14,11 +14,11 @@ export interface LeviDicePreviewGame {
   createdAt: number;
 }
 
-export const LEVI_DICE_STORAGE_KEY = "flowfinance_levi_dice_preview_games";
+export const LEVI_DICE_STORAGE_KEY = "flowfinance_agent_k9_dice_preview_games";
 export const LEVI_DICE_PROTOCOL_FEE_BPS = 500;
-export const LEVI_DICE_MINT = LEVI_MINT_ADDRESS;
+export const LEVI_DICE_MINT = AGENT_K9_MINT_ADDRESS;
 export const LEVI_DICE_PROGRAM_ID =
-  process.env.NEXT_PUBLIC_LEVI_DICE_PROGRAM_ID || "";
+  process.env.NEXT_PUBLIC_AGENT_K9_DICE_PROGRAM_ID || "";
 
 export function isLeviDiceProgramReady(): boolean {
   return LEVI_DICE_PROGRAM_ID.length >= 32;

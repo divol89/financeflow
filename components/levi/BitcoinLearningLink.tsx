@@ -14,7 +14,7 @@ export function BitcoinLearningLink() {
             <h2>Bitcoin, explained through the original whitepaper.</h2>
             <p>
               Follow the original ideas behind digital ownership, shared validation and
-              proof of work through an interactive field guide built inside LEVI Learn.
+              proof of work through an interactive field guide built inside Agent K9 Learn.
             </p>
             <Link href="/learn/bitcoin" className="levi-primary-button mt-7">
               Explore Bitcoin from first principles <ArrowRight className="h-4 w-4" />

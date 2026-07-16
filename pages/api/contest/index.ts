@@ -28,7 +28,7 @@ export default async function handler(
       storageAvailable: true,
     });
   } catch (error) {
-    console.error("LEVI Social contest read failed", error);
+    console.error("K9 Social contest read failed", error);
     return res.status(503).json({
       campaign: getDefaultContestCampaign(),
       entries: [],

@@ -6,8 +6,8 @@ import {
 } from "@solana/spl-token";
 import { solanaRpc } from "@/lib/levi/rpc";
 import { normalizeSolanaAddress } from "@/lib/levi/wallet";
-import { LEVI_AI_MINT_ADDRESS } from "@/lib/levi/communityBurn";
-import { LEVI_AI_DECIMALS, LEVI_AI_SYMBOL } from "@/lib/levi/burnTracker/constants";
+import { AGENT_K9_MINT_ADDRESS } from "@/lib/levi/communityBurn";
+import { AGENT_K9_DECIMALS, AGENT_K9_SYMBOL } from "@/lib/levi/burnTracker/constants";
 import {
   EXTERNAL_BURN_THRESHOLD_RAW,
   MAX_BURN_SOURCE_ACCOUNTS,
@@ -153,8 +153,8 @@ function toBurnTokenRecord(record: MutableTokenRecord): BurnTokenRecord {
 
   return {
     mint: record.mint,
-    name: isLeviAi ? "The White Bull Agent" : null,
-    symbol: isLeviAi ? LEVI_AI_SYMBOL : null,
+    name: isLeviAi ? "Agent K9" : null,
+    symbol: isLeviAi ? AGENT_K9_SYMBOL : null,
     program,
     programId: record.programId,
     decimals: record.decimals,
@@ -227,7 +227,7 @@ export async function loadBurnWalletState(
   collectTokenAccounts(groups, token2022Accounts, TOKEN_2022_PROGRAM_ID.toBase58());
   const records = [...groups.values()].map(toBurnTokenRecord).sort(compareTokenValue);
   const leviAiBalanceRaw = records
-    .filter((record) => record.mint === LEVI_AI_MINT_ADDRESS)
+    .filter((record) => record.mint === AGENT_K9_MINT_ADDRESS)
     .reduce((total, record) => total + BigInt(record.totalBalanceRaw), BigInt(0));
   const visibleRecords = records.slice(0, MAX_BURN_TOKEN_OPTIONS);
 
@@ -239,7 +239,7 @@ export async function loadBurnWalletState(
       truncated: records.length > visibleRecords.length,
       solBalanceLamports: String(solBalance.value),
       leviAiBalanceRaw: leviAiBalanceRaw.toString(),
-      leviAiDecimals: LEVI_AI_DECIMALS,
+      leviAiDecimals: AGENT_K9_DECIMALS,
       externalBurnThresholdRaw: EXTERNAL_BURN_THRESHOLD_RAW,
       externalBurnEligible:
         leviAiBalanceRaw >= BigInt(EXTERNAL_BURN_THRESHOLD_RAW),

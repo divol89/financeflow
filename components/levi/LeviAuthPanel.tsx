@@ -34,7 +34,7 @@ export function LeviAuthPanel({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-white">LEVI AI Access</p>
+            <p className="text-sm font-semibold text-white">K9 Access</p>
             <p className="mt-1 text-sm text-slate-400">
               {session
                 ? "Wallet ownership verified for this session."
@@ -99,7 +99,7 @@ export function LeviAuthPanel({
                 {access.balance.toLocaleString(undefined, {
                   maximumFractionDigits: 2,
                 })}{" "}
-                LEVI AI
+                K9
               </p>
             </div>
             <div>
@@ -111,7 +111,7 @@ export function LeviAuthPanel({
             <div>
               <p className="text-xs uppercase text-slate-500">Portfolio</p>
               <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-white">
-                <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                <ShieldCheck className="h-4 w-4 text-amber-300" />
                 {access.limits.fullDashboard ? "Full" : "Basic"}
               </p>
             </div>
@@ -122,7 +122,7 @@ export function LeviAuthPanel({
           <div className="levi-access-progress">
             <div>
               <span>Progress to {access.tier === "blocked" ? "Basic" : "Full"}</span>
-              <strong>{Math.max(0, nextThreshold - access.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} LEVI AI remaining</strong>
+              <strong>{Math.max(0, nextThreshold - access.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} K9 remaining</strong>
             </div>
             <div className="levi-access-progress-track"><span style={{ width: `${progress}%` }} /></div>
           </div>

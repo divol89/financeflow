@@ -21,6 +21,7 @@ import {
   PositionLoopDiagram,
   RealizedProfitChart,
 } from "@/components/levi/LearningCharts";
+import { AGENT_K9_IMAGE_PATH } from "@/lib/agentK9/brand";
 
 const mechanics = [
   {
@@ -76,7 +77,7 @@ export default function LearnPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Learn | LEVI Sentinel</title>
+        <title>Learn | Agent K9</title>
         <meta
           name="description"
           content="A practical, risk-aware guide to memecoin mechanics, liquidity and realized profit."
@@ -91,7 +92,7 @@ export default function LearnPage() {
           <LeviReveal>
             <div className="levi-learn-hero-copy">
               <p className="levi-eyebrow">
-                <GraduationCapIcon /> LEVI field guide / Learn
+                <GraduationCapIcon /> Agent K9 field guide / Learn
               </p>
               <h1 className="levi-learn-title">
                 Memecoins,
@@ -117,12 +118,12 @@ export default function LearnPage() {
           </LeviReveal>
 
           <LeviReveal>
-            <div className="levi-learn-hero-art" aria-label="LEVI learning visual">
+            <div className="levi-learn-hero-art" aria-label="Agent K9 learning visual">
               <div className="levi-learn-orbit orbit-one" aria-hidden="true" />
               <div className="levi-learn-orbit orbit-two" aria-hidden="true" />
               <Image
-                src="/levi-avatar.png"
-                alt="LEVI bull"
+                src={AGENT_K9_IMAGE_PATH}
+                alt="Agent K9"
                 width={520}
                 height={520}
                 sizes="(max-width: 767px) 224px, 400px"

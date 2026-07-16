@@ -38,7 +38,7 @@ export function PortfolioDataCoverage({ coverage }: { coverage: Coverage }) {
           <Database className="h-4 w-4" />
           <span>Balances</span>
           <strong>Live</strong>
-          <small>SOL, LEVI and LEVI AI</small>
+          <small>SOL, K9 and K9</small>
         </article>
         <article>
           <Activity className="h-4 w-4" />

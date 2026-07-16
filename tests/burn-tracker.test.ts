@@ -15,11 +15,11 @@ import {
 import { toBurnTrackerPublicSnapshot } from "../lib/levi/burnTracker/service";
 import { parseStoredBurnTrackerSnapshot } from "../lib/levi/burnTracker/clientEvents";
 import {
-  LEVI_AI_MINT_ADDRESS,
+  AGENT_K9_MINT_ADDRESS,
   BURN_TRACKER_CACHE_TTL_MS,
 } from "../lib/levi/burnTracker/constants";
 
-test("calculates the LEVI AI burn total exactly with BigInt precision", () => {
+test("calculates the K9 burn total exactly with BigInt precision", () => {
   const metrics = calculateBurnMetrics("999999549999999");
 
   assert.deepEqual(metrics, {
@@ -111,7 +111,7 @@ test("serves an expired cached snapshot as stale without inventing a burn transa
   const snapshot = toBurnTrackerPublicSnapshot(
     {
       version: 2,
-      mint: LEVI_AI_MINT_ADDRESS,
+      mint: AGENT_K9_MINT_ADDRESS,
       initialSupplyRaw: "1000000000000000",
       currentSupplyRaw: "999999549999999",
       totalBurnedRaw: "450000001",
@@ -140,7 +140,7 @@ test("accepts only complete public snapshots shared between browser tabs", () =>
   const snapshot = toBurnTrackerPublicSnapshot(
     {
       version: 2,
-      mint: LEVI_AI_MINT_ADDRESS,
+      mint: AGENT_K9_MINT_ADDRESS,
       initialSupplyRaw: "1000000000000000",
       currentSupplyRaw: "999999549999999",
       totalBurnedRaw: "450000001",
@@ -168,7 +168,7 @@ test("accepts only complete public snapshots shared between browser tabs", () =>
   assert.equal(parseStoredBurnTrackerSnapshot("not-json"), null);
 });
 
-test("detects a finalized Token-2022 Burn for the LEVI AI mint", () => {
+test("detects a finalized Token-2022 Burn for the K9 mint", () => {
   const amount = extractBurnAmountRaw({
     meta: { err: null },
     transaction: {
@@ -177,7 +177,7 @@ test("detects a finalized Token-2022 Burn for the LEVI AI mint", () => {
           {
             parsed: {
               type: "burn",
-              info: { mint: LEVI_AI_MINT_ADDRESS, amount: "5000000" },
+              info: { mint: AGENT_K9_MINT_ADDRESS, amount: "5000000" },
             },
           },
         ],
@@ -188,7 +188,7 @@ test("detects a finalized Token-2022 Burn for the LEVI AI mint", () => {
   assert.equal(amount, "5000000");
 });
 
-test("detects a LEVI AI BurnChecked nested inside a transaction", () => {
+test("detects a K9 BurnChecked nested inside a transaction", () => {
   const amount = extractBurnAmountRaw({
     meta: {
       err: null,
@@ -198,7 +198,7 @@ test("detects a LEVI AI BurnChecked nested inside a transaction", () => {
             {
               parsed: {
                 type: "burnChecked",
-                info: { mint: LEVI_AI_MINT_ADDRESS, amount: "1234567" },
+                info: { mint: AGENT_K9_MINT_ADDRESS, amount: "1234567" },
               },
             },
           ],
@@ -220,7 +220,7 @@ test("detects the Token-2022 parsed burn amount shape returned by Solana RPC", (
             parsed: {
               type: "burnChecked",
               info: {
-                mint: LEVI_AI_MINT_ADDRESS,
+                mint: AGENT_K9_MINT_ADDRESS,
                 tokenAmount: { amount: "1000000000", decimals: 6 },
               },
             },
@@ -242,7 +242,7 @@ test("ignores transfers, dead-wallet locks, unrelated mints and failed transacti
           {
             parsed: {
               type: "transferChecked",
-              info: { mint: LEVI_AI_MINT_ADDRESS, amount: "1000000" },
+              info: { mint: AGENT_K9_MINT_ADDRESS, amount: "1000000" },
             },
           },
         ],
@@ -273,7 +273,7 @@ test("ignores transfers, dead-wallet locks, unrelated mints and failed transacti
             {
               parsed: {
                 type: "burn",
-                info: { mint: LEVI_AI_MINT_ADDRESS, amount: "1000000" },
+                info: { mint: AGENT_K9_MINT_ADDRESS, amount: "1000000" },
               },
             },
           ],

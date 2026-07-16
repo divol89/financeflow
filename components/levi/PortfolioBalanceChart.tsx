@@ -15,8 +15,7 @@ import type {
 
 const assets: Array<{ id: PortfolioAssetId; label: string }> = [
   { id: "sol", label: "SOL" },
-  { id: "levi", label: "LEVI" },
-  { id: "levi-ai", label: "LEVI AI" },
+  { id: "levi-ai", label: "K9" },
 ];
 
 const ranges = ["7D", "30D", "ALL"] as const;
@@ -89,15 +88,15 @@ export function PortfolioBalanceChart({
             <AreaChart data={snapshots} margin={{ top: 12, right: 20, bottom: 4, left: 4 }}>
               <defs>
                 <linearGradient id="leviPortfolioArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#b8f36b" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#b8f36b" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#ffb000" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#ffb000" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="rgba(222,246,220,0.08)" vertical={false} />
-              <XAxis dataKey="time" type="number" domain={["dataMin", "dataMax"]} tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" })} stroke="#718071" tickLine={false} axisLine={false} minTickGap={40} />
-              <YAxis width={72} stroke="#718071" tickLine={false} axisLine={false} tickFormatter={(value) => Number(value).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 })} />
-              <Tooltip labelFormatter={(value) => new Date(Number(value)).toLocaleString()} formatter={(value) => [Number(value).toLocaleString(undefined, { maximumFractionDigits: 6 }), selectedAsset.label]} contentStyle={{ background: "#0b0f0a", border: "1px solid rgba(184,243,107,.24)", borderRadius: 6 }} />
-              <Area type="monotone" dataKey="value" stroke="#b8f36b" strokeWidth={2} fill="url(#leviPortfolioArea)" activeDot={{ r: 4 }} />
+              <CartesianGrid stroke="rgba(255,226,178,0.08)" vertical={false} />
+              <XAxis dataKey="time" type="number" domain={["dataMin", "dataMax"]} tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" })} stroke="#9d8d80" tickLine={false} axisLine={false} minTickGap={40} />
+              <YAxis width={72} stroke="#9d8d80" tickLine={false} axisLine={false} tickFormatter={(value) => Number(value).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 })} />
+              <Tooltip labelFormatter={(value) => new Date(Number(value)).toLocaleString()} formatter={(value) => [Number(value).toLocaleString(undefined, { maximumFractionDigits: 6 }), selectedAsset.label]} contentStyle={{ background: "#160502", border: "1px solid rgba(255,176,0,.24)", borderRadius: 6 }} />
+              <Area type="monotone" dataKey="value" stroke="#ffb000" strokeWidth={2} fill="url(#leviPortfolioArea)" activeDot={{ r: 4 }} />
             </AreaChart>
           </ResponsiveContainer>
         )}

@@ -12,10 +12,10 @@ import {
   getBurnTrackerNextRefreshAt,
 } from "./calculations";
 import {
-  LEVI_AI_DECIMALS,
-  LEVI_AI_INITIAL_SUPPLY_RAW,
-  LEVI_AI_MINT_ADDRESS,
-  LEVI_AI_SYMBOL,
+  AGENT_K9_DECIMALS,
+  AGENT_K9_INITIAL_SUPPLY_RAW,
+  AGENT_K9_MINT_ADDRESS,
+  AGENT_K9_SYMBOL,
   SOLANA_INCINERATOR_ADDRESS,
   SOLANA_INCINERATOR_URL,
 } from "./constants";
@@ -43,10 +43,10 @@ export function toBurnTrackerPublicSnapshot(
   );
 
   return {
-    mint: LEVI_AI_MINT_ADDRESS,
-    symbol: LEVI_AI_SYMBOL,
-    decimals: LEVI_AI_DECIMALS,
-    initialSupplyRaw: LEVI_AI_INITIAL_SUPPLY_RAW,
+    mint: AGENT_K9_MINT_ADDRESS,
+    symbol: AGENT_K9_SYMBOL,
+    decimals: AGENT_K9_DECIMALS,
+    initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
     currentSupplyRaw: metrics.currentSupplyRaw,
     totalBurnedRaw: metrics.totalBurnedRaw,
     percentageBurned: metrics.percentageBurned,
@@ -79,8 +79,8 @@ async function refreshBurnTracker(
   if (!previous) {
     const record: BurnTrackerRecord = {
       version: 2,
-      mint: LEVI_AI_MINT_ADDRESS,
-      initialSupplyRaw: LEVI_AI_INITIAL_SUPPLY_RAW,
+      mint: AGENT_K9_MINT_ADDRESS,
+      initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
       currentSupplyRaw: metrics.currentSupplyRaw,
       totalBurnedRaw: metrics.totalBurnedRaw,
       communityLockRaw,
@@ -136,8 +136,8 @@ async function refreshBurnTracker(
 
   const record: BurnTrackerRecord = {
     version: 2,
-    mint: LEVI_AI_MINT_ADDRESS,
-    initialSupplyRaw: LEVI_AI_INITIAL_SUPPLY_RAW,
+    mint: AGENT_K9_MINT_ADDRESS,
+    initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
     currentSupplyRaw: metrics.currentSupplyRaw,
     totalBurnedRaw: metrics.totalBurnedRaw,
     communityLockRaw,

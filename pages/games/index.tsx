@@ -251,9 +251,9 @@ function GamesLobby() {
               onClick={() => router.push("/games/levi-dice")}
               size="lg"
               variant="outline"
-              className="ml-0 mt-4 border-emerald-400/40 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400 hover:text-black md:ml-4 md:mt-0"
+              className="ml-0 mt-4 border-amber-400/45 bg-amber-400/10 text-amber-200 hover:bg-amber-400 hover:text-black md:ml-4 md:mt-0"
             >
-              <Dices className="mr-3 h-5 w-5" /> LEVI DICE ON SOLANA
+              <Dices className="mr-3 h-5 w-5" /> K9 DICE ON SOLANA
             </Button>
           </motion.div>
         </div>

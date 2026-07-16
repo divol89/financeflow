@@ -1,24 +1,27 @@
-# Flow Finance / LEVI Sentinel
+# Agent K9
 
-Production site for `flow-finance.xyz`, connected to the GitHub repo `divol89/financeflow`.
+Production site for [flow-finance.xyz](https://flow-finance.xyz/), connected to the GitHub repository `divol89/financeflow`.
 
 ## Product
 
-LEVI Sentinel is a token-gated Solana risk-intelligence interface. It scans recent creator-wallet activity for heuristic signals such as mint creation and possible creator-side sell events. The scanner does not label intent or prove wrongdoing.
+Agent K9 is a Solana intelligence and community utility platform. It combines wallet and token evidence scanning, portfolio history, beginner-facing token checks, holder campaigns, educational content, K9 Dice and a non-custodial universal token burner.
 
-The LEVI token already exists:
+Scanner signals are heuristic and informational. They do not prove intent, guarantee safety or replace independent research.
 
-```text
-6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump
-```
+## Main Token
 
-RPC verification shows it is a Token-2022 mint with symbol `LEVI`.
+- Name: Agent K9
+- Symbol: `K9`
+- Program: Token-2022
+- Decimals: `6`
+- Initial supply: `1,000,000,000`
+- Mint: `6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump`
 
 ## Access Tiers
 
-- `< 3,000 LEVI`: locked scanner, public pages only.
-- `>= 3,000 LEVI`: basic scanner summary.
-- `>= 50,000 LEVI`: full dashboard details and larger scan window.
+- `< 3,000 K9`: public tools, balances, education and tier progress.
+- `>= 3,000 K9`: Basic Scanner and Portfolio limits.
+- `>= 50,000 K9`: Full Scanner and expanded Portfolio limits.
 
 ## Development
 
@@ -34,11 +37,11 @@ npm run lint
 npm run typecheck
 npm run test
 npm run build
-npm run scan:levi -- <solana-wallet>
+npm run scan:k9 -- <solana-wallet>
 ```
 
 Use `MOCK_SOLANA=1` only for local UI demos.
 
-## Existing Game
+## Games
 
-Crazy Dice is preserved at `/games` and `/games/crazy-dice/[id]`. It uses IOTA EVM, Web3Modal/Ethers, Firebase turn state, and `/api/games/settle`.
+K9 Dice is available at `/games/levi-dice`; the legacy path is retained for compatibility. Crazy Dice remains preserved at `/games` and `/games/crazy-dice/[id]` as an independent IOTA EVM game.

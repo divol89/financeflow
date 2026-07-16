@@ -2,7 +2,7 @@ import { solanaRpc } from "@/lib/levi/rpc";
 import {
   BURN_TRACKER_SIGNATURE_PAGE_SIZE,
   BURN_TRACKER_SOLSCAN_TRANSACTION_URL,
-  LEVI_AI_MINT_ADDRESS,
+  AGENT_K9_MINT_ADDRESS,
   SOLANA_INCINERATOR_ADDRESS,
 } from "./constants";
 
@@ -116,7 +116,7 @@ function toDetectedBurn(
 
 export function extractBurnAmountRaw(
   transaction: ParsedBurnTransaction,
-  mint = LEVI_AI_MINT_ADDRESS
+  mint = AGENT_K9_MINT_ADDRESS
 ): string | null {
   if (transaction.meta?.err) return null;
 
@@ -133,7 +133,7 @@ export function extractBurnAmountRaw(
 
 export async function fetchLeviAiMintSupply(): Promise<string> {
   const result = await solanaRpc<TokenSupplyResponse>("getTokenSupply", [
-    LEVI_AI_MINT_ADDRESS,
+    AGENT_K9_MINT_ADDRESS,
     { commitment: "finalized" },
   ]);
   return result.value.amount;
@@ -151,7 +151,7 @@ export async function fetchLeviAiTokenAccountsByOwner(
     "getTokenAccountsByOwner",
     [
       owner,
-      { mint: LEVI_AI_MINT_ADDRESS },
+      { mint: AGENT_K9_MINT_ADDRESS },
       { encoding: "jsonParsed", commitment },
     ]
   );
@@ -171,7 +171,7 @@ export async function fetchLeviAiCommunityLockBalance(): Promise<string> {
 
 export async function fetchLatestLeviAiMintSignature(): Promise<string | null> {
   const signatures = await solanaRpc<MintSignatureRecord[]>("getSignaturesForAddress", [
-    LEVI_AI_MINT_ADDRESS,
+    AGENT_K9_MINT_ADDRESS,
     { limit: 1, commitment: "finalized" },
   ]);
   return signatures.find((item) => !item.err)?.signature || null;
@@ -198,7 +198,7 @@ export async function scanForLatestLeviAiBurn(input: {
   until: string | null;
 }): Promise<BurnScanResult> {
   const signatures = await solanaRpc<MintSignatureRecord[]>("getSignaturesForAddress", [
-    LEVI_AI_MINT_ADDRESS,
+    AGENT_K9_MINT_ADDRESS,
     {
       limit: BURN_TRACKER_SIGNATURE_PAGE_SIZE,
       commitment: "finalized",

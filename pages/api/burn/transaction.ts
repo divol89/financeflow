@@ -33,7 +33,7 @@ export default async function handler(
   try {
     return res.status(200).json(await getLeviBurnTransactionStatus(signature));
   } catch (error) {
-    console.error("LEVI AI burn transaction status failed", error);
+    console.error("K9 burn transaction status failed", error);
     return res.status(503).json({
       error: "Unable to verify the submitted transaction right now. Please try again shortly.",
     });

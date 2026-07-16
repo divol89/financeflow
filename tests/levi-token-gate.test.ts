@@ -3,7 +3,7 @@ import { afterEach, describe, it } from "node:test";
 import {
   TOKEN_2022_PROGRAM_ID,
 } from "@/lib/levi/constants";
-import { LEVI_AI_MINT_ADDRESS } from "@/lib/levi/communityBurn";
+import { AGENT_K9_MINT_ADDRESS } from "@/lib/levi/communityBurn";
 import {
   clearLeviAccessCacheForTests,
   getLeviAccessForWallet,
@@ -16,7 +16,7 @@ interface RpcRequestBody {
   params?: unknown[];
 }
 
-describe("LEVI token gate RPC", () => {
+describe("K9 token gate RPC", () => {
   afterEach(() => {
     globalThis.fetch = originalFetch;
     clearLeviAccessCacheForTests();
@@ -29,7 +29,7 @@ describe("LEVI token gate RPC", () => {
     );
   });
 
-  it("queries the LEVI AI mint directly and computes access", async () => {
+  it("queries the K9 mint directly and computes access", async () => {
     const requestBody: { current?: RpcRequestBody } = {};
 
     globalThis.fetch = (async (_input, init) => {
@@ -46,7 +46,7 @@ describe("LEVI token gate RPC", () => {
                   data: {
                     parsed: {
                       info: {
-                        mint: LEVI_AI_MINT_ADDRESS,
+                        mint: AGENT_K9_MINT_ADDRESS,
                         tokenAmount: {
                           amount: "3000000000",
                           decimals: 6,
@@ -71,7 +71,7 @@ describe("LEVI token gate RPC", () => {
     );
 
     assert.equal(requestBody.current?.method, "getTokenAccountsByOwner");
-    assert.deepEqual(requestBody.current?.params?.[1], { mint: LEVI_AI_MINT_ADDRESS });
+    assert.deepEqual(requestBody.current?.params?.[1], { mint: AGENT_K9_MINT_ADDRESS });
     assert.equal(access.balanceRaw, "3000000000");
     assert.equal(access.balance, 3000);
     assert.equal(access.tier, "basic");

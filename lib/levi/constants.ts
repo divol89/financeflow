@@ -1,8 +1,3 @@
-export const LEVI_MINT_ADDRESS =
-  process.env.LEVI_MINT_ADDRESS ||
-  process.env.NEXT_PUBLIC_LEVI_MINT_ADDRESS ||
-  "6baGyq4HLbUn93MQUGFqBktpXP8BRjpoxSsAap4ppump";
-
 export const SOLANA_RPC_URL =
   process.env.SOLANA_RPC_URL ||
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
@@ -19,8 +14,8 @@ export const TOKEN_PROGRAM_ID =
 export const TOKEN_2022_PROGRAM_ID =
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";
 
-export const SESSION_COOKIE = "levi_session";
-export const NONCE_COOKIE = "levi_nonce";
+export const SESSION_COOKIE = "agent_k9_session";
+export const NONCE_COOKIE = "agent_k9_nonce";
 export const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
 export const NONCE_TTL_MS = 1000 * 60 * 5;
 

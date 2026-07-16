@@ -1,8 +1,8 @@
 import type { BurnTrackerRecord } from "@/types/burnTracker";
 import {
   BURN_TRACKER_CACHE_TTL_MS,
-  LEVI_AI_DECIMALS,
-  LEVI_AI_INITIAL_SUPPLY_RAW,
+  AGENT_K9_DECIMALS,
+  AGENT_K9_INITIAL_SUPPLY_RAW,
 } from "./constants";
 
 const PERCENTAGE_DECIMALS = 6;
@@ -30,7 +30,7 @@ function addThousands(value: string): string {
 }
 
 export function calculateBurnMetrics(currentSupplyRaw: string): BurnMetrics {
-  const initialSupply = parseRawAmount(LEVI_AI_INITIAL_SUPPLY_RAW);
+  const initialSupply = parseRawAmount(AGENT_K9_INITIAL_SUPPLY_RAW);
   const currentSupply = parseRawAmount(currentSupplyRaw);
   const totalBurned = currentSupply >= initialSupply ? BigInt(0) : initialSupply - currentSupply;
   const percentageScaled = (totalBurned * BigInt(100) * PERCENTAGE_SCALE) / initialSupply;
@@ -63,7 +63,7 @@ export function calculateCirculationMetrics(
 
 export function formatRawTokenAmount(
   rawAmount: string,
-  decimals = LEVI_AI_DECIMALS,
+  decimals = AGENT_K9_DECIMALS,
   maximumFractionDigits = decimals
 ): string {
   const value = parseRawAmount(rawAmount).toString().padStart(decimals + 1, "0");

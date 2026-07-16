@@ -19,6 +19,7 @@ import { LeviShell } from "@/components/levi/LeviShell";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { getDefaultContestCampaign } from "@/lib/contest/constants";
+import { formatContestHolding } from "@/lib/contest/formatting";
 import type {
   ContestEligibilityResponse,
   ContestPublicResponse,
@@ -126,7 +127,9 @@ export default function ContestPage() {
     campaign.status === "open" && new Date(campaign.closesAt).getTime() > Date.now();
   const contestTokens = campaign.eligibleTokens.map((token) => token.symbol).join(" or ");
   const minimumHolding = campaign.tiers[0]?.minimumHolding || 500;
-  const tierLabels = campaign.tiers.map((tier) => `${tier.minimumHolding.toLocaleString()}+`).join(" / ");
+  const tierLabels = campaign.tiers
+    .map((tier) => `${formatContestHolding(tier.minimumHolding)}+`)
+    .join(" / ");
   const isEligible = Boolean(eligibility?.eligible);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -165,10 +168,10 @@ export default function ContestPage() {
   return (
     <LeviShell>
       <Head>
-        <title>LEVI Social | Flow Finance</title>
+        <title>K9 Social | Agent K9</title>
         <meta
           name="description"
-          content="A holder-gated LEVI community contest for thoughtful posts on X."
+          content="A holder-gated K9 community contest for thoughtful posts on X."
         />
       </Head>
 
@@ -180,15 +183,15 @@ export default function ContestPage() {
           <LeviReveal>
             <div className="levi-contest-copy">
               <p className="levi-eyebrow">
-                <Megaphone className="h-3.5 w-3.5" /> LEVI Social
+                <Megaphone className="h-3.5 w-3.5" /> K9 Social
               </p>
               <h1 className="levi-contest-title">
                 Post with purpose.
                 <span>Move the signal.</span>
               </h1>
               <p className="levi-contest-lede">
-                Share a considered LEVI post on X, submit the direct link and unlock a
-                surprise reward tier through either LEVI or LEVI AI.
+                Share a considered Agent K9 post on X, submit the direct link and
+                unlock a surprise reward tier through your K9 holding.
               </p>
               <div className="levi-contest-proof">
                 <span>
@@ -219,7 +222,7 @@ export default function ContestPage() {
               </div>
               <div className="levi-contest-signal-row">
                 <span>Requirement</span>
-                <strong>{minimumHolding.toLocaleString()}+ {contestTokens}</strong>
+                <strong>{formatContestHolding(minimumHolding)}+ {contestTokens}</strong>
               </div>
               <div className="levi-contest-signal-row">
                 <span>Reward tiers</span>
@@ -240,7 +243,7 @@ export default function ContestPage() {
           </div>
           <div className="levi-contest-stat">
             <span>Access threshold</span>
-            <strong>{minimumHolding.toLocaleString()}+ {contestTokens}</strong>
+            <strong>{formatContestHolding(minimumHolding)}+ {contestTokens}</strong>
           </div>
           <div className="levi-contest-stat">
             <span>Surprise tiers</span>
@@ -259,12 +262,12 @@ export default function ContestPage() {
                   <h2 className="levi-panel-title">Put your signal on record.</h2>
                   <p className="levi-panel-copy">
                     One direct X post per wallet. Entries are reviewed for relevance,
-                    originality and the reach they create for LEVI.
+                    originality and the reach they create for K9.
                   </p>
                 </div>
                 <div className="levi-contest-requirement">
                   <BadgeCheck className="h-5 w-5" />
-                  <span>{minimumHolding.toLocaleString()}+ {contestTokens}</span>
+                  <span>{formatContestHolding(minimumHolding)}+ {contestTokens}</span>
                 </div>
               </div>
 
@@ -311,7 +314,7 @@ export default function ContestPage() {
                     <div>
                       <h3>Reach a surprise reward tier</h3>
                       <p>
-                        Hold at least {minimumHolding.toLocaleString()} {contestTokens} to participate.
+                        Hold at least {formatContestHolding(minimumHolding)} {contestTokens} to participate.
                         The available tiers are {tierLabels}.
                       </p>
                     </div>
@@ -399,8 +402,8 @@ export default function ContestPage() {
                 <li>
                   <span>01</span>
                   <div>
-                    <strong>Hold LEVI or LEVI AI</strong>
-                    <p>Keep the tier amount in either LEVI or LEVI AI in the wallet you use to enter. Holdings are checked independently.</p>
+                    <strong>Hold K9</strong>
+                    <p>Keep the tier amount in the K9 wallet you use to enter. Holdings are checked on-chain.</p>
                   </div>
                 </li>
                 <li>
@@ -474,7 +477,7 @@ export default function ContestPage() {
         </section>
 
         <div className="levi-container levi-contest-footer-rail" aria-hidden="true">
-          <span>LEVI SOCIAL / 01</span>
+          <span>K9 SOCIAL / 01</span>
           <div />
           <span>Human review. Community reach.</span>
         </div>

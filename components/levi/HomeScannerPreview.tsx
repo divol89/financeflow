@@ -11,7 +11,7 @@ export function HomeScannerPreview() {
   return (
     <section className="levi-home-scanner-preview" aria-labelledby="home-scanner-title">
       <div>
-        <p className="levi-section-label"><Eye className="h-4 w-4" /> LEVI Sentinel Scanner</p>
+        <p className="levi-section-label"><Eye className="h-4 w-4" /> Agent K9 Scanner</p>
         <h2 id="home-scanner-title">Inspect behavior without calling every outflow a sale.</h2>
         <p>Review one wallet and token through exact balances, classified movements and an explicit evidence window.</p>
         <Link href="/scanner" className="levi-primary-button">Run evidence scan <ArrowRight className="h-4 w-4" /></Link>

@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 pub struct Config {
     pub authority: Pubkey,
     pub treasury_token_account: Pubkey,
-    pub levi_mint: Pubkey,
+    pub k9_mint: Pubkey,
     pub protocol_fee_bps: u16,
     pub bump: u8,
     pub paused: bool,

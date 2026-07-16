@@ -37,7 +37,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       expiresAt: nonce.expiresAt,
     });
   } catch (error) {
-    console.error("LEVI nonce creation failed", error);
+    console.error("K9 nonce creation failed", error);
     return res
       .status(503)
       .json({ error: "Authentication is temporarily unavailable" });

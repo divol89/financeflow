@@ -87,33 +87,33 @@ export function ScannerActivityChart({
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={model.points} margin={{ top: 18, right: 16, bottom: 8, left: 4 }}>
-              <CartesianGrid stroke="rgba(222,246,220,0.08)" vertical={false} />
-              <XAxis dataKey="timeLabel" stroke="#718071" tickLine={false} axisLine={false} minTickGap={38} tick={{ fontSize: 10 }} />
-              <YAxis width={64} stroke="#718071" tickLine={false} axisLine={false} tickFormatter={compactNumber} tick={{ fontSize: 10 }} />
+              <CartesianGrid stroke="rgba(255,226,178,0.08)" vertical={false} />
+              <XAxis dataKey="timeLabel" stroke="#9d8d80" tickLine={false} axisLine={false} minTickGap={38} tick={{ fontSize: 10 }} />
+              <YAxis width={64} stroke="#9d8d80" tickLine={false} axisLine={false} tickFormatter={compactNumber} tick={{ fontSize: 10 }} />
               <Tooltip
                 formatter={(value, name) => [
                   Math.abs(Number(value)).toLocaleString(undefined, { maximumFractionDigits: 6 }),
                   name,
                 ]}
-                contentStyle={{ background: "#0b0f0a", border: "1px solid rgba(184,243,107,.24)", borderRadius: 6 }}
-                labelStyle={{ color: "#dce7d8" }}
+                contentStyle={{ background: "#160502", border: "1px solid rgba(255,176,0,.24)", borderRadius: 6 }}
+                labelStyle={{ color: "#fff3dc" }}
               />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#9eaa9b" }} />
-              <ReferenceLine y={0} stroke="rgba(222,246,220,0.2)" />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#b9aa9c" }} />
+              <ReferenceLine y={0} stroke="rgba(255,226,178,0.2)" />
               {hasRoutedFlow ? (
                 <>
-                  <Line type="monotone" dataKey="routedBuy" name="Buy-side route" stroke="#7ee3b8" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
-                  <Line type="monotone" dataKey="routedSell" name="Sell-side route" stroke="#ff7569" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
-                  <Line type="monotone" dataKey="routedNeutral" name="Undirected route" stroke="#69d7df" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
-                  <Line type="monotone" dataKey="cumulativeRoutedNet" name="Cumulative route balance" stroke="#b8f36b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+                  <Line type="monotone" dataKey="routedBuy" name="Buy-side route" stroke="#ffb000" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="routedSell" name="Sell-side route" stroke="#ff3d16" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="routedNeutral" name="Undirected route" stroke="#a89c91" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
+                  <Line type="monotone" dataKey="cumulativeRoutedNet" name="Cumulative route balance" stroke="#ff7a00" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
                 </>
               ) : (
                 <>
-                  <Line type="monotone" dataKey="buy" name="Verified buy" stroke="#7ee3b8" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
-                  <Line type="monotone" dataKey="sell" name="Verified sell" stroke="#ff7569" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="buy" name="Verified buy" stroke="#ffb000" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
+                  <Line type="monotone" dataKey="sell" name="Verified sell" stroke="#ff3d16" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} connectNulls />
                   <Line type="monotone" dataKey="otherFlow" name="Transfer / other" stroke="#7a8791" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
-                  <Line type="monotone" dataKey="burn" name="Burn" stroke="#e9c66c" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
-                  <Line type="monotone" dataKey="cumulativeNet" name="Cumulative net flow" stroke="#b8f36b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+                  <Line type="monotone" dataKey="burn" name="Burn" stroke="#ffcc59" strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 3 }} connectNulls />
+                  <Line type="monotone" dataKey="cumulativeNet" name="Cumulative net flow" stroke="#ff7a00" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
                 </>
               )}
             </ComposedChart>

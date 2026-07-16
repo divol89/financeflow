@@ -41,7 +41,7 @@ export async function refreshPortfolio(
       freshActivity = await fetchRecentPortfolioActivity(wallet);
     } catch (error) {
       activityFailed = true;
-      console.warn("LEVI portfolio activity unavailable", error);
+      console.warn("K9 portfolio activity unavailable", error);
     }
   }
 
@@ -74,7 +74,7 @@ export async function refreshPortfolio(
       persistenceAvailable: true,
     };
   } catch (error) {
-    console.warn("LEVI portfolio persistence unavailable", error);
+    console.warn("K9 portfolio persistence unavailable", error);
     return {
       access,
       current,

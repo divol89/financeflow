@@ -23,7 +23,7 @@ export function BurnAccessGate({
         <div>
           <Flame className="h-4 w-4" />
           <div>
-            <span>LEVI AI burn</span>
+            <span>K9 burn</span>
             <strong>No holder-access minimum</strong>
           </div>
         </div>
@@ -45,12 +45,12 @@ export function BurnAccessGate({
               inventory.leviAiDecimals,
               2
             )}{" "}
-            LEVI AI held
+            K9 held
           </strong>
         </div>
       </div>
       {!inventory.externalBurnEligible ? (
-        <p>Hold 1,000,000 LEVI AI in this wallet to unlock external burns.</p>
+        <p>Hold 1,000,000 K9 in this wallet to unlock external burns.</p>
       ) : hasExternalAccessSession ? (
         <p>Holding verified. This token is unlocked for holder-signed burning.</p>
       ) : (

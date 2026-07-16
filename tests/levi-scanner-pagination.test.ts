@@ -16,7 +16,7 @@ import {
 import { scannerRetryDelay } from "@/lib/levi/scanner/retry";
 
 const wallet = "ARu4n5mFdZogZAravu7CcizaojWnS6oqka37gdLT5SZn";
-const mint = "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
+const mint = "6NHjTmLAGcN41EDzx1kofRtgLCieF233yKidydTzpump";
 const tokenAccount = "BYCgQQpJT1odaunfvk6gtm5hVd7Xu93vYwbumFfqgHb3";
 
 function report(input: {

@@ -208,12 +208,12 @@ export function useUniversalBurn() {
       }
       if (!selectedToken.isLeviAi && !hasExternalAccessSession) {
         const message =
-          "Sign access to verify the 1,000,000 LEVI AI holder requirement.";
+          "Sign access to verify the 1,000,000 K9 holder requirement.";
         setError(message);
         throw new Error(message);
       }
       if (!selectedToken.isLeviAi && !inventory.externalBurnEligible) {
-        const message = "Hold at least 1,000,000 LEVI AI to burn another token.";
+        const message = "Hold at least 1,000,000 K9 to burn another token.";
         setError(message);
         throw new Error(message);
       }

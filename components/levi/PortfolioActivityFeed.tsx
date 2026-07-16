@@ -12,10 +12,10 @@ function labelFor(event: PortfolioActivity): string {
 }
 
 function emptyMessage(status: PortfolioDataCoverage["activityStatus"]): string {
-  if (status === "locked") return "Recent activity unlocks with Basic LEVI AI access.";
+  if (status === "locked") return "Recent activity unlocks with Basic K9 access.";
   if (status === "unavailable") return "Live balances arrived, but recent activity is temporarily unavailable.";
   if (status === "partial") return "No classified project movement was found in the transactions that loaded.";
-  return "No LEVI, LEVI AI or material SOL movement has been tracked yet.";
+  return "No K9, K9 or material SOL movement has been tracked yet.";
 }
 
 export function PortfolioActivityFeed({

@@ -7,8 +7,8 @@ export default function PortfolioPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Portfolio | LEVI Sentinel</title>
-        <meta name="description" content="Private SOL, LEVI and LEVI AI balance history, investigations and decision journal." />
+        <title>Portfolio | Agent K9</title>
+        <meta name="description" content="Private SOL, K9 and K9 balance history, investigations and decision journal." />
       </Head>
       <section className="levi-product-page levi-portfolio-page">
         <div className="levi-container">

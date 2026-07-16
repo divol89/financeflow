@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { scoreCreatorRisk } from "@/lib/levi/scanner/score";
 
-describe("LEVI risk scoring", () => {
+describe("K9 risk scoring", () => {
   it("keeps quiet wallets low risk", () => {
     const result = scoreCreatorRisk({
       createdTokenCount: 0,

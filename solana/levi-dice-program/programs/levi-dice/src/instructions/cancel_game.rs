@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
-use crate::{instructions::token_helpers, Game, GameState, LeviDiceError, GAME_SEED, LEVI_MINT};
+use crate::{instructions::token_helpers, Game, GameState, LeviDiceError, GAME_SEED, K9_MINT};
 
 #[derive(Accounts)]
 pub struct CancelGame<'info> {
@@ -11,7 +11,7 @@ pub struct CancelGame<'info> {
     pub game: Account<'info, Game>,
     #[account(mut, constraint = escrow.key() == game.escrow @ LeviDiceError::InvalidState)]
     pub escrow: InterfaceAccount<'info, TokenAccount>,
-    pub levi_mint: InterfaceAccount<'info, Mint>,
+    pub k9_mint: InterfaceAccount<'info, Mint>,
     pub token_program: Interface<'info, TokenInterface>,
     #[account(mut)]
     pub refund_0: InterfaceAccount<'info, TokenAccount>,
@@ -27,9 +27,9 @@ pub struct CancelGame<'info> {
 
 pub fn cancel_game(ctx: Context<CancelGame>) -> Result<()> {
     require_keys_eq!(
-        ctx.accounts.levi_mint.key(),
-        LEVI_MINT,
-        LeviDiceError::InvalidLeviMint
+        ctx.accounts.k9_mint.key(),
+        K9_MINT,
+        LeviDiceError::InvalidK9Mint
     );
     require!(
         ctx.accounts.creator.key() == ctx.accounts.game.creator,
@@ -51,7 +51,7 @@ pub fn cancel_game(ctx: Context<CancelGame>) -> Result<()> {
     refund_all_players(
         &mut ctx.accounts.game,
         ctx.accounts.escrow.to_account_info(),
-        ctx.accounts.levi_mint.to_account_info(),
+        ctx.accounts.k9_mint.to_account_info(),
         ctx.accounts.token_program.to_account_info(),
         refund_accounts,
     )?;
@@ -62,7 +62,7 @@ pub fn cancel_game(ctx: Context<CancelGame>) -> Result<()> {
 pub fn refund_all_players<'info>(
     game: &mut Account<'info, Game>,
     escrow: AccountInfo<'info>,
-    levi_mint: AccountInfo<'info>,
+    k9_mint: AccountInfo<'info>,
     token_program: AccountInfo<'info>,
     refund_token_accounts: [&InterfaceAccount<'info, TokenAccount>; 5],
 ) -> Result<()> {
@@ -86,12 +86,12 @@ pub fn refund_all_players<'info>(
         );
         require_keys_eq!(
             refund_account.mint,
-            game.levi_mint,
-            LeviDiceError::InvalidLeviMint
+            game.k9_mint,
+            LeviDiceError::InvalidK9Mint
         );
         token_helpers::transfer_checked(
             escrow.clone(),
-            levi_mint.clone(),
+            k9_mint.clone(),
             refund_account.to_account_info(),
             game.to_account_info(),
             token_program.clone(),

@@ -23,7 +23,7 @@ export function buildMockScanReport(wallet: string): LeviScanReport {
     snapshot: {
       mint: "MockMint1111111111111111111111111111111111111",
       addressKind: "signer-wallet",
-      name: "Mock White Bull Token",
+      name: "Mock Agent K9 Token",
       symbol: "MOCK",
       tokenProgram: "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       walletBalance: { raw: "840000000000", decimals: 6, formatted: "840000" },

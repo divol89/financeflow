@@ -33,7 +33,7 @@ export async function prepareBurnTransaction(input: {
   if (!isLeviAi) {
     if (!input.sessionWallet) {
       throw new BurnPreparationError(
-        "Sign access to verify the 1,000,000 LEVI AI holder requirement.",
+        "Sign access to verify the 1,000,000 K9 holder requirement.",
         401
       );
     }
@@ -63,7 +63,7 @@ export async function prepareBurnTransaction(input: {
     BigInt(state.inventory.leviAiBalanceRaw) < BigInt(EXTERNAL_BURN_THRESHOLD_RAW)
   ) {
     throw new BurnPreparationError(
-      "Hold at least 1,000,000 LEVI AI to burn another Solana token.",
+      "Hold at least 1,000,000 K9 to burn another Solana token.",
       403
     );
   }

@@ -1,6 +1,6 @@
 import type { LeviAccessState } from "@/types/levi";
-import { LEVI_AI_MINT_ADDRESS } from "./communityBurn";
-import { LEVI_AI_DECIMALS } from "./burnTracker/constants";
+import { AGENT_K9_MINT_ADDRESS } from "./communityBurn";
+import { AGENT_K9_DECIMALS } from "./burnTracker/constants";
 import { getAccessLimits, getAccessReason, getAccessTier, uiTokenAmount } from "./access";
 import { solanaRpc } from "./rpc";
 import { normalizeSolanaAddress } from "./wallet";
@@ -76,7 +76,7 @@ export async function getTokenBalanceForMint(
         decimals: info.tokenAmount?.decimals ?? acc.decimals,
       };
     },
-    { raw: BigInt(0), decimals: LEVI_AI_DECIMALS }
+    { raw: BigInt(0), decimals: AGENT_K9_DECIMALS }
   );
 
   return {
@@ -90,13 +90,13 @@ async function loadLeviAccessForWallet(
   inputWallet: string
 ): Promise<LeviAccessState> {
   const wallet = normalizeSolanaAddress(inputWallet);
-  const tokenBalance = await getTokenBalanceForMint(wallet, LEVI_AI_MINT_ADDRESS);
+  const tokenBalance = await getTokenBalanceForMint(wallet, AGENT_K9_MINT_ADDRESS);
   const { raw: balanceRaw, decimals, balance } = tokenBalance;
   const tier = getAccessTier(balance);
 
   return {
     wallet,
-    mint: LEVI_AI_MINT_ADDRESS,
+    mint: AGENT_K9_MINT_ADDRESS,
     balance,
     balanceRaw: balanceRaw.toString(),
     decimals,

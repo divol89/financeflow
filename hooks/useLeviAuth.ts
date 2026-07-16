@@ -29,7 +29,7 @@ export function useLeviAuth() {
       const response = await fetch("/api/auth/me");
       const data = await readJsonResponse<MeResponse>(
         response,
-        "LEVI access is temporarily unavailable. Try again in a moment."
+        "K9 access is temporarily unavailable. Try again in a moment."
       );
 
       if (!response.ok) {

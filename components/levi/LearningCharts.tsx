@@ -80,7 +80,7 @@ export function RealizedProfitChart() {
         </div>
         <div className="levi-learning-profit-column">
           <div className="levi-learning-profit-title">
-            <ArrowUpRight className="h-4 w-4 text-emerald-300" />
+            <ArrowUpRight className="h-4 w-4 text-amber-300" />
             <span>Operate in phases</span>
           </div>
           <div className="levi-learning-bars bars-realized" aria-hidden="true">

@@ -13,10 +13,10 @@ import {
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
+import { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
 import { useTokenSniffer } from "@/hooks/useTokenSniffer";
 import type { TokenSnifferRiskTone } from "@/types/tokenSniffer";
 
-const LEVI_AI_MINT = "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
 const loadingMessages = [
   "Checking the token report",
   "Reading warning signals",
@@ -102,10 +102,10 @@ export function TokenSnifferPanel() {
         <button
           type="button"
           className="levi-sniffer-sample"
-          onClick={() => setMint(LEVI_AI_MINT)}
+          onClick={() => setMint(AGENT_K9_MINT_ADDRESS)}
           disabled={sniffer.isLoading}
         >
-          Try it with LEVI AI
+          Try it with K9
         </button>
       </form>
 

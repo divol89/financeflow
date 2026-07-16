@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{self, CloseAccount, Mint, TokenAccount, TransferChecked};
 
-use crate::LEVI_DECIMALS;
+use crate::K9_DECIMALS;
 
 pub fn transfer_checked<'info>(
     from: AccountInfo<'info>,
@@ -21,9 +21,9 @@ pub fn transfer_checked<'info>(
     let cpi = CpiContext::new(token_program, accounts);
     match signer_seeds {
         Some(seeds) => {
-            token_interface::transfer_checked(cpi.with_signer(seeds), amount, LEVI_DECIMALS)
+            token_interface::transfer_checked(cpi.with_signer(seeds), amount, K9_DECIMALS)
         }
-        None => token_interface::transfer_checked(cpi, amount, LEVI_DECIMALS),
+        None => token_interface::transfer_checked(cpi, amount, K9_DECIMALS),
     }
 }
 
@@ -50,7 +50,7 @@ pub fn assert_token_account(account: &TokenAccount, owner: &Pubkey, mint: &Pubke
         *owner,
         crate::LeviDiceError::InvalidRefundAccounts
     );
-    require_keys_eq!(account.mint, *mint, crate::LeviDiceError::InvalidLeviMint);
+    require_keys_eq!(account.mint, *mint, crate::LeviDiceError::InvalidK9Mint);
     Ok(())
 }
 
@@ -58,8 +58,8 @@ pub fn assert_token_account(account: &TokenAccount, owner: &Pubkey, mint: &Pubke
 pub fn assert_mint(mint: &InterfaceAccount<Mint>) -> Result<()> {
     require_keys_eq!(
         mint.key(),
-        crate::LEVI_MINT,
-        crate::LeviDiceError::InvalidLeviMint
+        crate::K9_MINT,
+        crate::LeviDiceError::InvalidK9Mint
     );
     Ok(())
 }

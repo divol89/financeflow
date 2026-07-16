@@ -21,7 +21,7 @@ export default async function handler(
   try {
     return res.status(200).json(await getLeviBurnSigningContext());
   } catch (error) {
-    console.error("LEVI AI burn context failed", error);
+    console.error("K9 burn context failed", error);
     return res.status(503).json({
       error: "Unable to prepare the burn transaction right now. Please try again shortly.",
     });

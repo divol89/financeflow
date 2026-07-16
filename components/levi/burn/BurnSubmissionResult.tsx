@@ -56,7 +56,7 @@ export function BurnSubmissionResult({
           </a>
           {submission.isLeviAi ? (
             <Link href="/#live-burn-tracker">
-              Open LEVI AI tracker <ArrowUpRight className="h-3.5 w-3.5" />
+              Open K9 tracker <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           ) : (
             <Link href={`/token-sniffer?mint=${encodeURIComponent(submission.mint)}`}>

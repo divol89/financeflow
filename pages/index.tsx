@@ -19,16 +19,19 @@ import { LeviShell } from "@/components/levi/LeviShell";
 import { LiveBurnTracker } from "@/components/levi/LiveBurnTracker";
 import { MetricCard } from "@/components/levi/MetricCard";
 import { HomeScannerPreview } from "@/components/levi/HomeScannerPreview";
+import { AGENT_K9_IMAGE_PATH } from "@/lib/agentK9/brand";
 
 export default function Home() {
   return (
     <LeviShell>
       <Head>
-        <title>White Bull Agent | LEVI Sentinel</title>
+        <title>Agent K9 | Solana Intelligence</title>
         <meta
           name="description"
-          content="White Bull Agent and LEVI AI turn Solana activity into clearer signals and community-built Web3 products."
+          content="Agent K9 turns public Solana activity into clearer signals and community-built Web3 products."
         />
+        <meta property="og:title" content="Agent K9 | Solana Intelligence" />
+        <meta property="og:image" content={AGENT_K9_IMAGE_PATH} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-32x32.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -43,16 +46,16 @@ export default function Home() {
             <div className="levi-hero-copy">
               <div className="levi-eyebrow">
                 <ShieldCheck className="h-4 w-4" />
-                White Bull Agent / Solana-native intelligence
+                Agent K9 / Solana-native intelligence
               </div>
               <h1 className="levi-display">
                 Read the chain.
                 <span>Build what matters.</span>
               </h1>
               <p className="levi-hero-lede">
-                White Bull Agent turns public Solana activity into AI-assisted
-                context, while community ideas become real Web3 products. LEVI
-                Sentinel is the intelligence surface for reviewing the signal.
+                Agent K9 turns public Solana activity into AI-assisted
+                context, while community ideas become real Web3 products. The
+                Agent K9 scanner is the intelligence surface for reviewing the signal.
               </p>
               <div className="levi-hero-actions">
               <Link
@@ -78,7 +81,7 @@ export default function Home() {
           </div>
 
           <div className="levi-hero-rail" aria-hidden="true">
-            <span>WHITE BULL AGENT / LEVI AI</span>
+            <span>AGENT K9 / SOLANA</span>
             <span>FROM PUBLIC SIGNALS TO USEFUL PRODUCTS</span>
             <span className="levi-hero-rail-line" />
             <ArrowRight className="h-4 w-4" />
@@ -88,8 +91,8 @@ export default function Home() {
             <section className="levi-community-invite" aria-labelledby="levi-community-title">
               <div className="levi-community-invite-copy">
                 <div className="levi-section-label"><Sparkles className="h-4 w-4" /> Official channels</div>
-                <h2 id="levi-community-title">Join the White Bull Agent community.</h2>
-                <p>Follow product releases, community proposals and the next utilities built around LEVI AI.</p>
+                <h2 id="levi-community-title">Join the Agent K9 community.</h2>
+                <p>Follow product releases, community proposals and the next utilities built around K9.</p>
               </div>
               <LeviCommunityLinks />
             </section>
@@ -98,10 +101,10 @@ export default function Home() {
           <LeviReveal>
             <section className="levi-home-narrative" aria-labelledby="home-narrative-title">
               <div className="levi-home-narrative-copy">
-                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> The White Bull Agent idea</div>
+                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> Agent K9 idea</div>
                 <h2 id="home-narrative-title">Community ideas become real Web3 products.</h2>
                 <p>
-                  LEVI AI helps make Solana activity easier to read. The community
+                  Agent K9 helps make Solana activity easier to read. The community
                   helps decide what gets built next. Together, signals become context,
                   proposals become products, and utility grows in public.
                 </p>
@@ -115,13 +118,13 @@ export default function Home() {
               <div className="levi-metric-grid">
                 <MetricCard
                   label="Basic access"
-                  value="3,000 LEVI AI"
+                  value="3,000 K9"
                   icon={<Lock className="h-4 w-4" />}
                   tone="amber"
                 />
                 <MetricCard
                   label="Full access"
-                  value="50,000 LEVI AI"
+                  value="50,000 K9"
                   icon={<Radar className="h-4 w-4" />}
                   tone="green"
                 />

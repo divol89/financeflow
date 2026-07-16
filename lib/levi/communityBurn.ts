@@ -1,5 +1,4 @@
-export const LEVI_AI_MINT_ADDRESS =
-  "AQPhtB5DSqFbhtnN5wSjNdkHmBE15qFX76EfXRnspump";
+export { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
 
 export const SOLANA_INCINERATOR_ADDRESS =
   "1nc1nerator11111111111111111111111111111111";
