@@ -1,7 +1,7 @@
 export const FLOW_FINANCE_NAME = "Flow-Finance Adventures";
 export const FLOW_FINANCE_SHORT_NAME = "Flow Adventures";
 export const FLOW_FINANCE_TAGLINE =
-  "A light, open toolkit for exploring, understanding and building around Solana memecoins.";
+  "An open Solana memecoin toolkit for on-chain research, universal burns and early fair-launch signals.";
 
 export const FLOW_FINANCE_IMAGE_PATH = "/flow-finance-adventures-logo.png";
 export const FLOW_FINANCE_FAVICON_PATH = "/flow-adventures-favicon.ico";

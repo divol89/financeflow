@@ -42,7 +42,7 @@ export default function MethodologyPage() {
           </div>
           <div className="mt-8 flex items-center gap-3 rounded-lg border border-orange-400/25 bg-orange-950/30 p-5 text-orange-100">
             <Radar className="h-5 w-5" />
-            <span>Full access expands the transaction window from 50 to 200 signatures.</span>
+            <span>Open access processes transaction history in bounded batches and can progressively load older evidence.</span>
           </div>
         </div>
       </section>

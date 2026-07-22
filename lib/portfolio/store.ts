@@ -130,7 +130,7 @@ export async function saveWatchItem(input: {
   pressure?: DistributionPressureResult | null;
   limit: number;
 }): Promise<PortfolioWatchItem> {
-  if (input.limit <= 0) throw new Error("Watchlist requires Basic access.");
+  if (input.limit <= 0) throw new Error("Watchlist storage is unavailable.");
   const collection = rootRef(input.ownerWallet).collection("watchlist");
   const id = watchItemId(input.targetWallet, input.tokenMint);
   const ref = collection.doc(id);
@@ -181,7 +181,7 @@ export async function createJournalEntry(input: {
   outcome: string;
   limit: number;
 }): Promise<PortfolioJournalEntry> {
-  if (input.limit <= 0) throw new Error("Decision Journal requires Basic access.");
+  if (input.limit <= 0) throw new Error("Decision Journal storage is unavailable.");
   const collection = rootRef(input.ownerWallet).collection("journal");
   const count = await collection.count().get();
   if (count.data().count >= input.limit) {

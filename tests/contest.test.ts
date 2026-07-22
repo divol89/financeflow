@@ -4,10 +4,10 @@ import {
   ContestValidationError,
   normalizePostUrl,
 } from "../lib/contest/validation";
-import { getHighestContestTier } from "../lib/contest/eligibility";
+import { getContestEligibility } from "../lib/contest/eligibility";
 import {
+  CONTEST_HOLDER_TIERS,
   CONTEST_HOLDER_TOKENS,
-  AGENT_K9_HOLDER_MINT,
 } from "../lib/contest/constants";
 import { formatContestHolding } from "../lib/contest/formatting";
 
@@ -36,24 +36,15 @@ test("rejects profiles, non-https URLs and unrelated hosts", () => {
   }
 });
 
-test("supports K9 with the three surprise holding tiers", () => {
-  assert.equal(CONTEST_HOLDER_TOKENS.length, 1);
-  assert.equal(CONTEST_HOLDER_TOKENS[0].symbol, "K9");
-  assert.equal(CONTEST_HOLDER_TOKENS[0].mint, AGENT_K9_HOLDER_MINT);
-
-  const holding = (balance: number) => [
-    {
-      symbol: "K9",
-      mint: AGENT_K9_HOLDER_MINT,
-      balance,
-      available: true,
-    },
-  ];
-
-  assert.equal(getHighestContestTier(holding(499)), null);
-  assert.equal(getHighestContestTier(holding(500))?.id, "signal");
-  assert.equal(getHighestContestTier(holding(1_000))?.id, "amplifier");
-  assert.equal(getHighestContestTier(holding(10_000))?.id, "sentinel");
+test("keeps social participation open without holder tokens or tiers", async () => {
+  assert.deepEqual(CONTEST_HOLDER_TOKENS, []);
+  assert.deepEqual(CONTEST_HOLDER_TIERS, []);
+  const eligibility = await getContestEligibility(
+    "So11111111111111111111111111111111111111112"
+  );
+  assert.equal(eligibility.eligible, true);
+  assert.equal(eligibility.tier, null);
+  assert.deepEqual(eligibility.holdings, []);
 });
 
 test("formats contest tiers identically during server and browser rendering", () => {

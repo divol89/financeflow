@@ -1,4 +1,4 @@
-import { KeyRound, LogOut, PlugZap, ShieldCheck, Signature } from "lucide-react";
+import { KeyRound, LogOut, PlugZap, ShieldCheck, Signature, Unlock } from "lucide-react";
 import { AccessBadge } from "./AccessBadge";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
 
@@ -21,12 +21,6 @@ export function LeviAuthPanel({
     walletAddress,
   } = useLeviAuth();
 
-  const nextThreshold =
-    access?.tier === "blocked" ? 3_000 : access?.tier === "basic" ? 50_000 : null;
-  const progress =
-    access && nextThreshold
-      ? Math.min(100, Math.max(0, (access.balance / nextThreshold) * 100))
-      : 100;
   const displayWallet = session?.wallet || walletAddress;
 
   return (
@@ -85,7 +79,7 @@ export function LeviAuthPanel({
                 className="levi-primary-button disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Signature className="h-4 w-4" />
-                {isSigning ? "Signing..." : "Sign Access"}
+                {isSigning ? "Signing..." : "Sign in"}
               </button>
             </>
           )}
@@ -94,37 +88,24 @@ export function LeviAuthPanel({
         {access ? (
           <div className="levi-access-summary grid gap-3 border-t border-white/10 pt-4 sm:grid-cols-3">
             <div>
-              <p className="text-xs uppercase text-slate-500">Balance</p>
-              <p className="mt-1 text-lg font-semibold text-white">
-                {access.balance.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}{" "}
-                K9
+              <p className="text-xs uppercase text-slate-500">Session</p>
+              <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-white">
+                <ShieldCheck className="h-4 w-4 text-amber-300" /> Verified
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase text-slate-500">Access Tier</p>
-              <p className="mt-1 text-lg font-semibold text-white">
-                {access.tier}
+              <p className="text-xs uppercase text-slate-500">Token requirement</p>
+              <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-white">
+                <Unlock className="h-4 w-4 text-amber-300" /> None
               </p>
             </div>
             <div>
-              <p className="text-xs uppercase text-slate-500">Portfolio</p>
+              <p className="text-xs uppercase text-slate-500">Private tools</p>
               <p className="mt-1 flex items-center gap-2 text-lg font-semibold text-white">
                 <ShieldCheck className="h-4 w-4 text-amber-300" />
-                {access.limits.fullDashboard ? "Full" : "Basic"}
+                Available
               </p>
             </div>
-          </div>
-        ) : null}
-
-        {access && nextThreshold ? (
-          <div className="levi-access-progress">
-            <div>
-              <span>Progress to {access.tier === "blocked" ? "Basic" : "Full"}</span>
-              <strong>{Math.max(0, nextThreshold - access.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} K9 remaining</strong>
-            </div>
-            <div className="levi-access-progress-track"><span style={{ width: `${progress}%` }} /></div>
           </div>
         ) : null}
 

@@ -27,7 +27,7 @@ function activityMessage(
   input: PortfolioCoverageInput
 ): string {
   if (status === "locked") {
-    return "Recent activity unlocks at the Basic K9 access tier.";
+    return "Recent activity is unavailable for this session.";
   }
   if (status === "cached") {
     return "The live activity window was unavailable, so previously stored events remain visible.";

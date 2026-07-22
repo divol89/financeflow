@@ -1,7 +1,6 @@
 import type { LeviAccessState } from "@/types/levi";
-import { AGENT_K9_MINT_ADDRESS } from "./communityBurn";
 import { AGENT_K9_DECIMALS } from "./burnTracker/constants";
-import { getAccessLimits, getAccessReason, getAccessTier, uiTokenAmount } from "./access";
+import { getAccessLimits, getAccessReason, uiTokenAmount } from "./access";
 import { solanaRpc } from "./rpc";
 import { normalizeSolanaAddress } from "./wallet";
 
@@ -30,12 +29,6 @@ export interface TokenBalance {
   balance: number;
 }
 
-const ACCESS_CACHE_TTL_MS = 60_000;
-const accessCache = new Map<
-  string,
-  { value: LeviAccessState; expiresAt: number }
->();
-const accessRequests = new Map<string, Promise<LeviAccessState>>();
 const ACCESS_RPC_POLICY = {
   maxAttempts: 1,
   requestTimeoutMs: 1_200,
@@ -43,8 +36,7 @@ const ACCESS_RPC_POLICY = {
 } as const;
 
 export function clearLeviAccessCacheForTests(): void {
-  accessCache.clear();
-  accessRequests.clear();
+  // Retained for compatibility with existing callers. Open access has no cache.
 }
 
 export async function getTokenBalanceForMint(
@@ -86,48 +78,20 @@ export async function getTokenBalanceForMint(
   };
 }
 
-async function loadLeviAccessForWallet(
+export async function getLeviAccessForWallet(
   inputWallet: string
 ): Promise<LeviAccessState> {
   const wallet = normalizeSolanaAddress(inputWallet);
-  const tokenBalance = await getTokenBalanceForMint(wallet, AGENT_K9_MINT_ADDRESS);
-  const { raw: balanceRaw, decimals, balance } = tokenBalance;
-  const tier = getAccessTier(balance);
-
+  const tier = "full" as const;
   return {
     wallet,
-    mint: AGENT_K9_MINT_ADDRESS,
-    balance,
-    balanceRaw: balanceRaw.toString(),
-    decimals,
+    mint: "",
+    balance: 0,
+    balanceRaw: "0",
+    decimals: 0,
     tier,
     limits: getAccessLimits(tier),
     checkedAt: new Date().toISOString(),
     reason: getAccessReason(tier),
   };
-}
-
-export async function getLeviAccessForWallet(
-  inputWallet: string
-): Promise<LeviAccessState> {
-  const wallet = normalizeSolanaAddress(inputWallet);
-  const cached = accessCache.get(wallet);
-  if (cached && cached.expiresAt > Date.now()) return cached.value;
-
-  const pending = accessRequests.get(wallet);
-  if (pending) return pending;
-
-  const request = loadLeviAccessForWallet(wallet)
-    .then((value) => {
-      accessCache.set(wallet, {
-        value,
-        expiresAt: Date.now() + ACCESS_CACHE_TTL_MS,
-      });
-      return value;
-    })
-    .finally(() => {
-      accessRequests.delete(wallet);
-    });
-  accessRequests.set(wallet, request);
-  return request;
 }

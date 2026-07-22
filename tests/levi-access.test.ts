@@ -1,19 +1,21 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getAccessLimits, getAccessTier } from "@/lib/levi/access";
+import { getAccessLimits, getAccessReason, getAccessTier } from "@/lib/levi/access";
 
-describe("K9 access tiers", () => {
-  it("blocks wallets below the minimum threshold", () => {
-    assert.equal(getAccessTier(2_999.99), "blocked");
-  });
-
-  it("unlocks basic access at 3,000 K9", () => {
-    assert.equal(getAccessTier(3_000), "basic");
-    assert.equal(getAccessLimits("basic").details, "summary");
-  });
-
-  it("unlocks full access at 50,000 K9", () => {
+describe("open platform access", () => {
+  it("does not derive access from a project-token balance", () => {
+    assert.equal(getAccessTier(0), "full");
+    assert.equal(getAccessTier(2_999.99), "full");
     assert.equal(getAccessTier(50_000), "full");
+  });
+
+  it("uses the same bounded platform capacity for legacy tier values", () => {
+    assert.deepEqual(getAccessLimits("blocked"), getAccessLimits("full"));
+    assert.deepEqual(getAccessLimits("basic"), getAccessLimits("full"));
     assert.equal(getAccessLimits("full").fullDashboard, true);
+  });
+
+  it("describes wallet verification without a holding requirement", () => {
+    assert.match(getAccessReason("full"), /without requiring any token holding/i);
   });
 });

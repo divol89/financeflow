@@ -17,9 +17,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import Dice3D from "@/components/games/Dice3D";
-import type { LeviAccessState } from "@/types/levi";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
-import { readJsonResponse } from "@/lib/levi/fetchJson";
 import {
   LEVI_DICE_MINT,
   LEVI_DICE_PROGRAM_ID,
@@ -33,56 +31,25 @@ import {
   type LeviDicePreviewGame,
 } from "@/lib/levi/dice";
 
-interface AccessResponse {
-  access?: LeviAccessState;
-  error?: string;
-}
-
 function LeviDiceLobby() {
   const router = useRouter();
   const wallet = useInjectedSolanaWallet();
-  const [access, setAccess] = useState<LeviAccessState | null>(null);
   const [games, setGames] = useState<LeviDicePreviewGame[]>([]);
   const [entryFee, setEntryFee] = useState("1000");
   const [playerCount, setPlayerCount] = useState(2);
-  const [isCheckingAccess, setIsCheckingAccess] = useState(false);
 
   const programReady = isLeviDiceProgramReady();
   const numericEntryFee = Number(entryFee) || 0;
   const pot = getLeviDicePot(numericEntryFee, playerCount);
   const winnerPrize = getLeviDicePrize(numericEntryFee, playerCount);
-  const hasEnoughLevi = access ? access.balance >= numericEntryFee : false;
 
   useEffect(() => {
     setGames(readLeviDicePreviewGames());
   }, []);
 
-  const refreshAccess = async (address: string) => {
-    setIsCheckingAccess(true);
-    try {
-      const response = await fetch(`/api/access?wallet=${encodeURIComponent(address)}`);
-      const payload = await readJsonResponse<AccessResponse>(
-        response,
-        "Unable to read K9 balance"
-      );
-      if (!response.ok || !payload.access) {
-        throw new Error(payload.error || "Unable to read K9 balance");
-      }
-      setAccess(payload.access);
-      return payload.access;
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Unable to read K9 balance");
-      return null;
-    } finally {
-      setIsCheckingAccess(false);
-    }
-  };
-
   const connectWallet = async () => {
     try {
-      const connected = await wallet.connect();
-      if (!connected) return;
-      await refreshAccess(connected.address);
+      await wallet.connect();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Wallet connection failed");
     }
@@ -98,22 +65,14 @@ function LeviDiceLobby() {
         if (!nextWallet) return;
         connected = nextWallet.address;
       }
-      const currentAccess = access || (await refreshAccess(connected));
-
-      if (!currentAccess) return;
       if (numericEntryFee <= 0) {
-        toast.error("Enter a valid K9 entry fee.");
+        toast.error("Enter a valid preview stake.");
         return;
       }
       if (playerCount < 2 || playerCount > 5) {
         toast.error("Choose 2-5 players.");
         return;
       }
-      if (currentAccess.balance < numericEntryFee) {
-        toast.error("This wallet does not hold enough K9 for that entry.");
-        return;
-      }
-
       const game = makeLeviDicePreviewGame({
         creator: connected,
         entryFee: numericEntryFee,
@@ -139,7 +98,7 @@ function LeviDiceLobby() {
         <title>K9 Dice | Solana Preview</title>
         <meta
           name="description"
-          content="K9 Dice preview for Solana. Same Crazy Dice flow prepared for K9 token escrow."
+          content="An open Solana Dice preview with no token holding requirement or token transfer."
         />
       </Head>
       <ToastContainer position="bottom-right" theme="dark" />
@@ -157,9 +116,9 @@ function LeviDiceLobby() {
                 K9 DICE
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-                The Crazy Dice arena prepared for Solana and the existing K9
-                Token-2022 mint. The UI is live; token escrow stays disabled
-                until the Solana program is deployed.
+                A wallet-based Solana game preview open to everyone. Preview
+                credits stay local to the browser and no token holding or
+                transfer is required.
               </p>
               <div className="mt-6 grid gap-3 text-sm text-slate-300 sm:grid-cols-3">
                 <div className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -196,7 +155,7 @@ function LeviDiceLobby() {
                 <div>
                   <p className="text-sm font-semibold text-white">Solana Wallet</p>
                   <p className="mt-1 text-sm text-slate-400">
-                    Connect Phantom or Solflare to read K9 balance.
+                    Connect Phantom or Solflare to identify your preview player.
                   </p>
                 </div>
                 <Wallet className="h-5 w-5 text-amber-300" />
@@ -205,12 +164,12 @@ function LeviDiceLobby() {
               <button
                 type="button"
                 onClick={() => void connectWallet()}
-                disabled={wallet.isConnecting || isCheckingAccess}
+                disabled={wallet.isConnecting}
                 className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-amber-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {wallet.address
                   ? `${wallet.address.slice(0, 4)}...${wallet.address.slice(-4)}`
-                  : wallet.isConnecting || isCheckingAccess
+                  : wallet.isConnecting
                   ? "Connecting..."
                   : "Connect Solana"}
               </button>
@@ -223,13 +182,11 @@ function LeviDiceLobby() {
 
               <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs uppercase text-slate-500">K9 Balance</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">
-                    {access ? formatLeviAmount(access.balance) : "--"}
-                  </p>
+                  <p className="text-xs uppercase text-slate-500">Token requirement</p>
+                  <p className="mt-1 text-2xl font-semibold text-white">None</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase text-slate-500">Mint</p>
+                  <p className="text-xs uppercase text-slate-500">Hosted mint reference</p>
                   <p className="mt-1 break-all font-mono text-xs text-slate-300">
                     {LEVI_DICE_MINT}
                   </p>
@@ -284,7 +241,7 @@ function LeviDiceLobby() {
 
                 <div>
                   <label className="text-xs uppercase text-slate-500">
-                    Entry Fee (K9)
+                    Preview stake (credits)
                   </label>
                   <input
                     value={entryFee}
@@ -298,24 +255,18 @@ function LeviDiceLobby() {
                   <div>
                     <p className="text-slate-500">Max Pot</p>
                     <p className="mt-1 font-semibold text-white">
-                      {formatLeviAmount(pot)} K9
+                      {formatLeviAmount(pot)} credits
                     </p>
                   </div>
                   <div>
                     <p className="text-slate-500">Winner Prize</p>
                     <p className="mt-1 font-semibold text-amber-200">
-                      {formatLeviAmount(winnerPrize)} K9
+                      {formatLeviAmount(winnerPrize)} credits
                     </p>
                   </div>
                   <div>
-                    <p className="text-slate-500">Balance Check</p>
-                    <p
-                      className={`mt-1 font-semibold ${
-                        hasEnoughLevi ? "text-amber-200" : "text-amber-200"
-                      }`}
-                    >
-                      {access ? (hasEnoughLevi ? "Ready" : "Not enough") : "Connect"}
-                    </p>
+                    <p className="text-slate-500">Access</p>
+                    <p className="mt-1 font-semibold text-amber-200">Open</p>
                   </div>
                 </div>
 
@@ -323,8 +274,8 @@ function LeviDiceLobby() {
                   <div className="flex gap-3 rounded-lg border border-amber-400/20 bg-amber-950/30 p-4 text-sm text-amber-100">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                     <p>
-                      Real K9 wagers are disabled until a Solana escrow program
-                      is deployed. Preview rooms do not move tokens.
+                      Preview rooms do not move tokens. Any future on-chain
+                      settlement will be reviewed as a separate feature.
                     </p>
                   </div>
                 ) : (
@@ -394,7 +345,7 @@ function LeviDiceLobby() {
                       <div className="flex justify-between">
                         <span className="text-slate-500">Entry</span>
                         <span className="font-semibold text-amber-200">
-                          {formatLeviAmount(game.entryFee)} K9
+                          {formatLeviAmount(game.entryFee)} credits
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -409,7 +360,7 @@ function LeviDiceLobby() {
                           {formatLeviAmount(
                             getLeviDicePrize(game.entryFee, game.players.length)
                           )}{" "}
-                          K9
+                          credits
                         </span>
                       </div>
                     </div>

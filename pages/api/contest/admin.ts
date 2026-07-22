@@ -75,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json(response);
   } catch (error) {
-    console.error("K9 Social contest admin operation failed", error);
+    console.error("Social contest admin operation failed", error);
     return res.status(503).json({ error: "Contest administration is temporarily unavailable." });
   }
 }

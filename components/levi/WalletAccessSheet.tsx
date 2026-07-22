@@ -35,9 +35,9 @@ export function WalletAccessSheet({
         <header>
           <div className="levi-access-sheet-mark"><ShieldCheck className="h-5 w-5" /></div>
           <div><p className="levi-section-label">Wallet access</p><h2 id="wallet-access-title">Prove ownership. Keep custody.</h2></div>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close holder access"><X className="h-5 w-5" /></button>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close wallet access"><X className="h-5 w-5" /></button>
         </header>
-        <p className="levi-access-sheet-lede">Connect once to use private tools. Some hosted adventures can apply their own transparent holder limits.</p>
+        <p className="levi-access-sheet-lede">Connect once to use private tools. No token holding is required anywhere on the platform.</p>
         <LeviAuthPanel onConnectionGuideOpened={onClose} />
         <div className="levi-access-sheet-safety"><KeyRound className="h-4 w-4" /><span>The signature contains a login message only. Flow-Finance Adventures cannot move your assets.</span></div>
         <div className="levi-access-sheet-links">

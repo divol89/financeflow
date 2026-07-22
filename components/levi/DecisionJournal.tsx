@@ -65,7 +65,7 @@ export function DecisionJournal({
     <section className="levi-portfolio-section levi-journal" aria-labelledby="journal-title">
       <div className="levi-result-section-heading">
         <div><p className="levi-section-label">Decision discipline</p><h2 id="journal-title">Private trading journal</h2></div>
-        {limit > 0 ? <button type="button" className="levi-inline-action" onClick={() => { setForm(emptyForm); setIsOpen((value) => !value); }}>{isOpen ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}{isOpen ? "Close" : "New entry"}</button> : <span>Basic access required</span>}
+        {limit > 0 ? <button type="button" className="levi-inline-action" onClick={() => { setForm(emptyForm); setIsOpen((value) => !value); }}>{isOpen ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}{isOpen ? "Close" : "New entry"}</button> : <span>Storage unavailable</span>}
       </div>
 
       {isOpen ? (
@@ -83,7 +83,7 @@ export function DecisionJournal({
         </form>
       ) : null}
 
-      {limit <= 0 ? <div className="levi-empty-state">Your balances remain visible. Journal storage unlocks at 3,000 K9.</div> : entries.length ? (
+      {limit <= 0 ? <div className="levi-empty-state">Private journal storage is unavailable for this session.</div> : entries.length ? (
         <div className="levi-journal-list">
           {entries.map((entry) => (
             <article key={entry.id}>

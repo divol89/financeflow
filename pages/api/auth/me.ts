@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const access = await getLeviAccessForWallet(session.wallet);
     return res.status(200).json({ authenticated: true, session, access });
   } catch (error) {
-    console.error("K9 auth session check failed", error);
+    console.error("Wallet session check failed", error);
     return res.status(200).json({ authenticated: false });
   }
 }

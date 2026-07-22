@@ -27,7 +27,7 @@ export default async function handler(
     const eligibility = await getContestEligibility(session.wallet);
     return res.status(200).json(eligibility);
   } catch (error) {
-    console.error("K9 Social holder eligibility check failed", error);
-    return res.status(503).json({ error: "Unable to read contest holder balances." });
+    console.error("Social contest access check failed", error);
+    return res.status(503).json({ error: "Unable to verify contest access." });
   }
 }

@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (isSolanaRpcRateLimitError(error)) {
       return res.status(503).json({ error: "Public Solana RPC is busy. Retry in a moment." });
     }
-    console.error("K9 portfolio refresh failed", error);
+    console.error("Portfolio refresh failed", error);
     return res.status(500).json({ error: "Unable to refresh Portfolio" });
   }
 }

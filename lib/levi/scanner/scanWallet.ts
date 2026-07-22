@@ -273,7 +273,7 @@ export async function scanSolanaCreatorWallet(
   const transactionLimit = scannerBatchSizeForPage(options.tier, pageIndex);
   if (transactionLimit === 0) {
     throw new InvalidScannerCursorError(
-      "This continuation is outside the active K9 access window."
+      "This continuation is outside the active scanner window."
     );
   }
   const signatureRequests = buildSignatureRequests({
@@ -435,7 +435,7 @@ export async function scanSolanaCreatorWallet(
     limitations: [
       "This report is heuristic. It does not prove fraud, intent, or legal wrongdoing.",
       "A sell is counted only when token and quote-asset movements align with a known swap venue; every classification still requires human review.",
-      "The initial scan window is limited by the active K9 access tier and is loaded in bounded blockchain pages.",
+      "The initial scan window is loaded in bounded blockchain pages to protect the public RPC.",
       "Created tokens are detected only when mint initialization appears in the scanned wallet transactions.",
       ...(targetMint
         ? [
@@ -465,23 +465,6 @@ export function redactScanReportForTier(
   report: LeviScanReport,
   tier: LeviAccessTier
 ): LeviScanReport {
-  if (tier === "full") return report;
-
-  return {
-    ...report,
-    createdTokens: report.createdTokens.slice(0, 3).map((token) => ({
-      ...token,
-      signature: `${token.signature.slice(0, 10)}...`,
-    })),
-    tokenActivitySignals: report.tokenActivitySignals?.slice(0, 3).map((signal) => ({
-      ...signal,
-      signature: `${signal.signature.slice(0, 10)}...`,
-    })),
-    activityEvents: report.activityEvents?.slice(0, 10),
-    sellSignals: [],
-    limitations: [
-      ...report.limitations,
-      "Basic access limits detailed activity rows. Hold 50,000+ K9 for Full Scanner and Portfolio access.",
-    ],
-  };
+  void tier;
+  return report;
 }

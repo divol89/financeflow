@@ -53,18 +53,16 @@ describe("Portfolio snapshot policy", () => {
   });
 });
 
-describe("Portfolio tier limits", () => {
-  it("keeps blocked wallets read-only", () => {
-    const limits = getAccessLimits("blocked");
-    assert.equal(limits.portfolioHistoryDays, 0);
-    assert.equal(limits.watchlistLimit, 0);
-    assert.equal(limits.journalLimit, 0);
-  });
-
-  it("unlocks progressive history only for Full access", () => {
-    assert.equal(getAccessLimits("basic").canExtendScanHistory, false);
-    assert.equal(getAccessLimits("full").canExtendScanHistory, true);
-    assert.equal(getAccessLimits("full").portfolioActivityLimit, 50);
+describe("Portfolio open-access limits", () => {
+  it("keeps the full bounded feature set independent of legacy tier values", () => {
+    for (const tier of ["blocked", "basic", "full"] as const) {
+      const limits = getAccessLimits(tier);
+      assert.equal(limits.portfolioHistoryDays, null);
+      assert.equal(limits.watchlistLimit, 25);
+      assert.equal(limits.journalLimit, 200);
+      assert.equal(limits.canExtendScanHistory, true);
+      assert.equal(limits.portfolioActivityLimit, 50);
+    }
   });
 });
 

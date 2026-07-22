@@ -12,7 +12,7 @@ Scanner signals are heuristic and informational. They do not prove intent, guara
 
 ## Hosted Adventures
 
-Individual memecoins can keep their own identity, campaign and utility inside the shared platform. Agent K9 is the current hosted adventure used by the Social Quest, Dice preview and existing access tiers:
+Individual memecoins can keep their own identity, campaign and utility inside the shared platform. Agent K9 is the current hosted adventure used by the Social Quest and Dice preview. Platform tools do not require users to hold K9 or any other project token:
 
 - Symbol: `K9`
 - Program: Token-2022

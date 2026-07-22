@@ -31,10 +31,7 @@ test("keeps every Agent K9 product surface on the canonical identity", () => {
 
   assert.equal(BURN_TRACKER_DOCUMENT_ID, "agent-k9");
   assert.equal(BURN_TRACKER_MINT, AGENT_K9_MINT_ADDRESS);
-  assert.deepEqual(
-    CONTEST_HOLDER_TOKENS.map(({ mint, symbol }) => ({ mint, symbol })),
-    [{ mint: AGENT_K9_MINT_ADDRESS, symbol: AGENT_K9_SYMBOL }]
-  );
+  assert.deepEqual(CONTEST_HOLDER_TOKENS, []);
   assert.deepEqual(
     PORTFOLIO_TOKEN_ASSETS.map(({ mint, symbol }) => ({ mint, symbol })),
     [{ mint: AGENT_K9_MINT_ADDRESS, symbol: AGENT_K9_SYMBOL }]

@@ -472,7 +472,7 @@ export function ScannerPanel() {
 
           {!auth.isLoading && !auth.session ? (
             <p className="levi-scanner-session-note">
-              Sign Access above to verify wallet ownership. The inspected wallet can be any public Solana user or creator address.
+              Sign in above to verify wallet ownership. The inspected wallet can be any public Solana user or creator address.
             </p>
           ) : null}
 
@@ -522,9 +522,7 @@ export function ScannerPanel() {
           {access ? (
             <p className="levi-scanner-access-note">
               <History className="h-4 w-4" />
-              {access.tier === "full"
-                ? "Full access loads the latest 100 signature slots progressively and can add up to 60 older slots per extension."
-                : "Basic access loads up to 20 signature slots progressively."}
+              Open access loads the latest 100 signature slots progressively and can add up to 60 older slots per extension.
             </p>
           ) : null}
 

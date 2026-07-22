@@ -51,7 +51,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     clearCookie(res, NONCE_COOKIE);
     return res.status(200).json({ authenticated: true, wallet: nonce.wallet });
   } catch (error) {
-    console.error("K9 signature verification failed", error);
+    console.error("Wallet signature verification failed", error);
     return res.status(401).json({ error: "Unable to verify wallet signature" });
   }
 }

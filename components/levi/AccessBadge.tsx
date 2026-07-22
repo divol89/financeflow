@@ -1,14 +1,13 @@
 import type { LeviAccessTier } from "@/types/levi";
 
 const tierClasses: Record<LeviAccessTier, string> = {
-  blocked: "border-red-500/50 bg-red-950/60 text-red-100",
+  blocked: "border-slate-400/40 bg-slate-900/50 text-slate-100",
   basic: "border-amber-400/50 bg-amber-950/60 text-amber-100",
   full: "border-amber-400/50 bg-amber-950/60 text-amber-100",
 };
 
 export function AccessBadge({ tier }: { tier: LeviAccessTier }) {
-  const label =
-    tier === "full" ? "Full Access" : tier === "basic" ? "Basic Access" : "Locked";
+  const label = tier === "blocked" ? "Sign in required" : "Open Access";
 
   return (
     <span

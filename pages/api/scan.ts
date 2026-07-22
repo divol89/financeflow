@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!session) {
       return res.status(401).json({
         code: "SESSION_REQUIRED",
-        error: "Your signed session expired. Sign Access again to continue.",
+        error: "Your signed session expired. Sign in again to continue.",
       });
     }
 
@@ -66,12 +66,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const access = await getLeviAccessForWallet(session.wallet);
-    if (access.tier === "blocked") {
-      return res.status(403).json({
-        error: "K9 holder access required",
-        access,
-      });
-    }
 
     const mode =
       parsed.data.mode || (parsed.data.tokenMint ? "token" : "creator");
@@ -89,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       report = await getCachedScanReport(cacheKey);
     } catch (cacheError) {
-      console.warn("K9 scanner cache read failed", cacheError);
+      console.warn("Scanner cache read failed", cacheError);
     }
 
     if (!report) {
@@ -102,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         await cacheScanReport(cacheKey, report);
       } catch (cacheError) {
-        console.warn("K9 scanner cache write failed", cacheError);
+        console.warn("Scanner cache write failed", cacheError);
       }
     }
 
@@ -116,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       );
       visibleReport = redactScanReportForTier(visibleReport, access.tier);
     } catch (storeError) {
-      console.warn("K9 scanner report persistence failed", storeError);
+      console.warn("Scanner report persistence failed", storeError);
     }
 
     return res.status(200).json({
@@ -155,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    console.error("K9 scanner failed", error);
+    console.error("Scanner failed", error);
     return res.status(500).json({ error: message });
   }
 }

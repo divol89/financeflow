@@ -9,17 +9,17 @@ import {
 
 const gameLoop = [
   "Connect a Solana wallet.",
-  "Hold the required K9 balance to play.",
+  "Play without a token holding requirement.",
   "Tap or click to charge through obstacles.",
   "Collect green candles and avoid red bears.",
   "Compete on a daily leaderboard.",
 ];
 
 const rewards = [
-  "Top 10 players split the daily K9 prize pool.",
-  "One random holder can receive a Lucky K9 reward.",
-  "Holding more K9 can unlock extra lives, skins, or perks.",
-  "A tiny K9 burn can be used as the entry mechanic after contracts are ready.",
+  "Top players can qualify for a community-sponsored prize pool.",
+  "One random participant can receive a surprise reward.",
+  "Skill, participation and public challenges can unlock cosmetic perks.",
+  "Any future reward mechanic will remain separate from platform access.",
 ];
 
 export function BullChargeProposal() {
@@ -33,7 +33,7 @@ export function BullChargeProposal() {
           </div>
           <h2 className="levi-panel-title">K9 Pursuit</h2>
           <p className="levi-panel-copy">
-            A viral K9 mini-game concept where holders charge through market
+            A viral K9 mini-game concept where players charge through market
             obstacles, collect green candles, and compete for daily rewards.
           </p>
         </div>

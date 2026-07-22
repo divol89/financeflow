@@ -9,7 +9,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     clearAuthCookies(res);
   } catch (error) {
-    console.error("K9 logout cleanup failed", error);
+    console.error("Wallet logout cleanup failed", error);
   }
 
   return res.status(200).json({ authenticated: false });

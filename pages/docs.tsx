@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -17,6 +16,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
+import { FairLaunchSignal } from "@/components/flow/FairLaunchSignal";
 import { LeviCommunityLinks } from "@/components/levi/LeviCommunityLinks";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
@@ -46,9 +46,9 @@ const principles = [
 
 const roadmap = [
   ["01", "Open toolkit", "Keep Scanner, Token Sniffer, education and the universal Burn Studio clear and accessible."],
-  ["02", "Adventure registry", "Give each community memecoin a distinct profile without turning it into the identity of the whole platform."],
-  ["03", "Shared evidence", "Expand verified multi-token activity, burn history and explainable wallet intelligence."],
-  ["04", "Community products", "Turn reviewed proposals into games, campaigns and utilities with transparent scope and status."],
+  ["02", "Fair-launch signal", "Complete the notification-token system that gives eligible community wallets an early, optional invitation to review each new launch."],
+  ["03", "Adventure registry", "Give each community memecoin a distinct, verifiable profile without turning it into the identity of the whole platform."],
+  ["04", "Shared evidence", "Expand verified multi-token activity, burn history and explainable wallet intelligence across new Adventures."],
 ];
 
 export default function DocsPage() {
@@ -71,7 +71,7 @@ export default function DocsPage() {
               <p>{FLOW_FINANCE_TAGLINE} The platform is not defined by a single mascot, ticker or launch.</p>
               <div className="flow-hero-actions">
                 <a href="#model" className="flow-primary-button">Understand the model <ArrowRight className="h-4 w-4" /></a>
-                <Link href="/burn" className="flow-secondary-button"><Flame className="h-4 w-4" /> Open Burn Studio</Link>
+                <a href="#fair-launch-signal" className="flow-secondary-button"><Sparkles className="h-4 w-4" /> Launch Signal</a>
               </div>
             </div>
           </LeviReveal>
@@ -98,6 +98,12 @@ export default function DocsPage() {
         </section>
 
         <section className="flow-docs-band">
+          <div className="levi-container flow-docs-section">
+            <LeviReveal><FairLaunchSignal variant="docs" /></LeviReveal>
+          </div>
+        </section>
+
+        <section>
           <div className="levi-container flow-docs-section">
             <LeviReveal><header className="flow-section-heading"><div><p className="flow-kicker"><Sparkles className="h-4 w-4" /> Shared toolkit</p><h2>Useful before any narrative begins.</h2><p>These surfaces are platform tools. Their purpose remains consistent even when the community explores a different token.</p></div></header></LeviReveal>
             <div className="flow-docs-tools">

@@ -3,7 +3,6 @@ import { z } from "zod";
 import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
 import { getSessionFromRequest } from "@/lib/levi/session";
-import { getContestEligibility } from "@/lib/contest/eligibility";
 import {
   countCampaignSubmissions,
   createSubmission,
@@ -33,14 +32,6 @@ export default async function handler(
     const session = getSessionFromRequest(req);
     if (!session) {
       return res.status(401).json({ error: "Connect and sign with your Solana wallet first." });
-    }
-
-    const eligibility = await getContestEligibility(session.wallet);
-    if (!eligibility.eligible) {
-      return res.status(403).json({
-        error: "Hold at least 500 K9 to enter this campaign.",
-        eligibility,
-      });
     }
 
     const campaign = await getContestCampaign();
@@ -73,7 +64,7 @@ export default async function handler(
     try {
       totalEntries = await countCampaignSubmissions(campaign.id);
     } catch (countError) {
-      console.error("K9 Social contest count refresh failed", countError);
+      console.error("Social contest count refresh failed", countError);
     }
 
     return res.status(201).json({
@@ -86,7 +77,7 @@ export default async function handler(
       totalEntries,
     });
   } catch (error) {
-    console.error("K9 Social contest submission failed", error);
+    console.error("Social contest submission failed", error);
     if (error instanceof Error && error.message.includes("already exists")) {
       return res.status(409).json({ error: error.message });
     }

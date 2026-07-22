@@ -198,7 +198,7 @@ function LeviDiceRoom() {
               <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-right">
                 <p className="text-xs uppercase text-slate-500">Prize</p>
                 <p className="mt-1 text-2xl font-bold text-amber-200">
-                  {formatLeviAmount(prize)} K9
+                  {formatLeviAmount(prize)} credits
                 </p>
                 <p className="mt-1 text-xs text-slate-500">95% of preview pot</p>
               </div>
@@ -208,7 +208,7 @@ function LeviDiceRoom() {
               <div className="rounded-lg border border-white/10 bg-white/5 p-4">
                 <p className="text-xs uppercase text-slate-500">Entry</p>
                 <p className="mt-1 text-xl font-semibold text-white">
-                  {formatLeviAmount(game.entryFee)} K9
+                  {formatLeviAmount(game.entryFee)} credits
                 </p>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -330,8 +330,8 @@ function LeviDiceRoom() {
               <div className="flex gap-3">
                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
                 <p>
-                  Preview mode never transfers K9. The production Solana
-                  version must use a deployed escrow program before real wagers.
+                  Preview mode never transfers tokens and does not require any
+                  project-token balance.
                 </p>
               </div>
             </div>
@@ -349,7 +349,7 @@ function LeviDiceRoom() {
                 </p>
                 <p className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-500" />
-                  Settlement instruction transfers K9 pot.
+                  Any future settlement remains a separately reviewed feature.
                 </p>
               </div>
             </div>

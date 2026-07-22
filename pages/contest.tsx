@@ -19,9 +19,7 @@ import { LeviShell } from "@/components/levi/LeviShell";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { getDefaultContestCampaign } from "@/lib/contest/constants";
-import { formatContestHolding } from "@/lib/contest/formatting";
 import type {
-  ContestEligibilityResponse,
   ContestPublicResponse,
   ContestSubmissionResponse,
   LeviSocialContestCampaign,
@@ -45,13 +43,11 @@ export default function ContestPage() {
   );
   const [entries, setEntries] = useState<ContestPublicResponse["entries"]>([]);
   const [totalEntries, setTotalEntries] = useState(0);
-  const [eligibility, setEligibility] = useState<ContestEligibilityResponse | null>(null);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const [postUrl, setPostUrl] = useState("");
   const [isLoadingContest, setIsLoadingContest] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contestError, setContestError] = useState<string | null>(null);
-  const [eligibilityError, setEligibilityError] = useState<string | null>(null);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -88,49 +84,8 @@ export default function ContestPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!auth.session) {
-      setEligibility(null);
-      setEligibilityError(null);
-      return;
-    }
-
-    let cancelled = false;
-    setEligibility(null);
-    setEligibilityError(null);
-
-    async function loadEligibility() {
-      try {
-        const response = await fetch("/api/contest/eligibility");
-        const payload = await readJsonResponse<ContestEligibilityResponse>(
-          response,
-          "Unable to read contest holder balances."
-        );
-        if (cancelled) return;
-        if (!response.ok) {
-          setEligibilityError(payload.error || "Unable to read contest holder balances.");
-          return;
-        }
-        setEligibility(payload);
-      } catch {
-        if (!cancelled) setEligibilityError("Unable to read contest holder balances.");
-      }
-    }
-
-    loadEligibility();
-    return () => {
-      cancelled = true;
-    };
-  }, [auth.session]);
-
   const campaignOpen =
     campaign.status === "open" && new Date(campaign.closesAt).getTime() > Date.now();
-  const contestTokens = campaign.eligibleTokens.map((token) => token.symbol).join(" or ");
-  const minimumHolding = campaign.tiers[0]?.minimumHolding || 500;
-  const tierLabels = campaign.tiers
-    .map((tier) => `${formatContestHolding(tier.minimumHolding)}+`)
-    .join(" / ");
-  const isEligible = Boolean(eligibility?.eligible);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -168,10 +123,10 @@ export default function ContestPage() {
   return (
     <LeviShell>
       <Head>
-        <title>K9 Social Quest | Flow-Finance Adventures</title>
+        <title>Social Quest | Flow-Finance Adventures</title>
         <meta
           name="description"
-          content="A holder-gated K9 community contest for thoughtful posts on X."
+          content="An open community contest for thoughtful Flow-Finance posts on X."
         />
       </Head>
 
@@ -183,19 +138,19 @@ export default function ContestPage() {
           <LeviReveal>
             <div className="levi-contest-copy">
               <p className="levi-eyebrow">
-                <Megaphone className="h-3.5 w-3.5" /> K9 Social
+                <Megaphone className="h-3.5 w-3.5" /> Community Social Quest
               </p>
               <h1 className="levi-contest-title">
                 Post with purpose.
                 <span>Move the signal.</span>
               </h1>
               <p className="levi-contest-lede">
-                Share a considered Agent K9 post on X, submit the direct link and
-                unlock a surprise reward tier through your K9 holding.
+                Share a considered post about a Flow-Finance adventure on X,
+                submit the direct link and enter the human-reviewed campaign.
               </p>
               <div className="levi-contest-proof">
                 <span>
-                  <ShieldCheck className="h-4 w-4" /> Holder-gated
+                  <ShieldCheck className="h-4 w-4" /> No holding required
                 </span>
                 <span>
                   <Sparkles className="h-4 w-4" /> Human-reviewed
@@ -222,11 +177,11 @@ export default function ContestPage() {
               </div>
               <div className="levi-contest-signal-row">
                 <span>Requirement</span>
-                <strong>{formatContestHolding(minimumHolding)}+ {contestTokens}</strong>
+                <strong>Signed Solana wallet</strong>
               </div>
               <div className="levi-contest-signal-row">
-                <span>Reward tiers</span>
-                <strong>{tierLabels}</strong>
+                <span>Selection</span>
+                <strong>Human review</strong>
               </div>
               <div className="levi-contest-signal-lock">
                 <LockKeyhole className="h-4 w-4" />
@@ -242,12 +197,12 @@ export default function ContestPage() {
             <strong>{totalEntries}</strong>
           </div>
           <div className="levi-contest-stat">
-            <span>Access threshold</span>
-            <strong>{formatContestHolding(minimumHolding)}+ {contestTokens}</strong>
+            <span>Token threshold</span>
+            <strong>None</strong>
           </div>
           <div className="levi-contest-stat">
-            <span>Surprise tiers</span>
-            <strong>{tierLabels}</strong>
+            <span>Participation</span>
+            <strong>Open</strong>
           </div>
         </section>
 
@@ -262,20 +217,20 @@ export default function ContestPage() {
                   <h2 className="levi-panel-title">Put your signal on record.</h2>
                   <p className="levi-panel-copy">
                     One direct X post per wallet. Entries are reviewed for relevance,
-                    originality and the reach they create for K9.
+                    originality and the reach they create for the community.
                   </p>
                 </div>
                 <div className="levi-contest-requirement">
                   <BadgeCheck className="h-5 w-5" />
-                  <span>{formatContestHolding(minimumHolding)}+ {contestTokens}</span>
+                  <span>No token holding required</span>
                 </div>
               </div>
 
               <div className="levi-contest-form-area">
-                {auth.isLoading || isLoadingContest || (auth.session && !eligibility && !eligibilityError) ? (
+                {auth.isLoading || isLoadingContest ? (
                   <div className="levi-contest-state">
                     <span className="levi-contest-spinner" aria-hidden="true" />
-                    Loading campaign access...
+                    Loading campaign...
                   </div>
                 ) : !auth.session ? (
                   <div className="levi-contest-state">
@@ -292,31 +247,8 @@ export default function ContestPage() {
                         disabled={auth.isSigning}
                       >
                         <ShieldCheck className="h-4 w-4" />
-                        {auth.isSigning ? "Waiting for signature" : "Connect & sign access"}
+                        {auth.isSigning ? "Waiting for signature" : "Connect & sign in"}
                       </button>
-                    </div>
-                  </div>
-                ) : eligibilityError ? (
-                  <div className="levi-contest-state is-error">
-                    <div className="levi-contest-state-icon is-red">
-                      <ShieldCheck className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3>Holder check temporarily unavailable</h3>
-                      <p>{eligibilityError}</p>
-                    </div>
-                  </div>
-                ) : !isEligible ? (
-                  <div className="levi-contest-state">
-                    <div className="levi-contest-state-icon is-amber">
-                      <LockKeyhole className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3>Reach a surprise reward tier</h3>
-                      <p>
-                        Hold at least {formatContestHolding(minimumHolding)} {contestTokens} to participate.
-                        The available tiers are {tierLabels}.
-                      </p>
                     </div>
                   </div>
                 ) : !campaignOpen ? (
@@ -343,7 +275,7 @@ export default function ContestPage() {
                   <>
                     <p className="levi-contest-tier-status">
                       <Sparkles className="h-4 w-4" />
-                      Current reward tier: <strong>{eligibility?.tier?.label}</strong>. Surprise revealed later.
+                      Participation is <strong>open</strong>. Surprise revealed later.
                     </p>
                     <form onSubmit={handleSubmit} className="levi-contest-form">
                     <label htmlFor="post-url">Direct X post link</label>
@@ -402,21 +334,21 @@ export default function ContestPage() {
                 <li>
                   <span>01</span>
                   <div>
-                    <strong>Hold K9</strong>
-                    <p>Keep the tier amount in the K9 wallet you use to enter. Holdings are checked on-chain.</p>
+                    <strong>Connect and sign</strong>
+                    <p>Prove wallet ownership with a login message. No token holding or transfer is required.</p>
                   </div>
                 </li>
                 <li>
                   <span>02</span>
                   <div>
-                    <strong>Reach a tier</strong>
-                    <p>{tierLabels} unlock different surprise reward levels.</p>
+                    <strong>Post and submit</strong>
+                    <p>Share a direct X post URL connected to a Flow-Finance adventure.</p>
                   </div>
                 </li>
                 <li>
                   <span>03</span>
                   <div>
-                    <strong>Post and submit</strong>
+                    <strong>Human review</strong>
                     <p>The team reviews relevance, originality and social impact manually.</p>
                   </div>
                 </li>
@@ -477,7 +409,7 @@ export default function ContestPage() {
         </section>
 
         <div className="levi-container levi-contest-footer-rail" aria-hidden="true">
-          <span>K9 SOCIAL / 01</span>
+          <span>OPEN SOCIAL / 01</span>
           <div />
           <span>Human review. Community reach.</span>
         </div>

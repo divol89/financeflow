@@ -19,12 +19,7 @@ export async function refreshPortfolio(
   wallet: string,
   access: LeviAccessState
 ): Promise<PortfolioPayload> {
-  const current = await fetchPortfolioSnapshot(wallet, new Date(), {
-    [access.mint]: {
-      raw: access.balanceRaw,
-      decimals: access.decimals,
-    },
-  });
+  const current = await fetchPortfolioSnapshot(wallet);
   const activityEnabled = access.limits.portfolioActivityLimit > 0;
   let activityFailed = false;
   let freshActivity: PortfolioActivityResult = {
@@ -41,7 +36,7 @@ export async function refreshPortfolio(
       freshActivity = await fetchRecentPortfolioActivity(wallet);
     } catch (error) {
       activityFailed = true;
-      console.warn("K9 portfolio activity unavailable", error);
+      console.warn("Portfolio activity unavailable", error);
     }
   }
 
@@ -74,7 +69,7 @@ export async function refreshPortfolio(
       persistenceAvailable: true,
     };
   } catch (error) {
-    console.warn("K9 portfolio persistence unavailable", error);
+    console.warn("Portfolio persistence unavailable", error);
     return {
       access,
       current,

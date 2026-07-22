@@ -63,7 +63,7 @@ function report(input: {
   };
 }
 
-describe("Scanner cursor and tier pagination", () => {
+describe("Scanner cursor and open pagination", () => {
   it("signs a continuation cursor and binds it to one wallet and mint", () => {
     const cursor = createScannerCursor({
       wallet,
@@ -111,13 +111,13 @@ describe("Scanner cursor and tier pagination", () => {
     );
   });
 
-  it("splits Basic and Full windows into bounded pages", () => {
-    assert.equal(scannerInitialPageCount("basic"), 4);
+  it("uses one bounded window regardless of the legacy tier value", () => {
+    assert.equal(scannerInitialPageCount("basic"), 17);
     assert.deepEqual(
-      [0, 1, 2, 3, 4].map((pageIndex) =>
+      [0, 15, 16, 17].map((pageIndex) =>
         scannerBatchSizeForPage("basic", pageIndex)
       ),
-      [6, 6, 6, 2, 0]
+      [6, 6, 4, 6]
     );
     assert.equal(scannerInitialPageCount("full"), 17);
     assert.equal(scannerBatchSizeForPage("full", 16), 4);
@@ -144,7 +144,7 @@ describe("Scanner cursor and tier pagination", () => {
     assert.equal(
       scannerInitialWindowComplete({
         tier: "basic",
-        pageIndex: 3,
+        pageIndex: 16,
         hasMoreSources: true,
       }),
       true

@@ -18,6 +18,7 @@ import { LeviShell } from "@/components/levi/LeviShell";
 import { MetricCard } from "@/components/levi/MetricCard";
 import { HomeScannerPreview } from "@/components/levi/HomeScannerPreview";
 import { BurnLedger } from "@/components/flow/BurnLedger";
+import { FairLaunchSignal } from "@/components/flow/FairLaunchSignal";
 import { FlowAdventureVisual } from "@/components/flow/FlowAdventureVisual";
 import {
   FLOW_FINANCE_IMAGE_PATH,
@@ -44,12 +45,13 @@ export default function Home() {
               <p className="flow-kicker"><Compass className="h-4 w-4" /> Open Solana memecoin lab</p>
               <h1>
                 Flow-Finance Adventures
-                <span>Explore every token without losing the thread.</span>
+                <span>Explore every token. Discover the next fair launch early.</span>
               </h1>
               <p className="flow-hero-lede">
                 Inspect wallets, understand token behavior, burn supported assets and
                 launch new community experiments from one calm, verifiable workspace.
-                Each memecoin can become its own adventure without redefining the platform.
+                The upcoming Adventure Launch Signal will notify community wallets when
+                the next fair memecoin is ready to be independently reviewed.
               </p>
               <div className="flow-hero-actions">
                 <Link href="/scanner" className="flow-primary-button">
@@ -62,7 +64,7 @@ export default function Home() {
               <div className="flow-hero-proof">
                 <span><Radar className="h-4 w-4" /> Public on-chain evidence</span>
                 <span><ShieldCheck className="h-4 w-4" /> Noncustodial actions</span>
-                <span><Layers3 className="h-4 w-4" /> Multi-token by design</span>
+                <span><Layers3 className="h-4 w-4" /> Open access, no token gate</span>
               </div>
             </div>
             <FlowAdventureVisual />
@@ -81,6 +83,10 @@ export default function Home() {
               </div>
               <LeviCommunityLinks />
             </section>
+          </LeviReveal>
+
+          <LeviReveal>
+            <FairLaunchSignal />
           </LeviReveal>
 
           <LeviReveal>

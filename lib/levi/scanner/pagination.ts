@@ -1,14 +1,12 @@
 import type { LeviAccessTier } from "@/types/levi";
 import {
-  BASIC_SCAN_LIMIT,
   FULL_SCAN_LIMIT,
   SCANNER_TRANSACTION_BATCH_SIZE,
 } from "../constants";
 
 export function scannerTierWindowLimit(tier: LeviAccessTier): number {
-  if (tier === "full") return FULL_SCAN_LIMIT;
-  if (tier === "basic") return BASIC_SCAN_LIMIT;
-  return 0;
+  void tier;
+  return FULL_SCAN_LIMIT;
 }
 
 export function scannerInitialPageCount(
@@ -28,7 +26,7 @@ export function scannerBatchSizeForPage(
   const initialPageCount = scannerInitialPageCount(tier, batchSize);
   if (limit === 0 || pageIndex < 0) return 0;
   if (pageIndex >= initialPageCount) {
-    return tier === "full" ? batchSize : 0;
+    return batchSize;
   }
   return Math.min(batchSize, limit - pageIndex * batchSize);
 }
@@ -69,6 +67,5 @@ export function canContinueScannerPage(input: {
   tier: LeviAccessTier;
   nextPageIndex: number;
 }): boolean {
-  if (input.tier === "full") return true;
-  return input.nextPageIndex < scannerInitialPageCount(input.tier);
+  return input.nextPageIndex >= 0;
 }

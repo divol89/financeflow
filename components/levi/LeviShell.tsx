@@ -13,14 +13,17 @@ import {
   LogOut,
   Megaphone,
   Menu,
+  Moon,
   Radar,
   Search,
   ShieldCheck,
+  Sun,
   Users,
   WalletCards,
   X,
 } from "lucide-react";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
+import { useFlowTheme } from "@/hooks/useFlowTheme";
 import { CommunityBurnBanner } from "@/components/levi/CommunityBurnBanner";
 import { LeviCommunityLinks } from "@/components/levi/LeviCommunityLinks";
 import { WalletAccessSheet } from "@/components/levi/WalletAccessSheet";
@@ -54,15 +57,23 @@ function pathActive(pathname: string, href: string): boolean {
 export function LeviShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const auth = useLeviAuth();
+  const { theme, toggleTheme } = useFlowTheme();
   const [open, setOpen] = useState(false);
   const [accessOpen, setAccessOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 18);
+    const scrollRoot = document.getElementById("__next");
+    const handleScroll = () => {
+      setScrolled(Math.max(window.scrollY, scrollRoot?.scrollTop ?? 0) > 18);
+    };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    scrollRoot?.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      scrollRoot?.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -125,13 +136,23 @@ export function LeviShell({ children }: { children: ReactNode }) {
             {renderMenu("Learn", BookOpen, learningItems)}
           </nav>
 
-          {auth.session || auth.walletAddress ? (
-            <button type="button" onClick={() => void handleLogout()} className="levi-shell-cta hidden 2xl:inline-flex"><LogOut className="h-4 w-4" />Logout</button>
-          ) : (
-            <button type="button" onClick={() => setAccessOpen(true)} className="levi-shell-cta hidden 2xl:inline-flex"><WalletCards className="h-4 w-4" />Connect wallet</button>
-          )}
-
-          <button type="button" onClick={() => setOpen((value) => !value)} className="levi-menu-button inline-flex 2xl:hidden" aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"} aria-controls="levi-mobile-navigation">{open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
+          <div className="levi-header-actions">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flow-theme-toggle"
+              aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"}
+              title={theme === "dark" ? "Use light theme" : "Use dark theme"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            {auth.session || auth.walletAddress ? (
+              <button type="button" onClick={() => void handleLogout()} className="levi-shell-cta hidden 2xl:inline-flex"><LogOut className="h-4 w-4" />Logout</button>
+            ) : (
+              <button type="button" onClick={() => setAccessOpen(true)} className="levi-shell-cta hidden 2xl:inline-flex"><WalletCards className="h-4 w-4" />Connect wallet</button>
+            )}
+            <button type="button" onClick={() => setOpen((value) => !value)} className="levi-menu-button inline-flex 2xl:hidden" aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"} aria-controls="levi-mobile-navigation">{open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
+          </div>
         </div>
 
         {open ? (

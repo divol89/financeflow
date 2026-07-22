@@ -22,7 +22,7 @@ export function PortfolioWatchlist({
         <span>{items.length}/{limit}</span>
       </div>
       {limit <= 0 ? (
-        <div className="levi-empty-state">Hold 3,000 K9 to save token investigations.</div>
+        <div className="levi-empty-state">Saved investigations are unavailable for this session.</div>
       ) : items.length ? (
         <div className="levi-watchlist-grid">
           {items.map((item) => (
