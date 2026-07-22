@@ -5,11 +5,11 @@ export function BurnPortalIntro() {
     <div className="levi-burn-portal-copy">
       <div className="levi-section-label">
         <Flame className="h-4 w-4" />
-        Universal Solana burner
+        Open Solana burn studio
       </div>
       <h1 id="levi-burn-title">
-        Choose the token.
-        <span>Burn it for real.</span>
+        Your token. Your choice.
+        <span>A verifiable burn.</span>
       </h1>
       <p className="levi-burn-portal-lede">
         Choose any supported Solana token from your wallet, select the amount,
@@ -35,10 +35,10 @@ export function BurnPortalIntro() {
         <div>
           <ShieldCheck className="h-4 w-4" />
           <div>
-            <strong>K9 holder utility</strong>
+            <strong>Open to supported tokens</strong>
             <p>
-              K9 burns have no access threshold. Other tokens require at least
-              1,000,000 K9 in the signing wallet.
+              No project-token holding is required. You only need the asset and
+              enough SOL for the network fee.
             </p>
           </div>
         </div>

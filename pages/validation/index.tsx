@@ -7,7 +7,7 @@ const ValidationPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Project Validation | Agent K9</title>
+        <title>Project Validation | Flow-Finance Adventures</title>
         <meta
           name="description"
           content="Validate your project and gain community trust through our comprehensive verification process"

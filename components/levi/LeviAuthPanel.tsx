@@ -34,7 +34,7 @@ export function LeviAuthPanel({
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-white">K9 Access</p>
+            <p className="text-sm font-semibold text-white">Adventure Access</p>
             <p className="mt-1 text-sm text-slate-400">
               {session
                 ? "Wallet ownership verified for this session."

@@ -6,14 +6,10 @@ import {
 } from "@solana/spl-token";
 import { solanaRpc } from "@/lib/levi/rpc";
 import { normalizeSolanaAddress } from "@/lib/levi/wallet";
-import { AGENT_K9_MINT_ADDRESS } from "@/lib/levi/communityBurn";
-import { AGENT_K9_DECIMALS, AGENT_K9_SYMBOL } from "@/lib/levi/burnTracker/constants";
 import {
-  EXTERNAL_BURN_THRESHOLD_RAW,
   MAX_BURN_SOURCE_ACCOUNTS,
   MAX_BURN_TOKEN_OPTIONS,
   getBurnTokenProgram,
-  isLeviAiMint,
 } from "./constants";
 import { resolveBurnTokenMetadata } from "./metadata";
 import type {
@@ -79,7 +75,6 @@ const BURN_INVENTORY_RPC_POLICY = {
 } as const;
 
 function compareTokenValue(a: BurnTokenRecord, b: BurnTokenRecord): number {
-  if (a.isLeviAi !== b.isLeviAi) return a.isLeviAi ? -1 : 1;
   const aNormalized = BigInt(a.availableRaw) * BigInt(`1${"0".repeat(b.decimals)}`);
   const bNormalized = BigInt(b.availableRaw) * BigInt(`1${"0".repeat(a.decimals)}`);
   if (aNormalized === bNormalized) return a.mint.localeCompare(b.mint);
@@ -142,7 +137,6 @@ function toBurnTokenRecord(record: MutableTokenRecord): BurnTokenRecord {
     (total, source) => total + source.amountRaw,
     BigInt(0)
   );
-  const isLeviAi = isLeviAiMint(record.mint);
   const blockedReason = record.isNative
     ? "Native SOL and wrapped native accounts cannot be burned. Close the account instead."
     : availableRaw <= BigInt(0)
@@ -153,15 +147,14 @@ function toBurnTokenRecord(record: MutableTokenRecord): BurnTokenRecord {
 
   return {
     mint: record.mint,
-    name: isLeviAi ? "Agent K9" : null,
-    symbol: isLeviAi ? AGENT_K9_SYMBOL : null,
+    name: null,
+    symbol: null,
     program,
     programId: record.programId,
     decimals: record.decimals,
     availableRaw: availableRaw.toString(),
     totalBalanceRaw: record.totalBalanceRaw.toString(),
     accountCount: sources.length,
-    isLeviAi,
     burnable: !blockedReason,
     blockedReason,
     warning:
@@ -185,7 +178,6 @@ function toPublicTokenOption(record: BurnTokenRecord): BurnTokenOption {
     decimals: record.decimals,
     availableRaw: record.availableRaw,
     accountCount: record.accountCount,
-    isLeviAi: record.isLeviAi,
     burnable: record.burnable,
     blockedReason: record.blockedReason,
     warning: record.warning,
@@ -226,9 +218,6 @@ export async function loadBurnWalletState(
   collectTokenAccounts(groups, legacyAccounts, TOKEN_PROGRAM_ID.toBase58());
   collectTokenAccounts(groups, token2022Accounts, TOKEN_2022_PROGRAM_ID.toBase58());
   const records = [...groups.values()].map(toBurnTokenRecord).sort(compareTokenValue);
-  const leviAiBalanceRaw = records
-    .filter((record) => record.mint === AGENT_K9_MINT_ADDRESS)
-    .reduce((total, record) => total + BigInt(record.totalBalanceRaw), BigInt(0));
   const visibleRecords = records.slice(0, MAX_BURN_TOKEN_OPTIONS);
 
   return {
@@ -238,11 +227,6 @@ export async function loadBurnWalletState(
       totalTokenCount: records.length,
       truncated: records.length > visibleRecords.length,
       solBalanceLamports: String(solBalance.value),
-      leviAiBalanceRaw: leviAiBalanceRaw.toString(),
-      leviAiDecimals: AGENT_K9_DECIMALS,
-      externalBurnThresholdRaw: EXTERNAL_BURN_THRESHOLD_RAW,
-      externalBurnEligible:
-        leviAiBalanceRaw >= BigInt(EXTERNAL_BURN_THRESHOLD_RAW),
     },
     records,
   };
@@ -262,7 +246,6 @@ export async function getBurnWalletInventory(
   return {
     ...inventory,
     tokens: inventory.tokens.map((token) => {
-      if (token.isLeviAi) return token;
       const identity = metadata.get(token.mint);
       return identity
         ? {

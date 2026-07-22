@@ -27,9 +27,9 @@ export default function Footer() {
           <Send size={24} />
         </button>
       </div>
-      <p className="text-center text-sm text-gray-400">© 2026 Agent K9. All rights reserved.</p>
+      <p className="text-center text-sm text-gray-400">© 2026 Flow-Finance Adventures. All rights reserved.</p>
       <p className="max-w-2xl text-center text-xs text-gray-500">
-        Disclaimer: Cryptocurrency investments are subject to high market risks. Agent K9 is not responsible for any direct, indirect or consequential losses resulting from decisions based on the information provided. Research independently and trade with caution.
+        Disclaimer: Cryptocurrency investments are subject to high market risks. Flow-Finance Adventures is not responsible for losses resulting from decisions based on the information provided. Research independently and trade with caution.
       </p>
     </footer>
   );

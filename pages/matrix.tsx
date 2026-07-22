@@ -5,7 +5,7 @@ export default function MatrixDashboardPage() {
   return (
     <>
       <Head>
-        <title>IO Local Bot Cockpit | Agent K9</title>
+        <title>IO Local Bot Cockpit | Flow-Finance Adventures</title>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <main className="min-h-screen bg-black">

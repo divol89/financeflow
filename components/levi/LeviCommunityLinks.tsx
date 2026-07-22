@@ -27,7 +27,7 @@ export function LeviCommunityLinks({
   return (
     <div
       className={`levi-community-links is-${variant}`}
-      aria-label="Official Agent K9 community channels"
+      aria-label="Official Flow-Finance Adventures community channels"
     >
       {LEVI_COMMUNITY_LINKS.map((channel) => (
         <a

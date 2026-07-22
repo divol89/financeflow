@@ -11,32 +11,32 @@ const narrativeSteps: NarrativeStep[] = [
   {
     index: "01",
     title: "Observe",
-    description: "Read public activity.",
+    description: "Choose a token or wallet.",
     icon: Eye,
   },
   {
     index: "02",
     title: "Understand",
-    description: "Surface useful context.",
+    description: "Read verifiable context.",
     icon: BrainCircuit,
   },
   {
     index: "03",
     title: "Propose",
-    description: "Share the next idea.",
+    description: "Shape the next adventure.",
     icon: Lightbulb,
   },
   {
     index: "04",
     title: "Build",
-    description: "Ship useful utility.",
+    description: "Launch useful utility.",
     icon: Blocks,
   },
 ];
 
 export function HomeNarrativeFlow() {
   return (
-    <ol className="levi-home-narrative-flow" aria-label="Agent K9 development flow">
+    <ol className="levi-home-narrative-flow" aria-label="Flow-Finance Adventures product loop">
       {narrativeSteps.map(({ index, title, description, icon: Icon }) => (
         <li key={index}>
           <span>{index}</span>

@@ -7,7 +7,7 @@ export default function TokenSnifferPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Token Sniffer | Agent K9</title>
+        <title>Token Sniffer | Flow-Finance Adventures</title>
         <meta
           name="description"
           content="A beginner-friendly Solana token risk check powered by RugCheck data through FluxRPC."

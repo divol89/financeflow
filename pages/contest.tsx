@@ -168,7 +168,7 @@ export default function ContestPage() {
   return (
     <LeviShell>
       <Head>
-        <title>K9 Social | Agent K9</title>
+        <title>K9 Social Quest | Flow-Finance Adventures</title>
         <meta
           name="description"
           content="A holder-gated K9 community contest for thoughtful posts on X."

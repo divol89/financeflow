@@ -2,7 +2,6 @@ import { normalizeSolanaAddress } from "@/lib/levi/wallet";
 import { getLeviBurnSigningContext } from "./transaction";
 import { loadBurnWalletState } from "./inventory";
 import { createBurnTransaction } from "./transactionFactory";
-import { EXTERNAL_BURN_THRESHOLD_RAW, isLeviAiMint } from "./constants";
 import type { BurnPreparation } from "@/types/leviBurn";
 
 const RAW_TOKEN_AMOUNT_PATTERN = /^[1-9]\d*$/;
@@ -21,28 +20,11 @@ export async function prepareBurnTransaction(input: {
   wallet: string;
   mint: string;
   amountRaw: string;
-  sessionWallet: string | null;
 }): Promise<BurnPreparation> {
   const wallet = normalizeSolanaAddress(input.wallet);
   const mint = normalizeSolanaAddress(input.mint);
   if (!RAW_TOKEN_AMOUNT_PATTERN.test(input.amountRaw)) {
     throw new BurnPreparationError("A valid burn amount is required.");
-  }
-
-  const isLeviAi = isLeviAiMint(mint);
-  if (!isLeviAi) {
-    if (!input.sessionWallet) {
-      throw new BurnPreparationError(
-        "Sign access to verify the 1,000,000 K9 holder requirement.",
-        401
-      );
-    }
-    if (normalizeSolanaAddress(input.sessionWallet) !== wallet) {
-      throw new BurnPreparationError(
-        "The signed session must match the connected wallet.",
-        403
-      );
-    }
   }
 
   const state = await loadBurnWalletState(wallet);
@@ -58,16 +40,6 @@ export async function prepareBurnTransaction(input: {
       token.blockedReason || "This token balance cannot be burned."
     );
   }
-  if (
-    !isLeviAi &&
-    BigInt(state.inventory.leviAiBalanceRaw) < BigInt(EXTERNAL_BURN_THRESHOLD_RAW)
-  ) {
-    throw new BurnPreparationError(
-      "Hold at least 1,000,000 K9 to burn another Solana token.",
-      403
-    );
-  }
-
   const amountRaw = BigInt(input.amountRaw);
   if (amountRaw > BigInt(token.availableRaw)) {
     throw new BurnPreparationError(
@@ -96,7 +68,6 @@ export async function prepareBurnTransaction(input: {
     decimals: token.decimals,
     symbol: token.symbol,
     programId: token.programId,
-    isLeviAi,
     transactionBase64,
   };
 }

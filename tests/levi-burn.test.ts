@@ -104,7 +104,6 @@ test("presents the on-chain token name and symbol together", () => {
     decimals: 6,
     availableRaw: "1000000",
     accountCount: 1,
-    isLeviAi: false,
     burnable: true,
     blockedReason: null,
     warning: null,
@@ -195,7 +194,6 @@ test("validates the prepared transaction before delegating submission to the wal
     decimals: 6,
     symbol: "TEST",
     amountRaw: "1000000000",
-    isLeviAi: false,
     transactionBase64: transaction
       .serialize({ requireAllSignatures: false, verifySignatures: false })
       .toString("base64"),
@@ -221,12 +219,11 @@ test("validates the prepared transaction before delegating submission to the wal
   assert.equal(capturedInstructionCount, 1);
 });
 
-test("enforces a signed 1,000,000 K9 gate only for external token burns", async () => {
+test("prepares burns for any supported token without a project-token gate", async () => {
   const owner = Keypair.generate().publicKey.toBase58();
   const externalMint = Keypair.generate().publicKey.toBase58();
   const externalAccount = Keypair.generate().publicKey.toBase58();
   const leviAccount = Keypair.generate().publicKey.toBase58();
-  let leviBalanceRaw = "1000000000000";
 
   globalThis.fetch = (async (_input, init) => {
     const request = JSON.parse(String(init?.body)) as {
@@ -267,7 +264,7 @@ test("enforces a signed 1,000,000 K9 gate only for external token burns", async 
                         info: {
                           mint: AGENT_K9_MINT_ADDRESS,
                           state: "initialized",
-                          tokenAmount: { amount: leviBalanceRaw, decimals: 6 },
+                          tokenAmount: { amount: "100", decimals: 6 },
                         },
                       },
                     },
@@ -290,52 +287,23 @@ test("enforces a signed 1,000,000 K9 gate only for external token burns", async 
   }) as typeof fetch;
 
   try {
-    await assert.rejects(
-      () =>
-        prepareBurnTransaction({
-          wallet: owner,
-          mint: externalMint,
-          amountRaw: "1000000",
-          sessionWallet: null,
-        }),
-      /Sign access/
-    );
-
-    leviBalanceRaw = "999999999999";
-    await assert.rejects(
-      () =>
-        prepareBurnTransaction({
-          wallet: owner,
-          mint: externalMint,
-          amountRaw: "1000000",
-          sessionWallet: owner,
-        }),
-      /Hold at least 1,000,000 K9/
-    );
-
-    leviBalanceRaw = "1000000000000";
     const externalPreparation = await prepareBurnTransaction({
       wallet: owner,
       mint: externalMint,
       amountRaw: "1000000",
-      sessionWallet: owner,
     });
     assert.equal(externalPreparation.programId, TOKEN_PROGRAM_ID.toBase58());
-    assert.equal(externalPreparation.isLeviAi, false);
     assert.equal(
       parseAndValidatePreparedBurn(externalPreparation).instructions.length,
       1
     );
 
-    leviBalanceRaw = "100";
     const leviPreparation = await prepareBurnTransaction({
       wallet: owner,
       mint: AGENT_K9_MINT_ADDRESS,
       amountRaw: "1",
-      sessionWallet: null,
     });
     assert.equal(leviPreparation.programId, TOKEN_2022_PROGRAM_ID.toBase58());
-    assert.equal(leviPreparation.isLeviAi, true);
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -9,7 +9,6 @@ export interface BurnTokenOption {
   decimals: number;
   availableRaw: string;
   accountCount: number;
-  isLeviAi: boolean;
   burnable: boolean;
   blockedReason: string | null;
   warning: string | null;
@@ -21,10 +20,6 @@ export interface BurnWalletInventory {
   totalTokenCount: number;
   truncated: boolean;
   solBalanceLamports: string;
-  leviAiBalanceRaw: string;
-  leviAiDecimals: number;
-  externalBurnThresholdRaw: string;
-  externalBurnEligible: boolean;
 }
 
 export interface BurnPreparation {
@@ -34,7 +29,6 @@ export interface BurnPreparation {
   decimals: number;
   symbol: string | null;
   programId: string;
-  isLeviAi: boolean;
   transactionBase64: string;
 }
 
@@ -67,6 +61,5 @@ export interface LeviBurnSubmission {
   symbol: string | null;
   decimals: number;
   amountRaw: string;
-  isLeviAi: boolean;
   state: "submitted" | "confirmed";
 }

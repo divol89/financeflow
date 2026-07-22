@@ -92,7 +92,6 @@ export async function submitPreparedBurn(input: {
     symbol: input.preparation.symbol,
     decimals: input.preparation.decimals,
     amountRaw: input.preparation.amountRaw,
-    isLeviAi: input.preparation.isLeviAi,
     state: "submitted",
   };
 }

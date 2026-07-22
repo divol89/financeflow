@@ -2,153 +2,114 @@ import Head from "next/head";
 import Link from "next/link";
 import {
   ArrowRight,
-  FileText,
-  Lock,
+  Coins,
+  Compass,
+  Flame,
+  Layers3,
   Radar,
   ShieldCheck,
   Sparkles,
-  Volume2,
 } from "lucide-react";
 import { AgenticDevelopmentNotice } from "@/components/levi/AgenticDevelopmentNotice";
-import { BullChargeProposal } from "@/components/levi/BullChargeProposal";
-import { LeviEntranceImage } from "@/components/levi/LeviEntranceImage";
 import { LeviCommunityLinks } from "@/components/levi/LeviCommunityLinks";
 import { HomeNarrativeFlow } from "@/components/levi/HomeNarrativeFlow";
 import { LeviReveal } from "@/components/levi/LeviReveal";
 import { LeviShell } from "@/components/levi/LeviShell";
-import { LiveBurnTracker } from "@/components/levi/LiveBurnTracker";
 import { MetricCard } from "@/components/levi/MetricCard";
 import { HomeScannerPreview } from "@/components/levi/HomeScannerPreview";
-import { AGENT_K9_IMAGE_PATH } from "@/lib/agentK9/brand";
+import { BurnLedger } from "@/components/flow/BurnLedger";
+import { FlowAdventureVisual } from "@/components/flow/FlowAdventureVisual";
+import {
+  FLOW_FINANCE_IMAGE_PATH,
+  FLOW_FINANCE_NAME,
+  FLOW_FINANCE_TAGLINE,
+} from "@/lib/flowFinance/brand";
 
 export default function Home() {
   return (
     <LeviShell>
       <Head>
-        <title>Agent K9 | Solana Intelligence</title>
-        <meta
-          name="description"
-          content="Agent K9 turns public Solana activity into clearer signals and community-built Web3 products."
-        />
-        <meta property="og:title" content="Agent K9 | Solana Intelligence" />
-        <meta property="og:image" content={AGENT_K9_IMAGE_PATH} />
+        <title>{`${FLOW_FINANCE_NAME} | Solana Memecoin Toolkit`}</title>
+        <meta name="description" content={FLOW_FINANCE_TAGLINE} />
+        <meta property="og:title" content={`${FLOW_FINANCE_NAME} | Solana Memecoin Toolkit`} />
+        <meta property="og:description" content={FLOW_FINANCE_TAGLINE} />
+        <meta property="og:image" content={FLOW_FINANCE_IMAGE_PATH} />
       </Head>
 
-      <section className="levi-home">
-        <div className="levi-home-grid" aria-hidden="true" />
-        <div className="levi-home-light" aria-hidden="true" />
-
+      <section className="flow-home">
+        <div className="flow-home-grid" aria-hidden="true" />
         <div className="levi-container">
-          <div className="levi-hero">
-            <div className="levi-hero-copy">
-              <div className="levi-eyebrow">
-                <ShieldCheck className="h-4 w-4" />
-                Agent K9 / Solana-native intelligence
-              </div>
-              <h1 className="levi-display">
-                Read the chain.
-                <span>Build what matters.</span>
+          <div className="flow-hero">
+            <div className="flow-hero-copy">
+              <p className="flow-kicker"><Compass className="h-4 w-4" /> Open Solana memecoin lab</p>
+              <h1>
+                Flow-Finance Adventures
+                <span>Explore every token without losing the thread.</span>
               </h1>
-              <p className="levi-hero-lede">
-                Agent K9 turns public Solana activity into AI-assisted
-                context, while community ideas become real Web3 products. The
-                Agent K9 scanner is the intelligence surface for reviewing the signal.
+              <p className="flow-hero-lede">
+                Inspect wallets, understand token behavior, burn supported assets and
+                launch new community experiments from one calm, verifiable workspace.
+                Each memecoin can become its own adventure without redefining the platform.
               </p>
-              <div className="levi-hero-actions">
-              <Link
-                href="/scanner"
-                  className="levi-primary-button"
-              >
-                  Open Scanner
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/docs" className="levi-secondary-button">
-                <FileText className="h-4 w-4" />
-                Open Docs
-              </Link>
+              <div className="flow-hero-actions">
+                <Link href="/scanner" className="flow-primary-button">
+                  Explore Scanner <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/burn" className="flow-secondary-button">
+                  <Flame className="h-4 w-4" /> Burn a token
+                </Link>
               </div>
-              <div className="levi-hero-proof">
-                <span><Sparkles className="h-4 w-4" /> AI-assisted</span>
-                <span><Radar className="h-4 w-4" /> Human-reviewed</span>
-                <span><ShieldCheck className="h-4 w-4" /> Community-built</span>
+              <div className="flow-hero-proof">
+                <span><Radar className="h-4 w-4" /> Public on-chain evidence</span>
+                <span><ShieldCheck className="h-4 w-4" /> Noncustodial actions</span>
+                <span><Layers3 className="h-4 w-4" /> Multi-token by design</span>
               </div>
             </div>
-
-            <LeviEntranceImage />
+            <FlowAdventureVisual />
           </div>
 
-          <div className="levi-hero-rail" aria-hidden="true">
-            <span>AGENT K9 / SOLANA</span>
-            <span>FROM PUBLIC SIGNALS TO USEFUL PRODUCTS</span>
-            <span className="levi-hero-rail-line" />
-            <ArrowRight className="h-4 w-4" />
+          <div className="flow-hero-rail" aria-hidden="true">
+            <span>DISCOVER</span><span>UNDERSTAND</span><span>BURN</span><span>BUILD</span>
           </div>
 
           <LeviReveal>
-            <section className="levi-community-invite" aria-labelledby="levi-community-title">
-              <div className="levi-community-invite-copy">
-                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> Official channels</div>
-                <h2 id="levi-community-title">Join the Agent K9 community.</h2>
-                <p>Follow product releases, community proposals and the next utilities built around K9.</p>
+            <section className="flow-community-invite" aria-labelledby="flow-community-title">
+              <div>
+                <p className="flow-kicker"><Sparkles className="h-4 w-4" /> Follow the next adventure</p>
+                <h2 id="flow-community-title">Ideas and launches move in public.</h2>
+                <p>Join the official channels for new token experiments, product releases and community proposals.</p>
               </div>
               <LeviCommunityLinks />
             </section>
           </LeviReveal>
 
           <LeviReveal>
-            <section className="levi-home-narrative" aria-labelledby="home-narrative-title">
-              <div className="levi-home-narrative-copy">
-                <div className="levi-section-label"><Sparkles className="h-4 w-4" /> Agent K9 idea</div>
-                <h2 id="home-narrative-title">Community ideas become real Web3 products.</h2>
+            <section className="flow-narrative" aria-labelledby="flow-narrative-title">
+              <div>
+                <p className="flow-kicker"><Compass className="h-4 w-4" /> The adventure loop</p>
+                <h2 id="flow-narrative-title">One platform. Many memecoin stories.</h2>
                 <p>
-                  Agent K9 helps make Solana activity easier to read. The community
-                  helps decide what gets built next. Together, signals become context,
-                  proposals become products, and utility grows in public.
+                  Start with public evidence, turn it into useful context, test a community
+                  idea and ship the next utility. The platform stays consistent while each
+                  token gets its own identity, campaign and product path.
                 </p>
               </div>
               <HomeNarrativeFlow />
             </section>
           </LeviReveal>
 
-          <div className="levi-flow">
+          <div className="flow-home-sections">
             <LeviReveal>
               <div className="levi-metric-grid">
-                <MetricCard
-                  label="Basic access"
-                  value="3,000 K9"
-                  icon={<Lock className="h-4 w-4" />}
-                  tone="amber"
-                />
-                <MetricCard
-                  label="Full access"
-                  value="50,000 K9"
-                  icon={<Radar className="h-4 w-4" />}
-                  tone="green"
-                />
-                <MetricCard
-                  label="Signal mode"
-                  value="Heuristic"
-                  icon={<Volume2 className="h-4 w-4" />}
-                  tone="cyan"
-                />
+                <MetricCard label="Network" value="Solana" icon={<Compass className="h-4 w-4" />} tone="cyan" />
+                <MetricCard label="Token support" value="SPL + Token-2022" icon={<Coins className="h-4 w-4" />} tone="green" />
+                <MetricCard label="Burn records" value="Verified by mint" icon={<Flame className="h-4 w-4" />} tone="amber" />
               </div>
             </LeviReveal>
 
-            <LeviReveal>
-              <LiveBurnTracker />
-            </LeviReveal>
-
-            <LeviReveal>
-              <AgenticDevelopmentNotice />
-            </LeviReveal>
-
-            <LeviReveal>
-              <BullChargeProposal />
-            </LeviReveal>
-
-            <LeviReveal>
-              <HomeScannerPreview />
-            </LeviReveal>
+            <LeviReveal><BurnLedger /></LeviReveal>
+            <LeviReveal><AgenticDevelopmentNotice /></LeviReveal>
+            <LeviReveal><HomeScannerPreview /></LeviReveal>
           </div>
         </div>
       </section>

@@ -6,9 +6,9 @@ export default function ScannerPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Scanner | Agent K9</title>
+        <title>Scanner | Flow-Finance Adventures</title>
       </Head>
-      <section className="min-h-screen bg-[#050705] px-4 pb-16 pt-28 sm:px-6">
+      <section className="levi-scanner-page min-h-screen px-4 pb-16 pt-28 sm:px-6">
         <div className="mx-auto mb-8 max-w-6xl">
           <p className="text-sm font-semibold uppercase text-amber-300">
             Scanner

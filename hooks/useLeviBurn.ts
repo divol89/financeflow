@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { submitPreparedBurn } from "@/lib/levi/burn/client";
 import {
-  synchronizeBurnTrackerAfterBurn,
   waitForLeviBurnConfirmation,
+  waitForLeviBurnFinalization,
 } from "@/lib/levi/burn/gateway";
-import { publishBurnTrackerSnapshot } from "@/lib/levi/burnTracker/clientEvents";
+import { recordPortalBurn } from "@/lib/burnLedger/client";
 import { parseBurnAmount } from "@/lib/levi/burn/validation";
 import { readJsonResponse } from "@/lib/levi/fetchJson";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
-import { useLeviAuth } from "@/hooks/useLeviAuth";
 import type {
   BurnPreparation,
   BurnTokenOption,
@@ -32,7 +31,6 @@ function preferredToken(
 ): BurnTokenOption | null {
   return (
     tokens.find((token) => token.mint === currentMint) ||
-    tokens.find((token) => token.isLeviAi && token.burnable) ||
     tokens.find((token) => token.burnable) ||
     tokens[0] ||
     null
@@ -41,7 +39,6 @@ function preferredToken(
 
 export function useUniversalBurn() {
   const wallet = useInjectedSolanaWallet();
-  const auth = useLeviAuth();
   const [inventory, setInventory] = useState<BurnWalletInventory | null>(null);
   const [selectedMint, setSelectedMint] = useState<string | null>(null);
   const [isLoadingInventory, setIsLoadingInventory] = useState(false);
@@ -57,10 +54,6 @@ export function useUniversalBurn() {
     () => inventory?.tokens.find((token) => token.mint === selectedMint) || null,
     [inventory, selectedMint]
   );
-  const hasExternalAccessSession = Boolean(
-    wallet.address && auth.session?.wallet === wallet.address
-  );
-
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -80,26 +73,36 @@ export function useUniversalBurn() {
     []
   );
 
-  const synchronizeTracker = useCallback(
-    async (signature: string, initialState: LeviBurnTransactionState) => {
+  const synchronizeLedger = useCallback(
+    async (
+      signature: string,
+      mint: string,
+      walletAddress: string,
+      initialState: LeviBurnTransactionState
+    ) => {
       updateTrackerSyncState(
         signature,
         initialState === "finalized" ? "refreshing" : "waiting"
       );
 
       try {
-        const result = await synchronizeBurnTrackerAfterBurn(signature, {
-          initialState,
-        });
-        if (!result.snapshot) {
+        const status =
+          initialState === "finalized"
+            ? { signature, state: "finalized" as const }
+            : await waitForLeviBurnFinalization(signature);
+        if (status.state !== "finalized") {
           updateTrackerSyncState(signature, "deferred");
           return null;
         }
 
         updateTrackerSyncState(signature, "refreshing");
-        publishBurnTrackerSnapshot(result.snapshot);
+        const ledger = await recordPortalBurn({
+          signature,
+          mint,
+          wallet: walletAddress,
+        });
         updateTrackerSyncState(signature, "updated");
-        return result.snapshot;
+        return ledger;
       } catch {
         updateTrackerSyncState(signature, "deferred");
         return null;
@@ -190,10 +193,6 @@ export function useUniversalBurn() {
     setError(null);
   }, []);
 
-  const signExternalAccess = useCallback(async () => {
-    await auth.signIn();
-  }, [auth]);
-
   const burn = useCallback(
     async (amount: string) => {
       if (!wallet.provider || !wallet.address || !inventory || !selectedToken) {
@@ -206,18 +205,6 @@ export function useUniversalBurn() {
         setError(message);
         throw new Error(message);
       }
-      if (!selectedToken.isLeviAi && !hasExternalAccessSession) {
-        const message =
-          "Sign access to verify the 1,000,000 K9 holder requirement.";
-        setError(message);
-        throw new Error(message);
-      }
-      if (!selectedToken.isLeviAi && !inventory.externalBurnEligible) {
-        const message = "Hold at least 1,000,000 K9 to burn another token.";
-        setError(message);
-        throw new Error(message);
-      }
-
       try {
         const displaySymbol = selectedToken.symbol || "selected token";
         const amountRaw = parseBurnAmount(
@@ -272,13 +259,21 @@ export function useUniversalBurn() {
               : "submitted",
         };
         setSubmission(completedResult);
-        if (result.isLeviAi) {
-          activeTrackerSignatureRef.current = result.signature;
-          if (status.state === "finalized") {
-            await synchronizeTracker(result.signature, status.state);
-          } else {
-            void synchronizeTracker(result.signature, status.state);
-          }
+        activeTrackerSignatureRef.current = result.signature;
+        if (status.state === "finalized") {
+          await synchronizeLedger(
+            result.signature,
+            result.mint,
+            wallet.address,
+            status.state
+          );
+        } else {
+          void synchronizeLedger(
+            result.signature,
+            result.mint,
+            wallet.address,
+            status.state
+          );
         }
         await refreshInventory(wallet.address);
         return completedResult;
@@ -294,42 +289,40 @@ export function useUniversalBurn() {
       }
     },
     [
-      hasExternalAccessSession,
       inventory,
       refreshInventory,
       selectedToken,
-      synchronizeTracker,
+      synchronizeLedger,
       wallet.address,
       wallet.provider,
     ]
   );
 
   const retryTrackerSync = useCallback(async () => {
-    if (!submission?.isLeviAi) return null;
+    if (!submission || !wallet.address) return null;
     activeTrackerSignatureRef.current = submission.signature;
-    return synchronizeTracker(
+    return synchronizeLedger(
       submission.signature,
+      submission.mint,
+      wallet.address,
       submission.state === "confirmed" ? "confirmed" : "pending"
     );
-  }, [submission, synchronizeTracker]);
+  }, [submission, synchronizeLedger, wallet.address]);
 
   return {
     ...wallet,
     inventory,
     selectedToken,
     selectedMint,
-    hasExternalAccessSession,
     isLoadingInventory,
     isBurning,
-    isSigningAccess: auth.isSigning,
-    error: error || auth.error,
+    error,
     submission,
     trackerSyncState,
     connectWallet,
     refreshInventory,
     retryTrackerSync,
     selectToken,
-    signExternalAccess,
     burn,
   };
 }

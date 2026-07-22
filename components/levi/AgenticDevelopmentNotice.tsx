@@ -14,9 +14,9 @@ export function AgenticDevelopmentNotice() {
             Community proposals can become agent-built features.
           </h2>
           <p className="levi-panel-copy">
-            Agent K9 is an agentic development surface. Propose tools,
-            games, dashboards, scanner ideas, or token-growth work in the K9
-            chat. Community-backed ideas can be turned into scoped development
+            Flow-Finance Adventures is an agentic development surface. Propose tools,
+            games, dashboards, scanner ideas or a new memecoin adventure in the
+            community chat. Community-backed ideas can become scoped development
             tasks for the autonomous agent, supervised by developer Magneto.
             When the agent wallet reaches the SOL needed for approved
             deployment or development work, the agent can continue with Fable
@@ -30,9 +30,9 @@ export function AgenticDevelopmentNotice() {
             Fund the agent wallet
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            This is the agent wallet for K9 development funding. SOL sent here
+            This is the agent wallet for platform development funding. SOL sent here
             is intended for approved contract deployments and development tasks
-            around the token. Funding is voluntary and does not guarantee a
+            around community-selected projects. Funding is voluntary and does not guarantee a
             specific delivery date or scope until it is reviewed.
           </p>
           <div className="mt-4 border-t border-amber-400/20 pt-3">
@@ -46,7 +46,7 @@ export function AgenticDevelopmentNotice() {
           </div>
           <p className="levi-panel-note">
             <MessageCircle className="h-4 w-4" />
-            Use the K9 chat to describe what the agent wallet funding should
+            Use the community chat to describe what the agent wallet funding should
             support.
           </p>
         </div>

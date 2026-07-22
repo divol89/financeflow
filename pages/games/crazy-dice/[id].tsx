@@ -537,7 +537,7 @@ function GameRoom() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-black text-white p-4 pt-24">
       <Head>
-        <title>Game #{id} - Crazy Dice V4 | Gasless</title>
+        <title>{`Game #${id} - Crazy Dice V4 | Gasless`}</title>
       </Head>
       <ToastContainer position="bottom-right" theme="dark" />
 

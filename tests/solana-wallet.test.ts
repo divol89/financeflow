@@ -88,7 +88,7 @@ test("builds a canonical Phantom browse link while preserving route state", () =
 test("rejects external Phantom browse targets", () => {
   assert.throws(
     () => buildPhantomBrowseUrl("https://malicious.example/token-gate"),
-    /must stay on the Agent K9 website/
+    /must stay on the Flow-Finance Adventures website/
   );
 });
 

@@ -166,7 +166,7 @@ export function BitcoinLearningExperience() {
         <LeviReveal>
           <div className="levi-bitcoin-hero-copy">
             <Link href="/learn" className="levi-bitcoin-back-link">
-              <ArrowLeft className="h-4 w-4" /> Back to Agent K9 Learn
+              <ArrowLeft className="h-4 w-4" /> Back to Flow Adventures Learn
             </Link>
             <p className="levi-eyebrow mt-8">
               <Blocks className="h-3.5 w-3.5" /> Bitcoin field guide / Interactive module
@@ -469,11 +469,11 @@ export function BitcoinLearningExperience() {
           <h2>Use protocol knowledge as context, then keep your own judgment active.</h2>
           <p>
             This module is a starting point for understanding Bitcoin&apos;s system design.
-            Return to Agent K9 Learn for the practical discipline, liquidity and risk material
+            Return to Flow Adventures Learn for the practical discipline, liquidity and risk material
             that belongs alongside any market research.
           </p>
           <Link href="/learn" className="levi-secondary-button mt-7">
-            Return to Agent K9 Learn <ArrowLeft className="h-4 w-4" />
+            Return to Flow Adventures Learn <ArrowLeft className="h-4 w-4" />
           </Link>
         </LeviReveal>
       </section>

@@ -36,37 +36,34 @@ export function BurnSubmissionResult({
           {submission.symbol || truncateSolanaAddress(submission.mint, 4)} was burned
           from your wallet.
         </p>
-        {submission.isLeviAi && trackerSyncState !== "idle" ? (
+        {trackerSyncState !== "idle" ? (
           <p
             className={`levi-burn-sync-status is-${trackerSyncState}`}
             aria-live="polite"
           >
             {trackerSyncState === "updated"
-              ? "Live Burn Tracker updated automatically."
+              ? "Public burn ledger updated automatically."
               : trackerSyncState === "refreshing"
-                ? "Finalized on Solana. Updating the Live Burn Tracker now."
+                ? "Finalized on Solana. Updating the public burn ledger now."
                 : trackerSyncState === "waiting"
-                  ? "Waiting for Solana finalization. The tracker will update automatically."
-                  : "Automatic tracker sync was delayed. The burn remains valid on-chain."}
+                  ? "Waiting for Solana finalization. The ledger will update automatically."
+                  : "Automatic ledger sync was delayed. The burn remains valid on-chain."}
           </p>
         ) : null}
         <div>
           <a href={submission.solscanUrl} target="_blank" rel="noreferrer">
             View transaction <ExternalLink className="h-3.5 w-3.5" />
           </a>
-          {submission.isLeviAi ? (
-            <Link href="/#live-burn-tracker">
-              Open K9 tracker <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
-          ) : (
-            <Link href={`/token-sniffer?mint=${encodeURIComponent(submission.mint)}`}>
-              Inspect token <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
-          )}
-          {submission.isLeviAi && trackerSyncState === "deferred" ? (
+          <Link href="/#live-burn-ledger">
+            Open burn ledger <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link href={`/token-sniffer?mint=${encodeURIComponent(submission.mint)}`}>
+            Inspect token <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          {trackerSyncState === "deferred" ? (
             <button type="button" onClick={onRetryTrackerSync}>
               <RefreshCw className="h-3.5 w-3.5" />
-              Retry tracker update
+              Retry ledger update
             </button>
           ) : null}
         </div>

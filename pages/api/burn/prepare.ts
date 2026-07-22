@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSessionFromRequest } from "@/lib/levi/session";
 import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
 import {
@@ -38,13 +37,11 @@ export default async function handler(
   }
 
   try {
-    const session = getSessionFromRequest(req);
     return res.status(200).json(
       await prepareBurnTransaction({
         wallet,
         mint,
         amountRaw,
-        sessionWallet: session?.wallet || null,
       })
     );
   } catch (error) {

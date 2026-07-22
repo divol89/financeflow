@@ -13,9 +13,9 @@ export default function MethodologyPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Methodology | Agent K9</title>
+        <title>Methodology | Flow-Finance Adventures</title>
       </Head>
-      <section className="min-h-screen bg-[#050705] px-4 pb-16 pt-28 sm:px-6">
+      <section className="levi-method-page min-h-screen px-4 pb-16 pt-28 sm:px-6">
         <div className="mx-auto max-w-5xl">
           <p className="text-sm font-semibold uppercase text-amber-300">
             Methodology

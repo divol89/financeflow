@@ -6,7 +6,6 @@ import {
   RefreshCw,
   WalletCards,
 } from "lucide-react";
-import { BurnAccessGate } from "@/components/levi/burn/BurnAccessGate";
 import { BurnAmountControls } from "@/components/levi/burn/BurnAmountControls";
 import { BurnPortalIntro } from "@/components/levi/burn/BurnPortalIntro";
 import { BurnSubmissionResult } from "@/components/levi/burn/BurnSubmissionResult";
@@ -24,10 +23,8 @@ export function LeviBurnPortal() {
     inventory,
     selectedToken,
     selectedMint,
-    hasExternalAccessSession,
     isLoadingInventory,
     isBurning,
-    isSigningAccess,
     error,
     submission,
     trackerSyncState,
@@ -35,7 +32,6 @@ export function LeviBurnPortal() {
     refreshInventory,
     retryTrackerSync,
     selectToken,
-    signExternalAccess,
     burn,
   } = useUniversalBurn();
   const [amount, setAmount] = useState("");
@@ -74,16 +70,11 @@ export function LeviBurnPortal() {
   const amountError = exceedsBalance
     ? "The requested burn amount exceeds the selected token balance."
     : amountState.error;
-  const externalGateSatisfied = Boolean(
-    selectedToken?.isLeviAi ||
-      (inventory?.externalBurnEligible && hasExternalAccessSession)
-  );
   const canBurn = Boolean(
     selectedToken?.burnable &&
       amountState.amountRaw &&
       !amountError &&
       acknowledged &&
-      externalGateSatisfied &&
       !isBurning &&
       !isLoadingInventory
   );
@@ -93,14 +84,6 @@ export function LeviBurnPortal() {
       await connectWallet();
     } catch {
       // The hook exposes the actionable wallet error below the form.
-    }
-  }
-
-  async function handleSignAccess() {
-    try {
-      await signExternalAccess();
-    } catch {
-      // The authentication hook exposes the signing error below the form.
     }
   }
 
@@ -191,13 +174,6 @@ export function LeviBurnPortal() {
 
                 {selectedToken ? (
                   <>
-                    <BurnAccessGate
-                      inventory={inventory}
-                      selectedToken={selectedToken}
-                      hasExternalAccessSession={hasExternalAccessSession}
-                      isSigningAccess={isSigningAccess}
-                      onSignAccess={() => void handleSignAccess()}
-                    />
                     <BurnAmountControls
                       selectedToken={selectedToken}
                       solBalanceLamports={inventory.solBalanceLamports}
@@ -246,8 +222,9 @@ export function LeviBurnPortal() {
         ) : null}
 
         <p className="levi-burn-tool-footnote">
-          Only K9 burns update the public Live Burn Tracker. External-token burns remain
-          verifiable through their Solscan transaction and the selected mint supply.
+          Every finalized burn completed here is verified on-chain and added to the
+          public ledger under its own mint. Amounts from different tokens are never
+          combined.
         </p>
       </form>
     </section>

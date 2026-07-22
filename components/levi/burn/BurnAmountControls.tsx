@@ -102,7 +102,7 @@ export function BurnAmountControls({
         )}
         {isBurning
           ? trackerSyncState === "refreshing"
-            ? "Updating K9 tracker"
+            ? "Updating burn ledger"
             : "Waiting for confirmation"
           : `Burn ${selectedLabel}`}
       </button>

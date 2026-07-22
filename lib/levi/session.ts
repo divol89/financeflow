@@ -76,7 +76,7 @@ export function buildSignInMessage(
     "flow-finance.xyz wants you to sign in with your Solana wallet:",
     wallet,
     "",
-    "Purpose: Agent K9 token-gated access.",
+    "Purpose: Flow-Finance Adventures wallet access.",
     `Nonce: ${nonce}`,
     `Expires: ${new Date(expiresAt).toISOString()}`,
   ].join("\n");
