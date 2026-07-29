@@ -1,34 +1,39 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BellRing,
   CircleCheckBig,
+  Coins,
+  KeyRound,
   Radio,
   SearchCheck,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
+import {
+  BULLISH_MULE_MINT,
+  BULLISH_MULE_SOLSCAN_URL,
+} from "@/lib/fairLaunch/constants";
 
 export const FAIR_LAUNCH_SIGNAL_STEPS = [
   {
-    icon: BellRing,
-    title: "Receive the signal",
-    body: "A small amount of the new Adventure token appears in an eligible community wallet before the participation window opens publicly.",
+    icon: Coins,
+    title: "Hold Bullish Mule",
+    body: "Any positive MULE balance in the signed wallet unlocks the curated holder board.",
+  },
+  {
+    icon: KeyRound,
+    title: "Connect and sign",
+    body: "A login message proves wallet ownership without transferring tokens, granting approvals or joining a launch.",
   },
   {
     icon: SearchCheck,
-    title: "Verify the launch",
-    body: "Match the mint with this website and the official channels. Ignore lookalike tokens and unsolicited links.",
-  },
-  {
-    icon: Sparkles,
-    title: "Review the adventure",
-    body: "Read the launch terms, on-chain evidence and project documentation before taking any action.",
+    title: "Verify every mint",
+    body: "Compare the full address on the board, Solscan and official project channels before taking any action.",
   },
   {
     icon: CircleCheckBig,
     title: "Choose freely",
-    body: "Join the early participation window or do nothing. Receiving the signal never enrolls a wallet automatically.",
+    body: "Open an official source externally or do nothing. Flow-Finance never buys, swaps or enrolls the wallet automatically.",
   },
 ] as const;
 
@@ -48,21 +53,47 @@ export function FairLaunchSignal({ variant = "home" }: FairLaunchSignalProps) {
       <header className="flow-launch-signal-heading">
         <div>
           <p className="flow-kicker">
-            <Radio className="h-4 w-4" /> Adventure Launch Signal
+            <Radio className="h-4 w-4" /> Bullish Mule Launch Signal
           </p>
           <h2 id={`flow-launch-signal-${variant}-title`}>
             {isDocs
-              ? "How the fair-launch notification will work."
-              : "The next fair launch can reach your wallet first."}
+              ? "How holder-first launch access works."
+              : "Bullish Mule holders get a quieter first look."}
           </h2>
           <p>
             {isDocs
-              ? "The planned airdrop system will send a small amount of the new Adventure token as an on-chain notification when a fair memecoin launch is ready for community review. Recipients will be among the first invited to inspect the launch and may decide whether to participate."
-              : "We are building an airdrop-based alert for new Adventure memecoins. When your wallet receives the signal, you will be among the first informed and can independently decide whether the launch is right for you."}
+              ? "The live Bullish Mule board verifies a positive MULE balance from the signed Solana wallet, then reveals the supported token mints and official sources currently published by Flow-Finance. It never executes a purchase."
+              : "Connect the wallet holding MULE to unlock a curated board of supported fair launches. Inspect official mints and sources, then independently decide whether any launch deserves your attention."}
           </p>
         </div>
-        <span className="flow-launch-status"><span aria-hidden="true" /> In development</span>
+        <div className="flow-launch-brand">
+          <span>
+            <Image
+              src="/bullish-mule-logo.webp"
+              alt=""
+              fill
+              sizes="52px"
+            />
+          </span>
+          <div>
+            <strong>Bullish Mule</strong>
+            <small>Holder board</small>
+          </div>
+          <em className="flow-launch-status">
+            <span aria-hidden="true" /> Live
+          </em>
+        </div>
       </header>
+
+      {isDocs ? (
+        <div className="flow-launch-contract">
+          <span>Holder-access token</span>
+          <code>{BULLISH_MULE_MINT}</code>
+          <Link href={BULLISH_MULE_SOLSCAN_URL} target="_blank" rel="noreferrer">
+            Verify mint
+          </Link>
+        </div>
+      ) : null}
 
       <div className="flow-launch-signal-steps">
         {FAIR_LAUNCH_SIGNAL_STEPS.map(({ icon: Icon, title, body }, index) => (
@@ -79,15 +110,14 @@ export function FairLaunchSignal({ variant = "home" }: FairLaunchSignalProps) {
         <div>
           <ShieldCheck className="h-5 w-5" aria-hidden="true" />
           <p>
-            A signal is an early notice, not a recommendation, allocation or promise of
-            returns. Participation is always optional and every mint must be verified.
+            Holder access is an information service, not a recommendation,
+            allocation, safety guarantee or promise of returns. Every mint and
+            source must be independently verified.
           </p>
         </div>
-        {isDocs ? null : (
-          <Link href="/docs#fair-launch-signal" className="flow-secondary-button">
-            How it will work <ArrowRight className="h-4 w-4" />
-          </Link>
-        )}
+        <Link href="/fair-launches" className="flow-secondary-button">
+          Open MULE Launchpad <ArrowRight className="h-4 w-4" />
+        </Link>
       </footer>
     </section>
   );

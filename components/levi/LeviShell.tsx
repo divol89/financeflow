@@ -15,6 +15,7 @@ import {
   Menu,
   Moon,
   Radar,
+  Rocket,
   Search,
   ShieldCheck,
   Sun,
@@ -40,6 +41,7 @@ const directNavItems = [
 ];
 
 const communityItems = [
+  { href: "/fair-launches", label: "MULE Launchpad", detail: "Holder-first fair-launch board", icon: Rocket },
   { href: "/contest", label: "Social Quests", detail: "Current token campaign", icon: Megaphone },
   { href: "/games/levi-dice", label: "Adventure Arcade", detail: "Explore a live token game", icon: Dice5 },
 ];

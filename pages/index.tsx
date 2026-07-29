@@ -49,22 +49,22 @@ export default function Home() {
               </h1>
               <p className="flow-hero-lede">
                 Inspect wallets, understand token behavior, burn supported assets and
-                launch new community experiments from one calm, verifiable workspace.
-                The upcoming Adventure Launch Signal will notify community wallets when
-                the next fair memecoin is ready to be independently reviewed.
+                discover new community experiments from one calm, verifiable workspace.
+                Bullish Mule holders now have a dedicated board for independently
+                reviewing the official mints behind supported fair launches.
               </p>
               <div className="flow-hero-actions">
-                <Link href="/scanner" className="flow-primary-button">
-                  Explore Scanner <ArrowRight className="h-4 w-4" />
+                <Link href="/fair-launches" className="flow-primary-button">
+                  Open MULE Launchpad <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/burn" className="flow-secondary-button">
-                  <Flame className="h-4 w-4" /> Burn a token
+                <Link href="/scanner" className="flow-secondary-button">
+                  <Radar className="h-4 w-4" /> Explore Scanner
                 </Link>
               </div>
               <div className="flow-hero-proof">
                 <span><Radar className="h-4 w-4" /> Public on-chain evidence</span>
                 <span><ShieldCheck className="h-4 w-4" /> Noncustodial actions</span>
-                <span><Layers3 className="h-4 w-4" /> Open access, no token gate</span>
+                <span><Layers3 className="h-4 w-4" /> Open tools, holder-first launches</span>
               </div>
             </div>
             <FlowAdventureVisual />
