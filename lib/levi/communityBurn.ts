@@ -1,4 +1,4 @@
-export { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
+export { BULLISH_MULE_MINT_ADDRESS } from "@/lib/bullishMule/brand";
 
 export const SOLANA_INCINERATOR_ADDRESS =
   "1nc1nerator11111111111111111111111111111111";

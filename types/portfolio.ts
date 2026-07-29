@@ -5,7 +5,7 @@ import type {
   TokenActivityClassification,
 } from "./levi";
 
-export type PortfolioAssetId = "sol" | "levi" | "levi-ai";
+export type PortfolioAssetId = "sol" | "mule";
 export type JournalDecision = "watch" | "entered" | "trimmed" | "exited" | "avoided";
 export type PortfolioActivityStatus =
   | "live"

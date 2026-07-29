@@ -17,6 +17,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import Dice3D from "@/components/games/Dice3D";
+import { LeviShell } from "@/components/levi/LeviShell";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
 import {
   findLeviDicePreviewGame,
@@ -74,7 +75,7 @@ function LeviDiceRoom() {
         players: [...game.players, address],
       };
       persistGame(nextGame);
-      toast.success("Joined K9 Dice preview room.");
+      toast.success("Joined the MULE Arcade preview room.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unable to join room");
     }
@@ -132,18 +133,20 @@ function LeviDiceRoom() {
 
   if (!game) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        <div className="text-center">
-          <Dice5 className="mx-auto mb-4 h-12 w-12 text-amber-300" />
-          <p className="text-slate-400">K9 Dice room not found.</p>
-          <Button
-            onClick={() => router.push("/games/levi-dice")}
-            className="mt-5 bg-amber-400 text-black hover:bg-amber-300"
-          >
-            Back to K9 Dice
-          </Button>
+      <LeviShell>
+        <div className="flex min-h-screen items-center justify-center bg-black text-white">
+          <div className="text-center">
+            <Dice5 className="mx-auto mb-4 h-12 w-12 text-lime-300" />
+            <p className="text-slate-400">MULE Arcade room not found.</p>
+            <Button
+              onClick={() => router.push("/games/levi-dice")}
+              className="mt-5 bg-lime-400 text-black hover:bg-lime-300"
+            >
+              Back to MULE Arcade
+            </Button>
+          </div>
         </div>
-      </div>
+      </LeviShell>
     );
   }
 
@@ -159,11 +162,12 @@ function LeviDiceRoom() {
   const prize = getLeviDicePrize(game.entryFee, game.players.length);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#071007] via-black to-black p-4 pt-24 text-white">
-      <Head>
-        <title>K9 Dice Room | Solana Preview</title>
-      </Head>
-      <ToastContainer position="bottom-right" theme="dark" />
+    <LeviShell>
+      <div className="min-h-screen bg-gradient-to-b from-[#071007] via-black to-black p-4 pt-24 text-white">
+        <Head>
+          <title>MULE Arcade Room | Solana Preview</title>
+        </Head>
+        <ToastContainer position="bottom-right" theme="dark" />
 
       <main className="mx-auto max-w-6xl">
         <button
@@ -172,7 +176,7 @@ function LeviDiceRoom() {
           className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to K9 Dice
+          Back to MULE Arcade
         </button>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
@@ -181,7 +185,7 @@ function LeviDiceRoom() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-3xl font-black text-white">
-                    K9 Dice Room
+                    MULE Arcade Room
                   </h1>
                   <span className="rounded-md border border-amber-400/30 bg-amber-950/40 px-3 py-1 text-xs font-semibold text-amber-200">
                     Preview
@@ -355,8 +359,9 @@ function LeviDiceRoom() {
             </div>
           </aside>
         </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </LeviShell>
   );
 }
 

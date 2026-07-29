@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import type { IconType } from "react-icons";
-import { FaBook, FaTerminal } from "react-icons/fa";
+import { FaBook } from "react-icons/fa";
 
 interface LauncherItem {
   name: string;
@@ -33,8 +33,8 @@ const launcherItems: LauncherItem[] = [
     path: "/MagicPump",
   },
   {
-    name: "K9 Dice",
-    img: "/agent-k9-brand.png",
+    name: "MULE Arcade",
+    img: "/mule-brand-mark-v1.webp",
     path: "/games/levi-dice",
   },
 ];
@@ -94,14 +94,6 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             </button>
 
             <div className="pt-8 lg:pt-4">
-              <button
-                onClick={() => handleNavigate("/matrix")}
-                className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-[#ffb000]/70 bg-[#ffb000] px-4 py-4 font-mono text-base font-black uppercase tracking-wide text-black shadow-[0_0_28px_rgba(255,91,0,0.34)] transition-all hover:bg-[#ffc247] active:scale-[0.98]"
-              >
-                <FaTerminal className="text-xl" />
-                Matrix Tracker
-              </button>
-
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-5 lg:gap-5">
                 {launcherItems.map((item) => {
                   const Icon = item.icon;
@@ -133,7 +125,7 @@ const ModalApp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
               </div>
 
               <p className="mt-4 text-center font-mono text-xs uppercase tracking-[0.18em] text-[#63ff9b]/80">
-                Matrix ops and games ready
+                Bullish Mule tools and games
               </p>
             </div>
           </motion.div>

@@ -69,21 +69,21 @@ function MyApp({ Component, pageProps, router }: AppProps) {
     <>
       <Head>
         <link
-          key="flow-adventures-favicon"
+          key="bullish-mule-favicon"
           rel="icon"
           href={FLOW_FINANCE_FAVICON_PATH}
           sizes="any"
           type="image/x-icon"
         />
         <link
-          key="flow-adventures-favicon-png"
+          key="bullish-mule-favicon-png"
           rel="icon"
           href={FLOW_FINANCE_FAVICON_PNG_PATH}
           sizes="32x32"
           type="image/png"
         />
         <link
-          key="flow-adventures-apple-touch-icon"
+          key="bullish-mule-apple-touch-icon"
           rel="apple-touch-icon"
           href={FLOW_FINANCE_APPLE_TOUCH_ICON_PATH}
           sizes="180x180"

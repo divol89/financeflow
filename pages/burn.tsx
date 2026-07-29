@@ -2,12 +2,13 @@ import Head from "next/head";
 import { BurnLedger } from "@/components/flow/BurnLedger";
 import { LeviBurnPortal } from "@/components/levi/LeviBurnPortal";
 import { LeviShell } from "@/components/levi/LeviShell";
+import { FLOW_FINANCE_NAME } from "@/lib/flowFinance/brand";
 
 export default function BurnPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Solana Burn Studio | Flow-Finance Adventures</title>
+        <title>{`Solana Burn Studio | ${FLOW_FINANCE_NAME}`}</title>
         <meta
           name="description"
           content="Choose and permanently burn supported SPL or Token-2022 assets from your Solana wallet, then verify every portal burn in the public ledger."

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
@@ -8,7 +9,6 @@ import {
   Dice5,
   Plus,
   ShieldCheck,
-  Sparkles,
   Trophy,
   Users2,
   Wallet,
@@ -17,7 +17,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import Dice3D from "@/components/games/Dice3D";
+import { LeviShell } from "@/components/levi/LeviShell";
 import { useInjectedSolanaWallet } from "@/hooks/useInjectedSolanaWallet";
+import { BULLISH_MULE_IMAGE_PATH } from "@/lib/bullishMule/brand";
 import {
   LEVI_DICE_MINT,
   LEVI_DICE_PROGRAM_ID,
@@ -80,7 +82,7 @@ function LeviDiceLobby() {
       });
       const nextGames = upsertLeviDicePreviewGame(game);
       setGames(nextGames);
-      toast.success("K9 Dice preview room created.");
+      toast.success("MULE Arcade preview room created.");
       void router.push(`/games/levi-dice/${game.id}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Unable to create room");
@@ -93,27 +95,30 @@ function LeviDiceLobby() {
   );
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-amber-400/30">
-      <Head>
-        <title>K9 Dice | Solana Preview</title>
+    <LeviShell>
+      <div className="min-h-screen bg-black text-white selection:bg-lime-400/30">
+        <Head>
+        <title>MULE Arcade | Solana Dice Preview</title>
         <meta
           name="description"
           content="An open Solana Dice preview with no token holding requirement or token transfer."
         />
-      </Head>
-      <ToastContainer position="bottom-right" theme="dark" />
+        </Head>
+        <ToastContainer position="bottom-right" theme="dark" />
 
       <main className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(250,204,21,0.12),transparent_26%)]" />
         <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-28 sm:px-6">
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-200">
-                <Sparkles className="h-4 w-4" />
-                Solana K9 edition
+              <div className="inline-flex items-center gap-2 rounded-md border border-lime-400/30 bg-lime-400/10 px-3 py-2 text-sm font-semibold text-lime-100">
+                <span className="relative h-7 w-7 overflow-hidden rounded-md">
+                  <Image src={BULLISH_MULE_IMAGE_PATH} alt="" fill sizes="28px" />
+                </span>
+                Bullish Mule / Solana preview
               </div>
               <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-7xl">
-                K9 DICE
+                MULE ARCADE
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
                 A wallet-based Solana game preview open to everyone. Preview
@@ -198,7 +203,7 @@ function LeviDiceLobby() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold text-white">
-                    Create K9 Dice Room
+                    Create MULE Arcade Room
                   </p>
                   <p className="mt-1 text-sm text-slate-400">
                     Preview rooms use local state only. On-chain play needs the
@@ -299,7 +304,7 @@ function LeviDiceLobby() {
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-bold text-white">
-                  K9 Dice Preview Rooms
+                  MULE Arcade Preview Rooms
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
                   Local preview only until on-chain program deployment.
@@ -317,7 +322,7 @@ function LeviDiceLobby() {
             {sortedGames.length === 0 ? (
               <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-10 text-center">
                 <Dice5 className="mx-auto mb-3 h-12 w-12 text-slate-600" />
-                <p className="text-slate-400">No K9 Dice rooms yet.</p>
+                <p className="text-slate-400">No MULE Arcade rooms yet.</p>
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -376,8 +381,9 @@ function LeviDiceLobby() {
             )}
           </section>
         </section>
-      </main>
-    </div>
+        </main>
+      </div>
+    </LeviShell>
   );
 }
 

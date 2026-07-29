@@ -13,7 +13,10 @@ import {
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
-import { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
+import {
+  BULLISH_MULE_MINT_ADDRESS,
+  BULLISH_MULE_SYMBOL,
+} from "@/lib/bullishMule/brand";
 import { useTokenSniffer } from "@/hooks/useTokenSniffer";
 import type { TokenSnifferRiskTone } from "@/types/tokenSniffer";
 
@@ -102,10 +105,10 @@ export function TokenSnifferPanel() {
         <button
           type="button"
           className="levi-sniffer-sample"
-          onClick={() => setMint(AGENT_K9_MINT_ADDRESS)}
+          onClick={() => setMint(BULLISH_MULE_MINT_ADDRESS)}
           disabled={sniffer.isLoading}
         >
-          Try it with K9
+          Try it with {BULLISH_MULE_SYMBOL}
         </button>
       </form>
 

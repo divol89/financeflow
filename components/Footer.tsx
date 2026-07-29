@@ -1,6 +1,9 @@
 import React from "react";
 import { Send, Twitter } from "lucide-react";
-import { AGENT_K9_TELEGRAM_URL, AGENT_K9_X_URL } from "@/lib/agentK9/brand";
+import {
+  BULLISH_MULE_TELEGRAM_URL,
+  BULLISH_MULE_X_URL,
+} from "@/lib/bullishMule/brand";
 
 export default function Footer() {
   const open = (url: string) => {
@@ -12,24 +15,25 @@ export default function Footer() {
       <div className="flex space-x-4">
         <button
           type="button"
-          onClick={() => open(AGENT_K9_X_URL)}
-          className="rounded-full bg-gradient-to-r from-red-700 to-amber-500 p-2 text-white opacity-80 transition-opacity hover:opacity-100"
-          aria-label="Twitter"
+          onClick={() => open(BULLISH_MULE_X_URL)}
+          className="rounded-full bg-gradient-to-r from-lime-500 to-amber-400 p-2 text-black opacity-90 transition-opacity hover:opacity-100"
+          aria-label="Bullish Mule on X"
         >
           <Twitter size={24} />
         </button>
         <button
           type="button"
-          onClick={() => open(AGENT_K9_TELEGRAM_URL)}
-          className="rounded-full bg-gradient-to-r from-red-700 to-amber-500 p-2 text-white opacity-80 transition-opacity hover:opacity-100"
-          aria-label="Telegram"
+          onClick={() => open(BULLISH_MULE_TELEGRAM_URL)}
+          className="rounded-full bg-gradient-to-r from-lime-500 to-amber-400 p-2 text-black opacity-90 transition-opacity hover:opacity-100"
+          aria-label="Bullish Mule on Telegram"
         >
           <Send size={24} />
         </button>
       </div>
-      <p className="text-center text-sm text-gray-400">© 2026 Flow-Finance Adventures. All rights reserved.</p>
+      <p className="text-center text-sm text-gray-400">© 2026 Bullish Mule. All rights reserved.</p>
       <p className="max-w-2xl text-center text-xs text-gray-500">
-        Disclaimer: Cryptocurrency investments are subject to high market risks. Flow-Finance Adventures is not responsible for losses resulting from decisions based on the information provided. Research independently and trade with caution.
+        Memecoins are highly volatile. Bullish Mule provides informational tools,
+        not investment advice. Verify every mint and make independent decisions.
       </p>
     </footer>
   );

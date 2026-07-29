@@ -1,11 +1,13 @@
-export const BULLISH_MULE_MINT =
-  "D9yaixWzJ9kLjWdjrhYnyFmfw8d9fjQ3AGW4hdSypump";
-export const BULLISH_MULE_NAME = "Bullish Mule";
-export const BULLISH_MULE_SYMBOL = "MULE";
+import {
+  BULLISH_MULE_MINT_ADDRESS,
+  BULLISH_MULE_NAME,
+  BULLISH_MULE_SOLSCAN_URL,
+  BULLISH_MULE_SYMBOL,
+} from "@/lib/bullishMule/brand";
+
+export const BULLISH_MULE_MINT = BULLISH_MULE_MINT_ADDRESS;
+export { BULLISH_MULE_NAME, BULLISH_MULE_SOLSCAN_URL, BULLISH_MULE_SYMBOL };
 
 export const FAIR_LAUNCH_COLLECTION = "fairLaunchProjects";
 export const FAIR_LAUNCH_MAX_PROJECTS = 100;
 export const FAIR_LAUNCH_ELIGIBILITY_CACHE_MS = 60_000;
-
-export const BULLISH_MULE_SOLSCAN_URL =
-  `https://solscan.io/token/${BULLISH_MULE_MINT}`;

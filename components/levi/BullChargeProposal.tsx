@@ -31,9 +31,9 @@ export function BullChargeProposal() {
             <Gamepad2 className="h-4 w-4" />
             Proposed game
           </div>
-          <h2 className="levi-panel-title">K9 Pursuit</h2>
+          <h2 className="levi-panel-title">MULE Charge</h2>
           <p className="levi-panel-copy">
-            A viral K9 mini-game concept where players charge through market
+            A Bullish Mule mini-game concept where players charge through market
             obstacles, collect green candles, and compete for daily rewards.
           </p>
         </div>
@@ -76,7 +76,7 @@ export function BullChargeProposal() {
         <p>
           This is a proposal stage feature. The community can fund the agent
           wallet with SOL for contract deployment and request next steps in the
-          K9 chat; once the approved funding threshold is reached, the
+          MULE community chat; once the approved funding threshold is reached, the
           autonomous agent can continue implementation with Fable and GPT-5.6
           Sol under Magneto supervision.
         </p>

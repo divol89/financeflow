@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import {
-  Bot,
   Coins,
+  Gauge,
   LockKeyhole,
   RefreshCw,
-  ShieldCheck,
   WalletCards,
 } from "lucide-react";
 import { useLeviAuth } from "@/hooks/useLeviAuth";
@@ -62,8 +61,7 @@ export function PortfolioDashboard() {
   const { data } = portfolio;
   const iconById = {
     sol: <WalletCards className="h-5 w-5" />,
-    levi: <ShieldCheck className="h-5 w-5" />,
-    "levi-ai": <Bot className="h-5 w-5" />,
+    mule: <Gauge className="h-5 w-5" />,
   };
 
   return (

@@ -4,11 +4,11 @@ import { FLOW_FINANCE_IMAGE_PATH } from "@/lib/flowFinance/brand";
 
 export function FlowAdventureVisual() {
   return (
-    <div className="flow-hero-visual" aria-label="Flow-Finance Adventures exploration mark">
+    <div className="flow-hero-visual" aria-label="Bullish Mule mark">
       <div className="flow-hero-image">
         <Image
           src={FLOW_FINANCE_IMAGE_PATH}
-          alt="Flow-Finance Adventures abstract path and compass logo"
+          alt="Bullish Mule logo"
           fill
           priority
           sizes="(max-width: 767px) 82vw, 42vw"

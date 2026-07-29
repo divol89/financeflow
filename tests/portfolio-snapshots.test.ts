@@ -5,14 +5,14 @@ import { shouldStorePortfolioSnapshot } from "@/lib/portfolio/snapshots";
 import { getAccessLimits } from "@/lib/levi/access";
 import { buildPortfolioCoverage } from "@/lib/portfolio/coverage";
 
-function snapshot(capturedAt: string, k9Raw = "1000000"): PortfolioSnapshot {
+function snapshot(capturedAt: string, muleRaw = "1000000"): PortfolioSnapshot {
   return {
     id: capturedAt,
     wallet: "Wallet1111111111111111111111111111111111111",
     capturedAt,
     assets: [
       { id: "sol", name: "Solana", symbol: "SOL", mint: null, raw: "1000000000", decimals: 9, formatted: "1" },
-      { id: "levi-ai", name: "Agent K9", symbol: "K9", mint: "MintK9", raw: k9Raw, decimals: 6, formatted: k9Raw === "2000000" ? "2" : "1" },
+      { id: "mule", name: "Bullish Mule", symbol: "MULE", mint: "MintMule", raw: muleRaw, decimals: 6, formatted: muleRaw === "2000000" ? "2" : "1" },
     ],
   };
 }

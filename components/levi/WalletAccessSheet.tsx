@@ -39,7 +39,7 @@ export function WalletAccessSheet({
         </header>
         <p className="levi-access-sheet-lede">Connect once to use private tools. No token holding is required anywhere on the platform.</p>
         <LeviAuthPanel onConnectionGuideOpened={onClose} />
-        <div className="levi-access-sheet-safety"><KeyRound className="h-4 w-4" /><span>The signature contains a login message only. Flow-Finance Adventures cannot move your assets.</span></div>
+        <div className="levi-access-sheet-safety"><KeyRound className="h-4 w-4" /><span>The signature contains a login message only. Bullish Mule cannot move your assets.</span></div>
         <div className="levi-access-sheet-links">
           <Link href="/scanner" onClick={onClose}>Open Scanner <ArrowRight className="h-4 w-4" /></Link>
           <Link href="/portfolio" onClick={onClose}>Open Portfolio <ArrowRight className="h-4 w-4" /></Link>

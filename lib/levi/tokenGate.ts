@@ -1,5 +1,5 @@
 import type { LeviAccessState } from "@/types/levi";
-import { AGENT_K9_DECIMALS } from "./burnTracker/constants";
+import { BULLISH_MULE_DECIMALS } from "@/lib/bullishMule/brand";
 import { getAccessLimits, getAccessReason, uiTokenAmount } from "./access";
 import { solanaRpc } from "./rpc";
 import { normalizeSolanaAddress } from "./wallet";
@@ -68,7 +68,7 @@ export async function getTokenBalanceForMint(
         decimals: info.tokenAmount?.decimals ?? acc.decimals,
       };
     },
-    { raw: BigInt(0), decimals: AGENT_K9_DECIMALS }
+    { raw: BigInt(0), decimals: BULLISH_MULE_DECIMALS }
   );
 
   return {

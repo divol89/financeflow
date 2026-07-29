@@ -15,7 +15,7 @@ import type {
 
 const assets: Array<{ id: PortfolioAssetId; label: string }> = [
   { id: "sol", label: "SOL" },
-  { id: "levi-ai", label: "K9" },
+  { id: "mule", label: "MULE" },
 ];
 
 const ranges = ["7D", "30D", "ALL"] as const;
@@ -36,7 +36,7 @@ export function PortfolioBalanceChart({
   history: PortfolioSnapshot[];
   allowedHistoryDays: number | null;
 }) {
-  const [assetId, setAssetId] = useState<PortfolioAssetId>("levi-ai");
+  const [assetId, setAssetId] = useState<PortfolioAssetId>("mule");
   const [range, setRange] = useState<Range>(allowedHistoryDays === 7 ? "7D" : "30D");
   const effectiveRange: Range =
     allowedHistoryDays === 7 && range !== "7D" ? "7D" : range;
@@ -88,15 +88,15 @@ export function PortfolioBalanceChart({
             <AreaChart data={snapshots} margin={{ top: 12, right: 20, bottom: 4, left: 4 }}>
               <defs>
                 <linearGradient id="leviPortfolioArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ffb000" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#ffb000" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#84f11e" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#84f11e" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="rgba(255,226,178,0.08)" vertical={false} />
               <XAxis dataKey="time" type="number" domain={["dataMin", "dataMax"]} tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" })} stroke="#9d8d80" tickLine={false} axisLine={false} minTickGap={40} />
               <YAxis width={72} stroke="#9d8d80" tickLine={false} axisLine={false} tickFormatter={(value) => Number(value).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 2 })} />
-              <Tooltip labelFormatter={(value) => new Date(Number(value)).toLocaleString()} formatter={(value) => [Number(value).toLocaleString(undefined, { maximumFractionDigits: 6 }), selectedAsset.label]} contentStyle={{ background: "#160502", border: "1px solid rgba(255,176,0,.24)", borderRadius: 6 }} />
-              <Area type="monotone" dataKey="value" stroke="#ffb000" strokeWidth={2} fill="url(#leviPortfolioArea)" activeDot={{ r: 4 }} />
+              <Tooltip labelFormatter={(value) => new Date(Number(value)).toLocaleString()} formatter={(value) => [Number(value).toLocaleString(undefined, { maximumFractionDigits: 6 }), selectedAsset.label]} contentStyle={{ background: "#071008", border: "1px solid rgba(132,241,30,.24)", borderRadius: 6 }} />
+              <Area type="monotone" dataKey="value" stroke="#84f11e" strokeWidth={2} fill="url(#leviPortfolioArea)" activeDot={{ r: 4 }} />
             </AreaChart>
           </ResponsiveContainer>
         )}

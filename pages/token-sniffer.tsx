@@ -2,12 +2,13 @@ import Head from "next/head";
 import { Radar, ShieldCheck } from "lucide-react";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { TokenSnifferPanel } from "@/components/levi/TokenSnifferPanel";
+import { FLOW_FINANCE_NAME } from "@/lib/flowFinance/brand";
 
 export default function TokenSnifferPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Token Sniffer | Flow-Finance Adventures</title>
+        <title>{`Token Sniffer | ${FLOW_FINANCE_NAME}`}</title>
         <meta
           name="description"
           content="A beginner-friendly Solana token risk check powered by RugCheck data through FluxRPC."

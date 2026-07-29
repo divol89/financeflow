@@ -1,12 +1,13 @@
 import Head from "next/head";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { ScannerPanel } from "@/components/levi/ScannerPanel";
+import { FLOW_FINANCE_NAME } from "@/lib/flowFinance/brand";
 
 export default function ScannerPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Scanner | Flow-Finance Adventures</title>
+        <title>{`Scanner | ${FLOW_FINANCE_NAME}`}</title>
       </Head>
       <section className="levi-scanner-page min-h-screen px-4 pb-16 pt-28 sm:px-6">
         <div className="mx-auto mb-8 max-w-6xl">

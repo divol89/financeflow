@@ -2,7 +2,7 @@ import { solanaRpc } from "@/lib/levi/rpc";
 import {
   BURN_TRACKER_SIGNATURE_PAGE_SIZE,
   BURN_TRACKER_SOLSCAN_TRANSACTION_URL,
-  AGENT_K9_MINT_ADDRESS,
+  BULLISH_MULE_MINT_ADDRESS,
   SOLANA_INCINERATOR_ADDRESS,
 } from "./constants";
 
@@ -30,7 +30,7 @@ interface TokenAccountsByOwnerResponse {
   }>;
 }
 
-export interface LeviAiTokenAccountBalance {
+export interface BullishMuleTokenAccountBalance {
   address: string;
   amountRaw: string;
 }
@@ -116,7 +116,7 @@ function toDetectedBurn(
 
 export function extractBurnAmountRaw(
   transaction: ParsedBurnTransaction,
-  mint = AGENT_K9_MINT_ADDRESS
+  mint = BULLISH_MULE_MINT_ADDRESS
 ): string | null {
   if (transaction.meta?.err) return null;
 
@@ -131,9 +131,9 @@ export function extractBurnAmountRaw(
   return null;
 }
 
-export async function fetchLeviAiMintSupply(): Promise<string> {
+export async function fetchBullishMuleMintSupply(): Promise<string> {
   const result = await solanaRpc<TokenSupplyResponse>("getTokenSupply", [
-    AGENT_K9_MINT_ADDRESS,
+    BULLISH_MULE_MINT_ADDRESS,
     { commitment: "finalized" },
   ]);
   return result.value.amount;
@@ -143,15 +143,15 @@ export function sumTokenAccountBalances(rawAmounts: Array<string | undefined>): 
   return rawAmounts.reduce((total, amount) => total + BigInt(amount || "0"), BigInt(0)).toString();
 }
 
-export async function fetchLeviAiTokenAccountsByOwner(
+export async function fetchBullishMuleTokenAccountsByOwner(
   owner: string,
   commitment: "confirmed" | "finalized" = "finalized"
-): Promise<LeviAiTokenAccountBalance[]> {
+): Promise<BullishMuleTokenAccountBalance[]> {
   const result = await solanaRpc<TokenAccountsByOwnerResponse>(
     "getTokenAccountsByOwner",
     [
       owner,
-      { mint: AGENT_K9_MINT_ADDRESS },
+      { mint: BULLISH_MULE_MINT_ADDRESS },
       { encoding: "jsonParsed", commitment },
     ]
   );
@@ -164,20 +164,22 @@ export async function fetchLeviAiTokenAccountsByOwner(
   });
 }
 
-export async function fetchLeviAiCommunityLockBalance(): Promise<string> {
-  const accounts = await fetchLeviAiTokenAccountsByOwner(SOLANA_INCINERATOR_ADDRESS);
+export async function fetchBullishMuleCommunityLockBalance(): Promise<string> {
+  const accounts = await fetchBullishMuleTokenAccountsByOwner(
+    SOLANA_INCINERATOR_ADDRESS
+  );
   return sumTokenAccountBalances(accounts.map((account) => account.amountRaw));
 }
 
-export async function fetchLatestLeviAiMintSignature(): Promise<string | null> {
+export async function fetchLatestBullishMuleMintSignature(): Promise<string | null> {
   const signatures = await solanaRpc<MintSignatureRecord[]>("getSignaturesForAddress", [
-    AGENT_K9_MINT_ADDRESS,
+    BULLISH_MULE_MINT_ADDRESS,
     { limit: 1, commitment: "finalized" },
   ]);
   return signatures.find((item) => !item.err)?.signature || null;
 }
 
-export async function fetchLeviAiBurnBySignature(
+export async function fetchBullishMuleBurnBySignature(
   signature: string
 ): Promise<DetectedBurn | null> {
   const transaction = await solanaRpc<ParsedBurnTransaction | null>("getTransaction", [
@@ -193,12 +195,12 @@ export async function fetchLeviAiBurnBySignature(
   return toDetectedBurn(signature, transaction);
 }
 
-export async function scanForLatestLeviAiBurn(input: {
+export async function scanForLatestBullishMuleBurn(input: {
   before: string | null;
   until: string | null;
 }): Promise<BurnScanResult> {
   const signatures = await solanaRpc<MintSignatureRecord[]>("getSignaturesForAddress", [
-    AGENT_K9_MINT_ADDRESS,
+    BULLISH_MULE_MINT_ADDRESS,
     {
       limit: BURN_TRACKER_SIGNATURE_PAGE_SIZE,
       commitment: "finalized",

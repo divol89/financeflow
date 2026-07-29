@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { fetchLeviAiBurnBySignature } from "@/lib/levi/burnTracker/chain";
+import { fetchBullishMuleBurnBySignature } from "@/lib/levi/burnTracker/chain";
 import { getLiveBurnTrackerSnapshot } from "@/lib/levi/burnTracker/service";
 import { getClientKey } from "@/lib/levi/http";
 import { checkRateLimit } from "@/lib/levi/rateLimit";
@@ -39,9 +39,11 @@ export default async function handler(
         return res.status(400).json({ error: "A valid burn transaction signature is required." });
       }
 
-      const verifiedBurn = await fetchLeviAiBurnBySignature(signature);
+      const verifiedBurn = await fetchBullishMuleBurnBySignature(signature);
       if (!verifiedBurn) {
-        return res.status(400).json({ error: "The signature is not a finalized K9 burn." });
+        return res.status(400).json({
+          error: "The signature is not a finalized MULE burn.",
+        });
       }
 
       const snapshot = await getLiveBurnTrackerSnapshot(new Date(), {
@@ -54,7 +56,7 @@ export default async function handler(
     const snapshot = await getLiveBurnTrackerSnapshot();
     return res.status(200).json(snapshot);
   } catch (error) {
-    console.error("K9 burn tracker read failed", error);
+    console.error("MULE burn tracker read failed", error);
     return res.status(503).json({
       error: "The live burn tracker is temporarily unavailable. Please try again shortly.",
     });

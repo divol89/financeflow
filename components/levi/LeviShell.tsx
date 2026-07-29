@@ -42,14 +42,14 @@ const directNavItems = [
 
 const communityItems = [
   { href: "/fair-launches", label: "MULE Launchpad", detail: "Holder-first fair-launch board", icon: Rocket },
-  { href: "/contest", label: "Social Quests", detail: "Current token campaign", icon: Megaphone },
-  { href: "/games/levi-dice", label: "Adventure Arcade", detail: "Explore a live token game", icon: Dice5 },
+  { href: "/contest", label: "MULE Social Quest", detail: "Community visibility campaign", icon: Megaphone },
+  { href: "/games/levi-dice", label: "MULE Arcade", detail: "Explore the Solana dice preview", icon: Dice5 },
 ];
 
 const learningItems = [
   { href: "/learn", label: "Education", detail: "Markets and holder mechanics", icon: GraduationCap },
   { href: "/methodology", label: "Methodology", detail: "How signals are classified", icon: ShieldCheck },
-  { href: "/docs", label: "Docs", detail: "Project vision and roadmap", icon: FileText },
+  { href: "/docs", label: "Docs", detail: "MULE vision, tools and roadmap", icon: FileText },
 ];
 
 function pathActive(pathname: string, href: string): boolean {
@@ -121,12 +121,12 @@ export function LeviShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="levi-site flow-adventures-site min-h-screen">
+    <div className="levi-site flow-adventures-site bullish-mule-site min-h-screen">
       <header className={`levi-header ${scrolled ? "is-scrolled" : ""}`}>
         <div className="levi-container flex h-[4.75rem] items-center justify-between">
           <Link href="/" className="levi-brand" aria-label={`${FLOW_FINANCE_NAME} home`}>
             <span className="levi-brand-mark"><Image src={FLOW_FINANCE_IMAGE_PATH} alt="" fill sizes="44px" /></span>
-            <span><span className="levi-brand-eyebrow">Memecoin exploration lab</span><span className="levi-brand-name">Flow-Finance Adventures</span></span>
+            <span><span className="levi-brand-eyebrow">Solana intelligence community</span><span className="levi-brand-name">{FLOW_FINANCE_NAME}</span></span>
           </Link>
 
           <nav className="levi-nav-shell hidden 2xl:flex" aria-label="Primary navigation">
@@ -175,7 +175,7 @@ export function LeviShell({ children }: { children: ReactNode }) {
       <footer className="levi-footer">
         <div className="levi-container levi-footer-layout">
           <div className="levi-footer-note">
-            <div><BookOpen className="levi-brand-accent h-4 w-4" /><span>Signals are heuristic and require human review.</span></div>
+            <div><BookOpen className="levi-brand-accent h-4 w-4" /><span>MULE tools support research and always require human review.</span></div>
             <Link href="/methodology" className="levi-footer-link">Read the methodology</Link>
           </div>
           <div className="levi-footer-community">

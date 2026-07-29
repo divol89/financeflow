@@ -4,7 +4,6 @@ import type {
   TokenActivitySignal,
   TokenCreationSignal,
 } from "@/types/levi";
-import { AGENT_K9_MINT_ADDRESS } from "@/lib/agentK9/brand";
 
 export interface ParsedSolanaTransaction {
   slot?: number;
@@ -162,8 +161,6 @@ export function extractCreatorSellSignals(
     const mints = new Set([...preTokens.keys(), ...postTokens.keys()]);
 
     for (const mint of mints) {
-      if (mint === AGENT_K9_MINT_ADDRESS) continue;
-
       const tokenDelta = (postTokens.get(mint) || 0) - (preTokens.get(mint) || 0);
       const lostMeaningfulTokens = tokenDelta < -0.000001;
       const gainedSol = solDelta > 0.0001;

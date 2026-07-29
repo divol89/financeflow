@@ -21,7 +21,10 @@ import {
   PositionLoopDiagram,
   RealizedProfitChart,
 } from "@/components/levi/LearningCharts";
-import { FLOW_FINANCE_IMAGE_PATH } from "@/lib/flowFinance/brand";
+import {
+  BULLISH_MULE_NAME,
+  BULLISH_MULE_TERMINAL_IMAGE_PATH,
+} from "@/lib/bullishMule/brand";
 
 const mechanics = [
   {
@@ -77,7 +80,7 @@ export default function LearnPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Learn | Flow-Finance Adventures</title>
+        <title>{`Learn | ${BULLISH_MULE_NAME}`}</title>
         <meta
           name="description"
           content="A practical, risk-aware guide to memecoin mechanics, liquidity and realized profit."
@@ -92,7 +95,7 @@ export default function LearnPage() {
           <LeviReveal>
             <div className="levi-learn-hero-copy">
               <p className="levi-eyebrow">
-                <GraduationCapIcon /> Flow Adventures field guide / Learn
+                <GraduationCapIcon /> Bullish Mule field guide / Learn
               </p>
               <h1 className="levi-learn-title">
                 Memecoins,
@@ -118,12 +121,12 @@ export default function LearnPage() {
           </LeviReveal>
 
           <LeviReveal>
-            <div className="levi-learn-hero-art" aria-label="Flow-Finance Adventures learning visual">
+            <div className="levi-learn-hero-art" aria-label="Bullish Mule learning visual">
               <div className="levi-learn-orbit orbit-one" aria-hidden="true" />
               <div className="levi-learn-orbit orbit-two" aria-hidden="true" />
               <Image
-                src={FLOW_FINANCE_IMAGE_PATH}
-                alt="Flow-Finance Adventures"
+                src={BULLISH_MULE_TERMINAL_IMAGE_PATH}
+                alt="Bullish Mule reviewing market screens"
                 width={520}
                 height={520}
                 sizes="(max-width: 767px) 224px, 400px"

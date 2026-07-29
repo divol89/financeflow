@@ -22,7 +22,7 @@ import {
   formatBurnAmount,
   parseBurnAmount,
 } from "../lib/levi/burn/validation";
-import { AGENT_K9_MINT_ADDRESS } from "../lib/levi/communityBurn";
+import { BULLISH_MULE_MINT_ADDRESS } from "../lib/levi/communityBurn";
 import {
   parseMetaplexBurnMetadata,
   parseToken2022BurnMetadataExtension,
@@ -223,7 +223,7 @@ test("prepares burns for any supported token without a project-token gate", asyn
   const owner = Keypair.generate().publicKey.toBase58();
   const externalMint = Keypair.generate().publicKey.toBase58();
   const externalAccount = Keypair.generate().publicKey.toBase58();
-  const leviAccount = Keypair.generate().publicKey.toBase58();
+  const muleAccount = Keypair.generate().publicKey.toBase58();
 
   globalThis.fetch = (async (_input, init) => {
     const request = JSON.parse(String(init?.body)) as {
@@ -256,13 +256,13 @@ test("prepares burns for any supported token without a project-token gate", asyn
               ]
             : [
                 {
-                  pubkey: leviAccount,
+                  pubkey: muleAccount,
                   account: {
                     owner: TOKEN_2022_PROGRAM_ID.toBase58(),
                     data: {
                       parsed: {
                         info: {
-                          mint: AGENT_K9_MINT_ADDRESS,
+                          mint: BULLISH_MULE_MINT_ADDRESS,
                           state: "initialized",
                           tokenAmount: { amount: "100", decimals: 6 },
                         },
@@ -298,12 +298,12 @@ test("prepares burns for any supported token without a project-token gate", asyn
       1
     );
 
-    const leviPreparation = await prepareBurnTransaction({
+    const mulePreparation = await prepareBurnTransaction({
       wallet: owner,
-      mint: AGENT_K9_MINT_ADDRESS,
+      mint: BULLISH_MULE_MINT_ADDRESS,
       amountRaw: "1",
     });
-    assert.equal(leviPreparation.programId, TOKEN_2022_PROGRAM_ID.toBase58());
+    assert.equal(mulePreparation.programId, TOKEN_2022_PROGRAM_ID.toBase58());
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -344,8 +344,8 @@ test("waits for finalization before forcing one tracker refresh", async () => {
   let statusReads = 0;
   let trackerPosts = 0;
   const snapshot = {
-    mint: AGENT_K9_MINT_ADDRESS,
-    symbol: "K9",
+    mint: BULLISH_MULE_MINT_ADDRESS,
+    symbol: "MULE",
     decimals: 6,
     initialSupplyRaw: "1000000000000000",
     currentSupplyRaw: "999996549999999",

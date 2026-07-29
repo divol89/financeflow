@@ -2,12 +2,13 @@ import Head from "next/head";
 import { BarChart3, ShieldCheck } from "lucide-react";
 import { LeviShell } from "@/components/levi/LeviShell";
 import { PortfolioDashboard } from "@/components/levi/PortfolioDashboard";
+import { FLOW_FINANCE_NAME } from "@/lib/flowFinance/brand";
 
 export default function PortfolioPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Portfolio | Flow-Finance Adventures</title>
+        <title>{`Portfolio | ${FLOW_FINANCE_NAME}`}</title>
         <meta name="description" content="Private Solana balance history, token investigations and a decision journal." />
       </Head>
       <section className="levi-product-page levi-portfolio-page">

@@ -123,10 +123,10 @@ export default function ContestPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Social Quest | Flow-Finance Adventures</title>
+        <title>Social Quest | Bullish Mule</title>
         <meta
           name="description"
-          content="An open community contest for thoughtful Flow-Finance posts on X."
+          content="An open community contest for thoughtful Bullish Mule posts on X."
         />
       </Head>
 
@@ -145,7 +145,7 @@ export default function ContestPage() {
                 <span>Move the signal.</span>
               </h1>
               <p className="levi-contest-lede">
-                Share a considered post about a Flow-Finance adventure on X,
+                Share a considered post about Bullish Mule on X,
                 submit the direct link and enter the human-reviewed campaign.
               </p>
               <div className="levi-contest-proof">
@@ -342,7 +342,7 @@ export default function ContestPage() {
                   <span>02</span>
                   <div>
                     <strong>Post and submit</strong>
-                    <p>Share a direct X post URL connected to a Flow-Finance adventure.</p>
+                    <p>Share a direct X post URL connected to Bullish Mule.</p>
                   </div>
                 </li>
                 <li>

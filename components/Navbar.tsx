@@ -8,10 +8,13 @@ import {
   FaGamepad,
   FaRocket,
   FaShieldAlt,
-  FaTerminal,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import NavbarWalletButton from "./NavbarWalletButton";
+import {
+  BULLISH_MULE_IMAGE_PATH,
+  BULLISH_MULE_NAME,
+} from "@/lib/bullishMule/brand";
 
 interface NavbarProps {
   openModal: () => void;
@@ -71,17 +74,17 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
         <div className="container mx-auto px-4 h-full flex items-center">
           <div className="flex items-center justify-between w-full h-full">
             <div className="flex items-center lg:w-1/3">
-              <div className="relative w-[80px] h-[24px] mr-2 transition-transform hover:scale-105">
+              <div className="relative h-11 w-11 overflow-hidden rounded-md border border-lime-400/25 transition-transform hover:scale-105">
                 <Image
-                  src="/img/logotipo.png"
-                  alt="logo"
+                  src={BULLISH_MULE_IMAGE_PATH}
+                  alt=""
                   layout="fill"
-                  objectFit="contain"
+                  objectFit="cover"
                   className="drop-shadow-glow"
                 />
               </div>
-              <h1 className="ml-4 text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-gradient tracking-tight">
-                Flow Finance
+              <h1 className="ml-3 bg-gradient-to-r from-lime-300 via-lime-400 to-amber-300 bg-clip-text text-xl font-bold tracking-tight text-transparent md:text-2xl">
+                {BULLISH_MULE_NAME}
               </h1>
             </div>
             <div className="hidden text-white lg:ml-[4rem] lg:scale-75 lg:flex items-center justify-center lg:w-1/2">
@@ -91,7 +94,7 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
               <ul className="flex items-center space-x-4">
                 <li
                   className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold py-2 px-4 rounded-full hover:from-blue-500 hover:to-purple-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                  onClick={() => handleMenuItemClick("/whitepaper")}
+                  onClick={() => handleMenuItemClick("/docs")}
                 >
                   <FaBook className="mr-1" />
                   Docs
@@ -105,17 +108,10 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                 </li>
                 <li
                   className="bg-gradient-to-r from-orange-400 to-yellow-500 text-white font-bold py-2 px-4 rounded-full hover:from-orange-500 hover:to-yellow-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
-                  onClick={() => handleMenuItemClick("/games")}
+                  onClick={() => handleMenuItemClick("/games/levi-dice")}
                 >
                   <FaGamepad className="mr-1" />
-                  Games
-                </li>
-                <li
-                  className="bg-[#00e47a] text-black font-bold py-2 px-4 rounded-full hover:bg-[#63ff9b] transition-all duration-300 cursor-pointer flex items-center text-sm shadow-[0_0_18px_rgba(0,228,122,0.35)]"
-                  onClick={() => handleMenuItemClick("/matrix")}
-                >
-                  <FaTerminal className="mr-1" />
-                  Matrix
+                  MULE Arcade
                 </li>
                 <li
                   className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 cursor-pointer flex items-center text-sm"
@@ -150,7 +146,7 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
             style={{
               zIndex: 99999,
               background:
-                "linear-gradient(180deg, #0a0a0a 0%, #1a0a20 50%, #0a0a15 100%)",
+                "linear-gradient(180deg, #050906 0%, #0b140c 50%, #050906 100%)",
               height: "100vh",
               width: "100vw",
             }}
@@ -170,14 +166,14 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
               <div className="flex items-center justify-center mb-10">
                 <div className="relative w-14 h-14 mr-4">
                   <Image
-                    src="/img/logotipo.png"
-                    alt="logo"
+                    src={BULLISH_MULE_IMAGE_PATH}
+                    alt=""
                     layout="fill"
-                    objectFit="contain"
+                    objectFit="cover"
                   />
                 </div>
-                <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
-                  Flow Finance
+                <span className="bg-gradient-to-r from-lime-300 to-amber-300 bg-clip-text text-3xl font-bold text-transparent">
+                  {BULLISH_MULE_NAME}
                 </span>
               </div>
 
@@ -187,14 +183,14 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
 
               <div className="space-y-4 flex-1">
                 <button
-                  onClick={() => handleMenuItemClick("/whitepaper")}
+                  onClick={() => handleMenuItemClick("/docs")}
                   className="w-full flex items-center p-5 rounded-2xl bg-white/15 border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]"
                 >
                   <div className="w-14 h-14 rounded-full bg-purple-500/30 flex items-center justify-center mr-4">
                     <FaBook className="text-purple-300 text-xl" />
                   </div>
                   <span className="text-white font-semibold text-xl">
-                    Documentación
+                    Docs
                   </span>
                 </button>
 
@@ -206,31 +202,19 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                     <FaShieldAlt className="text-blue-300 text-xl" />
                   </div>
                   <span className="text-white font-semibold text-xl">
-                    Validar Token
+                    Validate token
                   </span>
                 </button>
 
                 <button
-                  onClick={() => handleMenuItemClick("/games")}
+                  onClick={() => handleMenuItemClick("/games/levi-dice")}
                   className="w-full flex items-center p-5 rounded-2xl bg-white/15 border border-white/20 hover:bg-white/20 transition-all active:scale-[0.98]"
                 >
                   <div className="w-14 h-14 rounded-full bg-orange-500/30 flex items-center justify-center mr-4">
                     <FaGamepad className="text-orange-300 text-xl" />
                   </div>
                   <span className="text-white font-semibold text-xl">
-                    Games
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => handleMenuItemClick("/matrix")}
-                  className="w-full flex items-center p-5 rounded-2xl bg-[#00e47a]/20 border border-[#00e47a]/50 hover:bg-[#00e47a]/30 transition-all active:scale-[0.98] shadow-[0_0_22px_rgba(0,228,122,0.18)]"
-                >
-                  <div className="w-14 h-14 rounded-full bg-[#00e47a]/30 flex items-center justify-center mr-4">
-                    <FaTerminal className="text-[#63ff9b] text-xl" />
-                  </div>
-                  <span className="text-white font-semibold text-xl">
-                    Matrix Tracker
+                    MULE Arcade
                   </span>
                 </button>
               </div>
@@ -241,7 +225,7 @@ const Navbar: FC<NavbarProps> = ({ openModal }) => {
                   className="w-full py-6 px-6 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xl flex items-center justify-center gap-3 shadow-xl shadow-purple-500/40 hover:shadow-purple-500/60 transition-all active:scale-[0.98]"
                 >
                   <FaRocket className="text-xl" />
-                  Abrir Aplicación
+                  Open tools
                 </button>
 
                 <NavbarWalletButton

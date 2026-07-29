@@ -1,5 +1,5 @@
 import { Bot, HeartHandshake, MessageCircle, Wallet } from "lucide-react";
-import { AGENT_K9_DEVELOPMENT_WALLET } from "@/lib/levi/community";
+import { BULLISH_MULE_DEVELOPMENT_WALLET } from "@/lib/levi/community";
 
 export function AgenticDevelopmentNotice() {
   return (
@@ -14,8 +14,8 @@ export function AgenticDevelopmentNotice() {
             Community proposals can become agent-built features.
           </h2>
           <p className="levi-panel-copy">
-            Flow-Finance Adventures is an agentic development surface. Propose tools,
-            games, dashboards, scanner ideas or a new memecoin adventure in the
+            Bullish Mule is an agentic development surface. Propose tools,
+            games, dashboards, scanner ideas or a supported launch utility in the
             community chat. Community-backed ideas can become scoped development
             tasks for the autonomous agent, supervised by developer Magneto.
             When the agent wallet reaches the SOL needed for approved
@@ -41,7 +41,7 @@ export function AgenticDevelopmentNotice() {
               Agent wallet
             </div>
             <p className="levi-wallet-address">
-              {AGENT_K9_DEVELOPMENT_WALLET}
+              {BULLISH_MULE_DEVELOPMENT_WALLET}
             </p>
           </div>
           <p className="levi-panel-note">

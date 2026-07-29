@@ -92,7 +92,7 @@ export function BurnLedger() {
           <p className="flow-kicker"><Flame className="h-4 w-4" /> Live burn ledger</p>
           <h2 id="flow-burn-ledger-title">Every token keeps its own story.</h2>
           <p>
-            Verified burns recorded by Flow-Finance Adventures are grouped
+            Verified burns recorded through the Bullish Mule portal are grouped
             by mint. Token units are never combined into a misleading global total.
           </p>
         </div>

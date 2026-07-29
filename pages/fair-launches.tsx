@@ -46,7 +46,7 @@ export default function FairLaunchesPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Bullish Mule Fair Launches | Flow-Finance Adventures</title>
+        <title>Bullish Mule Launchpad | Holder-First Fair Launches</title>
         <meta
           name="description"
           content="A holder-first board for independently reviewing supported Solana memecoin fair launches. No purchases or investment advice."
@@ -69,7 +69,7 @@ export default function FairLaunchesPage() {
               </h1>
               <p>
                 Hold any positive balance of Bullish Mule, connect the same
-                wallet and review the official token mints that Flow-Finance
+                wallet and review the official token mints that the MULE team
                 currently supports. The board informs; it never buys for you.
               </p>
               <div className="mule-launch-hero-actions">
@@ -353,7 +353,7 @@ export default function FairLaunchesPage() {
             </p>
             <h2>No buy button by design.</h2>
             <p>
-              Flow-Finance only presents verified addresses and official
+              Bullish Mule only presents verified addresses and official
               sources. You decide whether to visit an external launch, how much
               research to do and whether to participate at all.
             </p>

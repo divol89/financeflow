@@ -6,10 +6,10 @@ export default function BitcoinLearningPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Bitcoin Field Guide | Flow Adventures Learn</title>
+        <title>Bitcoin Field Guide | Bullish Mule Learn</title>
         <meta
           name="description"
-          content="An interactive Flow Adventures guide to Bitcoin's original ideas: digital signatures, peer-to-peer validation, proof of work and confirmations."
+          content="An interactive Bullish Mule guide to Bitcoin's original ideas: digital signatures, peer-to-peer validation, proof of work and confirmations."
         />
       </Head>
       <BitcoinLearningExperience />

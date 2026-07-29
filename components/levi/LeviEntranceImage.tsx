@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { AGENT_K9_IMAGE_PATH } from "@/lib/agentK9/brand";
+import { BULLISH_MULE_IMAGE_PATH } from "@/lib/bullishMule/brand";
 
 export function LeviEntranceImage() {
   return (
@@ -18,15 +18,15 @@ export function LeviEntranceImage() {
         transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <Image
-          src={AGENT_K9_IMAGE_PATH}
-          alt="Agent K9"
+          src={BULLISH_MULE_IMAGE_PATH}
+          alt="Bullish Mule"
           width={1254}
           height={1254}
           priority
           sizes="(max-width: 767px) 260px, (max-width: 1023px) 400px, 500px"
         />
       </motion.div>
-      <span className="levi-hero-art-caption">AGENT K9 / SOLANA</span>
+      <span className="levi-hero-art-caption">BULLISH MULE / SOLANA</span>
     </motion.div>
   );
 }

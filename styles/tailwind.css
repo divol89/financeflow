@@ -1438,7 +1438,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 visual system. Keep this scope isolated from legacy routes. */
+/* Bullish Mule visual system. Keep this scope isolated from legacy routes. */
 .levi-site {
   --levi-bg: #090302;
   --levi-panel: rgba(28, 8, 4, 0.74);
@@ -2184,7 +2184,7 @@ img.site-logo {
   line-height: 1.1;
 }
 
-/* Live Agent K9 supply burns. Community locks remain visually and semantically separate. */
+/* Live Bullish Mule supply burns. Community locks remain visually and semantically separate. */
 .levi-burn-tracker {
   position: relative;
   overflow: hidden;
@@ -3001,7 +3001,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 Learn: interactive Bitcoin field guide */
+/* Bullish Mule Learn: interactive Bitcoin field guide */
 .levi-bitcoin-link-section {
   position: relative;
   z-index: 1;
@@ -3858,7 +3858,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 community burn information */
+/* Bullish Mule community burn information */
 .levi-burn-fab,
 .levi-burn-banner {
   position: fixed;
@@ -4192,7 +4192,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 social contest surface. Keep campaign styling inside the product shell. */
+/* Bullish Mule social contest surface. Keep campaign styling inside the product shell. */
 .levi-contest-page {
   position: relative;
   min-height: 100vh;
@@ -4775,7 +4775,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 Learn guide. Educational visuals stay local, scoped and data-agnostic. */
+/* Bullish Mule Learn guide. Educational visuals stay local, scoped and data-agnostic. */
 .levi-learn-page {
   position: relative;
   min-width: 0;
@@ -5615,7 +5615,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 docs. Scoped to /docs and intentionally data-light. */
+/* Bullish Mule docs. Scoped to /docs and intentionally data-light. */
 .levi-docs-page {
   position: relative;
   min-width: 0;
@@ -5940,7 +5940,7 @@ img.site-logo {
   .levi-docs-disclaimer { margin-top: 4rem; }
 }
 
-/* Agent K9 docs. Scoped to /docs and aligned with Agent K9 Learn. */
+/* Bullish Mule docs. Scoped to /docs and aligned with Bullish Mule Learn. */
 .levi-docs-page {
   position: relative;
   min-width: 0;
@@ -6811,7 +6811,7 @@ img.site-logo {
   }
 }
 
-/* Agent K9 product information architecture and Scanner V2. */
+/* Bullish Mule product information architecture and Scanner V2. */
 .levi-nav-menu {
   position: relative;
 }

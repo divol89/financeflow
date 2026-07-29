@@ -5,7 +5,7 @@ export default function Document() {
   return (
     <Html lang="en" suppressHydrationWarning>
       <Head>
-        <meta name="theme-color" content="#f4f8fc" />
+        <meta name="theme-color" content="#f6f7f2" />
         <script dangerouslySetInnerHTML={{ __html: FLOW_THEME_BOOTSTRAP_SCRIPT }} />
       </Head>
       <body>

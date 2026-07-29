@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { AlertTriangle, ListChecks, Radar } from "lucide-react";
 import { LeviShell } from "@/components/levi/LeviShell";
+import { FLOW_FINANCE_NAME } from "@/lib/flowFinance/brand";
 
 const methods = [
   "Recent signatures are fetched from Solana mainnet for the target wallet.",
@@ -13,7 +14,7 @@ export default function MethodologyPage() {
   return (
     <LeviShell>
       <Head>
-        <title>Methodology | Flow-Finance Adventures</title>
+        <title>{`Methodology | ${FLOW_FINANCE_NAME}`}</title>
       </Head>
       <section className="levi-method-page min-h-screen px-4 pb-16 pt-28 sm:px-6">
         <div className="mx-auto max-w-5xl">

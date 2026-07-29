@@ -12,7 +12,7 @@ function applyTheme(theme: FlowTheme) {
   document.documentElement.style.colorScheme = theme;
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", theme === "dark" ? "#07131f" : "#f4f8fc");
+    ?.setAttribute("content", theme === "dark" ? "#050906" : "#f6f7f2");
 }
 
 export function useFlowTheme() {

@@ -33,7 +33,7 @@ export const FAIR_LAUNCH_SIGNAL_STEPS = [
   {
     icon: CircleCheckBig,
     title: "Choose freely",
-    body: "Open an official source externally or do nothing. Flow-Finance never buys, swaps or enrolls the wallet automatically.",
+    body: "Open an official source externally or do nothing. Bullish Mule never buys, swaps or enrolls the wallet automatically.",
   },
 ] as const;
 
@@ -62,7 +62,7 @@ export function FairLaunchSignal({ variant = "home" }: FairLaunchSignalProps) {
           </h2>
           <p>
             {isDocs
-              ? "The live Bullish Mule board verifies a positive MULE balance from the signed Solana wallet, then reveals the supported token mints and official sources currently published by Flow-Finance. It never executes a purchase."
+              ? "The live Bullish Mule board verifies a positive MULE balance from the signed Solana wallet, then reveals supported token mints and official sources published by the MULE team. It never executes a purchase."
               : "Connect the wallet holding MULE to unlock a curated board of supported fair launches. Inspect official mints and sources, then independently decide whether any launch deserves your attention."}
           </p>
         </div>

@@ -1,9 +1,9 @@
 import type { BurnTrackerPublicSnapshot, BurnTrackerRecord } from "@/types/burnTracker";
 import {
-  fetchLatestLeviAiMintSignature,
-  fetchLeviAiCommunityLockBalance,
-  fetchLeviAiMintSupply,
-  scanForLatestLeviAiBurn,
+  fetchBullishMuleCommunityLockBalance,
+  fetchBullishMuleMintSupply,
+  fetchLatestBullishMuleMintSignature,
+  scanForLatestBullishMuleBurn,
   type DetectedBurn,
 } from "./chain";
 import {
@@ -12,10 +12,10 @@ import {
   getBurnTrackerNextRefreshAt,
 } from "./calculations";
 import {
-  AGENT_K9_DECIMALS,
-  AGENT_K9_INITIAL_SUPPLY_RAW,
-  AGENT_K9_MINT_ADDRESS,
-  AGENT_K9_SYMBOL,
+  BULLISH_MULE_DECIMALS,
+  BULLISH_MULE_INITIAL_SUPPLY_RAW,
+  BULLISH_MULE_MINT_ADDRESS,
+  BULLISH_MULE_SYMBOL,
   SOLANA_INCINERATOR_ADDRESS,
   SOLANA_INCINERATOR_URL,
 } from "./constants";
@@ -43,10 +43,10 @@ export function toBurnTrackerPublicSnapshot(
   );
 
   return {
-    mint: AGENT_K9_MINT_ADDRESS,
-    symbol: AGENT_K9_SYMBOL,
-    decimals: AGENT_K9_DECIMALS,
-    initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
+    mint: BULLISH_MULE_MINT_ADDRESS,
+    symbol: BULLISH_MULE_SYMBOL,
+    decimals: BULLISH_MULE_DECIMALS,
+    initialSupplyRaw: BULLISH_MULE_INITIAL_SUPPLY_RAW,
     currentSupplyRaw: metrics.currentSupplyRaw,
     totalBurnedRaw: metrics.totalBurnedRaw,
     percentageBurned: metrics.percentageBurned,
@@ -69,9 +69,9 @@ async function refreshBurnTracker(
   verifiedBurn?: DetectedBurn
 ): Promise<BurnTrackerPublicSnapshot> {
   const [currentSupplyRaw, latestMintSignature, communityLockRaw] = await Promise.all([
-    fetchLeviAiMintSupply(),
-    fetchLatestLeviAiMintSignature(),
-    fetchLeviAiCommunityLockBalance(),
+    fetchBullishMuleMintSupply(),
+    fetchLatestBullishMuleMintSignature(),
+    fetchBullishMuleCommunityLockBalance(),
   ]);
   const metrics = calculateBurnMetrics(currentSupplyRaw);
   const nowIso = now.toISOString();
@@ -79,8 +79,8 @@ async function refreshBurnTracker(
   if (!previous) {
     const record: BurnTrackerRecord = {
       version: 2,
-      mint: AGENT_K9_MINT_ADDRESS,
-      initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
+      mint: BULLISH_MULE_MINT_ADDRESS,
+      initialSupplyRaw: BULLISH_MULE_INITIAL_SUPPLY_RAW,
       currentSupplyRaw: metrics.currentSupplyRaw,
       totalBurnedRaw: metrics.totalBurnedRaw,
       communityLockRaw,
@@ -116,7 +116,7 @@ async function refreshBurnTracker(
   }
 
   if (verificationPending && pendingBurnUntil) {
-    const scan = await scanForLatestLeviAiBurn({
+    const scan = await scanForLatestBullishMuleBurn({
       before: pendingBurnCursor,
       until: pendingBurnUntil,
     });
@@ -136,8 +136,8 @@ async function refreshBurnTracker(
 
   const record: BurnTrackerRecord = {
     version: 2,
-    mint: AGENT_K9_MINT_ADDRESS,
-    initialSupplyRaw: AGENT_K9_INITIAL_SUPPLY_RAW,
+    mint: BULLISH_MULE_MINT_ADDRESS,
+    initialSupplyRaw: BULLISH_MULE_INITIAL_SUPPLY_RAW,
     currentSupplyRaw: metrics.currentSupplyRaw,
     totalBurnedRaw: metrics.totalBurnedRaw,
     communityLockRaw,
